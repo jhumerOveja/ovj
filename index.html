@@ -42,7 +42,6 @@
             cursor: pointer;
             padding: 10px 30px;
             font-weight: bold;
-            transition: background 0.3s;
         }
         .subir button:hover { background: #e05a2a; }
         .subir input[type="file"] {
@@ -97,28 +96,12 @@
         .error { color: #ff4444; }
         .cargando { color: #ffaa00; }
         #subirEstado { margin-left: 10px; }
-        .admin-toggle {
-            text-align: right;
-            font-size: 11px;
-            color: #444;
-            cursor: pointer;
-            margin-bottom: 5px;
-            user-select: none;
-        }
-        .admin-toggle:hover { color: #666; }
         .admin-panel {
             background: #1a1a1a;
             border: 2px solid #ff6b35;
             border-radius: 10px;
             padding: 15px 20px;
             margin-bottom: 20px;
-            display: none;
-        }
-        .admin-panel.visible { display: block; }
-        .admin-panel h3 {
-            color: #ff6b35;
-            font-size: 14px;
-            margin-bottom: 10px;
         }
         .admin-panel input {
             background: #333;
@@ -138,7 +121,6 @@
             cursor: pointer;
             margin-left: 10px;
         }
-        .admin-panel button:hover { background: #45a049; }
         .admin-panel .url-actual {
             color: #888;
             font-size: 12px;
@@ -148,6 +130,15 @@
             color: #4CAF50;
             word-break: break-all;
         }
+        .admin-toggle {
+            text-align: right;
+            font-size: 11px;
+            color: #444;
+            cursor: pointer;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+        .admin-toggle:hover { color: #666; }
     </style>
 </head>
 <body>
@@ -157,13 +148,15 @@
     <div class="admin-panel" id="adminPanel">
         <h3>⚙️ CONFIGURACIÓN DEL SERVIDOR</h3>
         <p style="color:#888; font-size:13px; margin-bottom:10px;">
-            Pon aquí la URL de Cloudflare Tunnel (ej: https://xxxx.trycloudflare.com)
+            Cambia esta URL cuando inicies Cloudflare
         </p>
         <input type="text" id="servidorUrl" placeholder="https://xxxx.trycloudflare.com">
         <button onclick="guardarUrl()">💾 Guardar</button>
+        <button onclick="probarUrl()" style="background:#ff6b35;">🧪 Probar</button>
         <div class="url-actual">
             URL actual: <span id="urlActual">No configurada</span>
         </div>
+        <div id="testResultado" style="margin-top:10px;font-size:13px;"></div>
     </div>
 
     <h1>📸 OVJ <span>Studio</span></h1>
@@ -180,39 +173,67 @@
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN
+        // 🔥 CONFIGURACIÓN: PON AQUÍ TU URL DE CLOUDFLARE
         // ==========================================
 
-        // 🔥 CLAVE: Aquí guardamos la URL del servidor
+        // ⚠️ CAMBIA ESTA URL POR LA QUE TE DA CLOUDFLARE TUNNEL
+        const URL_CLOUDFLARE = 'https://app-briefs-archived-meetup.trycloudflare.com'; // <--- PON TU URL AQUÍ
+
+        // ==========================================
+        // FUNCIONES
+        // ==========================================
+
         function getServidorUrl() {
+            // Primero intenta con localStorage (por si el admin la cambia)
             let url = localStorage.getItem('servidorUrl');
-            if (!url) {
-                // Si estamos en localhost, usamos localhost
-                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                    url = 'http://localhost:3000';
-                } else {
-                    // Si no hay URL guardada, mostramos error
-                    url = 'https://app-briefs-archived-meetup.trycloudflare.com';
-                }
+            
+            // Si no hay URL en localStorage, usa la URL FIJA
+            if (!url || url === '') {
+                url = URL_CLOUDFLARE;
                 localStorage.setItem('servidorUrl', url);
             }
+            
             return url;
         }
 
         function guardarUrl() {
             const input = document.getElementById('servidorUrl');
             let url = input.value.trim();
-            // Asegurar que no tenga barra al final
-            if (url.endsWith('/')) {
-                url = url.slice(0, -1);
-            }
+            if (url.endsWith('/')) url = url.slice(0, -1);
+            
             if (url) {
                 localStorage.setItem('servidorUrl', url);
                 document.getElementById('urlActual').textContent = url;
+                document.getElementById('testResultado').innerHTML = '✅ URL guardada';
+                document.getElementById('testResultado').style.color = '#4CAF50';
                 cargarFotos();
-                alert('✅ URL guardada correctamente');
             } else {
                 alert('❌ Ingresa una URL válida');
+            }
+        }
+
+        async function probarUrl() {
+            const input = document.getElementById('servidorUrl');
+            let url = input.value.trim();
+            if (url.endsWith('/')) url = url.slice(0, -1);
+            
+            const resultado = document.getElementById('testResultado');
+            resultado.innerHTML = '⏳ Probando conexión...';
+            resultado.style.color = '#ffaa00';
+            
+            try {
+                const res = await fetch(`${url}/fotos`);
+                if (res.ok) {
+                    const data = await res.json();
+                    resultado.innerHTML = `✅ Conexión exitosa! ${data.length} fotos encontradas`;
+                    resultado.style.color = '#4CAF50';
+                } else {
+                    resultado.innerHTML = `❌ Error: ${res.status}`;
+                    resultado.style.color = '#ff4444';
+                }
+            } catch (error) {
+                resultado.innerHTML = `❌ Error: ${error.message}`;
+                resultado.style.color = '#ff4444';
             }
         }
 
@@ -224,7 +245,7 @@
 
         function toggleAdmin() {
             const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('visible');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         }
 
         // ==========================================
@@ -237,7 +258,7 @@
             const galeria = document.getElementById('galeria');
             
             if (!servidor) {
-                estado.innerHTML = '⚠️ Configura la URL del servidor (haz clic en "Admin" arriba)';
+                estado.innerHTML = '⚠️ Configura la URL del servidor (Admin)';
                 estado.className = 'error';
                 return;
             }
@@ -247,7 +268,7 @@
                 estado.className = 'cargando';
                 
                 const respuesta = await fetch(`${servidor}/fotos`);
-                if (!respuesta.ok) throw new Error('Error en la respuesta');
+                if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
                 
                 const fotos = await respuesta.json();
                 
@@ -261,21 +282,19 @@
                 estado.innerHTML = `✅ ${fotos.length} fotos disponibles`;
                 estado.className = 'ok';
                 
-                // 🔥 IMPORTANTE: Aquí construimos las URLs correctamente
                 galeria.innerHTML = fotos.map(foto => {
-                    // Asegurar que la URL esté bien formada
                     const urlImagen = `${servidor}${foto.url}`;
                     return `
                         <div class="foto">
                             <img src="${urlImagen}" alt="${foto.nombre}" loading="lazy" 
-                                 onerror="this.alt='❌ Error al cargar'; this.style.opacity='0.5';">
+                                 onerror="this.alt='❌ Error'; this.style.opacity='0.5';">
                             <div class="info">📷 ${foto.nombre}</div>
                         </div>
                     `;
                 }).join('');
                 
             } catch (error) {
-                estado.innerHTML = '❌ Error al cargar fotos - ¿Servidor encendido?';
+                estado.innerHTML = `❌ Error: ${error.message}`;
                 estado.className = 'error';
                 console.error('Error:', error);
             }
@@ -287,7 +306,7 @@
             const servidor = getServidorUrl();
             
             if (!servidor) {
-                estado.textContent = '❌ Configura la URL del servidor primero (Admin)';
+                estado.textContent = '❌ Configura la URL del servidor (Admin)';
                 estado.style.color = '#ff4444';
                 return;
             }
