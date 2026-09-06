@@ -3,123 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVJ Studio - Galería</title>
+    <title>OVJ Studio - Galería en Vivo</title>
     <style>
+        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* ===== BASE ===== */
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0a0a0a;
-            color: white;
+            color: #fff;
             min-height: 100vh;
-        }
-        h1 {
-            text-align: center;
             padding: 20px;
-            border-bottom: 2px solid #333;
-            margin-bottom: 30px;
         }
-        h1 span { color: #ff6b35; }
+        
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+        .header h1 span {
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .badge-en-vivo {
+            display: inline-block;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 4px 16px;
+            border-radius: 50px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+        .header .subtitulo {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        /* ===== ESTADO ===== */
+        #estado {
+            text-align: center;
+            padding: 12px;
+            margin: 10px auto 25px;
+            max-width: 500px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .ok { color: #2ecc71; }
+        .error { color: #e74c3c; }
+        .cargando { color: #f1c40f; }
+        
+        /* ===== SUBIR FOTOS (solo para admin/fotógrafo) ===== */
         .subir {
             text-align: center;
             padding: 20px;
-            background: #1a1a1a;
-            border-radius: 10px;
             margin-bottom: 30px;
-            border: 2px dashed #333;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .subir input, .subir button {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: none;
+        .subir input[type="file"] {
+            background: #1a1a1a;
+            color: #aaa;
+            border: 1px solid #333;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            max-width: 280px;
         }
         .subir button {
-            background: #ff6b35;
-            color: white;
-            cursor: pointer;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            color: #0a0a0a;
+            border: none;
             padding: 10px 30px;
-            font-weight: bold;
-        }
-        .subir button:hover { background: #e05a2a; }
-        .subir input[type="file"] {
-            background: #333;
-            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-left: 8px;
         }
+        .subir button:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 20px rgba(243, 156, 18, 0.3);
+        }
+        #subirEstado {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        /* ===== GALERÍA ===== */
         .galeria {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 20px;
-            margin-top: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
         }
+        
+        /* ===== TARJETA DE FOTO ===== */
         .foto {
-            background: #1a1a1a;
-            border-radius: 10px;
+            background: #121212;
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid #333;
-            transition: transform 0.3s;
+            border: 1px solid #1e1e1e;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
         }
-        .foto:hover { transform: scale(1.02); }
+        .foto:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            border-color: rgba(255, 215, 0, 0.2);
+        }
         .foto img {
             width: 100%;
-            height: 250px;
+            height: 240px;
             object-fit: cover;
             display: block;
+            transition: filter 0.3s;
+        }
+        .foto:hover img {
+            filter: brightness(1.05);
         }
         .foto .info {
-            padding: 12px;
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-            background: #111;
+            padding: 12px 16px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0d0d0d;
+            border-top: 1px solid #1a1a1a;
         }
-        .mensaje {
-            text-align: center;
-            padding: 30px;
+        .foto .info .nombre {
+            font-size: 0.75rem;
             color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #222;
-            margin-top: 30px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
         }
-        #estado {
+        .foto .info .badge-numero {
+            font-size: 0.65rem;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 10px;
+            border-radius: 50px;
+            color: #555;
+        }
+        
+        /* ===== MODAL (foto ampliada) ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal.activo {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-contenido {
+            max-width: 800px;
+            width: 100%;
+            background: #121212;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .modal-contenido img {
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            display: block;
+            background: #0a0a0a;
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 20px 28px 28px;
+            background: #0d0d0d;
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal-footer .modal-nombre {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        .modal-footer .mensaje-una-sola {
+            font-size: 0.75rem;
+            color: #555;
+            font-weight: 300;
+            letter-spacing: 0.5px;
             text-align: center;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 1.1rem;
-            background: #1a1a1a;
-            border-radius: 10px;
+            border-top: 1px solid #1a1a1a;
+            padding-top: 12px;
+            width: 100%;
         }
-        .ok { color: #4CAF50; }
-        .error { color: #ff4444; }
-        .cargando { color: #ffaa00; }
-        #subirEstado { margin-left: 10px; }
+        .modal-footer .mensaje-una-sola strong {
+            color: #f1c40f;
+            font-weight: 600;
+        }
+        
+        /* ===== BOTÓN PEDIR FOTO ===== */
+        .btn-pedir {
+            background: #2ecc71;
+            color: #0a0a0a;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            max-width: 380px;
+            letter-spacing: 0.5px;
+        }
+        .btn-pedir:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.35);
+            background: #27ae60;
+        }
+        .btn-pedir:active {
+            transform: scale(0.97);
+        }
+        .btn-pedir .icono-whatsapp {
+            font-size: 1.4rem;
+        }
+        
+        /* ===== BOTÓN CERRAR MODAL ===== */
+        .btn-cerrar-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: #888;
+            font-size: 1.6rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            z-index: 10;
+        }
+        .btn-cerrar-modal:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .header h1 { font-size: 2rem; letter-spacing: 2px; }
+            .galeria { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+            .foto img { height: 160px; }
+            .modal { padding: 12px; }
+            .modal-contenido img { max-height: 50vh; padding: 12px; }
+            .modal-footer { padding: 16px 18px 20px; }
+            .btn-pedir { font-size: 0.95rem; padding: 12px 20px; max-width: 100%; }
+            .subir { padding: 16px; }
+            .subir input[type="file"] { max-width: 100%; width: 100%; margin-bottom: 8px; }
+            .subir button { width: 100%; margin-left: 0; }
+            .foto .info .nombre { max-width: 80px; }
+        }
+        @media (max-width: 400px) {
+            .galeria { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .foto img { height: 130px; }
+        }
+        
+        /* ===== SCROLL SUAVE ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* ===== SELECCIÓN DE TEXTO ===== */
+        ::selection {
+            background: #f39c12;
+            color: #0a0a0a;
+        }
     </style>
 </head>
 <body>
 
-    <h1>📸 OVJ <span>Studio</span></h1>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>📸 OVJ <span>Studio</span></h1>
+        <div class="badge-en-vivo">● EN VIVO</div>
+        <div class="subtitulo">Fotografía profesional en tiempo real</div>
+    </div>
 
+    <!-- ===== ESTADO ===== -->
+    <div id="estado">🔄 Cargando galería...</div>
+
+    <!-- ===== SUBIR FOTOS (visible solo para el fotógrafo) ===== -->
     <div class="subir">
         <input type="file" id="fileInput" accept="image/*" multiple>
         <button onclick="subirFotos()">📤 Subir fotos</button>
         <span id="subirEstado"></span>
     </div>
-    
-    <div id="estado">🔄 Cargando...</div>
+
+    <!-- ===== GALERÍA ===== -->
     <div class="galeria" id="galeria"></div>
-    <p class="mensaje">✨ Fotografías en vivo desde el evento</p>
+
+    <!-- ===== PIE ===== -->
+    <p style="text-align: center; padding: 30px 10px 10px; color: #333; font-size: 0.7rem; letter-spacing: 1px; border-top: 1px solid #111; margin-top: 30px;">
+        OVJ STUDIO · Fotografía con alma
+    </p>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal" id="modal">
+        <div class="modal-contenido">
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">✕</button>
+            <img id="modalImagen" src="" alt="Foto ampliada">
+            <div class="modal-footer">
+                <span class="modal-nombre" id="modalNombre">foto.jpg</span>
+                <button class="btn-pedir" onclick="pedirFoto()">
+                    <span class="icono-whatsapp">📱</span> Pedir foto gratis sin marca de agua
+                </button>
+                <div class="mensaje-una-sola">
+                    ⚡ <strong>Solo puedes pedir una foto</strong> · La recibirás por WhatsApp en unos minutos
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ==========================================
-        // 🔥 ÚNICA CONFIGURACIÓN - CAMBIA ESTA URL
+        // 🔥 CONFIGURACIÓN - CAMBIA ESTA URL
         // ==========================================
         const URL_CLOUDFLARE = 'https://app-briefs-archived-meetup.trycloudflare.com'; // <--- PON TU URL AQUÍ
 
         // ==========================================
-        // FUNCIONES - NO TOCAR
+        // VARIABLES GLOBALES
+        // ==========================================
+        let fotoSeleccionada = null;
+        let fotosCache = [];
+
+        // ==========================================
+        // FUNCIONES PRINCIPALES
         // ==========================================
 
         async function cargarFotos() {
@@ -133,25 +409,28 @@
                 const respuesta = await fetch(`${URL_CLOUDFLARE}/fotos`);
                 if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
                 
-                const fotos = await respuesta.json();
+                fotosCache = await respuesta.json();
                 
-                if (!fotos || fotos.length === 0) {
+                if (!fotosCache || fotosCache.length === 0) {
                     estado.innerHTML = '📷 No hay fotos aún. ¡Sube la primera!';
                     estado.className = 'ok';
                     galeria.innerHTML = '';
                     return;
                 }
                 
-                estado.innerHTML = `✅ ${fotos.length} fotos disponibles`;
+                estado.innerHTML = `✅ ${fotosCache.length} fotos disponibles`;
                 estado.className = 'ok';
                 
-                galeria.innerHTML = fotos.map(foto => {
+                galeria.innerHTML = fotosCache.map((foto, index) => {
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
                     return `
-                        <div class="foto">
+                        <div class="foto" onclick="abrirModal(${index})">
                             <img src="${urlImagen}" alt="${foto.nombre}" loading="lazy" 
-                                 onerror="this.alt='❌ Error'; this.style.opacity='0.5';">
-                            <div class="info">📷 ${foto.nombre}</div>
+                                 onerror="this.alt='❌ Error'; this.style.opacity='0.4';">
+                            <div class="info">
+                                <span class="nombre">📷 ${foto.nombre}</span>
+                                <span class="badge-numero">#${index + 1}</span>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -169,7 +448,7 @@
             
             if (!input.files || input.files.length === 0) {
                 estado.textContent = '❌ Selecciona una o más fotos';
-                estado.style.color = '#ff4444';
+                estado.style.color = '#e74c3c';
                 return;
             }
             
@@ -178,7 +457,7 @@
             let errores = 0;
             
             estado.textContent = `⏳ Subiendo ${archivos.length} fotos...`;
-            estado.style.color = '#ffaa00';
+            estado.style.color = '#f1c40f';
             
             for (const archivo of archivos) {
                 if (!archivo.type.startsWith('image/')) {
@@ -207,20 +486,90 @@
             }
             
             estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
-            estado.style.color = subidas > 0 ? '#4CAF50' : '#ff4444';
+            estado.style.color = subidas > 0 ? '#2ecc71' : '#e74c3c';
             input.value = '';
             
             if (subidas > 0) {
-                setTimeout(cargarFotos, 2000);
+                setTimeout(cargarFotos, 1500);
             }
         }
+
+        // ==========================================
+        // MODAL
+        // ==========================================
+
+        function abrirModal(index) {
+            const foto = fotosCache[index];
+            if (!foto) return;
+            
+            fotoSeleccionada = foto;
+            const modal = document.getElementById('modal');
+            const modalImagen = document.getElementById('modalImagen');
+            const modalNombre = document.getElementById('modalNombre');
+            
+            modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
+            modalImagen.alt = foto.nombre;
+            modalNombre.textContent = `📷 ${foto.nombre}`;
+            
+            modal.classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('activo');
+            document.body.style.overflow = '';
+            fotoSeleccionada = null;
+        }
+
+        // ==========================================
+        // PEDIR FOTO (WhatsApp)
+        // ==========================================
+
+        function pedirFoto() {
+            if (!fotoSeleccionada) {
+                alert('❌ No hay foto seleccionada');
+                return;
+            }
+            
+            // 🔥 CONFIGURACIÓN: Cambia este número por tu WhatsApp
+            const numeroWhatsApp = '59160004962'; // <--- PON TU NÚMERO AQUÍ (con código de país)
+            
+            const mensaje = `Hola, quiero solicitar la foto: ${fotoSeleccionada.nombre} (OVJ Studio)`;
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            
+            // Abrir WhatsApp en una nueva pestaña
+            window.open(urlWhatsApp, '_blank');
+            
+            // Cerrar el modal después de un momento
+            setTimeout(() => {
+                cerrarModal();
+            }, 500);
+        }
+
+        // ==========================================
+        // CERRAR MODAL CON ESC
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+
+        // ==========================================
+        // CERRAR MODAL CLIC FUERA
+        // ==========================================
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                cerrarModal();
+            }
+        });
 
         // ==========================================
         // INICIALIZAR
         // ==========================================
         
         cargarFotos();
-        setInterval(cargarFotos, 8000);
+        setInterval(cargarFotos, 10000);
     </script>
 </body>
 </html>
