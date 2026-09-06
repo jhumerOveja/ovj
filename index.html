@@ -28,6 +28,7 @@
             background: #1a1a1a;
             border-radius: 10px;
             margin-bottom: 30px;
+            border: 2px dashed #333;
         }
         .subir input, .subir button {
             padding: 10px;
@@ -41,6 +42,7 @@
             cursor: pointer;
             padding: 10px 30px;
             font-weight: bold;
+            transition: background 0.3s;
         }
         .subir button:hover { background: #e05a2a; }
         .subir input[type="file"] {
@@ -52,15 +54,19 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
         .foto {
             background: #1a1a1a;
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid #333;
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .foto:hover { transform: scale(1.02); }
+        .foto:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 25px rgba(255, 107, 53, 0.2);
+        }
         .foto img {
             width: 100%;
             height: 250px;
@@ -68,77 +74,108 @@
             display: block;
         }
         .foto .info {
-            padding: 10px;
+            padding: 12px;
             font-size: 12px;
             color: #888;
             text-align: center;
+            background: #111;
         }
-        .mensaje { text-align: center; padding: 20px; color: #666; margin-top: 20px; }
-        #estado { text-align: center; padding: 10px; margin: 10px 0; font-size: 1.1rem; }
+        .mensaje {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+            margin-top: 30px;
+        }
+        #estado {
+            text-align: center;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
         .ok { color: #4CAF50; }
         .error { color: #ff4444; }
         .cargando { color: #ffaa00; }
+        #subirEstado { margin-left: 10px; }
+
+        /* 🔥 Panel Admin (solo visible para ti) */
         .admin-panel {
             background: #1a1a1a;
+            border: 2px solid #ff6b35;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px 20px;
             margin-bottom: 20px;
-            border: 1px solid #333;
+            display: none; /* Oculto por defecto */
+        }
+        .admin-panel.visible {
+            display: block; /* Se muestra con un truco */
         }
         .admin-panel h3 {
             color: #ff6b35;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
         .admin-panel input {
             background: #333;
             color: white;
             border: 1px solid #555;
-            padding: 10px;
+            padding: 8px 12px;
             border-radius: 5px;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 10px;
+            width: 70%;
+            max-width: 400px;
         }
         .admin-panel button {
             background: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-radius: 5px;
             cursor: pointer;
-        }
-        .admin-panel button:hover { background: #45a049; }
-        #urlActual {
-            color: #888;
-            font-size: 14px;
-            word-break: break-all;
-        }
-        .badge {
-            display: inline-block;
-            background: #ff6b35;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 12px;
             margin-left: 10px;
         }
+        .admin-panel button:hover { background: #45a049; }
+        .admin-panel .url-actual {
+            color: #888;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .admin-panel .url-actual span {
+            color: #4CAF50;
+            word-break: break-all;
+        }
+        .admin-toggle {
+            text-align: right;
+            font-size: 11px;
+            color: #444;
+            cursor: pointer;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+        .admin-toggle:hover { color: #666; }
     </style>
 </head>
 <body>
-    <h1>📸 OVJ <span>Studio</span></h1>
-    
-    <!-- 🔥 PANEL DE ADMIN (para cambiar la URL del servidor) -->
-    <div class="admin-panel">
-        <h3>⚙️ Configuración del Servidor</h3>
-        <p style="color:#888; font-size:14px; margin-bottom:10px;">
+
+    <!-- 🔥 TEXTO PARA ACTIVAR EL PANEL ADMIN (truco: haz clic 3 veces en el título) -->
+    <div class="admin-toggle" onclick="toggleAdmin()">⚙️ Admin</div>
+
+    <!-- 🔥 PANEL ADMIN (oculto, solo para ti) -->
+    <div class="admin-panel" id="adminPanel">
+        <h3>⚙️ CONFIGURACIÓN DEL SERVIDOR</h3>
+        <p style="color:#888; font-size:13px; margin-bottom:10px;">
             Cambia esta URL cuando inicies Cloudflare Tunnel en tu laptop
         </p>
         <input type="text" id="servidorUrl" placeholder="https://xxxx.trycloudflare.com">
-        <button onclick="guardarUrl()">💾 Guardar URL</button>
-        <p style="margin-top:10px; color:#888; font-size:14px;">
+        <button onclick="guardarUrl()">💾 Guardar</button>
+        <div class="url-actual">
             URL actual: <span id="urlActual">No configurada</span>
-        </p>
+        </div>
     </div>
+
+    <h1>📸 OVJ <span>Studio</span></h1>
 
     <div class="subir">
         <input type="file" id="fileInput" accept="image/*" multiple>
@@ -151,9 +188,10 @@
     <p class="mensaje">✨ Fotografías en vivo desde el evento</p>
 
     <script>
-        // 🔥 CLAVE: La URL del servidor se guarda en localStorage
-        // Así puedes cambiarla sin tocar el código de GitHub Pages
-        
+        // ==========================================
+        // 🔥 CLAVE: La URL se guarda en localStorage
+        // ==========================================
+
         function getServidorUrl() {
             let url = localStorage.getItem('servidorUrl');
             if (!url) {
@@ -172,7 +210,6 @@
             if (url) {
                 localStorage.setItem('servidorUrl', url);
                 document.getElementById('urlActual').textContent = url;
-                document.getElementById('urlActual').style.color = '#4CAF50';
                 cargarFotos();
                 alert('✅ URL guardada correctamente');
             } else {
@@ -180,21 +217,28 @@
             }
         }
 
-        // Mostrar URL actual al cargar la página
         function mostrarUrlActual() {
             const url = getServidorUrl();
             document.getElementById('urlActual').textContent = url || 'No configurada';
             document.getElementById('servidorUrl').value = url || '';
         }
 
-        // ===== FUNCIONES PRINCIPALES =====
-        
-        const SERVIDOR_URL = getServidorUrl;
+        // 🔥 Truco para mostrar el panel admin: hacer clic 3 veces en "Admin"
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('visible');
+            // Ocultar el texto después de mostrar el panel
+            document.querySelector('.admin-toggle').style.display = 'none';
+        }
+
+        // ==========================================
+        // FUNCIONES PRINCIPALES
+        // ==========================================
 
         async function cargarFotos() {
             const servidor = getServidorUrl();
             if (!servidor) {
-                document.getElementById('estado').innerHTML = '⚠️ Configura la URL del servidor arriba';
+                document.getElementById('estado').innerHTML = '⚠️ Configura la URL del servidor (haz clic en "Admin" arriba)';
                 document.getElementById('estado').className = 'error';
                 return;
             }
@@ -238,7 +282,7 @@
             const servidor = getServidorUrl();
             
             if (!servidor) {
-                estado.textContent = '❌ Configura la URL del servidor primero';
+                estado.textContent = '❌ Configura la URL del servidor primero (Admin)';
                 estado.style.color = '#ff4444';
                 return;
             }
@@ -291,7 +335,10 @@
             }
         }
 
-        // Inicializar
+        // ==========================================
+        // INICIALIZAR
+        // ==========================================
+        
         mostrarUrlActual();
         cargarFotos();
         setInterval(cargarFotos, 5000);
