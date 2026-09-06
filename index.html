@@ -96,12 +96,30 @@
         .error { color: #ff4444; }
         .cargando { color: #ffaa00; }
         #subirEstado { margin-left: 10px; }
+
+        /* Panel Admin (oculto, solo para ti) */
+        .admin-toggle {
+            text-align: right;
+            font-size: 11px;
+            color: #444;
+            cursor: pointer;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+        .admin-toggle:hover { color: #666; }
         .admin-panel {
             background: #1a1a1a;
             border: 2px solid #ff6b35;
             border-radius: 10px;
             padding: 15px 20px;
             margin-bottom: 20px;
+            display: none;
+        }
+        .admin-panel.visible { display: block; }
+        .admin-panel h3 {
+            color: #ff6b35;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
         .admin-panel input {
             background: #333;
@@ -130,33 +148,29 @@
             color: #4CAF50;
             word-break: break-all;
         }
-        .admin-toggle {
-            text-align: right;
-            font-size: 11px;
-            color: #444;
-            cursor: pointer;
-            margin-bottom: 5px;
-            user-select: none;
+        #testResultado {
+            margin-top: 10px;
+            font-size: 13px;
         }
-        .admin-toggle:hover { color: #666; }
     </style>
 </head>
 <body>
 
+    <!-- Panel Admin (oculto, clic en "Admin" para mostrar) -->
     <div class="admin-toggle" onclick="toggleAdmin()">⚙️ Admin</div>
 
     <div class="admin-panel" id="adminPanel">
         <h3>⚙️ CONFIGURACIÓN DEL SERVIDOR</h3>
         <p style="color:#888; font-size:13px; margin-bottom:10px;">
-            Cambia esta URL cuando inicies Cloudflare
+            Cambia esta URL si necesitas actualizar Cloudflare
         </p>
         <input type="text" id="servidorUrl" placeholder="https://xxxx.trycloudflare.com">
         <button onclick="guardarUrl()">💾 Guardar</button>
         <button onclick="probarUrl()" style="background:#ff6b35;">🧪 Probar</button>
         <div class="url-actual">
-            URL actual: <span id="urlActual">No configurada</span>
+            URL actual: <span id="urlActual">Cargando...</span>
         </div>
-        <div id="testResultado" style="margin-top:10px;font-size:13px;"></div>
+        <div id="testResultado"></div>
     </div>
 
     <h1>📸 OVJ <span>Studio</span></h1>
@@ -173,27 +187,17 @@
 
     <script>
         // ==========================================
-        // 🔥 CONFIGURACIÓN: PON AQUÍ TU URL DE CLOUDFLARE
+        // 🔥 CONFIGURACIÓN ÚNICA - CAMBIA SOLO ESTA LÍNEA
         // ==========================================
-
-        // ⚠️ CAMBIA ESTA URL POR LA QUE TE DA CLOUDFLARE TUNNEL
         const URL_CLOUDFLARE = 'https://app-briefs-archived-meetup.trycloudflare.com'; // <--- PON TU URL AQUÍ
 
         // ==========================================
-        // FUNCIONES
+        // FUNCIONES - NO TOCAR NADA MÁS
         // ==========================================
 
+        // Siempre usa la URL hardcodeada, sin preguntar nada
         function getServidorUrl() {
-            // Primero intenta con localStorage (por si el admin la cambia)
-            let url = localStorage.getItem('servidorUrl');
-            
-            // Si no hay URL en localStorage, usa la URL FIJA
-            if (!url || url === '') {
-                url = URL_CLOUDFLARE;
-                localStorage.setItem('servidorUrl', url);
-            }
-            
-            return url;
+            return URL_CLOUDFLARE;
         }
 
         function guardarUrl() {
@@ -202,9 +206,10 @@
             if (url.endsWith('/')) url = url.slice(0, -1);
             
             if (url) {
-                localStorage.setItem('servidorUrl', url);
+                // Guarda en localStorage por si quieres probar otra URL
+                localStorage.setItem('servidorUrl_manual', url);
                 document.getElementById('urlActual').textContent = url;
-                document.getElementById('testResultado').innerHTML = '✅ URL guardada';
+                document.getElementById('testResultado').innerHTML = '✅ URL guardada (prueba)';
                 document.getElementById('testResultado').style.color = '#4CAF50';
                 cargarFotos();
             } else {
@@ -218,17 +223,17 @@
             if (url.endsWith('/')) url = url.slice(0, -1);
             
             const resultado = document.getElementById('testResultado');
-            resultado.innerHTML = '⏳ Probando conexión...';
+            resultado.innerHTML = '⏳ Probando...';
             resultado.style.color = '#ffaa00';
             
             try {
                 const res = await fetch(`${url}/fotos`);
                 if (res.ok) {
                     const data = await res.json();
-                    resultado.innerHTML = `✅ Conexión exitosa! ${data.length} fotos encontradas`;
+                    resultado.innerHTML = `✅ Conexión exitosa! ${data.length} fotos`;
                     resultado.style.color = '#4CAF50';
                 } else {
-                    resultado.innerHTML = `❌ Error: ${res.status}`;
+                    resultado.innerHTML = `❌ Error HTTP ${res.status}`;
                     resultado.style.color = '#ff4444';
                 }
             } catch (error) {
@@ -238,14 +243,13 @@
         }
 
         function mostrarUrlActual() {
-            const url = getServidorUrl();
-            document.getElementById('urlActual').textContent = url || 'No configurada';
-            document.getElementById('servidorUrl').value = url || '';
+            document.getElementById('urlActual').textContent = URL_CLOUDFLARE;
+            document.getElementById('servidorUrl').value = URL_CLOUDFLARE;
         }
 
         function toggleAdmin() {
             const panel = document.getElementById('adminPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            panel.classList.toggle('visible');
         }
 
         // ==========================================
@@ -257,12 +261,6 @@
             const estado = document.getElementById('estado');
             const galeria = document.getElementById('galeria');
             
-            if (!servidor) {
-                estado.innerHTML = '⚠️ Configura la URL del servidor (Admin)';
-                estado.className = 'error';
-                return;
-            }
-
             try {
                 estado.innerHTML = '⏳ Cargando fotos...';
                 estado.className = 'cargando';
@@ -304,12 +302,6 @@
             const input = document.getElementById('fileInput');
             const estado = document.getElementById('subirEstado');
             const servidor = getServidorUrl();
-            
-            if (!servidor) {
-                estado.textContent = '❌ Configura la URL del servidor (Admin)';
-                estado.style.color = '#ff4444';
-                return;
-            }
             
             if (!input.files || input.files.length === 0) {
                 estado.textContent = '❌ Selecciona una o más fotos';
