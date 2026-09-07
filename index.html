@@ -467,16 +467,12 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get("f");
 
-                // 🔥 Mostrar en consola para depuración
                 console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
 
-                // Si no hay ID, usar 'default'
                 return id || "default";
             }
 
             const FOTOGRAFO_ID = getFotografoId();
-
-            // Mostrar el ID del fotógrafo en la interfaz
             document.getElementById("fotografoNombre").textContent =
                 FOTOGRAFO_ID;
 
@@ -513,7 +509,6 @@
                     estado.innerHTML = "⏳ Cargando...";
                     estado.className = "cargando";
 
-                    // ✅ Incluir el ID del fotógrafo en la petición
                     const respuesta = await fetch(
                         `${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`,
                     );
@@ -521,6 +516,9 @@
                         throw new Error(`HTTP ${respuesta.status}`);
 
                     const nuevasFotos = await respuesta.json();
+
+                    // 🔥 LOG PARA VER QUÉ FOTOS LLEGAN
+                    console.log("📸 Fotos recibidas:", nuevasFotos);
 
                     if (
                         JSON.stringify(nuevasFotos) !==
@@ -547,7 +545,7 @@
             }
 
             // ==========================================
-            // RENDERIZAR GALERÍA
+            // RENDERIZAR GALERÍA (CON DEBUG)
             // ==========================================
 
             function renderizarGaleria() {
@@ -560,10 +558,14 @@
 
                 let html = "";
                 fotosCache.forEach((foto, index) => {
+                    // 🔥 CONSTRUIR URL CORRECTA
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
+                    console.log(`📸 Cargando imagen ${index}: ${urlImagen}`);
+
                     html += `
                     <div class="foto" onclick="abrirModal(${index})">
-                        <img src="${urlImagen}" alt="Foto ${index + 1}" loading="lazy">
+                        <img src="${urlImagen}" alt="Foto ${index + 1}" loading="lazy"
+                             onerror="console.error('❌ Error cargando: ${urlImagen}'); this.style.opacity='0.3'; this.alt='Error';">
                     </div>
                 `;
                 });
@@ -571,7 +573,7 @@
             }
 
             // ==========================================
-            // SUBIR FOTOS (con el ID del fotógrafo)
+            // SUBIR FOTOS
             // ==========================================
 
             async function subirFotos() {
@@ -601,7 +603,6 @@
                     formData.append("foto", archivo);
 
                     try {
-                        // ✅ Incluir el ID del fotógrafo en la subida
                         const respuesta = await fetch(
                             `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
                             {
@@ -669,18 +670,11 @@
                 }
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
-                const nombreFoto = foto.nombre; // Ej: "foto-123456.jpg"
-                const fotografo = FOTOGRAFO_ID; // Ej: "juan"
+                const mensaje = `Hola, quiero la foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})\nMi número es: [ESCRIBE AQUÍ TU NÚMERO]`;
 
-                // 🔥 Mensaje estructurado para que el servidor lo interprete fácilmente
-                const mensaje = `Hola, quiero la foto: ${nombreFoto} (Fotógrafo: ${fotografo})\nMi número es: [ESCRIBE AQUÍ TU NÚMERO]`;
-
-                // Abrir WhatsApp con el mensaje predefinido
                 const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
 
                 window.open(urlWhatsApp, "_blank");
-
-                // Cerrar el modal después de abrir WhatsApp
                 setTimeout(cerrarModal, 500);
             }
 
