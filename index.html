@@ -67,20 +67,24 @@
             100% { opacity: 0.3; transform: scale(0.8); }
         }
         
-        /* ===== ID DEL FOTÓGRAFO (mostrar quién es) ===== */
+        /* ===== ID DEL FOTÓGRAFO ===== */
         .fotografo-id {
             text-align: center;
-            font-size: 0.6rem;
-            color: #444;
+            font-size: 0.7rem;
+            color: #555;
             letter-spacing: 1px;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             font-weight: 300;
         }
         .fotografo-id span {
-            color: #666;
+            color: #888;
             background: rgba(255,255,255,0.04);
-            padding: 2px 10px;
-            border-radius: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+        .fotografo-id strong {
+            color: #f39c12;
+            font-weight: 600;
         }
         
         /* ===== ESTADO MINI ===== */
@@ -100,7 +104,7 @@
         .error { color: #e74c3c; }
         .cargando { color: #f1c40f; }
         
-        /* ===== SUBIR FOTOS (oculto, doble clic en título) ===== */
+        /* ===== SUBIR FOTOS (oculto) ===== */
         .subir {
             display: none;
             text-align: center;
@@ -330,15 +334,15 @@
         </div>
     </div>
 
-    <!-- ===== ID DEL FOTÓGRAFO (se muestra automáticamente) ===== -->
+    <!-- ===== ID DEL FOTÓGRAFO ===== -->
     <div class="fotografo-id" id="fotografoIdDisplay">
-        <span>📸 Cargando...</span>
+        <span>📸 Galería: <strong id="fotografoNombre">Cargando...</strong></span>
     </div>
 
     <!-- ===== ESTADO ===== -->
     <div id="estado">⏳ Cargando...</div>
 
-    <!-- ===== SUBIR FOTOS (oculto, doble clic en título) ===== -->
+    <!-- ===== SUBIR FOTOS (oculto) ===== -->
     <div class="subir" id="panelSubir">
         <input type="file" id="fileInput" accept="image/*" multiple>
         <button onclick="subirFotos()">📤 Subir</button>
@@ -383,14 +387,18 @@
         function getFotografoId() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('f');
+            
+            // 🔥 Mostrar en consola para depuración
+            console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
+            
+            // Si no hay ID, usar 'default'
             return id || 'default';
         }
 
         const FOTOGRAFO_ID = getFotografoId();
 
         // Mostrar el ID del fotógrafo en la interfaz
-        document.getElementById('fotografoIdDisplay').innerHTML = 
-            `<span>📸 Galería: ${FOTOGRAFO_ID}</span>`;
+        document.getElementById('fotografoNombre').textContent = FOTOGRAFO_ID;
 
         // ==========================================
         // MOSTRAR PANEL DE SUBIDA (doble clic en el título)
