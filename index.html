@@ -36,6 +36,11 @@
                 font-size: 1.6rem;
                 font-weight: 300;
                 letter-spacing: 1px;
+                /* 🔥 EVITAR SELECCIÓN DE TEXTO */
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                cursor: default;
             }
             .header h1 span {
                 font-weight: 700;
@@ -56,6 +61,8 @@
                 border-radius: 50px;
                 text-transform: uppercase;
                 border: 1px solid rgba(231, 76, 60, 0.2);
+                user-select: none;
+                -webkit-user-select: none;
             }
             .header .badge-en-vivo .punto {
                 display: inline-block;
@@ -88,6 +95,8 @@
                 letter-spacing: 1px;
                 padding-bottom: 8px;
                 font-weight: 300;
+                user-select: none;
+                -webkit-user-select: none;
             }
             .fotografo-id span {
                 color: #888;
@@ -108,6 +117,8 @@
                 letter-spacing: 0.5px;
                 color: #444;
                 font-weight: 300;
+                user-select: none;
+                -webkit-user-select: none;
             }
             #estado .num {
                 color: #888;
@@ -166,6 +177,8 @@
                 margin-top: 6px;
                 font-size: 0.75rem;
                 color: #666;
+                user-select: none;
+                -webkit-user-select: none;
             }
 
             /* ===== GALERÍA ===== */
@@ -272,6 +285,8 @@
                 padding-top: 12px;
                 width: 100%;
                 letter-spacing: 0.3px;
+                user-select: none;
+                -webkit-user-select: none;
             }
             .modal-footer .mensaje-una-sola strong {
                 color: #f1c40f;
@@ -296,6 +311,8 @@
                 justify-content: center;
                 max-width: 340px;
                 letter-spacing: 0.3px;
+                user-select: none;
+                -webkit-user-select: none;
             }
             .btn-pedir:hover {
                 transform: scale(1.03);
@@ -328,6 +345,8 @@
                     background 0.3s,
                     color 0.3s;
                 z-index: 10;
+                user-select: none;
+                -webkit-user-select: none;
             }
             .btn-cerrar-modal:hover {
                 background: rgba(255, 255, 255, 0.1);
@@ -342,6 +361,8 @@
                 letter-spacing: 1px;
                 border-top: 1px solid #111;
                 margin-top: 24px;
+                user-select: none;
+                -webkit-user-select: none;
             }
 
             @media (max-width: 600px) {
@@ -401,7 +422,7 @@
     <body>
         <!-- ===== HEADER ===== -->
         <div class="header">
-            <h1>OVJ <span>Studio</span></h1>
+            <h1 id="tituloPrincipal">OVJ <span>Studio</span></h1>
             <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
         </div>
 
@@ -471,14 +492,33 @@
                 FOTOGRAFO_ID;
 
             // ==========================================
-            // MOSTRAR PANEL DE SUBIDA (doble clic en el título)
+            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN EL TÍTULO)
             // ==========================================
+            let contadorToques = 0;
+            let timeoutToques = null;
+
             document
-                .querySelector(".header h1")
-                .addEventListener("dblclick", function () {
-                    const panel = document.getElementById("panelSubir");
-                    panel.style.display =
-                        panel.style.display === "none" ? "block" : "none";
+                .getElementById("tituloPrincipal")
+                .addEventListener("click", function () {
+                    contadorToques++;
+                    console.log(`👆 Toque ${contadorToques}/5`);
+
+                    clearTimeout(timeoutToques);
+                    timeoutToques = setTimeout(() => {
+                        contadorToques = 0;
+                    }, 3000);
+
+                    if (contadorToques >= 5) {
+                        const panel = document.getElementById("panelSubir");
+                        panel.style.display =
+                            panel.style.display === "none" ? "block" : "none";
+                        contadorToques = 0;
+                        console.log(
+                            panel.style.display === "block"
+                                ? "🔓 Panel de subida activado"
+                                : "🔒 Panel de subida desactivado"
+                        );
+                    }
                 });
 
             // ==========================================
