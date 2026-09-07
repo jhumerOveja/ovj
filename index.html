@@ -67,6 +67,22 @@
             100% { opacity: 0.3; transform: scale(0.8); }
         }
         
+        /* ===== ID DEL FOTÓGRAFO (mostrar quién es) ===== */
+        .fotografo-id {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #444;
+            letter-spacing: 1px;
+            padding-bottom: 6px;
+            font-weight: 300;
+        }
+        .fotografo-id span {
+            color: #666;
+            background: rgba(255,255,255,0.04);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        
         /* ===== ESTADO MINI ===== */
         #estado {
             text-align: center;
@@ -84,7 +100,7 @@
         .error { color: #e74c3c; }
         .cargando { color: #f1c40f; }
         
-        /* ===== SUBIR FOTOS (oculto) ===== */
+        /* ===== SUBIR FOTOS (oculto, doble clic en título) ===== */
         .subir {
             display: none;
             text-align: center;
@@ -275,7 +291,6 @@
             color: #fff;
         }
         
-        /* ===== PIE ===== */
         .footer {
             text-align: center;
             padding: 24px 10px 6px;
@@ -286,7 +301,6 @@
             margin-top: 24px;
         }
         
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             body { padding: 8px 10px 16px; }
             .header h1 { font-size: 1.3rem; }
@@ -308,7 +322,7 @@
 </head>
 <body>
 
-    <!-- ===== HEADER COMPACTO ===== -->
+    <!-- ===== HEADER ===== -->
     <div class="header">
         <h1>OVJ <span>Studio</span></h1>
         <div class="badge-en-vivo">
@@ -316,10 +330,15 @@
         </div>
     </div>
 
-    <!-- ===== ESTADO MINI ===== -->
+    <!-- ===== ID DEL FOTÓGRAFO (se muestra automáticamente) ===== -->
+    <div class="fotografo-id" id="fotografoIdDisplay">
+        <span>📸 Cargando...</span>
+    </div>
+
+    <!-- ===== ESTADO ===== -->
     <div id="estado">⏳ Cargando...</div>
 
-    <!-- ===== SUBIR FOTOS (oculto) ===== -->
+    <!-- ===== SUBIR FOTOS (oculto, doble clic en título) ===== -->
     <div class="subir" id="panelSubir">
         <input type="file" id="fileInput" accept="image/*" multiple>
         <button onclick="subirFotos()">📤 Subir</button>
@@ -352,15 +371,26 @@
         // ==========================================
         // 🔥 CONFIGURACIÓN
         // ==========================================
-        const URL_CLOUDFLARE = 'https://app-briefs-archived-meetup.trycloudflare.com'; // <--- PON TU URL
-        const NUMERO_WHATSAPP = '59160004962'; // <--- PON TU NÚMERO (código país sin +)
+        // 👇 CAMBIA ESTA URL POR LA DE TU CLOUDFLARE TUNNEL
+        const URL_CLOUDFLARE = 'https://ottawa-listen-slowly-readers.trycloudflare.com';
+        
+        // 👇 CAMBIA ESTE NÚMERO POR EL TUYO (código país sin +)
+        const NUMERO_WHATSAPP = '59160004962';
 
         // ==========================================
-        // VARIABLES
+        // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
         // ==========================================
-        let fotosCache = [];
-        let fotoSeleccionadaIndex = -1;
-        let cargando = false;
+        function getFotografoId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('f');
+            return id || 'default';
+        }
+
+        const FOTOGRAFO_ID = getFotografoId();
+
+        // Mostrar el ID del fotógrafo en la interfaz
+        document.getElementById('fotografoIdDisplay').innerHTML = 
+            `<span>📸 Galería: ${FOTOGRAFO_ID}</span>`;
 
         // ==========================================
         // MOSTRAR PANEL DE SUBIDA (doble clic en el título)
@@ -371,7 +401,14 @@
         });
 
         // ==========================================
-        // CARGAR FOTOS (con caché y polling lento)
+        // VARIABLES
+        // ==========================================
+        let fotosCache = [];
+        let fotoSeleccionadaIndex = -1;
+        let cargando = false;
+
+        // ==========================================
+        // CARGAR FOTOS DEL FOTÓGRAFO ACTUAL
         // ==========================================
 
         async function cargarFotos() {
@@ -385,18 +422,17 @@
                 estado.innerHTML = '⏳ Cargando...';
                 estado.className = 'cargando';
                 
-                const respuesta = await fetch(`${URL_CLOUDFLARE}/fotos`);
+                // ✅ Incluir el ID del fotógrafo en la petición
+                const respuesta = await fetch(`${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`);
                 if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
                 
                 const nuevasFotos = await respuesta.json();
                 
-                // Solo actualizar si hay cambios (por número de fotos)
                 if (JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache)) {
                     fotosCache = nuevasFotos;
                     renderizarGaleria();
                 }
                 
-                // Actualizar estado
                 if (fotosCache.length === 0) {
                     estado.innerHTML = '📷 No hay fotos aún';
                     estado.className = 'ok';
@@ -415,7 +451,7 @@
         }
 
         // ==========================================
-        // RENDERIZAR GALERÍA (sin recargar imágenes)
+        // RENDERIZAR GALERÍA
         // ==========================================
 
         function renderizarGaleria() {
@@ -426,8 +462,6 @@
                 return;
             }
             
-            // Solo reconstruir si el número de fotos cambió
-            // Mantener las imágenes existentes en el DOM si es posible
             let html = '';
             fotosCache.forEach((foto, index) => {
                 const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
@@ -441,7 +475,7 @@
         }
 
         // ==========================================
-        // SUBIR FOTOS
+        // SUBIR FOTOS (con el ID del fotógrafo)
         // ==========================================
 
         async function subirFotos() {
@@ -471,7 +505,8 @@
                 formData.append('foto', archivo);
                 
                 try {
-                    const respuesta = await fetch(`${URL_CLOUDFLARE}/upload`, {
+                    // ✅ Incluir el ID del fotógrafo en la subida
+                    const respuesta = await fetch(`${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`, {
                         method: 'POST',
                         body: formData
                     });
@@ -556,7 +591,7 @@
         // ==========================================
         
         cargarFotos();
-        setInterval(cargarFotos, 60000); // ← 60 segundos, no 10
+        setInterval(cargarFotos, 60000);
     </script>
 </body>
 </html>
