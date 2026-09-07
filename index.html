@@ -182,6 +182,9 @@
                 background: #1a1a1a;
                 color: #ddd;
             }
+            .subir .etiquetas select option:disabled {
+                color: #555;
+            }
             .subir .notas {
                 width: 100%;
                 max-width: 400px;
@@ -486,18 +489,21 @@
 
         <!-- ===== SUBIR FOTOS (oculto) ===== -->
         <div class="subir" id="panelSubir">
-            <input type="file" id="fileInput" accept="image/*" multiple />
+            <p style="color:#888; font-size:0.75rem; margin-bottom:8px;">
+                ⚡ Sube una foto a la vez para etiquetarla individualmente
+            </p>
+            <input type="file" id="fileInput" accept="image/*" />
 
             <div class="etiquetas">
                 <select id="perfilSelect">
-                    <option value="">👤 Perfil</option>
+                    <option value="" disabled selected>👤 Perfil</option>
                     <option value="nino">👶 Niño</option>
                     <option value="joven">🧑 Joven</option>
                     <option value="adulto">👴 Adulto</option>
                 </select>
 
                 <select id="etiquetaSelect">
-                    <option value="">🏷️ Etiqueta</option>
+                    <option value="" disabled selected>🏷️ Etiqueta</option>
                     <option value="modelo">⭐ Modelo</option>
                     <option value="cliente">💼 Cliente</option>
                     <option value="artista">🎨 Artista</option>
@@ -678,16 +684,16 @@
             }
 
             // ==========================================
-            // SUBIR FOTOS (CON ETIQUETAS)
+            // SUBIR FOTOS (UNA POR UNA CON ETIQUETAS)
             // ==========================================
 
             async function subirFotos() {
                 const input = document.getElementById("fileInput");
                 const estado = document.getElementById("subirEstado");
 
-                // Validar que haya fotos seleccionadas
+                // Validar que haya una foto seleccionada
                 if (!input.files || input.files.length === 0) {
-                    estado.textContent = "❌ Selecciona una o más fotos";
+                    estado.textContent = "❌ Selecciona una foto";
                     estado.style.color = "#e74c3c";
                     return;
                 }
@@ -710,56 +716,51 @@
 
                 const notas = document.getElementById("notasInput").value.trim();
 
-                const archivos = Array.from(input.files);
-                let subidas = 0;
-                let errores = 0;
+                const archivo = input.files[0]; // Solo una foto a la vez
 
-                estado.textContent = `⏳ Subiendo ${archivos.length}...`;
-                estado.style.color = "#f1c40f";
-
-                for (const archivo of archivos) {
-                    if (!archivo.type.startsWith("image/")) {
-                        errores++;
-                        continue;
-                    }
-
-                    const formData = new FormData();
-                    formData.append("foto", archivo);
-                    formData.append("perfil", perfil);
-                    formData.append("etiqueta", etiqueta);
-                    formData.append("notas", notas);
-
-                    try {
-                        const respuesta = await fetch(
-                            `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
-                            {
-                                method: "POST",
-                                body: formData,
-                            },
-                        );
-
-                        if (respuesta.ok) {
-                            subidas++;
-                        } else {
-                            errores++;
-                        }
-                    } catch (error) {
-                        errores++;
-                        console.error("Error subiendo:", archivo.name, error);
-                    }
+                if (!archivo.type.startsWith("image/")) {
+                    estado.textContent = "❌ El archivo no es una imagen";
+                    estado.style.color = "#e74c3c";
+                    return;
                 }
 
-                estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
-                estado.style.color = subidas > 0 ? "#2ecc71" : "#e74c3c";
-                
-                // Limpiar campos después de subir
-                input.value = "";
-                document.getElementById("perfilSelect").value = "";
-                document.getElementById("etiquetaSelect").value = "";
-                document.getElementById("notasInput").value = "";
+                const formData = new FormData();
+                formData.append("foto", archivo);
+                formData.append("perfil", perfil);
+                formData.append("etiqueta", etiqueta);
+                formData.append("notas", notas);
 
-                if (subidas > 0) {
-                    setTimeout(cargarFotos, 1000);
+                estado.textContent = `⏳ Subiendo...`;
+                estado.style.color = "#f1c40f";
+
+                try {
+                    const respuesta = await fetch(
+                        `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
+                        {
+                            method: "POST",
+                            body: formData,
+                        },
+                    );
+
+                    if (respuesta.ok) {
+                        estado.textContent = "✅ Foto subida exitosamente";
+                        estado.style.color = "#2ecc71";
+                        
+                        // Limpiar campos después de subir
+                        input.value = "";
+                        document.getElementById("perfilSelect").value = "";
+                        document.getElementById("etiquetaSelect").value = "";
+                        document.getElementById("notasInput").value = "";
+                        
+                        setTimeout(cargarFotos, 1000);
+                    } else {
+                        estado.textContent = "❌ Error al subir la foto";
+                        estado.style.color = "#e74c3c";
+                    }
+                } catch (error) {
+                    estado.textContent = "❌ Error de conexión";
+                    estado.style.color = "#e74c3c";
+                    console.error("Error subiendo:", error);
                 }
             }
 
