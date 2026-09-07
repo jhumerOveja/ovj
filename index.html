@@ -36,7 +36,6 @@
                 font-size: 1.6rem;
                 font-weight: 300;
                 letter-spacing: 1px;
-                /* 🔥 EVITAR SELECCIÓN DE TEXTO */
                 user-select: none;
                 -webkit-user-select: none;
                 -moz-user-select: none;
@@ -138,7 +137,7 @@
             .subir {
                 display: none;
                 text-align: center;
-                padding: 12px 16px;
+                padding: 16px;
                 margin-bottom: 16px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px dashed rgba(255, 255, 255, 0.08);
@@ -156,6 +155,50 @@
                 cursor: pointer;
                 font-size: 0.8rem;
                 max-width: 240px;
+                margin-bottom: 10px;
+            }
+            .subir .etiquetas {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                margin: 10px 0 12px;
+            }
+            .subir .etiquetas select {
+                background: #1a1a1a;
+                color: #ddd;
+                border: 1px solid #333;
+                padding: 8px 12px;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                cursor: pointer;
+                min-width: 120px;
+            }
+            .subir .etiquetas select:focus {
+                outline: none;
+                border-color: #f39c12;
+            }
+            .subir .etiquetas select option {
+                background: #1a1a1a;
+                color: #ddd;
+            }
+            .subir .notas {
+                width: 100%;
+                max-width: 400px;
+                padding: 8px 12px;
+                background: #1a1a1a;
+                color: #ddd;
+                border: 1px solid #333;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                font-family: inherit;
+                resize: vertical;
+                margin: 0 auto 10px;
+                display: block;
+            }
+            .subir .notas:focus {
+                outline: none;
+                border-color: #f39c12;
             }
             .subir button {
                 background: linear-gradient(135deg, #f9d976, #f39c12);
@@ -167,14 +210,14 @@
                 font-size: 0.8rem;
                 cursor: pointer;
                 transition: transform 0.2s;
-                margin-left: 6px;
+                margin-top: 4px;
             }
             .subir button:hover {
                 transform: scale(1.04);
             }
             #subirEstado {
                 display: block;
-                margin-top: 6px;
+                margin-top: 8px;
                 font-size: 0.75rem;
                 color: #666;
                 user-select: none;
@@ -402,6 +445,10 @@
                     font-size: 0.6rem;
                     padding: 2px 0 8px;
                 }
+                .subir .etiquetas select {
+                    min-width: 100px;
+                    font-size: 0.7rem;
+                }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -440,6 +487,33 @@
         <!-- ===== SUBIR FOTOS (oculto) ===== -->
         <div class="subir" id="panelSubir">
             <input type="file" id="fileInput" accept="image/*" multiple />
+
+            <div class="etiquetas">
+                <select id="perfilSelect">
+                    <option value="">👤 Perfil</option>
+                    <option value="nino">👶 Niño</option>
+                    <option value="joven">🧑 Joven</option>
+                    <option value="adulto">👴 Adulto</option>
+                </select>
+
+                <select id="etiquetaSelect">
+                    <option value="">🏷️ Etiqueta</option>
+                    <option value="modelo">⭐ Modelo</option>
+                    <option value="cliente">💼 Cliente</option>
+                    <option value="artista">🎨 Artista</option>
+                    <option value="local">🏪 Local</option>
+                    <option value="familiar">👪 Familiar</option>
+                    <option value="solo_foto">📸 Solo foto</option>
+                </select>
+            </div>
+
+            <textarea
+                class="notas"
+                id="notasInput"
+                placeholder="Notas (opcional) - ej: le gusta el estilo vintage"
+                rows="2"
+            ></textarea>
+
             <button onclick="subirFotos()">📤 Subir</button>
             <span id="subirEstado"></span>
         </div>
@@ -604,18 +678,37 @@
             }
 
             // ==========================================
-            // SUBIR FOTOS
+            // SUBIR FOTOS (CON ETIQUETAS)
             // ==========================================
 
             async function subirFotos() {
                 const input = document.getElementById("fileInput");
                 const estado = document.getElementById("subirEstado");
 
+                // Validar que haya fotos seleccionadas
                 if (!input.files || input.files.length === 0) {
                     estado.textContent = "❌ Selecciona una o más fotos";
                     estado.style.color = "#e74c3c";
                     return;
                 }
+
+                // Validar etiquetas obligatorias
+                const perfil = document.getElementById("perfilSelect").value;
+                const etiqueta = document.getElementById("etiquetaSelect").value;
+
+                if (!perfil) {
+                    estado.textContent = "❌ Selecciona un Perfil (Niño/Joven/Adulto)";
+                    estado.style.color = "#e74c3c";
+                    return;
+                }
+
+                if (!etiqueta) {
+                    estado.textContent = "❌ Selecciona una Etiqueta";
+                    estado.style.color = "#e74c3c";
+                    return;
+                }
+
+                const notas = document.getElementById("notasInput").value.trim();
 
                 const archivos = Array.from(input.files);
                 let subidas = 0;
@@ -632,6 +725,9 @@
 
                     const formData = new FormData();
                     formData.append("foto", archivo);
+                    formData.append("perfil", perfil);
+                    formData.append("etiqueta", etiqueta);
+                    formData.append("notas", notas);
 
                     try {
                         const respuesta = await fetch(
@@ -655,7 +751,12 @@
 
                 estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
                 estado.style.color = subidas > 0 ? "#2ecc71" : "#e74c3c";
+                
+                // Limpiar campos después de subir
                 input.value = "";
+                document.getElementById("perfilSelect").value = "";
+                document.getElementById("etiquetaSelect").value = "";
+                document.getElementById("notasInput").value = "";
 
                 if (subidas > 0) {
                     setTimeout(cargarFotos, 1000);
