@@ -1,605 +1,707 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVJ Studio - Galería en Vivo</title>
-    <style>
-        /* ===== RESET ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* ===== BASE ===== */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            color: #fff;
-            min-height: 100vh;
-            padding: 12px 16px 20px;
-        }
-        
-        /* ===== HEADER COMPACTO ===== */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0 16px;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.08);
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-        .header h1 span {
-            font-weight: 700;
-            background: linear-gradient(135deg, #f9d976, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .header .badge-en-vivo {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            padding: 4px 12px 4px 8px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-        .header .badge-en-vivo .punto {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background: #e74c3c;
-            border-radius: 50%;
-            animation: pulse 1.8s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.3; transform: scale(0.8); }
-        }
-        
-        /* ===== ID DEL FOTÓGRAFO ===== */
-        .fotografo-id {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #555;
-            letter-spacing: 1px;
-            padding-bottom: 8px;
-            font-weight: 300;
-        }
-        .fotografo-id span {
-            color: #888;
-            background: rgba(255,255,255,0.04);
-            padding: 4px 14px;
-            border-radius: 20px;
-        }
-        .fotografo-id strong {
-            color: #f39c12;
-            font-weight: 600;
-        }
-        
-        /* ===== ESTADO MINI ===== */
-        #estado {
-            text-align: center;
-            padding: 4px 0 12px;
-            font-size: 0.7rem;
-            letter-spacing: 0.5px;
-            color: #444;
-            font-weight: 300;
-        }
-        #estado .num {
-            color: #888;
-            font-weight: 600;
-        }
-        .ok .num { color: #2ecc71; }
-        .error { color: #e74c3c; }
-        .cargando { color: #f1c40f; }
-        
-        /* ===== SUBIR FOTOS (oculto) ===== */
-        .subir {
-            display: none;
-            text-align: center;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px dashed rgba(255,255,255,0.08);
-            border-radius: 12px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .subir input[type="file"] {
-            background: #1a1a1a;
-            color: #aaa;
-            border: 1px solid #333;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            max-width: 240px;
-        }
-        .subir button {
-            background: linear-gradient(135deg, #f9d976, #f39c12);
-            color: #0a0a0a;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-left: 6px;
-        }
-        .subir button:hover { transform: scale(1.04); }
-        #subirEstado {
-            display: block;
-            margin-top: 6px;
-            font-size: 0.75rem;
-            color: #666;
-        }
-        
-        /* ===== GALERÍA ===== */
-        .galeria {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 14px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* ===== TARJETA ===== */
-        .foto {
-            background: #111;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid #1a1a1a;
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            position: relative;
-            aspect-ratio: 1 / 1;
-        }
-        .foto:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 35px rgba(0,0,0,0.5);
-            border-color: rgba(255, 215, 0, 0.12);
-        }
-        .foto img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: filter 0.3s;
-            background: #0a0a0a;
-        }
-        .foto:hover img {
-            filter: brightness(1.04);
-        }
-        
-        /* ===== MODAL ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.93);
-            backdrop-filter: blur(6px);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeIn 0.2s ease;
-        }
-        .modal.activo { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal-contenido {
-            max-width: 800px;
-            width: 100%;
-            background: #121212;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        .modal-contenido img {
-            width: 100%;
-            max-height: 62vh;
-            object-fit: contain;
-            display: block;
-            background: #0a0a0a;
-            padding: 16px;
-        }
-        .modal-footer {
-            padding: 18px 24px 24px;
-            background: #0d0d0d;
-            border-top: 1px solid #1a1a1a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        .modal-footer .mensaje-una-sola {
-            font-size: 0.7rem;
-            color: #555;
-            font-weight: 300;
-            text-align: center;
-            border-top: 1px solid #1a1a1a;
-            padding-top: 12px;
-            width: 100%;
-            letter-spacing: 0.3px;
-        }
-        .modal-footer .mensaje-una-sola strong {
-            color: #f1c40f;
-            font-weight: 600;
-        }
-        
-        /* ===== BOTÓN PEDIR ===== */
-        .btn-pedir {
-            background: #2ecc71;
-            color: #0a0a0a;
-            border: none;
-            padding: 13px 36px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            justify-content: center;
-            max-width: 340px;
-            letter-spacing: 0.3px;
-        }
-        .btn-pedir:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 28px rgba(46, 204, 113, 0.3);
-            background: #27ae60;
-        }
-        .btn-pedir:active { transform: scale(0.97); }
-        .btn-pedir .icono-whatsapp { font-size: 1.3rem; }
-        
-        .btn-cerrar-modal {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: rgba(255,255,255,0.05);
-            border: none;
-            color: #666;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s, color 0.3s;
-            z-index: 10;
-        }
-        .btn-cerrar-modal:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 24px 10px 6px;
-            color: #1a1a1a;
-            font-size: 0.6rem;
-            letter-spacing: 1px;
-            border-top: 1px solid #111;
-            margin-top: 24px;
-        }
-        
-        @media (max-width: 600px) {
-            body { padding: 8px 10px 16px; }
-            .header h1 { font-size: 1.3rem; }
-            .header .badge-en-vivo { font-size: 0.55rem; padding: 3px 10px 3px 6px; }
-            .galeria { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-            .modal { padding: 10px; }
-            .modal-contenido img { max-height: 45vh; padding: 12px; }
-            .modal-footer { padding: 14px 16px 18px; }
-            .btn-pedir { font-size: 0.9rem; padding: 11px 16px; max-width: 100%; }
-            #estado { font-size: 0.6rem; padding: 2px 0 8px; }
-        }
-        @media (max-width: 400px) {
-            .galeria { grid-template-columns: 1fr 1fr; gap: 8px; }
-        }
-        
-        html { scroll-behavior: smooth; }
-        ::selection { background: #f39c12; color: #0a0a0a; }
-    </style>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OVJ Studio - Galería en Vivo</title>
+        <style>
+            /* ===== RESET ===== */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-    <!-- ===== HEADER ===== -->
-    <div class="header">
-        <h1>OVJ <span>Studio</span></h1>
-        <div class="badge-en-vivo">
-            <span class="punto"></span> En vivo
+            /* ===== BASE ===== */
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: #0a0a0a;
+                color: #fff;
+                min-height: 100vh;
+                padding: 12px 16px 20px;
+            }
+
+            /* ===== HEADER COMPACTO ===== */
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 0 16px;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+                margin-bottom: 18px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+                font-weight: 300;
+                letter-spacing: 1px;
+            }
+            .header h1 span {
+                font-weight: 700;
+                background: linear-gradient(135deg, #f9d976, #f39c12);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .header .badge-en-vivo {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(231, 76, 60, 0.15);
+                color: #e74c3c;
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                padding: 4px 12px 4px 8px;
+                border-radius: 50px;
+                text-transform: uppercase;
+                border: 1px solid rgba(231, 76, 60, 0.2);
+            }
+            .header .badge-en-vivo .punto {
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                background: #e74c3c;
+                border-radius: 50%;
+                animation: pulse 1.8s infinite;
+            }
+            @keyframes pulse {
+                0% {
+                    opacity: 0.3;
+                    transform: scale(0.8);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+                100% {
+                    opacity: 0.3;
+                    transform: scale(0.8);
+                }
+            }
+
+            /* ===== ID DEL FOTÓGRAFO ===== */
+            .fotografo-id {
+                text-align: center;
+                font-size: 0.7rem;
+                color: #555;
+                letter-spacing: 1px;
+                padding-bottom: 8px;
+                font-weight: 300;
+            }
+            .fotografo-id span {
+                color: #888;
+                background: rgba(255, 255, 255, 0.04);
+                padding: 4px 14px;
+                border-radius: 20px;
+            }
+            .fotografo-id strong {
+                color: #f39c12;
+                font-weight: 600;
+            }
+
+            /* ===== ESTADO MINI ===== */
+            #estado {
+                text-align: center;
+                padding: 4px 0 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+                color: #444;
+                font-weight: 300;
+            }
+            #estado .num {
+                color: #888;
+                font-weight: 600;
+            }
+            .ok .num {
+                color: #2ecc71;
+            }
+            .error {
+                color: #e74c3c;
+            }
+            .cargando {
+                color: #f1c40f;
+            }
+
+            /* ===== SUBIR FOTOS (oculto) ===== */
+            .subir {
+                display: none;
+                text-align: center;
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px dashed rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .subir input[type="file"] {
+                background: #1a1a1a;
+                color: #aaa;
+                border: 1px solid #333;
+                padding: 8px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.8rem;
+                max-width: 240px;
+            }
+            .subir button {
+                background: linear-gradient(135deg, #f9d976, #f39c12);
+                color: #0a0a0a;
+                border: none;
+                padding: 8px 24px;
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: transform 0.2s;
+                margin-left: 6px;
+            }
+            .subir button:hover {
+                transform: scale(1.04);
+            }
+            #subirEstado {
+                display: block;
+                margin-top: 6px;
+                font-size: 0.75rem;
+                color: #666;
+            }
+
+            /* ===== GALERÍA ===== */
+            .galeria {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 14px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* ===== TARJETA ===== */
+            .foto {
+                background: #111;
+                border-radius: 14px;
+                overflow: hidden;
+                border: 1px solid #1a1a1a;
+                cursor: pointer;
+                transition:
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+                position: relative;
+                aspect-ratio: 1 / 1;
+            }
+            .foto:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+                border-color: rgba(255, 215, 0, 0.12);
+            }
+            .foto img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: filter 0.3s;
+                background: #0a0a0a;
+            }
+            .foto:hover img {
+                filter: brightness(1.04);
+            }
+
+            /* ===== MODAL ===== */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 999;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.93);
+                backdrop-filter: blur(6px);
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                animation: fadeIn 0.2s ease;
+            }
+            .modal.activo {
+                display: flex;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.96);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            .modal-contenido {
+                max-width: 800px;
+                width: 100%;
+                background: #121212;
+                border-radius: 18px;
+                overflow: hidden;
+                border: 1px solid #2a2a2a;
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+                position: relative;
+            }
+            .modal-contenido img {
+                width: 100%;
+                max-height: 62vh;
+                object-fit: contain;
+                display: block;
+                background: #0a0a0a;
+                padding: 16px;
+            }
+            .modal-footer {
+                padding: 18px 24px 24px;
+                background: #0d0d0d;
+                border-top: 1px solid #1a1a1a;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            .modal-footer .mensaje-una-sola {
+                font-size: 0.7rem;
+                color: #555;
+                font-weight: 300;
+                text-align: center;
+                border-top: 1px solid #1a1a1a;
+                padding-top: 12px;
+                width: 100%;
+                letter-spacing: 0.3px;
+            }
+            .modal-footer .mensaje-una-sola strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
+
+            /* ===== BOTÓN PEDIR ===== */
+            .btn-pedir {
+                background: #2ecc71;
+                color: #0a0a0a;
+                border: none;
+                padding: 13px 36px;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                justify-content: center;
+                max-width: 340px;
+                letter-spacing: 0.3px;
+            }
+            .btn-pedir:hover {
+                transform: scale(1.03);
+                box-shadow: 0 8px 28px rgba(46, 204, 113, 0.3);
+                background: #27ae60;
+            }
+            .btn-pedir:active {
+                transform: scale(0.97);
+            }
+            .btn-pedir .icono-whatsapp {
+                font-size: 1.3rem;
+            }
+
+            .btn-cerrar-modal {
+                position: absolute;
+                top: 12px;
+                right: 16px;
+                background: rgba(255, 255, 255, 0.05);
+                border: none;
+                color: #666;
+                font-size: 1.5rem;
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition:
+                    background 0.3s,
+                    color 0.3s;
+                z-index: 10;
+            }
+            .btn-cerrar-modal:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 24px 10px 6px;
+                color: #1a1a1a;
+                font-size: 0.6rem;
+                letter-spacing: 1px;
+                border-top: 1px solid #111;
+                margin-top: 24px;
+            }
+
+            @media (max-width: 600px) {
+                body {
+                    padding: 8px 10px 16px;
+                }
+                .header h1 {
+                    font-size: 1.3rem;
+                }
+                .header .badge-en-vivo {
+                    font-size: 0.55rem;
+                    padding: 3px 10px 3px 6px;
+                }
+                .galeria {
+                    grid-template-columns: repeat(
+                        auto-fill,
+                        minmax(150px, 1fr)
+                    );
+                    gap: 10px;
+                }
+                .modal {
+                    padding: 10px;
+                }
+                .modal-contenido img {
+                    max-height: 45vh;
+                    padding: 12px;
+                }
+                .modal-footer {
+                    padding: 14px 16px 18px;
+                }
+                .btn-pedir {
+                    font-size: 0.9rem;
+                    padding: 11px 16px;
+                    max-width: 100%;
+                }
+                #estado {
+                    font-size: 0.6rem;
+                    padding: 2px 0 8px;
+                }
+            }
+            @media (max-width: 400px) {
+                .galeria {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                }
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+            ::selection {
+                background: #f39c12;
+                color: #0a0a0a;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <h1>OVJ <span>Studio</span></h1>
+            <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
         </div>
-    </div>
 
-    <!-- ===== ID DEL FOTÓGRAFO ===== -->
-    <div class="fotografo-id" id="fotografoIdDisplay">
-        <span>📸 Galería: <strong id="fotografoNombre">Cargando...</strong></span>
-    </div>
+        <!-- ===== ID DEL FOTÓGRAFO ===== -->
+        <div class="fotografo-id" id="fotografoIdDisplay">
+            <span
+                >📸 Galería:
+                <strong id="fotografoNombre">Cargando...</strong></span
+            >
+        </div>
 
-    <!-- ===== ESTADO ===== -->
-    <div id="estado">⏳ Cargando...</div>
+        <!-- ===== ESTADO ===== -->
+        <div id="estado">⏳ Cargando...</div>
 
-    <!-- ===== SUBIR FOTOS (oculto) ===== -->
-    <div class="subir" id="panelSubir">
-        <input type="file" id="fileInput" accept="image/*" multiple>
-        <button onclick="subirFotos()">📤 Subir</button>
-        <span id="subirEstado"></span>
-    </div>
+        <!-- ===== SUBIR FOTOS (oculto) ===== -->
+        <div class="subir" id="panelSubir">
+            <input type="file" id="fileInput" accept="image/*" multiple />
+            <button onclick="subirFotos()">📤 Subir</button>
+            <span id="subirEstado"></span>
+        </div>
 
-    <!-- ===== GALERÍA ===== -->
-    <div class="galeria" id="galeria"></div>
+        <!-- ===== GALERÍA ===== -->
+        <div class="galeria" id="galeria"></div>
 
-    <!-- ===== PIE ===== -->
-    <div class="footer">OVJ STUDIO · Fotografía con alma</div>
+        <!-- ===== PIE ===== -->
+        <div class="footer">OVJ STUDIO · Fotografía con alma</div>
 
-    <!-- ===== MODAL ===== -->
-    <div class="modal" id="modal">
-        <div class="modal-contenido">
-            <button class="btn-cerrar-modal" onclick="cerrarModal()">✕</button>
-            <img id="modalImagen" src="" alt="Foto ampliada">
-            <div class="modal-footer">
-                <button class="btn-pedir" onclick="pedirFoto()">
-                    <span class="icono-whatsapp">📱</span> Pedir foto gratis sin marca de agua
+        <!-- ===== MODAL ===== -->
+        <div class="modal" id="modal">
+            <div class="modal-contenido">
+                <button class="btn-cerrar-modal" onclick="cerrarModal()">
+                    ✕
                 </button>
-                <div class="mensaje-una-sola">
-                    ⚡ <strong>Solo puedes pedir una foto</strong> · La recibirás por WhatsApp en minutos
+                <img id="modalImagen" src="" alt="Foto ampliada" />
+                <div class="modal-footer">
+                    <button class="btn-pedir" onclick="pedirFoto()">
+                        <span class="icono-whatsapp">📱</span> Pedir foto gratis
+                        sin marca de agua
+                    </button>
+                    <div class="mensaje-una-sola">
+                        ⚡ <strong>Solo puedes pedir una foto</strong> · La
+                        recibirás por WhatsApp en minutos
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        // ==========================================
-        // 🔥 CONFIGURACIÓN
-        // ==========================================
-        // 👇 CAMBIA ESTA URL POR LA DE TU CLOUDFLARE TUNNEL
-        const URL_CLOUDFLARE = 'https://yards-independently-music-heavily.trycloudflare.com';
-        
-        // 👇 CAMBIA ESTE NÚMERO POR EL TUYO (código país sin +)
-        const NUMERO_WHATSAPP = '59160004962';
+        <script>
+            // ==========================================
+            // 🔥 CONFIGURACIÓN
+            // ==========================================
+            // 👇 CAMBIA ESTA URL POR LA DE TU CLOUDFLARE TUNNEL
+            const URL_CLOUDFLARE =
+                "https://yards-independently-music-heavily.trycloudflare.com";
 
-        // ==========================================
-        // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
-        // ==========================================
-        function getFotografoId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('f');
-            
-            // 🔥 Mostrar en consola para depuración
-            console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
-            
-            // Si no hay ID, usar 'default'
-            return id || 'default';
-        }
+            // 👇 CAMBIA ESTE NÚMERO POR EL TUYO (código país sin +)
+            const NUMERO_WHATSAPP = "59160004962";
 
-        const FOTOGRAFO_ID = getFotografoId();
+            // ==========================================
+            // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
+            // ==========================================
+            function getFotografoId() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get("f");
 
-        // Mostrar el ID del fotógrafo en la interfaz
-        document.getElementById('fotografoNombre').textContent = FOTOGRAFO_ID;
+                // 🔥 Mostrar en consola para depuración
+                console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
 
-        // ==========================================
-        // MOSTRAR PANEL DE SUBIDA (doble clic en el título)
-        // ==========================================
-        document.querySelector('.header h1').addEventListener('dblclick', function() {
-            const panel = document.getElementById('panelSubir');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // ==========================================
-        // VARIABLES
-        // ==========================================
-        let fotosCache = [];
-        let fotoSeleccionadaIndex = -1;
-        let cargando = false;
-
-        // ==========================================
-        // CARGAR FOTOS DEL FOTÓGRAFO ACTUAL
-        // ==========================================
-
-        async function cargarFotos() {
-            if (cargando) return;
-            cargando = true;
-
-            const estado = document.getElementById('estado');
-            const galeria = document.getElementById('galeria');
-            
-            try {
-                estado.innerHTML = '⏳ Cargando...';
-                estado.className = 'cargando';
-                
-                // ✅ Incluir el ID del fotógrafo en la petición
-                const respuesta = await fetch(`${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`);
-                if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
-                
-                const nuevasFotos = await respuesta.json();
-                
-                if (JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache)) {
-                    fotosCache = nuevasFotos;
-                    renderizarGaleria();
-                }
-                
-                if (fotosCache.length === 0) {
-                    estado.innerHTML = '📷 No hay fotos aún';
-                    estado.className = 'ok';
-                } else {
-                    estado.innerHTML = `<span class="num">${fotosCache.length}</span> fotos disponibles`;
-                    estado.className = 'ok';
-                }
-                
-            } catch (error) {
-                estado.innerHTML = `⚠️ Error: ${error.message}`;
-                estado.className = 'error';
-                console.error('Error:', error);
+                // Si no hay ID, usar 'default'
+                return id || "default";
             }
-            
-            cargando = false;
-        }
 
-        // ==========================================
-        // RENDERIZAR GALERÍA
-        // ==========================================
+            const FOTOGRAFO_ID = getFotografoId();
 
-        function renderizarGaleria() {
-            const galeria = document.getElementById('galeria');
-            
-            if (!fotosCache || fotosCache.length === 0) {
-                galeria.innerHTML = '';
-                return;
+            // Mostrar el ID del fotógrafo en la interfaz
+            document.getElementById("fotografoNombre").textContent =
+                FOTOGRAFO_ID;
+
+            // ==========================================
+            // MOSTRAR PANEL DE SUBIDA (doble clic en el título)
+            // ==========================================
+            document
+                .querySelector(".header h1")
+                .addEventListener("dblclick", function () {
+                    const panel = document.getElementById("panelSubir");
+                    panel.style.display =
+                        panel.style.display === "none" ? "block" : "none";
+                });
+
+            // ==========================================
+            // VARIABLES
+            // ==========================================
+            let fotosCache = [];
+            let fotoSeleccionadaIndex = -1;
+            let cargando = false;
+
+            // ==========================================
+            // CARGAR FOTOS DEL FOTÓGRAFO ACTUAL
+            // ==========================================
+
+            async function cargarFotos() {
+                if (cargando) return;
+                cargando = true;
+
+                const estado = document.getElementById("estado");
+                const galeria = document.getElementById("galeria");
+
+                try {
+                    estado.innerHTML = "⏳ Cargando...";
+                    estado.className = "cargando";
+
+                    // ✅ Incluir el ID del fotógrafo en la petición
+                    const respuesta = await fetch(
+                        `${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`,
+                    );
+                    if (!respuesta.ok)
+                        throw new Error(`HTTP ${respuesta.status}`);
+
+                    const nuevasFotos = await respuesta.json();
+
+                    if (
+                        JSON.stringify(nuevasFotos) !==
+                        JSON.stringify(fotosCache)
+                    ) {
+                        fotosCache = nuevasFotos;
+                        renderizarGaleria();
+                    }
+
+                    if (fotosCache.length === 0) {
+                        estado.innerHTML = "📷 No hay fotos aún";
+                        estado.className = "ok";
+                    } else {
+                        estado.innerHTML = `<span class="num">${fotosCache.length}</span> fotos disponibles`;
+                        estado.className = "ok";
+                    }
+                } catch (error) {
+                    estado.innerHTML = `⚠️ Error: ${error.message}`;
+                    estado.className = "error";
+                    console.error("Error:", error);
+                }
+
+                cargando = false;
             }
-            
-            let html = '';
-            fotosCache.forEach((foto, index) => {
-                const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
-                html += `
+
+            // ==========================================
+            // RENDERIZAR GALERÍA
+            // ==========================================
+
+            function renderizarGaleria() {
+                const galeria = document.getElementById("galeria");
+
+                if (!fotosCache || fotosCache.length === 0) {
+                    galeria.innerHTML = "";
+                    return;
+                }
+
+                let html = "";
+                fotosCache.forEach((foto, index) => {
+                    const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
+                    html += `
                     <div class="foto" onclick="abrirModal(${index})">
                         <img src="${urlImagen}" alt="Foto ${index + 1}" loading="lazy">
                     </div>
                 `;
-            });
-            galeria.innerHTML = html;
-        }
-
-        // ==========================================
-        // SUBIR FOTOS (con el ID del fotógrafo)
-        // ==========================================
-
-        async function subirFotos() {
-            const input = document.getElementById('fileInput');
-            const estado = document.getElementById('subirEstado');
-            
-            if (!input.files || input.files.length === 0) {
-                estado.textContent = '❌ Selecciona una o más fotos';
-                estado.style.color = '#e74c3c';
-                return;
+                });
+                galeria.innerHTML = html;
             }
-            
-            const archivos = Array.from(input.files);
-            let subidas = 0;
-            let errores = 0;
-            
-            estado.textContent = `⏳ Subiendo ${archivos.length}...`;
-            estado.style.color = '#f1c40f';
-            
-            for (const archivo of archivos) {
-                if (!archivo.type.startsWith('image/')) {
-                    errores++;
-                    continue;
+
+            // ==========================================
+            // SUBIR FOTOS (con el ID del fotógrafo)
+            // ==========================================
+
+            async function subirFotos() {
+                const input = document.getElementById("fileInput");
+                const estado = document.getElementById("subirEstado");
+
+                if (!input.files || input.files.length === 0) {
+                    estado.textContent = "❌ Selecciona una o más fotos";
+                    estado.style.color = "#e74c3c";
+                    return;
                 }
-                
-                const formData = new FormData();
-                formData.append('foto', archivo);
-                
-                try {
-                    // ✅ Incluir el ID del fotógrafo en la subida
-                    const respuesta = await fetch(`${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (respuesta.ok) {
-                        subidas++;
-                    } else {
+
+                const archivos = Array.from(input.files);
+                let subidas = 0;
+                let errores = 0;
+
+                estado.textContent = `⏳ Subiendo ${archivos.length}...`;
+                estado.style.color = "#f1c40f";
+
+                for (const archivo of archivos) {
+                    if (!archivo.type.startsWith("image/")) {
                         errores++;
+                        continue;
                     }
-                } catch (error) {
-                    errores++;
-                    console.error('Error subiendo:', archivo.name, error);
+
+                    const formData = new FormData();
+                    formData.append("foto", archivo);
+
+                    try {
+                        // ✅ Incluir el ID del fotógrafo en la subida
+                        const respuesta = await fetch(
+                            `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
+                            {
+                                method: "POST",
+                                body: formData,
+                            },
+                        );
+
+                        if (respuesta.ok) {
+                            subidas++;
+                        } else {
+                            errores++;
+                        }
+                    } catch (error) {
+                        errores++;
+                        console.error("Error subiendo:", archivo.name, error);
+                    }
+                }
+
+                estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
+                estado.style.color = subidas > 0 ? "#2ecc71" : "#e74c3c";
+                input.value = "";
+
+                if (subidas > 0) {
+                    setTimeout(cargarFotos, 1000);
                 }
             }
-            
-            estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
-            estado.style.color = subidas > 0 ? '#2ecc71' : '#e74c3c';
-            input.value = '';
-            
-            if (subidas > 0) {
-                setTimeout(cargarFotos, 1000);
+
+            // ==========================================
+            // MODAL
+            // ==========================================
+
+            function abrirModal(index) {
+                if (index < 0 || index >= fotosCache.length) return;
+
+                fotoSeleccionadaIndex = index;
+                const foto = fotosCache[index];
+
+                const modal = document.getElementById("modal");
+                const modalImagen = document.getElementById("modalImagen");
+
+                modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
+                modalImagen.alt = `Foto ${index + 1}`;
+
+                modal.classList.add("activo");
+                document.body.style.overflow = "hidden";
             }
-        }
 
-        // ==========================================
-        // MODAL
-        // ==========================================
-
-        function abrirModal(index) {
-            if (index < 0 || index >= fotosCache.length) return;
-            
-            fotoSeleccionadaIndex = index;
-            const foto = fotosCache[index];
-            
-            const modal = document.getElementById('modal');
-            const modalImagen = document.getElementById('modalImagen');
-            
-            modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
-            modalImagen.alt = `Foto ${index + 1}`;
-            
-            modal.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function cerrarModal() {
-            document.getElementById('modal').classList.remove('activo');
-            document.body.style.overflow = '';
-        }
-
-        // ==========================================
-        // PEDIR FOTO
-        // ==========================================
-
-        function pedirFoto() {
-            if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
-                alert('❌ No hay foto seleccionada');
-                return;
+            function cerrarModal() {
+                document.getElementById("modal").classList.remove("activo");
+                document.body.style.overflow = "";
             }
-            
-            const foto = fotosCache[fotoSeleccionadaIndex];
-            const mensaje = `Hola, quiero solicitar la foto: ${foto.nombre} (OVJ Studio)`;
-            const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
-            
-            window.open(urlWhatsApp, '_blank');
-            setTimeout(cerrarModal, 500);
-        }
 
-        // ==========================================
-        // EVENTOS
-        // ==========================================
+            // ==========================================
+            // PEDIR FOTO
+            // ==========================================
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') cerrarModal();
-        });
+            function pedirFoto() {
+                if (
+                    fotoSeleccionadaIndex < 0 ||
+                    fotoSeleccionadaIndex >= fotosCache.length
+                ) {
+                    alert("❌ No hay foto seleccionada");
+                    return;
+                }
 
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) cerrarModal();
-        });
+                const foto = fotosCache[fotoSeleccionadaIndex];
+                const nombreFoto = foto.nombre; // Ej: "foto-123456.jpg"
+                const fotografo = FOTOGRAFO_ID; // Ej: "juan"
 
-        // ==========================================
-        // INICIALIZAR (polling cada 60 segundos)
-        // ==========================================
-        
-        cargarFotos();
-        setInterval(cargarFotos, 60000);
-    </script>
-</body>
+                // 🔥 Mensaje estructurado para que el servidor lo interprete fácilmente
+                const mensaje = `Hola, quiero la foto: ${nombreFoto} (Fotógrafo: ${fotografo})\nMi número es: [ESCRIBE AQUÍ TU NÚMERO]`;
+
+                // Abrir WhatsApp con el mensaje predefinido
+                const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+
+                window.open(urlWhatsApp, "_blank");
+
+                // Cerrar el modal después de abrir WhatsApp
+                setTimeout(cerrarModal, 500);
+            }
+
+            // ==========================================
+            // EVENTOS
+            // ==========================================
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") cerrarModal();
+            });
+
+            document.getElementById("modal").addEventListener("click", (e) => {
+                if (e.target === e.currentTarget) cerrarModal();
+            });
+
+            // ==========================================
+            // INICIALIZAR (polling cada 60 segundos)
+            // ==========================================
+
+            cargarFotos();
+            setInterval(cargarFotos, 60000);
+        </script>
+    </body>
 </html>
