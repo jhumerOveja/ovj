@@ -451,14 +451,10 @@
 
         <script>
             // ==========================================
-            // 🔥 CONFIGURACIÓN
+            // 🔥 CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
             // ==========================================
-            // 👇 CAMBIA ESTA URL POR LA DE TU CLOUDFLARE TUNNEL
             const URL_CLOUDFLARE =
                 "https://programming-informative-tip-bridges.trycloudflare.com";
-
-            // 👇 CAMBIA ESTE NÚMERO POR EL TUYO (código país sin +)
-            const NUMERO_WHATSAPP = "59160004962";
 
             // ==========================================
             // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
@@ -466,9 +462,7 @@
             function getFotografoId() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get("f");
-
                 console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
-
                 return id || "default";
             }
 
@@ -495,7 +489,7 @@
             let cargando = false;
 
             // ==========================================
-            // CARGAR FOTOS DEL FOTÓGRAFO ACTUAL
+            // CARGAR FOTOS
             // ==========================================
 
             async function cargarFotos() {
@@ -516,8 +510,6 @@
                         throw new Error(`HTTP ${respuesta.status}`);
 
                     const nuevasFotos = await respuesta.json();
-
-                    // 🔥 LOG PARA VER QUÉ FOTOS LLEGAN
                     console.log("📸 Fotos recibidas:", nuevasFotos);
 
                     if (
@@ -545,7 +537,7 @@
             }
 
             // ==========================================
-            // RENDERIZAR GALERÍA (CON DEBUG)
+            // RENDERIZAR GALERÍA
             // ==========================================
 
             function renderizarGaleria() {
@@ -558,14 +550,13 @@
 
                 let html = "";
                 fotosCache.forEach((foto, index) => {
-                    // 🔥 CONSTRUIR URL CORRECTA
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
                     console.log(`📸 Cargando imagen ${index}: ${urlImagen}`);
 
                     html += `
                     <div class="foto" onclick="abrirModal(${index})">
                         <img src="${urlImagen}" alt="Foto ${index + 1}" loading="lazy"
-                             onerror="console.error('❌ Error cargando: ${urlImagen}'); this.style.opacity='0.3'; this.alt='Error';">
+                             onerror="console.error('❌ Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
                     </div>
                 `;
                 });
@@ -672,7 +663,8 @@
                 const foto = fotosCache[fotoSeleccionadaIndex];
                 const mensaje = `Hola, quiero la foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})\nMi número es: [ESCRIBE AQUÍ TU NÚMERO]`;
 
-                const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+                const urlWhatsApp =
+                    `https://wa.me/59160004962?text=${encodeURIComponent(mensaje)}`;
 
                 window.open(urlWhatsApp, "_blank");
                 setTimeout(cerrarModal, 500);
@@ -691,7 +683,7 @@
             });
 
             // ==========================================
-            // INICIALIZAR (polling cada 60 segundos)
+            // INICIALIZAR
             // ==========================================
 
             cargarFotos();
