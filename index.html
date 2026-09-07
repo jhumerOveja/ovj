@@ -691,14 +691,12 @@
                 const input = document.getElementById("fileInput");
                 const estado = document.getElementById("subirEstado");
 
-                // Validar que haya una foto seleccionada
                 if (!input.files || input.files.length === 0) {
                     estado.textContent = "❌ Selecciona una foto";
                     estado.style.color = "#e74c3c";
                     return;
                 }
 
-                // Validar etiquetas obligatorias
                 const perfil = document.getElementById("perfilSelect").value;
                 const etiqueta = document.getElementById("etiquetaSelect").value;
 
@@ -715,8 +713,7 @@
                 }
 
                 const notas = document.getElementById("notasInput").value.trim();
-
-                const archivo = input.files[0]; // Solo una foto a la vez
+                const archivo = input.files[0];
 
                 if (!archivo.type.startsWith("image/")) {
                     estado.textContent = "❌ El archivo no es una imagen";
@@ -746,7 +743,6 @@
                         estado.textContent = "✅ Foto subida exitosamente";
                         estado.style.color = "#2ecc71";
                         
-                        // Limpiar campos después de subir
                         input.value = "";
                         document.getElementById("perfilSelect").value = "";
                         document.getElementById("etiquetaSelect").value = "";
@@ -790,7 +786,7 @@
             }
 
             // ==========================================
-            // PEDIR FOTO
+            // PEDIR FOTO (SIN PEDIR NÚMERO)
             // ==========================================
 
             function pedirFoto() {
@@ -803,7 +799,7 @@
                 }
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
-                const mensaje = `Hola, quiero la foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})\nMi número es: [ESCRIBE AQUÍ TU NÚMERO]`;
+                const mensaje = `Hola, quiero la foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
 
                 const urlWhatsApp =
                     `https://wa.me/59160004962?text=${encodeURIComponent(mensaje)}`;
