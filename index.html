@@ -154,54 +154,16 @@
                 border-radius: 8px;
                 cursor: pointer;
                 font-size: 0.8rem;
-                max-width: 240px;
                 margin-bottom: 10px;
-            }
-            .subir .etiquetas {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
-                margin: 10px 0 12px;
-            }
-            .subir .etiquetas select {
-                background: #1a1a1a;
-                color: #ddd;
-                border: 1px solid #333;
-                padding: 8px 12px;
-                border-radius: 8px;
-                font-size: 0.8rem;
-                cursor: pointer;
-                min-width: 120px;
-            }
-            .subir .etiquetas select:focus {
-                outline: none;
-                border-color: #f39c12;
-            }
-            .subir .etiquetas select option {
-                background: #1a1a1a;
-                color: #ddd;
-            }
-            .subir .etiquetas select option:disabled {
-                color: #555;
-            }
-            .subir .notas {
                 width: 100%;
-                max-width: 400px;
-                padding: 8px 12px;
-                background: #1a1a1a;
-                color: #ddd;
-                border: 1px solid #333;
-                border-radius: 8px;
-                font-size: 0.8rem;
-                font-family: inherit;
-                resize: vertical;
-                margin: 0 auto 10px;
-                display: block;
+                max-width: 100%;
             }
-            .subir .notas:focus {
-                outline: none;
-                border-color: #f39c12;
+            .subir .info-subida {
+                color: #666;
+                font-size: 0.7rem;
+                margin-bottom: 10px;
+                user-select: none;
+                -webkit-user-select: none;
             }
             .subir button {
                 background: linear-gradient(135deg, #f9d976, #f39c12);
@@ -448,9 +410,9 @@
                     font-size: 0.6rem;
                     padding: 2px 0 8px;
                 }
-                .subir .etiquetas select {
-                    min-width: 100px;
+                .subir input[type="file"] {
                     font-size: 0.7rem;
+                    padding: 6px 10px;
                 }
             }
             @media (max-width: 400px) {
@@ -489,38 +451,9 @@
 
         <!-- ===== SUBIR FOTOS (oculto) ===== -->
         <div class="subir" id="panelSubir">
-            <p style="color:#888; font-size:0.75rem; margin-bottom:8px;">
-                ⚡ Sube una foto a la vez para etiquetarla individualmente
-            </p>
-            <input type="file" id="fileInput" accept="image/*" />
-
-            <div class="etiquetas">
-                <select id="perfilSelect">
-                    <option value="" disabled selected>👤 Perfil</option>
-                    <option value="nino">👶 Niño</option>
-                    <option value="joven">🧑 Joven</option>
-                    <option value="adulto">👴 Adulto</option>
-                </select>
-
-                <select id="etiquetaSelect">
-                    <option value="" disabled selected>🏷️ Etiqueta</option>
-                    <option value="modelo">⭐ Modelo</option>
-                    <option value="cliente">💼 Cliente</option>
-                    <option value="artista">🎨 Artista</option>
-                    <option value="local">🏪 Local</option>
-                    <option value="familiar">👪 Familiar</option>
-                    <option value="solo_foto">📸 Solo foto</option>
-                </select>
-            </div>
-
-            <textarea
-                class="notas"
-                id="notasInput"
-                placeholder="Notas (opcional) - ej: le gusta el estilo vintage"
-                rows="2"
-            ></textarea>
-
-            <button onclick="subirFotos()">📤 Subir</button>
+            <div class="info-subida">📸 Selecciona una o más fotos para subir</div>
+            <input type="file" id="fileInput" accept="image/*" multiple />
+            <button onclick="subirFotos()">📤 Subir fotos</button>
             <span id="subirEstado"></span>
         </div>
 
@@ -684,7 +617,7 @@
             }
 
             // ==========================================
-            // SUBIR FOTOS (UNA POR UNA CON ETIQUETAS)
+            // SUBIR FOTOS (MÚLTIPLE - SIN ETIQUETAS)
             // ==========================================
 
             async function subirFotos() {
@@ -692,71 +625,53 @@
                 const estado = document.getElementById("subirEstado");
 
                 if (!input.files || input.files.length === 0) {
-                    estado.textContent = "❌ Selecciona una foto";
+                    estado.textContent = "❌ Selecciona una o más fotos";
                     estado.style.color = "#e74c3c";
                     return;
                 }
 
-                const perfil = document.getElementById("perfilSelect").value;
-                const etiqueta = document.getElementById("etiquetaSelect").value;
+                const archivos = Array.from(input.files);
+                let subidas = 0;
+                let errores = 0;
 
-                if (!perfil) {
-                    estado.textContent = "❌ Selecciona un Perfil (Niño/Joven/Adulto)";
-                    estado.style.color = "#e74c3c";
-                    return;
-                }
-
-                if (!etiqueta) {
-                    estado.textContent = "❌ Selecciona una Etiqueta";
-                    estado.style.color = "#e74c3c";
-                    return;
-                }
-
-                const notas = document.getElementById("notasInput").value.trim();
-                const archivo = input.files[0];
-
-                if (!archivo.type.startsWith("image/")) {
-                    estado.textContent = "❌ El archivo no es una imagen";
-                    estado.style.color = "#e74c3c";
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append("foto", archivo);
-                formData.append("perfil", perfil);
-                formData.append("etiqueta", etiqueta);
-                formData.append("notas", notas);
-
-                estado.textContent = `⏳ Subiendo...`;
+                estado.textContent = `⏳ Subiendo ${archivos.length} fotos...`;
                 estado.style.color = "#f1c40f";
 
-                try {
-                    const respuesta = await fetch(
-                        `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
-                        {
-                            method: "POST",
-                            body: formData,
-                        },
-                    );
-
-                    if (respuesta.ok) {
-                        estado.textContent = "✅ Foto subida exitosamente";
-                        estado.style.color = "#2ecc71";
-                        
-                        input.value = "";
-                        document.getElementById("perfilSelect").value = "";
-                        document.getElementById("etiquetaSelect").value = "";
-                        document.getElementById("notasInput").value = "";
-                        
-                        setTimeout(cargarFotos, 1000);
-                    } else {
-                        estado.textContent = "❌ Error al subir la foto";
-                        estado.style.color = "#e74c3c";
+                for (const archivo of archivos) {
+                    if (!archivo.type.startsWith("image/")) {
+                        errores++;
+                        continue;
                     }
-                } catch (error) {
-                    estado.textContent = "❌ Error de conexión";
-                    estado.style.color = "#e74c3c";
-                    console.error("Error subiendo:", error);
+
+                    const formData = new FormData();
+                    formData.append("foto", archivo);
+
+                    try {
+                        const respuesta = await fetch(
+                            `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
+                            {
+                                method: "POST",
+                                body: formData,
+                            },
+                        );
+
+                        if (respuesta.ok) {
+                            subidas++;
+                        } else {
+                            errores++;
+                        }
+                    } catch (error) {
+                        errores++;
+                        console.error("Error subiendo:", archivo.name, error);
+                    }
+                }
+
+                estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
+                estado.style.color = subidas > 0 ? "#2ecc71" : "#e74c3c";
+                input.value = "";
+
+                if (subidas > 0) {
+                    setTimeout(cargarFotos, 2000);
                 }
             }
 
