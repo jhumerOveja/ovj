@@ -165,6 +165,13 @@
                 user-select: none;
                 -webkit-user-select: none;
             }
+            .subir .acciones {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 6px;
+            }
             .subir button {
                 background: linear-gradient(135deg, #f9d976, #f39c12);
                 color: #0a0a0a;
@@ -175,10 +182,16 @@
                 font-size: 0.8rem;
                 cursor: pointer;
                 transition: transform 0.2s;
-                margin-top: 4px;
             }
             .subir button:hover {
                 transform: scale(1.04);
+            }
+            .subir .btn-borrar {
+                background: #e74c3c;
+                color: #fff;
+            }
+            .subir .btn-borrar:hover {
+                background: #c0392b;
             }
             #subirEstado {
                 display: block;
@@ -414,6 +427,10 @@
                     font-size: 0.7rem;
                     padding: 6px 10px;
                 }
+                .subir .acciones {
+                    flex-direction: column;
+                    align-items: center;
+                }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -453,7 +470,10 @@
         <div class="subir" id="panelSubir">
             <div class="info-subida">📸 Selecciona una o más fotos para subir</div>
             <input type="file" id="fileInput" accept="image/*" multiple />
-            <button onclick="subirFotos()">📤 Subir fotos</button>
+            <div class="acciones">
+                <button onclick="subirFotos()">📤 Subir fotos</button>
+                <button onclick="limpiarFotos()" class="btn-borrar">🗑️ Borrar todas</button>
+            </div>
             <span id="subirEstado"></span>
         </div>
 
@@ -672,6 +692,44 @@
 
                 if (subidas > 0) {
                     setTimeout(cargarFotos, 2000);
+                }
+            }
+
+            // ==========================================
+            // 🗑️ LIMPIAR TODAS LAS FOTOS
+            // ==========================================
+
+            async function limpiarFotos() {
+                if (!confirm(`¿Borrar TODAS las fotos de la galería "${FOTOGRAFO_ID}"?`)) {
+                    return;
+                }
+
+                const estado = document.getElementById("subirEstado");
+                estado.textContent = "⏳ Eliminando fotos...";
+                estado.style.color = "#f1c40f";
+
+                try {
+                    const respuesta = await fetch(
+                        `${URL_CLOUDFLARE}/limpiar?f=${FOTOGRAFO_ID}`,
+                        {
+                            method: "DELETE",
+                        },
+                    );
+
+                    const datos = await respuesta.json();
+
+                    if (respuesta.ok) {
+                        estado.textContent = `✅ ${datos.mensaje}`;
+                        estado.style.color = "#2ecc71";
+                        setTimeout(cargarFotos, 1500);
+                    } else {
+                        estado.textContent = `❌ Error: ${datos.error || "No se pudieron eliminar"}`;
+                        estado.style.color = "#e74c3c";
+                    }
+                } catch (error) {
+                    estado.textContent = "❌ Error de conexión";
+                    estado.style.color = "#e74c3c";
+                    console.error("Error al limpiar:", error);
                 }
             }
 
