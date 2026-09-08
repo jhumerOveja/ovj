@@ -786,7 +786,7 @@
             }
 
             // ==========================================
-            // PEDIR FOTO (ENVÍA EL NOMBRE EXACTO)
+            // PEDIR FOTO (SIN PEDIR NÚMERO)
             // ==========================================
 
             function pedirFoto() {
@@ -799,7 +799,7 @@
                 }
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
-                const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
+                const mensaje = `Hola, quiero la foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
 
                 const urlWhatsApp =
                     `https://wa.me/59160004962?text=${encodeURIComponent(mensaje)}`;
