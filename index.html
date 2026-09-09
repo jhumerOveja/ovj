@@ -30,51 +30,58 @@
                 border-bottom: 1px solid rgba(255, 215, 0, 0.08);
                 margin-bottom: 10px;
                 flex-wrap: wrap;
-                gap: 6px;
+                gap: 8px;
             }
-            .header-brand {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                flex-wrap: wrap;
+
+            .header-left {
+                flex: 1;
+                min-width: 120px;
             }
-            .header-brand h1 {
-                font-size: 1.6rem;
+            .header-left .ovj-studio {
+                font-size: 1.4rem;
                 font-weight: 300;
                 letter-spacing: 1px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                flex-wrap: wrap;
-            }
-            .header-brand .ovj-studio {
                 user-select: none;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 cursor: default;
             }
-            .header-brand .ovj-studio span {
+            .header-left .ovj-studio span {
                 font-weight: 700;
                 background: linear-gradient(135deg, #f9d976, #f39c12);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
-            .header-brand .evento-titulo {
-                font-size: 1.8rem;
+
+            .header-center {
+                flex: 2;
+                text-align: center;
+                min-width: 120px;
+            }
+            .header-center .evento-titulo {
+                font-size: 2.2rem;
                 font-weight: 700;
-                letter-spacing: 2px;
-                background: linear-gradient(135deg, #fff, #ddd);
+                letter-spacing: 3px;
+                color: #fff;
+                text-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
+                background: linear-gradient(135deg, #fff, #ccc);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
-                text-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+                line-height: 1.2;
             }
-            .header .badge-en-vivo {
+
+            .header-right {
+                flex: 1;
+                min-width: 80px;
+                text-align: right;
+            }
+            .header-right .badge-en-vivo {
                 display: inline-flex;
                 align-items: center;
                 gap: 5px;
                 background: rgba(231, 76, 60, 0.15);
                 color: #e74c3c;
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 font-weight: 700;
                 letter-spacing: 1.5px;
                 padding: 4px 12px 4px 8px;
@@ -84,7 +91,7 @@
                 user-select: none;
                 -webkit-user-select: none;
             }
-            .header .badge-en-vivo .punto {
+            .header-right .badge-en-vivo .punto {
                 display: inline-block;
                 width: 6px;
                 height: 6px;
@@ -93,30 +100,30 @@
                 animation: pulse 1.8s infinite;
             }
             @keyframes pulse {
-                0% {
-                    opacity: 0.3;
-                    transform: scale(0.8);
-                }
-                50% {
-                    opacity: 1;
-                    transform: scale(1.2);
-                }
-                100% {
-                    opacity: 0.3;
-                    transform: scale(0.8);
-                }
+                0% { opacity: 0.3; transform: scale(0.8); }
+                50% { opacity: 1; transform: scale(1.2); }
+                100% { opacity: 0.3; transform: scale(0.8); }
             }
 
             @media (max-width: 600px) {
-                .header-brand h1 {
-                    font-size: 1.2rem;
-                    gap: 6px;
+                .header {
+                    flex-direction: column;
+                    gap: 4px;
                 }
-                .header-brand .evento-titulo {
-                    font-size: 1.3rem;
+                .header-left, .header-center, .header-right {
+                    flex: none;
+                    width: 100%;
+                    text-align: center;
                 }
-                .header .badge-en-vivo {
-                    font-size: 0.55rem;
+                .header-left .ovj-studio {
+                    font-size: 1.1rem;
+                }
+                .header-center .evento-titulo {
+                    font-size: 1.5rem;
+                    letter-spacing: 1px;
+                }
+                .header-right .badge-en-vivo {
+                    font-size: 0.5rem;
                     padding: 3px 10px 3px 6px;
                 }
             }
@@ -479,13 +486,15 @@
     <body>
         <!-- ===== HEADER CON CO-BRANDING ===== -->
         <div class="header">
-            <div class="header-brand">
-                <h1 id="tituloPrincipal">
-                    <span class="ovj-studio">OVJ <span>Studio</span></span>
-                    <span class="evento-titulo" id="eventoTitulo">Galería en Vivo</span>
-                </h1>
+            <div class="header-left">
+                <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
             </div>
-            <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
+            <div class="header-center">
+                <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
+            </div>
+            <div class="header-right">
+                <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
+            </div>
         </div>
 
         <!-- ===== ID DEL FOTÓGRAFO ===== -->
@@ -558,13 +567,13 @@
                 FOTOGRAFO_ID;
 
             // ==========================================
-            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN EL TÍTULO)
+            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN OVJ STUDIO)
             // ==========================================
             let contadorToques = 0;
             let timeoutToques = null;
 
             document
-                .getElementById("tituloPrincipal")
+                .querySelector(".ovj-studio")
                 .addEventListener("click", function () {
                     contadorToques++;
                     console.log(`👆 Toque ${contadorToques}/5`);
@@ -617,7 +626,7 @@
 
                     const data = await respuesta.json();
 
-                    // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO EN EL HEADER
+                    // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO
                     if (data.evento) {
                         document.getElementById("eventoTitulo").textContent = data.evento;
                     }
