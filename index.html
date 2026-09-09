@@ -23,20 +23,19 @@
 
             /* ===== HEADER CON CO-BRANDING ===== */
             .header {
+                padding: 12px 0 8px;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+                margin-bottom: 10px;
+            }
+
+            .header-top {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 12px 0 16px;
-                border-bottom: 1px solid rgba(255, 215, 0, 0.08);
-                margin-bottom: 10px;
                 flex-wrap: wrap;
-                gap: 8px;
+                gap: 6px;
             }
 
-            .header-left {
-                flex: 1;
-                min-width: 120px;
-            }
             .header-left .ovj-studio {
                 font-size: 1.4rem;
                 font-weight: 300;
@@ -53,28 +52,6 @@
                 -webkit-text-fill-color: transparent;
             }
 
-            .header-center {
-                flex: 2;
-                text-align: center;
-                min-width: 120px;
-            }
-            .header-center .evento-titulo {
-                font-size: 2.2rem;
-                font-weight: 700;
-                letter-spacing: 3px;
-                color: #fff;
-                text-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
-                background: linear-gradient(135deg, #fff, #ccc);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                line-height: 1.2;
-            }
-
-            .header-right {
-                flex: 1;
-                min-width: 80px;
-                text-align: right;
-            }
             .header-right .badge-en-vivo {
                 display: inline-flex;
                 align-items: center;
@@ -105,26 +82,33 @@
                 100% { opacity: 0.3; transform: scale(0.8); }
             }
 
+            .header-bottom {
+                text-align: center;
+                padding-top: 4px;
+            }
+            .header-bottom .evento-titulo {
+                font-size: 2.0rem;
+                font-weight: 700;
+                letter-spacing: 3px;
+                color: #fff;
+                text-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
+                background: linear-gradient(135deg, #fff, #ccc);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                line-height: 1.2;
+            }
+
             @media (max-width: 600px) {
-                .header {
-                    flex-direction: column;
-                    gap: 4px;
-                }
-                .header-left, .header-center, .header-right {
-                    flex: none;
-                    width: 100%;
-                    text-align: center;
-                }
                 .header-left .ovj-studio {
                     font-size: 1.1rem;
-                }
-                .header-center .evento-titulo {
-                    font-size: 1.5rem;
-                    letter-spacing: 1px;
                 }
                 .header-right .badge-en-vivo {
                     font-size: 0.5rem;
                     padding: 3px 10px 3px 6px;
+                }
+                .header-bottom .evento-titulo {
+                    font-size: 1.5rem;
+                    letter-spacing: 1px;
                 }
             }
 
@@ -486,14 +470,16 @@
     <body>
         <!-- ===== HEADER CON CO-BRANDING ===== -->
         <div class="header">
-            <div class="header-left">
-                <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
+            <div class="header-top">
+                <div class="header-left">
+                    <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
+                </div>
+                <div class="header-right">
+                    <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
+                </div>
             </div>
-            <div class="header-center">
+            <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
-            </div>
-            <div class="header-right">
-                <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
             </div>
         </div>
 
@@ -567,7 +553,7 @@
                 FOTOGRAFO_ID;
 
             // ==========================================
-            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN OVJ STUDIO)
+            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN OVJ Studio)
             // ==========================================
             let contadorToques = 0;
             let timeoutToques = null;
