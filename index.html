@@ -28,7 +28,7 @@
                 align-items: center;
                 padding: 12px 0 16px;
                 border-bottom: 1px solid rgba(255, 215, 0, 0.08);
-                margin-bottom: 18px;
+                margin-bottom: 10px;
                 flex-wrap: wrap;
                 gap: 6px;
             }
@@ -86,21 +86,45 @@
                 }
             }
 
+            /* ===== BANNER DEL EVENTO ===== */
+            .banner-evento {
+                text-align: center;
+                padding: 8px 0 14px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+                margin-bottom: 10px;
+            }
+            .banner-evento .evento-nombre {
+                font-size: 1.2rem;
+                font-weight: 600;
+                letter-spacing: 2px;
+                background: linear-gradient(135deg, #f9d976, #f39c12);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0 0 40px rgba(243, 156, 18, 0.1);
+            }
+            .banner-evento .evento-sub {
+                font-size: 0.6rem;
+                color: #444;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                margin-top: 2px;
+            }
+
             /* ===== ID DEL FOTÓGRAFO ===== */
             .fotografo-id {
                 text-align: center;
-                font-size: 0.7rem;
-                color: #555;
+                font-size: 0.65rem;
+                color: #444;
                 letter-spacing: 1px;
-                padding-bottom: 8px;
+                padding-bottom: 6px;
                 font-weight: 300;
                 user-select: none;
                 -webkit-user-select: none;
             }
             .fotografo-id span {
-                color: #888;
+                color: #666;
                 background: rgba(255, 255, 255, 0.04);
-                padding: 4px 14px;
+                padding: 2px 14px;
                 border-radius: 20px;
             }
             .fotografo-id strong {
@@ -397,6 +421,9 @@
                     font-size: 0.55rem;
                     padding: 3px 10px 3px 6px;
                 }
+                .banner-evento .evento-nombre {
+                    font-size: 0.95rem;
+                }
                 .galeria {
                     grid-template-columns: repeat(
                         auto-fill,
@@ -455,6 +482,12 @@
             <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
         </div>
 
+        <!-- ===== BANNER DEL EVENTO ===== -->
+        <div class="banner-evento" id="bannerEvento">
+            <div class="evento-nombre" id="eventoNombre">Galería en Vivo</div>
+            <div class="evento-sub" id="eventoFotografo">Fotógrafo: cargando...</div>
+        </div>
+
         <!-- ===== ID DEL FOTÓGRAFO ===== -->
         <div class="fotografo-id" id="fotografoIdDisplay">
             <span
@@ -508,7 +541,7 @@
             // 🔥 CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
             // ==========================================
             const URL_CLOUDFLARE =
-                "https://retrieve-according-whilst-london.trycloudflare.com";
+                "https://anne-began-cell-outputs.trycloudflare.com";
 
             // ==========================================
             // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
@@ -562,7 +595,7 @@
             let cargando = false;
 
             // ==========================================
-            // CARGAR FOTOS
+            // CARGAR FOTOS (CON EVENTO)
             // ==========================================
 
             async function cargarFotos() {
@@ -582,7 +615,18 @@
                     if (!respuesta.ok)
                         throw new Error(`HTTP ${respuesta.status}`);
 
-                    const nuevasFotos = await respuesta.json();
+                    const data = await respuesta.json();
+
+                    // 🔥 ACTUALIZAR BANNER DEL EVENTO
+                    if (data.evento) {
+                        document.getElementById("eventoNombre").textContent = data.evento;
+                    }
+                    if (data.fotografo) {
+                        document.getElementById("eventoFotografo").textContent =
+                            `Fotógrafo: ${data.fotografo}`;
+                    }
+
+                    const nuevasFotos = data.fotos || [];
                     console.log("📸 Fotos recibidas:", nuevasFotos);
 
                     if (
