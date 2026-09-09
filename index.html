@@ -276,60 +276,150 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.93);
-                backdrop-filter: blur(6px);
                 justify-content: center;
                 align-items: center;
                 padding: 20px;
-                animation: fadeIn 0.2s ease;
             }
             .modal.activo {
                 display: flex;
             }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: scale(0.96);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-            .modal-contenido {
-                max-width: 800px;
+
+            /* Fondo con blur */
+            .modal-fondo {
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
-                background: #121212;
-                border-radius: 18px;
-                overflow: hidden;
-                border: 1px solid #2a2a2a;
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-                position: relative;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                z-index: 998;
+                display: none;
+                animation: blurIn 0.3s ease;
             }
+            .modal-fondo.activo {
+                display: block;
+            }
+            @keyframes blurIn {
+                from { backdrop-filter: blur(0px); opacity: 0; }
+                to { backdrop-filter: blur(8px); opacity: 1; }
+            }
+
+            .modal-contenido {
+                max-width: 850px;
+                width: 100%;
+                background: transparent;
+                border-radius: 18px;
+                position: relative;
+                z-index: 999;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            @keyframes zoomIn {
+                0% { transform: scale(0.7); opacity: 0; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+
+            .modal-contenido .imagen-wrapper {
+                position: relative;
+                border-radius: 16px;
+                overflow: hidden;
+                background: #0a0a0a;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+            }
+
+            /* 🔥 EFECTO CRISTAL (brillo al abrir) */
+            .modal-contenido .imagen-wrapper::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(
+                    45deg,
+                    transparent 30%,
+                    rgba(255, 255, 255, 0.03) 45%,
+                    rgba(255, 255, 255, 0.15) 50%,
+                    rgba(255, 255, 255, 0.03) 55%,
+                    transparent 70%
+                );
+                transform: rotate(45deg) translateX(-100%);
+                animation: brillo 1.2s ease forwards;
+                z-index: 2;
+                pointer-events: none;
+            }
+            @keyframes brillo {
+                0% { transform: rotate(45deg) translateX(-100%); }
+                100% { transform: rotate(45deg) translateX(100%); }
+            }
+
             .modal-contenido img {
                 width: 100%;
-                max-height: 62vh;
+                max-height: 68vh;
                 object-fit: contain;
                 display: block;
                 background: #0a0a0a;
-                padding: 16px;
+                padding: 12px;
+                transition: transform 0.3s ease;
             }
+
+            /* ===== NAVEGACIÓN ENTRE FOTOS (flechas) ===== */
+            .nav-flecha {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255, 255, 255, 0.06);
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                color: #fff;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                z-index: 3;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .nav-flecha:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 215, 0, 0.2);
+                transform: translateY(-50%) scale(1.05);
+            }
+            .nav-flecha.izquierda {
+                left: 12px;
+            }
+            .nav-flecha.derecha {
+                right: 12px;
+            }
+            .nav-flecha.oculto {
+                opacity: 0;
+                pointer-events: none;
+            }
+
             .modal-footer {
-                padding: 18px 24px 24px;
-                background: #0d0d0d;
-                border-top: 1px solid #1a1a1a;
+                padding: 16px 20px 20px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 12px;
+                gap: 10px;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(4px);
+                border-radius: 0 0 16px 16px;
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+                margin-top: -1px;
             }
             .modal-footer .mensaje-una-sola {
                 font-size: 0.7rem;
                 color: #555;
                 font-weight: 300;
                 text-align: center;
-                border-top: 1px solid #1a1a1a;
-                padding-top: 12px;
+                padding-top: 6px;
                 width: 100%;
                 letter-spacing: 0.3px;
                 user-select: none;
@@ -375,12 +465,12 @@
 
             .btn-cerrar-modal {
                 position: absolute;
-                top: 12px;
-                right: 16px;
-                background: rgba(255, 255, 255, 0.05);
-                border: none;
-                color: #666;
-                font-size: 1.5rem;
+                top: 8px;
+                right: 12px;
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                color: #888;
+                font-size: 1.4rem;
                 cursor: pointer;
                 width: 40px;
                 height: 40px;
@@ -388,16 +478,15 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition:
-                    background 0.3s,
-                    color 0.3s;
+                transition: all 0.3s ease;
                 z-index: 10;
                 user-select: none;
                 -webkit-user-select: none;
             }
             .btn-cerrar-modal:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.12);
                 color: #fff;
+                border-color: rgba(255, 255, 255, 0.15);
             }
 
             .footer {
@@ -427,16 +516,27 @@
                     padding: 10px;
                 }
                 .modal-contenido img {
-                    max-height: 45vh;
-                    padding: 12px;
+                    max-height: 48vh;
+                    padding: 8px;
                 }
                 .modal-footer {
-                    padding: 14px 16px 18px;
+                    padding: 12px 14px 16px;
                 }
                 .btn-pedir {
                     font-size: 0.9rem;
                     padding: 11px 16px;
                     max-width: 100%;
+                }
+                .nav-flecha {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+                .nav-flecha.izquierda {
+                    left: 6px;
+                }
+                .nav-flecha.derecha {
+                    right: 6px;
                 }
                 #estado {
                     font-size: 0.6rem;
@@ -512,12 +612,15 @@
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
 
         <!-- ===== MODAL ===== -->
+        <div class="modal-fondo" id="modalFondo"></div>
         <div class="modal" id="modal">
             <div class="modal-contenido">
-                <button class="btn-cerrar-modal" onclick="cerrarModal()">
-                    ✕
-                </button>
-                <img id="modalImagen" src="" alt="Foto ampliada" />
+                <div class="imagen-wrapper">
+                    <button class="btn-cerrar-modal" onclick="cerrarModal()">✕</button>
+                    <button class="nav-flecha izquierda oculto" id="flechaIzquierda" onclick="navegarFoto(-1)">‹</button>
+                    <img id="modalImagen" src="" alt="Foto ampliada" />
+                    <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
+                </div>
                 <div class="modal-footer">
                     <button class="btn-pedir" onclick="pedirFoto()">
                         <span class="icono-whatsapp">📱</span> Pedir foto gratis
@@ -769,7 +872,7 @@
             }
 
             // ==========================================
-            // MODAL
+            // 🖼️ MODAL CON EFECTOS PREMIUM
             // ==========================================
 
             function abrirModal(index) {
@@ -779,18 +882,61 @@
                 const foto = fotosCache[index];
 
                 const modal = document.getElementById("modal");
+                const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
 
+                // 🔥 Reiniciar la animación del brillo
+                const wrapper = document.querySelector('.imagen-wrapper');
+                wrapper.style.animation = 'none';
+                void wrapper.offsetHeight; // Trigger reflow
+                wrapper.style.animation = '';
+
+                // Cargar la imagen
                 modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
                 modalImagen.alt = `Foto ${index + 1}`;
 
+                // Mostrar modal y fondo
                 modal.classList.add("activo");
+                fondo.classList.add("activo");
                 document.body.style.overflow = "hidden";
+
+                // Actualizar flechas
+                actualizarFlechas();
             }
 
             function cerrarModal() {
                 document.getElementById("modal").classList.remove("activo");
+                document.getElementById("modalFondo").classList.remove("activo");
                 document.body.style.overflow = "";
+            }
+
+            function actualizarFlechas() {
+                const total = fotosCache.length;
+                const flechaIzq = document.getElementById("flechaIzquierda");
+                const flechaDer = document.getElementById("flechaDerecha");
+
+                flechaIzq.classList.toggle("oculto", fotoSeleccionadaIndex <= 0);
+                flechaDer.classList.toggle("oculto", fotoSeleccionadaIndex >= total - 1);
+            }
+
+            function navegarFoto(direccion) {
+                const nuevoIndex = fotoSeleccionadaIndex + direccion;
+                if (nuevoIndex < 0 || nuevoIndex >= fotosCache.length) return;
+
+                fotoSeleccionadaIndex = nuevoIndex;
+                const foto = fotosCache[nuevoIndex];
+                const modalImagen = document.getElementById("modalImagen");
+
+                // 🔥 Reiniciar brillo
+                const wrapper = document.querySelector('.imagen-wrapper');
+                wrapper.style.animation = 'none';
+                void wrapper.offsetHeight;
+                wrapper.style.animation = '';
+
+                modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
+                modalImagen.alt = `Foto ${nuevoIndex + 1}`;
+
+                actualizarFlechas();
             }
 
             // ==========================================
@@ -813,7 +959,6 @@
                     `https://wa.me/59160004962?text=${encodeURIComponent(mensaje)}`;
 
                 window.open(urlWhatsApp, "_blank");
-                setTimeout(cerrarModal, 500);
             }
 
             // ==========================================
@@ -822,9 +967,11 @@
 
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") cerrarModal();
+                if (e.key === "ArrowLeft") navegarFoto(-1);
+                if (e.key === "ArrowRight") navegarFoto(1);
             });
 
-            document.getElementById("modal").addEventListener("click", (e) => {
+            document.getElementById("modalFondo").addEventListener("click", (e) => {
                 if (e.target === e.currentTarget) cerrarModal();
             });
 
