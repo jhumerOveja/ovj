@@ -21,7 +21,7 @@
                 padding: 12px 16px 20px;
             }
 
-            /* ===== HEADER COMPACTO ===== */
+            /* ===== HEADER CON CO-BRANDING ===== */
             .header {
                 display: flex;
                 justify-content: space-between;
@@ -32,20 +32,41 @@
                 flex-wrap: wrap;
                 gap: 6px;
             }
-            .header h1 {
+            .header-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .header-brand h1 {
                 font-size: 1.6rem;
                 font-weight: 300;
                 letter-spacing: 1px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .header-brand .ovj-studio {
                 user-select: none;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 cursor: default;
             }
-            .header h1 span {
+            .header-brand .ovj-studio span {
                 font-weight: 700;
                 background: linear-gradient(135deg, #f9d976, #f39c12);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
+            }
+            .header-brand .evento-titulo {
+                font-size: 1.8rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                background: linear-gradient(135deg, #fff, #ddd);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
             }
             .header .badge-en-vivo {
                 display: inline-flex;
@@ -86,28 +107,18 @@
                 }
             }
 
-            /* ===== BANNER DEL EVENTO ===== */
-            .banner-evento {
-                text-align: center;
-                padding: 8px 0 14px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-                margin-bottom: 10px;
-            }
-            .banner-evento .evento-nombre {
-                font-size: 1.2rem;
-                font-weight: 600;
-                letter-spacing: 2px;
-                background: linear-gradient(135deg, #f9d976, #f39c12);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                text-shadow: 0 0 40px rgba(243, 156, 18, 0.1);
-            }
-            .banner-evento .evento-sub {
-                font-size: 0.6rem;
-                color: #444;
-                letter-spacing: 3px;
-                text-transform: uppercase;
-                margin-top: 2px;
+            @media (max-width: 600px) {
+                .header-brand h1 {
+                    font-size: 1.2rem;
+                    gap: 6px;
+                }
+                .header-brand .evento-titulo {
+                    font-size: 1.3rem;
+                }
+                .header .badge-en-vivo {
+                    font-size: 0.55rem;
+                    padding: 3px 10px 3px 6px;
+                }
             }
 
             /* ===== ID DEL FOTÓGRAFO ===== */
@@ -414,16 +425,6 @@
                 body {
                     padding: 8px 10px 16px;
                 }
-                .header h1 {
-                    font-size: 1.3rem;
-                }
-                .header .badge-en-vivo {
-                    font-size: 0.55rem;
-                    padding: 3px 10px 3px 6px;
-                }
-                .banner-evento .evento-nombre {
-                    font-size: 0.95rem;
-                }
                 .galeria {
                     grid-template-columns: repeat(
                         auto-fill,
@@ -476,16 +477,15 @@
         </style>
     </head>
     <body>
-        <!-- ===== HEADER ===== -->
+        <!-- ===== HEADER CON CO-BRANDING ===== -->
         <div class="header">
-            <h1 id="tituloPrincipal">OVJ <span>Studio</span></h1>
+            <div class="header-brand">
+                <h1 id="tituloPrincipal">
+                    <span class="ovj-studio">OVJ <span>Studio</span></span>
+                    <span class="evento-titulo" id="eventoTitulo">Galería en Vivo</span>
+                </h1>
+            </div>
             <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
-        </div>
-
-        <!-- ===== BANNER DEL EVENTO ===== -->
-        <div class="banner-evento" id="bannerEvento">
-            <div class="evento-nombre" id="eventoNombre">Galería en Vivo</div>
-            <div class="evento-sub" id="eventoFotografo">Fotógrafo: cargando...</div>
         </div>
 
         <!-- ===== ID DEL FOTÓGRAFO ===== -->
@@ -617,13 +617,9 @@
 
                     const data = await respuesta.json();
 
-                    // 🔥 ACTUALIZAR BANNER DEL EVENTO
+                    // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO EN EL HEADER
                     if (data.evento) {
-                        document.getElementById("eventoNombre").textContent = data.evento;
-                    }
-                    if (data.fotografo) {
-                        document.getElementById("eventoFotografo").textContent =
-                            `Fotógrafo: ${data.fotografo}`;
+                        document.getElementById("eventoTitulo").textContent = data.evento;
                     }
 
                     const nuevasFotos = data.fotos || [];
