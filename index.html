@@ -62,7 +62,6 @@
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
-            /* Pequeño detalle decorativo en OVJ Studio */
             .header-left .ovj-studio::before {
                 content: '✦';
                 position: absolute;
@@ -303,7 +302,6 @@
             .foto:hover img {
                 filter: brightness(1.06);
             }
-            /* Sutil indicador de "click" en la tarjeta */
             .foto::after {
                 content: '↗';
                 position: absolute;
@@ -316,6 +314,72 @@
             .foto:hover::after {
                 color: rgba(255, 215, 0, 0.2);
                 transform: translate(-4px, -4px);
+            }
+
+            /* ===== BOTÓN "VER MÁS FOTOS" ===== */
+            .ver-mas-wrapper {
+                grid-column: 1 / -1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 20px 0 10px;
+            }
+            .btn-ver-mas {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                color: #f39c12;
+                padding: 14px 38px;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                letter-spacing: 0.5px;
+                backdrop-filter: blur(4px);
+            }
+            .btn-ver-mas:hover {
+                background: rgba(243, 156, 18, 0.1);
+                border-color: rgba(255, 215, 0, 0.4);
+                transform: scale(1.03);
+                box-shadow: 0 8px 35px rgba(243, 156, 18, 0.15);
+            }
+            .btn-ver-mas:active {
+                transform: scale(0.97);
+            }
+            .info-restantes {
+                font-size: 0.7rem;
+                color: #555;
+                font-weight: 300;
+                letter-spacing: 0.5px;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .info-restantes strong {
+                color: #f39c12;
+                font-weight: 600;
+            }
+
+            /* ===== AVISO DE FOTOS NUEVAS ===== */
+            .aviso-nuevas {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 10px 16px;
+                background: rgba(46, 204, 113, 0.08);
+                border: 1px solid rgba(46, 204, 113, 0.2);
+                border-radius: 50px;
+                color: #2ecc71;
+                font-size: 0.75rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                animation: pulseNuevas 2s infinite;
+                margin: 0 auto;
+                max-width: 340px;
+                width: 100%;
+            }
+            @keyframes pulseNuevas {
+                0%, 100% { opacity: 0.85; }
+                50% { opacity: 1; }
             }
 
             /* ===== MODAL ===== */
@@ -379,7 +443,6 @@
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
             }
 
-            /* 🔥 EFECTO CRISTAL (brillo al abrir) */
             .modal-contenido .imagen-wrapper::before {
                 content: '';
                 position: absolute;
@@ -415,7 +478,6 @@
                 transition: transform 0.3s ease;
             }
 
-            /* ===== NAVEGACIÓN ENTRE FOTOS (flechas) ===== */
             .nav-flecha {
                 position: absolute;
                 top: 50%;
@@ -486,7 +548,6 @@
                 font-weight: 600;
             }
 
-            /* ===== BOTÓN PEDIR ===== */
             .btn-pedir {
                 background: linear-gradient(135deg, #2ecc71, #27ae60);
                 color: #0a0a0a;
@@ -623,6 +684,10 @@
                 .foto::after {
                     display: none;
                 }
+                .btn-ver-mas {
+                    font-size: 0.8rem;
+                    padding: 12px 28px;
+                }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -714,6 +779,9 @@
             const URL_CLOUDFLARE =
                 "https://blades-rather-albuquerque-wild.trycloudflare.com";
 
+            // 🔥 CONFIGURACIÓN DE CARGA PROGRESIVA
+            const FOTOS_POR_CARGA = 6;
+
             // ==========================================
             // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
             // ==========================================
@@ -762,8 +830,10 @@
             // VARIABLES
             // ==========================================
             let fotosCache = [];
+            let fotosVisibles = FOTOS_POR_CARGA;
             let fotoSeleccionadaIndex = -1;
             let cargando = false;
+            let totalFotosAnterior = 0;
 
             // ==========================================
             // CARGAR FOTOS (CON EVENTO)
@@ -774,7 +844,6 @@
                 cargando = true;
 
                 const estado = document.getElementById("estado");
-                const galeria = document.getElementById("galeria");
 
                 try {
                     estado.innerHTML = "⏳ Cargando...";
@@ -794,23 +863,20 @@
                     }
 
                     const nuevasFotos = data.fotos || [];
-                    console.log("📸 Fotos recibidas:", nuevasFotos);
+                    console.log("📸 Fotos recibidas:", nuevasFotos.length);
 
-                    if (
+                    const huboCambio =
                         JSON.stringify(nuevasFotos) !==
-                        JSON.stringify(fotosCache)
-                    ) {
+                        JSON.stringify(fotosCache);
+
+                    if (huboCambio) {
                         fotosCache = nuevasFotos;
                         renderizarGaleria();
                     }
 
-                    if (fotosCache.length === 0) {
-                        estado.innerHTML = "📷 No hay fotos aún";
-                        estado.className = "ok";
-                    } else {
-                        estado.innerHTML = `<span class="num">${fotosCache.length}</span> fotos disponibles`;
-                        estado.className = "ok";
-                    }
+                    // 🔥 ACTUALIZAR ESTADO CON CONTADOR DE VISIBLES
+                    actualizarEstado();
+
                 } catch (error) {
                     estado.innerHTML = `⚠️ Error: ${error.message}`;
                     estado.className = "error";
@@ -821,7 +887,24 @@
             }
 
             // ==========================================
-            // RENDERIZAR GALERÍA
+            // ACTUALIZAR ESTADO (CONTADOR)
+            // ==========================================
+            function actualizarEstado() {
+                const estado = document.getElementById("estado");
+
+                if (fotosCache.length === 0) {
+                    estado.innerHTML = "📷 No hay fotos aún";
+                    estado.className = "ok";
+                    return;
+                }
+
+                const visibles = Math.min(fotosVisibles, fotosCache.length);
+                estado.innerHTML = `Mostrando <span class="num">${visibles}</span> de <span class="num">${fotosCache.length}</span> fotos`;
+                estado.className = "ok";
+            }
+
+            // ==========================================
+            // RENDERIZAR GALERÍA (CON CARGA PROGRESIVA)
             // ==========================================
 
             function renderizarGaleria() {
@@ -832,19 +915,81 @@
                     return;
                 }
 
+                const visibles = Math.min(fotosVisibles, fotosCache.length);
                 let html = "";
-                fotosCache.forEach((foto, index) => {
+
+                // 🔥 Renderizar solo las fotos visibles
+                for (let i = 0; i < visibles; i++) {
+                    const foto = fotosCache[i];
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
-                    console.log(`📸 Cargando imagen ${index}: ${urlImagen}`);
 
                     html += `
-                    <div class="foto" onclick="abrirModal(${index})">
-                        <img src="${urlImagen}" alt="Foto ${index + 1}" loading="lazy"
+                    <div class="foto" onclick="abrirModal('${foto.nombre}')">
+                        <img src="${urlImagen}" alt="Foto ${i + 1}" loading="lazy"
                              onerror="console.error('❌ Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
                     </div>
                 `;
-                });
+                }
+
+                // 🔥 Aviso de fotos nuevas (si llegaron mientras el cliente estaba viendo)
+                const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
+                if (hayNuevas) {
+                    const nuevas = fotosCache.length - totalFotosAnterior;
+                    html += `
+                    <div class="aviso-nuevas">
+                        ✨ ${nuevas} ${nuevas === 1 ? 'foto nueva' : 'fotos nuevas'} disponible${nuevas === 1 ? '' : 's'}
+                    </div>
+                `;
+                }
+
+                // 🔥 Botón "Ver más fotos" si hay más para mostrar
+                if (visibles < fotosCache.length) {
+                    const restantes = fotosCache.length - visibles;
+                    html += `
+                    <div class="ver-mas-wrapper">
+                        <button class="btn-ver-mas" onclick="mostrarMasFotos()">
+                            Ver más fotos ↓
+                        </button>
+                        <div class="info-restantes">
+                            <strong>${restantes}</strong> ${restantes === 1 ? 'foto más' : 'fotos más'} por descubrir
+                        </div>
+                    </div>
+                `;
+                } else if (fotosCache.length > FOTOS_POR_CARGA) {
+                    // 🔥 Mensaje cuando ya se ven todas (y hay más de 6)
+                    html += `
+                    <div class="ver-mas-wrapper">
+                        <div class="info-restantes">
+                            ✨ Has visto todas las fotos disponibles
+                        </div>
+                    </div>
+                `;
+                }
+
                 galeria.innerHTML = html;
+
+                // Actualizar el total anterior
+                totalFotosAnterior = fotosCache.length;
+            }
+
+            // ==========================================
+            // 🔥 MOSTRAR MÁS FOTOS (CARGA PROGRESIVA)
+            // ==========================================
+            function mostrarMasFotos() {
+                fotosVisibles += FOTOS_POR_CARGA;
+                renderizarGaleria();
+                actualizarEstado();
+
+                // Scroll suave a la última foto visible (opcional pero agradable)
+                setTimeout(() => {
+                    const fotos = document.querySelectorAll('.foto');
+                    if (fotos.length > 0) {
+                        const ultimaFotoAnterior = fotos[Math.min(fotosVisibles - FOTOS_POR_CARGA - 1, fotos.length - 1)];
+                        if (ultimaFotoAnterior) {
+                            ultimaFotoAnterior.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                }, 100);
             }
 
             // ==========================================
@@ -948,8 +1093,14 @@
             // 🖼️ MODAL CON EFECTOS PREMIUM
             // ==========================================
 
-            function abrirModal(index) {
-                if (index < 0 || index >= fotosCache.length) return;
+            // 🔥 CAMBIO: ahora recibe el NOMBRE en lugar del índice
+            function abrirModal(nombreFoto) {
+                // Buscar la foto por nombre en el array completo
+                const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
+                if (index < 0) {
+                    console.error(`❌ Foto no encontrada: ${nombreFoto}`);
+                    return;
+                }
 
                 fotoSeleccionadaIndex = index;
                 const foto = fotosCache[index];
@@ -958,7 +1109,7 @@
                 const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
 
-                // 🔥 Reiniciar la animación del brillo
+                // Reiniciar la animación del brillo
                 const wrapper = document.querySelector('.imagen-wrapper');
                 wrapper.style.animation = 'none';
                 void wrapper.offsetHeight;
