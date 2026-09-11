@@ -195,75 +195,6 @@
                 color: #f1c40f;
             }
 
-            /* ===== SUBIR FOTOS (oculto) ===== */
-            .subir {
-                display: none;
-                text-align: center;
-                padding: 16px;
-                margin-bottom: 16px;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px dashed rgba(255, 255, 255, 0.08);
-                border-radius: 12px;
-                max-width: 500px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .subir input[type="file"] {
-                background: #1a1a1a;
-                color: #aaa;
-                border: 1px solid #333;
-                padding: 8px 14px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 0.8rem;
-                margin-bottom: 10px;
-                width: 100%;
-                max-width: 100%;
-            }
-            .subir .info-subida {
-                color: #666;
-                font-size: 0.7rem;
-                margin-bottom: 10px;
-                user-select: none;
-                -webkit-user-select: none;
-            }
-            .subir .acciones {
-                display: flex;
-                gap: 10px;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-top: 6px;
-            }
-            .subir button {
-                background: linear-gradient(135deg, #f9d976, #f39c12);
-                color: #0a0a0a;
-                border: none;
-                padding: 8px 24px;
-                border-radius: 50px;
-                font-weight: 700;
-                font-size: 0.8rem;
-                cursor: pointer;
-                transition: transform 0.2s;
-            }
-            .subir button:hover {
-                transform: scale(1.04);
-            }
-            .subir .btn-borrar {
-                background: #e74c3c;
-                color: #fff;
-            }
-            .subir .btn-borrar:hover {
-                background: #c0392b;
-            }
-            #subirEstado {
-                display: block;
-                margin-top: 8px;
-                font-size: 0.75rem;
-                color: #666;
-                user-select: none;
-                -webkit-user-select: none;
-            }
-
             /* ===== GALERÍA ===== */
             .galeria {
                 display: grid;
@@ -669,14 +600,6 @@
                     font-size: 0.6rem;
                     padding: 2px 0 8px;
                 }
-                .subir input[type="file"] {
-                    font-size: 0.7rem;
-                    padding: 6px 10px;
-                }
-                .subir .acciones {
-                    flex-direction: column;
-                    align-items: center;
-                }
                 .header-bottom .evento-titulo::after {
                     width: 40%;
                     left: 30%;
@@ -732,17 +655,6 @@
         <!-- ===== ESTADO ===== -->
         <div id="estado">⏳ Cargando...</div>
 
-        <!-- ===== SUBIR FOTOS (oculto) ===== -->
-        <div class="subir" id="panelSubir">
-            <div class="info-subida">📸 Selecciona una o más fotos para subir</div>
-            <input type="file" id="fileInput" accept="image/*" multiple />
-            <div class="acciones">
-                <button onclick="subirFotos()">📤 Subir fotos</button>
-                <button onclick="limpiarFotos()" class="btn-borrar">🗑️ Borrar todas</button>
-            </div>
-            <span id="subirEstado"></span>
-        </div>
-
         <!-- ===== GALERÍA ===== -->
         <div class="galeria" id="galeria"></div>
 
@@ -795,36 +707,6 @@
             const FOTOGRAFO_ID = getFotografoId();
             document.getElementById("fotografoNombre").textContent =
                 FOTOGRAFO_ID;
-
-            // ==========================================
-            // 🔥 MOSTRAR PANEL DE SUBIDA (5 TOQUES EN OVJ Studio)
-            // ==========================================
-            let contadorToques = 0;
-            let timeoutToques = null;
-
-            document
-                .querySelector(".ovj-studio")
-                .addEventListener("click", function () {
-                    contadorToques++;
-                    console.log(`👆 Toque ${contadorToques}/5`);
-
-                    clearTimeout(timeoutToques);
-                    timeoutToques = setTimeout(() => {
-                        contadorToques = 0;
-                    }, 3000);
-
-                    if (contadorToques >= 5) {
-                        const panel = document.getElementById("panelSubir");
-                        panel.style.display =
-                            panel.style.display === "none" ? "block" : "none";
-                        contadorToques = 0;
-                        console.log(
-                            panel.style.display === "block"
-                                ? "🔓 Panel de subida activado"
-                                : "🔒 Panel de subida desactivado"
-                        );
-                    }
-                });
 
             // ==========================================
             // VARIABLES
@@ -931,7 +813,7 @@
                 `;
                 }
 
-                // 🔥 Aviso de fotos nuevas (si llegaron mientras el cliente estaba viendo)
+                // 🔥 Aviso de fotos nuevas
                 const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
                 if (hayNuevas) {
                     const nuevas = fotosCache.length - totalFotosAnterior;
@@ -942,7 +824,7 @@
                 `;
                 }
 
-                // 🔥 Botón "Ver más fotos" si hay más para mostrar
+                // 🔥 Botón "Ver más fotos"
                 if (visibles < fotosCache.length) {
                     const restantes = fotosCache.length - visibles;
                     html += `
@@ -956,7 +838,6 @@
                     </div>
                 `;
                 } else if (fotosCache.length > FOTOS_POR_CARGA) {
-                    // 🔥 Mensaje cuando ya se ven todas (y hay más de 6)
                     html += `
                     <div class="ver-mas-wrapper">
                         <div class="info-restantes">
@@ -980,7 +861,6 @@
                 renderizarGaleria();
                 actualizarEstado();
 
-                // Scroll suave a la última foto visible (opcional pero agradable)
                 setTimeout(() => {
                     const fotos = document.querySelectorAll('.foto');
                     if (fotos.length > 0) {
@@ -993,109 +873,10 @@
             }
 
             // ==========================================
-            // SUBIR FOTOS (MÚLTIPLE - SIN ETIQUETAS)
-            // ==========================================
-
-            async function subirFotos() {
-                const input = document.getElementById("fileInput");
-                const estado = document.getElementById("subirEstado");
-
-                if (!input.files || input.files.length === 0) {
-                    estado.textContent = "❌ Selecciona una o más fotos";
-                    estado.style.color = "#e74c3c";
-                    return;
-                }
-
-                const archivos = Array.from(input.files);
-                let subidas = 0;
-                let errores = 0;
-
-                estado.textContent = `⏳ Subiendo ${archivos.length} fotos...`;
-                estado.style.color = "#f1c40f";
-
-                for (const archivo of archivos) {
-                    if (!archivo.type.startsWith("image/")) {
-                        errores++;
-                        continue;
-                    }
-
-                    const formData = new FormData();
-                    formData.append("foto", archivo);
-
-                    try {
-                        const respuesta = await fetch(
-                            `${URL_CLOUDFLARE}/upload?f=${FOTOGRAFO_ID}`,
-                            {
-                                method: "POST",
-                                body: formData,
-                            },
-                        );
-
-                        if (respuesta.ok) {
-                            subidas++;
-                        } else {
-                            errores++;
-                        }
-                    } catch (error) {
-                        errores++;
-                        console.error("Error subiendo:", archivo.name, error);
-                    }
-                }
-
-                estado.textContent = `✅ ${subidas} subidas, ${errores} errores`;
-                estado.style.color = subidas > 0 ? "#2ecc71" : "#e74c3c";
-                input.value = "";
-
-                if (subidas > 0) {
-                    setTimeout(cargarFotos, 2000);
-                }
-            }
-
-            // ==========================================
-            // 🗑️ LIMPIAR TODAS LAS FOTOS
-            // ==========================================
-
-            async function limpiarFotos() {
-                if (!confirm(`¿Borrar TODAS las fotos de la galería "${FOTOGRAFO_ID}"?`)) {
-                    return;
-                }
-
-                const estado = document.getElementById("subirEstado");
-                estado.textContent = "⏳ Eliminando fotos...";
-                estado.style.color = "#f1c40f";
-
-                try {
-                    const respuesta = await fetch(
-                        `${URL_CLOUDFLARE}/limpiar?f=${FOTOGRAFO_ID}`,
-                        {
-                            method: "DELETE",
-                        },
-                    );
-
-                    const datos = await respuesta.json();
-
-                    if (respuesta.ok) {
-                        estado.textContent = `✅ ${datos.mensaje}`;
-                        estado.style.color = "#2ecc71";
-                        setTimeout(cargarFotos, 1500);
-                    } else {
-                        estado.textContent = `❌ Error: ${datos.error || "No se pudieron eliminar"}`;
-                        estado.style.color = "#e74c3c";
-                    }
-                } catch (error) {
-                    estado.textContent = "❌ Error de conexión";
-                    estado.style.color = "#e74c3c";
-                    console.error("Error al limpiar:", error);
-                }
-            }
-
-            // ==========================================
             // 🖼️ MODAL CON EFECTOS PREMIUM
             // ==========================================
 
-            // 🔥 CAMBIO: ahora recibe el NOMBRE en lugar del índice
             function abrirModal(nombreFoto) {
-                // Buscar la foto por nombre en el array completo
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
                 if (index < 0) {
                     console.error(`❌ Foto no encontrada: ${nombreFoto}`);
@@ -1109,22 +890,18 @@
                 const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
 
-                // Reiniciar la animación del brillo
                 const wrapper = document.querySelector('.imagen-wrapper');
                 wrapper.style.animation = 'none';
                 void wrapper.offsetHeight;
                 wrapper.style.animation = '';
 
-                // Cargar la imagen
                 modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
                 modalImagen.alt = `Foto ${index + 1}`;
 
-                // Mostrar modal y fondo
                 modal.classList.add("activo");
                 fondo.classList.add("activo");
                 document.body.style.overflow = "hidden";
 
-                // Actualizar flechas
                 actualizarFlechas();
             }
 
