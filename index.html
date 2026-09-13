@@ -14,7 +14,7 @@
 
             /* ===== BASE ===== */
             body {
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
                 background: #0a0a0a;
                 color: #fff;
                 min-height: 100vh;
@@ -70,6 +70,101 @@
                 transform: translateY(-50%);
                 color: rgba(243, 156, 18, 0.3);
                 font-size: 0.6rem;
+            }
+
+            /* ===== HEADER DERECHO (idioma + en vivo) ===== */
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            /* 🔥 SELECTOR DE IDIOMA */
+            .lang-selector {
+                position: relative;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .lang-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(255, 255, 255, 0.05);
+                color: #ccc;
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                padding: 5px 10px;
+                border-radius: 50px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                cursor: pointer;
+                transition: all 0.25s ease;
+                backdrop-filter: blur(4px);
+            }
+            .lang-btn:hover {
+                background: rgba(255, 215, 0, 0.08);
+                border-color: rgba(255, 215, 0, 0.25);
+                color: #f39c12;
+            }
+            .lang-btn .bandera {
+                font-size: 0.9rem;
+                line-height: 1;
+            }
+            .lang-btn .flecha {
+                font-size: 0.5rem;
+                opacity: 0.6;
+                transition: transform 0.25s ease;
+            }
+            .lang-selector.abierto .lang-btn .flecha {
+                transform: rotate(180deg);
+            }
+
+            .lang-menu {
+                position: absolute;
+                top: calc(100% + 6px);
+                right: 0;
+                background: #111;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                padding: 6px;
+                min-width: 140px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-6px);
+                transition: all 0.2s ease;
+                z-index: 100;
+                backdrop-filter: blur(12px);
+            }
+            .lang-selector.abierto .lang-menu {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+            .lang-opcion {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.75rem;
+                color: #aaa;
+                transition: all 0.2s ease;
+                font-weight: 500;
+            }
+            .lang-opcion .bandera {
+                font-size: 1rem;
+                line-height: 1;
+            }
+            .lang-opcion:hover {
+                background: rgba(255, 215, 0, 0.08);
+                color: #f39c12;
+            }
+            .lang-opcion.activo {
+                background: rgba(255, 215, 0, 0.12);
+                color: #f39c12;
+                font-weight: 600;
             }
 
             .header-right .badge-en-vivo {
@@ -141,6 +236,13 @@
                 .header-right .badge-en-vivo {
                     font-size: 0.5rem;
                     padding: 3px 10px 3px 6px;
+                }
+                .lang-btn {
+                    font-size: 0.6rem;
+                    padding: 4px 8px;
+                }
+                .lang-btn .bandera {
+                    font-size: 0.8rem;
                 }
                 .header-bottom .evento-titulo {
                     font-size: 1.5rem;
@@ -673,7 +775,33 @@
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                 </div>
                 <div class="header-right">
-                    <div class="badge-en-vivo"><span class="punto"></span> En vivo</div>
+                    <!-- 🔥 SELECTOR DE IDIOMA -->
+                    <div class="lang-selector" id="langSelector">
+                        <div class="lang-btn" onclick="toggleLangMenu()">
+                            <span class="bandera" id="langBanderaActual">🇧🇴</span>
+                            <span id="langTextoActual">ES</span>
+                            <span class="flecha">▼</span>
+                        </div>
+                        <div class="lang-menu">
+                            <div class="lang-opcion" onclick="cambiarIdioma('es')" data-lang="es">
+                                <span class="bandera">🇧🇴</span>
+                                <span>Español</span>
+                            </div>
+                            <div class="lang-opcion" onclick="cambiarIdioma('en')" data-lang="en">
+                                <span class="bandera">🇺🇸</span>
+                                <span>English</span>
+                            </div>
+                            <div class="lang-opcion" onclick="cambiarIdioma('zh')" data-lang="zh">
+                                <span class="bandera">🇨🇳</span>
+                                <span>中文</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="badge-en-vivo">
+                        <span class="punto"></span>
+                        <span id="badgeEnVivo">En vivo</span>
+                    </div>
                 </div>
             </div>
             <div class="header-bottom">
@@ -702,12 +830,12 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn-pedir" onclick="pedirFoto()">
-                        <span class="icono-whatsapp">📱</span> Pedir foto gratis
-                        sin marca de agua
+                        <span class="icono-whatsapp">📱</span>
+                        <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
                     </button>
                     <div class="mensaje-una-sola">
-                        ⚡ <strong>Puedes pedir hasta 5 fotos</strong> · La
-                        recibirás por WhatsApp en minutos
+                        ⚡ <strong id="msgLimite">Puedes pedir hasta 5 fotos</strong>
+                        <span id="msgEntrega"> · La recibirás por WhatsApp en minutos</span>
                     </div>
                 </div>
             </div>
@@ -722,6 +850,181 @@
 
             // 🔥 CONFIGURACIÓN DE CARGA PROGRESIVA
             const FOTOS_POR_CARGA = 6;
+
+            // ==========================================
+            // 🔥 SISTEMA DE IDIOMAS
+            // ==========================================
+            const TRADUCCIONES = {
+                es: {
+                    tituloVentana: "OVJ Studio - Galería en Vivo",
+                    tituloDefault: "Galería en Vivo",
+                    enVivo: "En vivo",
+                    cargando: "Cargando...",
+                    error: "Error",
+                    noHayFotos: "No hay fotos aún",
+                    mostrando: (v, t) => `Mostrando <span class="num">${v}</span> de <span class="num">${t}</span> fotos`,
+                    verMas: "Ver más fotos ↓",
+                    fotoMas: "foto más",
+                    fotosMas: "fotos más",
+                    porDescubrir: "por descubrir",
+                    hasVistoTodo: "✨ Has visto todas las fotos disponibles",
+                    fotoNueva: "foto nueva",
+                    fotosNuevas: "fotos nuevas",
+                    disponibles: "disponible",
+                    disponiblesPlural: "disponibles",
+                    pedirFoto: "Pedir foto gratis sin marca de agua",
+                    puedesPedir: "Puedes pedir hasta 5 fotos",
+                    laRecibiras: " · La recibirás por WhatsApp en minutos",
+                    offlineTitulo: "Galería no disponible",
+                    offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
+                    langTexto: "ES",
+                    langBandera: "🇧🇴"
+                },
+                en: {
+                    tituloVentana: "OVJ Studio - Live Gallery",
+                    tituloDefault: "Live Gallery",
+                    enVivo: "Live",
+                    cargando: "Loading...",
+                    error: "Error",
+                    noHayFotos: "No photos yet",
+                    mostrando: (v, t) => `Showing <span class="num">${v}</span> of <span class="num">${t}</span> photos`,
+                    verMas: "See more photos ↓",
+                    fotoMas: "more photo",
+                    fotosMas: "more photos",
+                    porDescubrir: "to discover",
+                    hasVistoTodo: "✨ You've seen all available photos",
+                    fotoNueva: "new photo",
+                    fotosNuevas: "new photos",
+                    disponibles: "available",
+                    disponiblesPlural: "available",
+                    pedirFoto: "Request free photo without watermark",
+                    puedesPedir: "You can request up to 5 photos",
+                    laRecibiras: " · You'll receive it on WhatsApp in minutes",
+                    offlineTitulo: "Gallery not available",
+                    offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
+                    langTexto: "EN",
+                    langBandera: "🇺🇸"
+                },
+                zh: {
+                    tituloVentana: "OVJ Studio - 现场画廊",
+                    tituloDefault: "现场画廊",
+                    enVivo: "直播",
+                    cargando: "加载中...",
+                    error: "错误",
+                    noHayFotos: "暂无照片",
+                    mostrando: (v, t) => `显示 <span class="num">${v}</span> / <span class="num">${t}</span> 张照片`,
+                    verMas: "查看更多照片 ↓",
+                    fotoMas: "张照片",
+                    fotosMas: "张照片",
+                    porDescubrir: "待查看",
+                    hasVistoTodo: "✨ 你已看完全部照片",
+                    fotoNueva: "张新照片",
+                    fotosNuevas: "张新照片",
+                    disponibles: "可用",
+                    disponiblesPlural: "可用",
+                    pedirFoto: "免费索取无水印照片",
+                    puedesPedir: "你最多可以索取 5 张照片",
+                    laRecibiras: " · 你将在几分钟内通过 WhatsApp 收到",
+                    offlineTitulo: "画廊暂不可用",
+                    offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
+                    langTexto: "中文",
+                    langBandera: "🇨🇳"
+                }
+            };
+
+            // 🔥 IDIOMA ACTUAL
+            let idiomaActual = 'es';
+
+            // 🔥 FUNCIÓN PARA OBTENER TRADUCCIONES
+            function t(clave, ...args) {
+                const valor = TRADUCCIONES[idiomaActual][clave];
+                if (typeof valor === 'function') {
+                    return valor(...args);
+                }
+                return valor;
+            }
+
+            // 🔥 DETECTAR IDIOMA INICIAL
+            function detectarIdiomaInicial() {
+                // 1. Verificar localStorage
+                const guardado = localStorage.getItem('ovj_idioma');
+                if (guardado && TRADUCCIONES[guardado]) {
+                    return guardado;
+                }
+
+                // 2. Detectar por navegador
+                const idiomaNavegador = navigator.language || navigator.userLanguage || 'es';
+                const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
+
+                // Mapear idiomas soportados
+                if (idiomaBase === 'en') return 'en';
+                if (idiomaBase === 'zh') return 'zh';
+                return 'es';
+            }
+
+            // 🔥 APLICAR IDIOMA EN TODA LA UI
+            function aplicarIdioma(idioma) {
+                if (!TRADUCCIONES[idioma]) return;
+
+                idiomaActual = idioma;
+
+                // Guardar en localStorage
+                localStorage.setItem('ovj_idioma', idioma);
+
+                // Actualizar atributo lang del HTML
+                document.documentElement.lang = idioma;
+
+                // Actualizar título de la ventana
+                document.title = t('tituloVentana');
+
+                // Actualizar textos del header
+                document.getElementById('badgeEnVivo').textContent = t('enVivo');
+
+                // Actualizar selector
+                document.getElementById('langTextoActual').textContent = t('langTexto');
+                document.getElementById('langBanderaActual').textContent = t('langBandera');
+
+                // Marcar opción activa en el menú
+                document.querySelectorAll('.lang-opcion').forEach(op => {
+                    op.classList.toggle('activo', op.dataset.lang === idioma);
+                });
+
+                // Actualizar textos del modal
+                document.getElementById('btnPedirTexto').textContent = t('pedirFoto');
+                document.getElementById('msgLimite').textContent = t('puedesPedir');
+                document.getElementById('msgEntrega').textContent = t('laRecibiras');
+
+                // Actualizar textos dinámicos (si hay galería renderizada)
+                actualizarEstado();
+                if (fotosCache.length > 0) {
+                    renderizarGaleria();
+                }
+            }
+
+            // 🔥 CAMBIAR IDIOMA (desde el dropdown)
+            function cambiarIdioma(idioma) {
+                aplicarIdioma(idioma);
+                cerrarLangMenu();
+            }
+
+            // 🔥 TOGGLE DEL MENÚ DE IDIOMAS
+            function toggleLangMenu() {
+                const selector = document.getElementById('langSelector');
+                selector.classList.toggle('abierto');
+            }
+
+            // 🔥 CERRAR MENÚ
+            function cerrarLangMenu() {
+                document.getElementById('langSelector').classList.remove('abierto');
+            }
+
+            // 🔥 CERRAR AL HACER CLICK FUERA
+            document.addEventListener('click', (e) => {
+                const selector = document.getElementById('langSelector');
+                if (selector && !selector.contains(e.target)) {
+                    cerrarLangMenu();
+                }
+            });
 
             // ==========================================
             // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
@@ -744,6 +1047,7 @@
             let cargando = false;
             let totalFotosAnterior = 0;
             let servidorOnline = true;
+            let tituloEsDefault = true;
 
             // ==========================================
             // CARGAR FOTOS (CON EVENTO)
@@ -756,7 +1060,7 @@
                 const estado = document.getElementById("estado");
 
                 try {
-                    estado.innerHTML = "⏳ Cargando...";
+                    estado.innerHTML = "⏳ " + t('cargando');
                     estado.className = "cargando";
 
                     const respuesta = await fetch(
@@ -770,13 +1074,23 @@
                     // 🔥 Si llegamos aquí, el servidor está online
                     if (!servidorOnline) {
                         servidorOnline = true;
-                        // Refrescar la galería
                         fotosCache = [];
                     }
 
                     // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO
                     if (data.evento) {
-                        document.getElementById("eventoTitulo").textContent = data.evento;
+                        const eventoTexto = data.evento.trim();
+                        const esDefault = eventoTexto === 'Galería en Vivo' || eventoTexto === 'Galería en vivo' || eventoTexto === 'Live Gallery';
+
+                        if (esDefault) {
+                            // Es el texto por defecto, traducirlo según idioma
+                            tituloEsDefault = true;
+                            document.getElementById("eventoTitulo").textContent = t('tituloDefault');
+                        } else {
+                            // Es un evento personalizado, mostrarlo tal cual
+                            tituloEsDefault = false;
+                            document.getElementById("eventoTitulo").textContent = eventoTexto;
+                        }
                     }
 
                     const nuevasFotos = data.fotos || [];
@@ -791,13 +1105,11 @@
                         renderizarGaleria();
                     }
 
-                    // 🔥 ACTUALIZAR ESTADO CON CONTADOR DE VISIBLES
                     actualizarEstado();
 
                 } catch (error) {
                     console.error("Error:", error);
 
-                    // 🔥 NUEVO: Si el servidor está offline, mostrar mensaje amigable
                     servidorOnline = false;
                     mostrarOffline();
                 }
@@ -818,10 +1130,9 @@
                 galeria.innerHTML = `
                     <div class="estado-offline">
                         <span class="icono">📸</span>
-                        <div class="titulo">Galería no disponible</div>
+                        <div class="titulo">${t('offlineTitulo')}</div>
                         <div class="mensaje">
-                            La galería se está preparando.<br>
-                            Intenta de nuevo en unos minutos.
+                            ${t('offlineMensaje')}
                         </div>
                     </div>
                 `;
@@ -833,14 +1144,16 @@
             function actualizarEstado() {
                 const estado = document.getElementById("estado");
 
+                if (servidorOnline === false) return;
+
                 if (fotosCache.length === 0) {
-                    estado.innerHTML = "📷 No hay fotos aún";
+                    estado.innerHTML = "📷 " + t('noHayFotos');
                     estado.className = "ok";
                     return;
                 }
 
                 const visibles = Math.min(fotosVisibles, fotosCache.length);
-                estado.innerHTML = `Mostrando <span class="num">${visibles}</span> de <span class="num">${fotosCache.length}</span> fotos`;
+                estado.innerHTML = t('mostrando', visibles, fotosCache.length);
                 estado.className = "ok";
             }
 
@@ -859,7 +1172,6 @@
                 const visibles = Math.min(fotosVisibles, fotosCache.length);
                 let html = "";
 
-                // 🔥 Renderizar solo las fotos visibles con skeleton
                 for (let i = 0; i < visibles; i++) {
                     const foto = fotosCache[i];
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
@@ -879,9 +1191,11 @@
                 const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
                 if (hayNuevas) {
                     const nuevas = fotosCache.length - totalFotosAnterior;
+                    const texto = nuevas === 1 ? t('fotoNueva') : t('fotosNuevas');
+                    const disp = nuevas === 1 ? t('disponibles') : t('disponiblesPlural');
                     html += `
                     <div class="aviso-nuevas">
-                        ✨ ${nuevas} ${nuevas === 1 ? 'foto nueva' : 'fotos nuevas'} disponible${nuevas === 1 ? '' : 's'}
+                        ✨ ${nuevas} ${texto} ${disp}
                     </div>
                 `;
                 }
@@ -889,13 +1203,14 @@
                 // 🔥 Botón "Ver más fotos"
                 if (visibles < fotosCache.length) {
                     const restantes = fotosCache.length - visibles;
+                    const textoRestantes = restantes === 1 ? t('fotoMas') : t('fotosMas');
                     html += `
                     <div class="ver-mas-wrapper">
                         <button class="btn-ver-mas" onclick="mostrarMasFotos()">
-                            Ver más fotos ↓
+                            ${t('verMas')}
                         </button>
                         <div class="info-restantes">
-                            <strong>${restantes}</strong> ${restantes === 1 ? 'foto más' : 'fotos más'} por descubrir
+                            <strong>${restantes}</strong> ${textoRestantes} ${t('porDescubrir')}
                         </div>
                     </div>
                 `;
@@ -903,7 +1218,7 @@
                     html += `
                     <div class="ver-mas-wrapper">
                         <div class="info-restantes">
-                            ✨ Has visto todas las fotos disponibles
+                            ${t('hasVistoTodo')}
                         </div>
                     </div>
                 `;
@@ -911,10 +1226,8 @@
 
                 galeria.innerHTML = html;
 
-                // 🔥 CONTROL DE CARGA SECUENCIAL (2 a la vez)
                 cargarImagenesSecuencialmente();
 
-                // Actualizar el total anterior
                 totalFotosAnterior = fotosCache.length;
             }
 
@@ -1053,6 +1366,7 @@
                 }
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
+                // 🔥 Mensaje SIEMPRE en español (para el bot del servidor)
                 const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
 
                 const urlWhatsApp =
@@ -1066,7 +1380,13 @@
             // ==========================================
 
             document.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") cerrarModal();
+                if (e.key === "Escape") {
+                    if (document.getElementById("modal").classList.contains("activo")) {
+                        cerrarModal();
+                    } else {
+                        cerrarLangMenu();
+                    }
+                }
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
             });
@@ -1079,6 +1399,11 @@
             // INICIALIZAR
             // ==========================================
 
+            // Detectar idioma inicial y aplicarlo
+            idiomaActual = detectarIdiomaInicial();
+            aplicarIdioma(idiomaActual);
+
+            // Cargar fotos
             cargarFotos();
             setInterval(cargarFotos, 60000);
         </script>
