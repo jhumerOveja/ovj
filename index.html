@@ -79,7 +79,7 @@
                 gap: 8px;
             }
 
-            /* 🔥 SELECTOR DE IDIOMA */
+            /* SELECTOR DE IDIOMA */
             .lang-selector {
                 position: relative;
                 user-select: none;
@@ -250,7 +250,7 @@
                 }
             }
 
-            /* ===== AVISO HD (recordatorio fijo) ===== */
+            /* ===== AVISO HD ===== */
             .aviso-hd {
                 max-width: 900px;
                 margin: 0 auto 12px;
@@ -626,7 +626,6 @@
                 margin-top: -1px;
             }
 
-            /* 🔥 NUEVO: aviso de preview dentro del modal */
             .modal-footer .mensaje-preview {
                 font-size: 0.7rem;
                 color: #888;
@@ -829,7 +828,7 @@
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                 </div>
                 <div class="header-right">
-                    <!-- 🔥 SELECTOR DE IDIOMA -->
+                    <!-- SELECTOR DE IDIOMA -->
                     <div class="lang-selector" id="langSelector">
                         <div class="lang-btn" onclick="toggleLangMenu()">
                             <span class="bandera" id="langBanderaActual">🇧🇴</span>
@@ -865,11 +864,11 @@
 
         <!-- ===== AVISO HD ===== -->
         <div class="aviso-hd" id="avisoHD">
-            ⚡ <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.
+            <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.
         </div>
 
         <!-- ===== ESTADO ===== -->
-        <div id="estado">⏳ Cargando...</div>
+        <div id="estado">Cargando...</div>
 
         <!-- ===== GALERÍA ===== -->
         <div class="galeria" id="galeria"></div>
@@ -893,10 +892,10 @@
                         <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
                     </button>
                     <div class="mensaje-preview" id="mensajePreview">
-                        📱 Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.
+                        Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.
                     </div>
                     <div class="mensaje-una-sola">
-                        ⚡ <strong id="msgLimite">Puedes pedir hasta 5 fotos</strong>
+                        <strong id="msgLimite">Tienes un número limitado de fotos para pedir</strong>
                         <span id="msgEntrega"> · La recibirás por WhatsApp en minutos</span>
                     </div>
                 </div>
@@ -905,16 +904,16 @@
 
         <script>
             // ==========================================
-            // 🔥 CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
+            // CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
             // ==========================================
             const URL_CLOUDFLARE =
                 "https://prerequisite-notifications-eyed-given.trycloudflare.com";
 
-            // 🔥 CONFIGURACIÓN DE CARGA PROGRESIVA
+            // CONFIGURACIÓN DE CARGA PROGRESIVA
             const FOTOS_POR_CARGA = 6;
 
             // ==========================================
-            // 🔥 SISTEMA DE IDIOMAS
+            // SISTEMA DE IDIOMAS
             // ==========================================
             const TRADUCCIONES = {
                 es: {
@@ -929,20 +928,20 @@
                     fotoMas: "foto más",
                     fotosMas: "fotos más",
                     porDescubrir: "por descubrir",
-                    hasVistoTodo: "✨ Has visto todas las fotos disponibles",
+                    hasVistoTodo: "Has visto todas las fotos disponibles",
                     fotoNueva: "foto nueva",
                     fotosNuevas: "fotos nuevas",
                     disponibles: "disponible",
                     disponiblesPlural: "disponibles",
                     pedirFoto: "Pedir foto gratis sin marca de agua",
-                    puedesPedir: "Puedes pedir hasta 5 fotos",
+                    puedesPedir: "Tienes un número limitado de fotos para pedir",
                     laRecibiras: " · La recibirás por WhatsApp en minutos",
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
                     langBandera: "🇧🇴",
-                    avisoHD: '⚡ <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
-                    mensajePreview: '📱 Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.'
+                    avisoHD: '<strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
+                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.'
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -956,20 +955,20 @@
                     fotoMas: "more photo",
                     fotosMas: "more photos",
                     porDescubrir: "to discover",
-                    hasVistoTodo: "✨ You've seen all available photos",
+                    hasVistoTodo: "You've seen all available photos",
                     fotoNueva: "new photo",
                     fotosNuevas: "new photos",
                     disponibles: "available",
                     disponiblesPlural: "available",
                     pedirFoto: "Request free photo without watermark",
-                    puedesPedir: "You can request up to 5 photos",
+                    puedesPedir: "You have a limited number of photos to request",
                     laRecibiras: " · You'll receive it on WhatsApp in minutes",
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
                     langBandera: "🇺🇸",
-                    avisoHD: '⚡ <strong>Tip:</strong> Turn on <strong>HD</strong> quality in WhatsApp to receive your photos in maximum quality.',
-                    mensajePreview: '📱 Gallery photos are a <strong>preview</strong>. You will receive your photo in original quality (HD) via WhatsApp.'
+                    avisoHD: '<strong>Tip:</strong> Turn on <strong>HD</strong> quality in WhatsApp to receive your photos in maximum quality.',
+                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. You will receive your photo in original quality (HD) via WhatsApp.'
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -983,27 +982,25 @@
                     fotoMas: "张照片",
                     fotosMas: "张照片",
                     porDescubrir: "待查看",
-                    hasVistoTodo: "✨ 你已看完全部照片",
+                    hasVistoTodo: "你已看完全部照片",
                     fotoNueva: "张新照片",
                     fotosNuevas: "张新照片",
                     disponibles: "可用",
                     disponiblesPlural: "可用",
                     pedirFoto: "免费索取无水印照片",
-                    puedesPedir: "你最多可以索取 5 张照片",
+                    puedesPedir: "您可以索取的张数有限",
                     laRecibiras: " · 你将在几分钟内通过 WhatsApp 收到",
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
                     langBandera: "🇨🇳",
-                    avisoHD: '⚡ <strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
-                    mensajePreview: '📱 画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。'
+                    avisoHD: '<strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
+                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。'
                 }
             };
 
-            // 🔥 IDIOMA ACTUAL
             let idiomaActual = 'es';
 
-            // 🔥 FUNCIÓN PARA OBTENER TRADUCCIONES
             function t(clave, ...args) {
                 const valor = TRADUCCIONES[idiomaActual][clave];
                 if (typeof valor === 'function') {
@@ -1012,7 +1009,6 @@
                 return valor;
             }
 
-            // 🔥 DETECTAR IDIOMA INICIAL
             function detectarIdiomaInicial() {
                 const guardado = localStorage.getItem('ovj_idioma');
                 if (guardado && TRADUCCIONES[guardado]) {
@@ -1027,7 +1023,6 @@
                 return 'es';
             }
 
-            // 🔥 APLICAR IDIOMA EN TODA LA UI
             function aplicarIdioma(idioma) {
                 if (!TRADUCCIONES[idioma]) return;
 
@@ -1051,7 +1046,6 @@
                 document.getElementById('avisoHD').innerHTML = t('avisoHD');
                 document.getElementById('mensajePreview').innerHTML = t('mensajePreview');
 
-                // Si el título del evento era el default, retraducirlo
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
                 }
@@ -1062,24 +1056,20 @@
                 }
             }
 
-            // 🔥 CAMBIAR IDIOMA
             function cambiarIdioma(idioma) {
                 aplicarIdioma(idioma);
                 cerrarLangMenu();
             }
 
-            // 🔥 TOGGLE DEL MENÚ DE IDIOMAS
             function toggleLangMenu() {
                 const selector = document.getElementById('langSelector');
                 selector.classList.toggle('abierto');
             }
 
-            // 🔥 CERRAR MENÚ
             function cerrarLangMenu() {
                 document.getElementById('langSelector').classList.remove('abierto');
             }
 
-            // 🔥 CERRAR AL HACER CLICK FUERA
             document.addEventListener('click', (e) => {
                 const selector = document.getElementById('langSelector');
                 if (selector && !selector.contains(e.target)) {
@@ -1088,12 +1078,12 @@
             });
 
             // ==========================================
-            // 📌 CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
+            // CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
             // ==========================================
             function getFotografoId() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get("f");
-                console.log(`🔍 ID del fotógrafo detectado: "${id}"`);
+                console.log(`ID del fotógrafo detectado: "${id}"`);
                 return id || "default";
             }
 
@@ -1121,7 +1111,7 @@
                 const estado = document.getElementById("estado");
 
                 try {
-                    estado.innerHTML = "⏳ " + t('cargando');
+                    estado.innerHTML = t('cargando');
                     estado.className = "cargando";
 
                     const respuesta = await fetch(
@@ -1151,7 +1141,7 @@
                     }
 
                     const nuevasFotos = data.fotos || [];
-                    console.log("📸 Fotos recibidas:", nuevasFotos.length);
+                    console.log("Fotos recibidas:", nuevasFotos.length);
 
                     const huboCambio =
                         JSON.stringify(nuevasFotos) !==
@@ -1204,7 +1194,7 @@
                 if (servidorOnline === false) return;
 
                 if (fotosCache.length === 0) {
-                    estado.innerHTML = "📷 " + t('noHayFotos');
+                    estado.innerHTML = t('noHayFotos');
                     estado.className = "ok";
                     return;
                 }
@@ -1239,7 +1229,7 @@
                         <img src="${urlImagen}" alt="Foto ${i + 1}"
                              data-src="${urlImagen}"
                              onload="this.classList.add('cargada')"
-                             onerror="console.error('❌ Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
+                             onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
                     </div>
                 `;
                 }
@@ -1251,7 +1241,7 @@
                     const disp = nuevas === 1 ? t('disponibles') : t('disponiblesPlural');
                     html += `
                     <div class="aviso-nuevas">
-                        ✨ ${nuevas} ${texto} ${disp}
+                        ${nuevas} ${texto} ${disp}
                     </div>
                 `;
                 }
@@ -1347,7 +1337,7 @@
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
                 if (index < 0) {
-                    console.error(`❌ Foto no encontrada: ${nombreFoto}`);
+                    console.error(`Foto no encontrada: ${nombreFoto}`);
                     return;
                 }
 
@@ -1416,7 +1406,7 @@
                     fotoSeleccionadaIndex < 0 ||
                     fotoSeleccionadaIndex >= fotosCache.length
                 ) {
-                    alert("❌ No hay foto seleccionada");
+                    alert("No hay foto seleccionada");
                     return;
                 }
 
