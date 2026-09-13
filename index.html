@@ -250,6 +250,29 @@
                 }
             }
 
+            /* ===== AVISO HD (recordatorio fijo) ===== */
+            .aviso-hd {
+                max-width: 900px;
+                margin: 0 auto 12px;
+                text-align: center;
+                padding: 10px 18px;
+                background: rgba(46, 204, 113, 0.06);
+                border: 1px solid rgba(46, 204, 113, 0.15);
+                border-radius: 12px;
+                font-size: 0.72rem;
+                color: #2ecc71;
+                font-weight: 400;
+                letter-spacing: 0.3px;
+                line-height: 1.5;
+                user-select: none;
+                -webkit-user-select: none;
+                backdrop-filter: blur(4px);
+            }
+            .aviso-hd strong {
+                color: #27ae60;
+                font-weight: 600;
+            }
+
             /* ===== ESTADO MINI ===== */
             #estado {
                 text-align: center;
@@ -602,6 +625,28 @@
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
                 margin-top: -1px;
             }
+
+            /* 🔥 NUEVO: aviso de preview dentro del modal */
+            .modal-footer .mensaje-preview {
+                font-size: 0.7rem;
+                color: #888;
+                font-weight: 300;
+                text-align: center;
+                width: 100%;
+                letter-spacing: 0.3px;
+                line-height: 1.5;
+                padding: 8px 12px;
+                background: rgba(255, 215, 0, 0.04);
+                border: 1px solid rgba(255, 215, 0, 0.1);
+                border-radius: 10px;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .modal-footer .mensaje-preview strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
+
             .modal-footer .mensaje-una-sola {
                 font-size: 0.7rem;
                 color: #555;
@@ -702,6 +747,11 @@
                 body {
                     padding: 8px 10px 16px;
                 }
+                .aviso-hd {
+                    font-size: 0.65rem;
+                    padding: 8px 12px;
+                    margin-bottom: 10px;
+                }
                 .galeria {
                     grid-template-columns: repeat(
                         auto-fill,
@@ -718,6 +768,10 @@
                 }
                 .modal-footer {
                     padding: 12px 14px 16px;
+                }
+                .modal-footer .mensaje-preview {
+                    font-size: 0.62rem;
+                    padding: 6px 10px;
                 }
                 .btn-pedir {
                     font-size: 0.9rem;
@@ -809,6 +863,11 @@
             </div>
         </div>
 
+        <!-- ===== AVISO HD ===== -->
+        <div class="aviso-hd" id="avisoHD">
+            ⚡ <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.
+        </div>
+
         <!-- ===== ESTADO ===== -->
         <div id="estado">⏳ Cargando...</div>
 
@@ -833,6 +892,9 @@
                         <span class="icono-whatsapp">📱</span>
                         <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
                     </button>
+                    <div class="mensaje-preview" id="mensajePreview">
+                        📱 Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.
+                    </div>
                     <div class="mensaje-una-sola">
                         ⚡ <strong id="msgLimite">Puedes pedir hasta 5 fotos</strong>
                         <span id="msgEntrega"> · La recibirás por WhatsApp en minutos</span>
@@ -878,7 +940,9 @@
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
-                    langBandera: "🇧🇴"
+                    langBandera: "🇧🇴",
+                    avisoHD: '⚡ <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
+                    mensajePreview: '📱 Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.'
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -903,7 +967,9 @@
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
-                    langBandera: "🇺🇸"
+                    langBandera: "🇺🇸",
+                    avisoHD: '⚡ <strong>Tip:</strong> Turn on <strong>HD</strong> quality in WhatsApp to receive your photos in maximum quality.',
+                    mensajePreview: '📱 Gallery photos are a <strong>preview</strong>. You will receive your photo in original quality (HD) via WhatsApp.'
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -928,7 +994,9 @@
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
-                    langBandera: "🇨🇳"
+                    langBandera: "🇨🇳",
+                    avisoHD: '⚡ <strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
+                    mensajePreview: '📱 画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。'
                 }
             };
 
@@ -946,17 +1014,14 @@
 
             // 🔥 DETECTAR IDIOMA INICIAL
             function detectarIdiomaInicial() {
-                // 1. Verificar localStorage
                 const guardado = localStorage.getItem('ovj_idioma');
                 if (guardado && TRADUCCIONES[guardado]) {
                     return guardado;
                 }
 
-                // 2. Detectar por navegador
                 const idiomaNavegador = navigator.language || navigator.userLanguage || 'es';
                 const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
 
-                // Mapear idiomas soportados
                 if (idiomaBase === 'en') return 'en';
                 if (idiomaBase === 'zh') return 'zh';
                 return 'es';
@@ -968,40 +1033,36 @@
 
                 idiomaActual = idioma;
 
-                // Guardar en localStorage
                 localStorage.setItem('ovj_idioma', idioma);
-
-                // Actualizar atributo lang del HTML
                 document.documentElement.lang = idioma;
-
-                // Actualizar título de la ventana
                 document.title = t('tituloVentana');
 
-                // Actualizar textos del header
                 document.getElementById('badgeEnVivo').textContent = t('enVivo');
-
-                // Actualizar selector
                 document.getElementById('langTextoActual').textContent = t('langTexto');
                 document.getElementById('langBanderaActual').textContent = t('langBandera');
 
-                // Marcar opción activa en el menú
                 document.querySelectorAll('.lang-opcion').forEach(op => {
                     op.classList.toggle('activo', op.dataset.lang === idioma);
                 });
 
-                // Actualizar textos del modal
                 document.getElementById('btnPedirTexto').textContent = t('pedirFoto');
                 document.getElementById('msgLimite').textContent = t('puedesPedir');
                 document.getElementById('msgEntrega').textContent = t('laRecibiras');
+                document.getElementById('avisoHD').innerHTML = t('avisoHD');
+                document.getElementById('mensajePreview').innerHTML = t('mensajePreview');
 
-                // Actualizar textos dinámicos (si hay galería renderizada)
+                // Si el título del evento era el default, retraducirlo
+                if (tituloEsDefault) {
+                    document.getElementById('eventoTitulo').textContent = t('tituloDefault');
+                }
+
                 actualizarEstado();
                 if (fotosCache.length > 0) {
                     renderizarGaleria();
                 }
             }
 
-            // 🔥 CAMBIAR IDIOMA (desde el dropdown)
+            // 🔥 CAMBIAR IDIOMA
             function cambiarIdioma(idioma) {
                 aplicarIdioma(idioma);
                 cerrarLangMenu();
@@ -1050,7 +1111,7 @@
             let tituloEsDefault = true;
 
             // ==========================================
-            // CARGAR FOTOS (CON EVENTO)
+            // CARGAR FOTOS
             // ==========================================
 
             async function cargarFotos() {
@@ -1071,23 +1132,19 @@
 
                     const data = await respuesta.json();
 
-                    // 🔥 Si llegamos aquí, el servidor está online
                     if (!servidorOnline) {
                         servidorOnline = true;
                         fotosCache = [];
                     }
 
-                    // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO
                     if (data.evento) {
                         const eventoTexto = data.evento.trim();
                         const esDefault = eventoTexto === 'Galería en Vivo' || eventoTexto === 'Galería en vivo' || eventoTexto === 'Live Gallery';
 
                         if (esDefault) {
-                            // Es el texto por defecto, traducirlo según idioma
                             tituloEsDefault = true;
                             document.getElementById("eventoTitulo").textContent = t('tituloDefault');
                         } else {
-                            // Es un evento personalizado, mostrarlo tal cual
                             tituloEsDefault = false;
                             document.getElementById("eventoTitulo").textContent = eventoTexto;
                         }
@@ -1118,7 +1175,7 @@
             }
 
             // ==========================================
-            // 🔥 MOSTRAR ESTADO OFFLINE
+            // MOSTRAR ESTADO OFFLINE
             // ==========================================
             function mostrarOffline() {
                 const estado = document.getElementById("estado");
@@ -1158,7 +1215,7 @@
             }
 
             // ==========================================
-            // RENDERIZAR GALERÍA (CON CARGA PROGRESIVA)
+            // RENDERIZAR GALERÍA
             // ==========================================
 
             function renderizarGaleria() {
@@ -1187,7 +1244,6 @@
                 `;
                 }
 
-                // 🔥 Aviso de fotos nuevas
                 const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
                 if (hayNuevas) {
                     const nuevas = fotosCache.length - totalFotosAnterior;
@@ -1200,7 +1256,6 @@
                 `;
                 }
 
-                // 🔥 Botón "Ver más fotos"
                 if (visibles < fotosCache.length) {
                     const restantes = fotosCache.length - visibles;
                     const textoRestantes = restantes === 1 ? t('fotoMas') : t('fotosMas');
@@ -1232,7 +1287,7 @@
             }
 
             // ==========================================
-            // 🔥 CARGA SECUENCIAL CONTROLADA (2 A LA VEZ)
+            // CARGA SECUENCIAL CONTROLADA (2 A LA VEZ)
             // ==========================================
             function cargarImagenesSecuencialmente() {
                 const imagenes = document.querySelectorAll('.foto img[data-src]');
@@ -1267,7 +1322,7 @@
             }
 
             // ==========================================
-            // 🔥 MOSTRAR MÁS FOTOS (CARGA PROGRESIVA)
+            // MOSTRAR MÁS FOTOS
             // ==========================================
             function mostrarMasFotos() {
                 fotosVisibles += FOTOS_POR_CARGA;
@@ -1286,7 +1341,7 @@
             }
 
             // ==========================================
-            // 🖼️ MODAL CON EFECTOS PREMIUM
+            // MODAL
             // ==========================================
 
             function abrirModal(nombreFoto) {
@@ -1353,7 +1408,7 @@
             }
 
             // ==========================================
-            // PEDIR FOTO (ENVÍA EL NOMBRE EXACTO)
+            // PEDIR FOTO
             // ==========================================
 
             function pedirFoto() {
@@ -1366,7 +1421,6 @@
                 }
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
-                // 🔥 Mensaje SIEMPRE en español (para el bot del servidor)
                 const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
 
                 const urlWhatsApp =
@@ -1399,11 +1453,9 @@
             // INICIALIZAR
             // ==========================================
 
-            // Detectar idioma inicial y aplicarlo
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
 
-            // Cargar fotos
             cargarFotos();
             setInterval(cargarFotos, 60000);
         </script>
