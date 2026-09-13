@@ -148,28 +148,6 @@
                 }
             }
 
-            /* ===== ID DEL FOTÓGRAFO ===== */
-            .fotografo-id {
-                text-align: center;
-                font-size: 0.65rem;
-                color: #444;
-                letter-spacing: 1px;
-                padding-bottom: 6px;
-                font-weight: 300;
-                user-select: none;
-                -webkit-user-select: none;
-            }
-            .fotografo-id span {
-                color: #666;
-                background: rgba(255, 255, 255, 0.04);
-                padding: 2px 14px;
-                border-radius: 20px;
-            }
-            .fotografo-id strong {
-                color: #f39c12;
-                font-weight: 600;
-            }
-
             /* ===== ESTADO MINI ===== */
             #estado {
                 text-align: center;
@@ -223,7 +201,6 @@
                 border-color: rgba(255, 215, 0, 0.15);
             }
 
-            /* 🔥 NUEVO: SKELETON loader */
             .foto .skeleton {
                 position: absolute;
                 top: 0;
@@ -341,6 +318,36 @@
             @keyframes pulseNuevas {
                 0%, 100% { opacity: 0.85; }
                 50% { opacity: 1; }
+            }
+
+            /* ===== ESTADO OFFLINE ===== */
+            .estado-offline {
+                max-width: 400px;
+                margin: 60px auto;
+                text-align: center;
+                padding: 40px 24px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 215, 0, 0.15);
+                border-radius: 16px;
+            }
+            .estado-offline .icono {
+                font-size: 3rem;
+                margin-bottom: 16px;
+                display: block;
+                opacity: 0.9;
+            }
+            .estado-offline .titulo {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #f39c12;
+                margin-bottom: 10px;
+                letter-spacing: 0.5px;
+            }
+            .estado-offline .mensaje {
+                font-size: 0.85rem;
+                color: #888;
+                line-height: 1.6;
+                font-weight: 300;
             }
 
             /* ===== MODAL ===== */
@@ -674,14 +681,6 @@
             </div>
         </div>
 
-        <!-- ===== ID DEL FOTÓGRAFO ===== -->
-        <div class="fotografo-id" id="fotografoIdDisplay">
-            <span
-                >📸 Galería:
-                <strong id="fotografoNombre">Cargando...</strong></span
-            >
-        </div>
-
         <!-- ===== ESTADO ===== -->
         <div id="estado">⏳ Cargando...</div>
 
@@ -735,8 +734,6 @@
             }
 
             const FOTOGRAFO_ID = getFotografoId();
-            document.getElementById("fotografoNombre").textContent =
-                FOTOGRAFO_ID;
 
             // ==========================================
             // VARIABLES
@@ -746,6 +743,7 @@
             let fotoSeleccionadaIndex = -1;
             let cargando = false;
             let totalFotosAnterior = 0;
+            let servidorOnline = true;
 
             // ==========================================
             // CARGAR FOTOS (CON EVENTO)
@@ -769,6 +767,13 @@
 
                     const data = await respuesta.json();
 
+                    // 🔥 Si llegamos aquí, el servidor está online
+                    if (!servidorOnline) {
+                        servidorOnline = true;
+                        // Refrescar la galería
+                        fotosCache = [];
+                    }
+
                     // 🔥 ACTUALIZAR EL TÍTULO DEL EVENTO
                     if (data.evento) {
                         document.getElementById("eventoTitulo").textContent = data.evento;
@@ -790,12 +795,36 @@
                     actualizarEstado();
 
                 } catch (error) {
-                    estado.innerHTML = `⚠️ Error: ${error.message}`;
-                    estado.className = "error";
                     console.error("Error:", error);
+
+                    // 🔥 NUEVO: Si el servidor está offline, mostrar mensaje amigable
+                    servidorOnline = false;
+                    mostrarOffline();
                 }
 
                 cargando = false;
+            }
+
+            // ==========================================
+            // 🔥 MOSTRAR ESTADO OFFLINE
+            // ==========================================
+            function mostrarOffline() {
+                const estado = document.getElementById("estado");
+                const galeria = document.getElementById("galeria");
+
+                estado.innerHTML = "";
+                estado.className = "";
+
+                galeria.innerHTML = `
+                    <div class="estado-offline">
+                        <span class="icono">📸</span>
+                        <div class="titulo">Galería no disponible</div>
+                        <div class="mensaje">
+                            La galería se está preparando.<br>
+                            Intenta de nuevo en unos minutos.
+                        </div>
+                    </div>
+                `;
             }
 
             // ==========================================
@@ -905,12 +934,10 @@
                     const img = pendientes[indice];
                     indice++;
 
-                    // Si la imagen ya tiene src válido, saltarla
                     if (img.dataset.src && (img.src === '' || img.src === window.location.href)) {
                         img.src = img.dataset.src;
                     }
 
-                    // Cuando termina de cargar (o falla), cargar la siguiente
                     const manejarSiguiente = () => {
                         img.removeEventListener('load', manejarSiguiente);
                         img.removeEventListener('error', manejarSiguiente);
@@ -921,7 +948,6 @@
                     img.addEventListener('error', manejarSiguiente);
                 }
 
-                // Arrancar 2 cargas en paralelo
                 for (let i = 0; i < CONCURRENTES; i++) {
                     cargarSiguiente();
                 }
