@@ -848,6 +848,10 @@
                                 <span class="bandera">🇨🇳</span>
                                 <span>中文</span>
                             </div>
+                            <div class="lang-opcion" onclick="cambiarIdioma('ru')" data-lang="ru">
+                                <span class="bandera">🇷🇺</span>
+                                <span>Русский</span>
+                            </div>
                         </div>
                     </div>
 
@@ -996,6 +1000,33 @@
                     langBandera: "🇨🇳",
                     avisoHD: '<strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
                     mensajePreview: '画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。'
+                },
+                ru: {
+                    tituloVentana: "OVJ Studio - Живая галерея",
+                    tituloDefault: "Живая галерея",
+                    enVivo: "В эфире",
+                    cargando: "Загрузка...",
+                    error: "Ошибка",
+                    noHayFotos: "Пока нет фото",
+                    mostrando: (v, t) => `Показано <span class="num">${v}</span> из <span class="num">${t}</span> фото`,
+                    verMas: "Показать еще ↓",
+                    fotoMas: "фото",
+                    fotosMas: "фото",
+                    porDescubrir: "осталось",
+                    hasVistoTodo: "Вы просмотрели все доступные фото",
+                    fotoNueva: "новое фото",
+                    fotosNuevas: "новых фото",
+                    disponibles: "доступно",
+                    disponiblesPlural: "доступно",
+                    pedirFoto: "Получить фото без водяного знака",
+                    puedesPedir: "У вас ограниченное количество запросов",
+                    laRecibiras: " · Вы получите его в WhatsApp через несколько минут",
+                    offlineTitulo: "Галерея недоступна",
+                    offlineMensaje: "Галерея готовится.<br>Попробуйте снова через несколько минут.",
+                    langTexto: "RU",
+                    langBandera: "🇷🇺",
+                    avisoHD: '<strong>Совет:</strong> Включите качество <strong>HD</strong> в WhatsApp, чтобы получить фото в максимальном качестве.',
+                    mensajePreview: 'Фото в галерее — это <strong>превью</strong>. Вы получите оригинал (HD) через WhatsApp.'
                 }
             };
 
@@ -1020,6 +1051,7 @@
 
                 if (idiomaBase === 'en') return 'en';
                 if (idiomaBase === 'zh') return 'zh';
+                if (idiomaBase === 'ru') return 'ru';
                 return 'es';
             }
 
