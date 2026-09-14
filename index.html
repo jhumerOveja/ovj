@@ -891,16 +891,15 @@
                     <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-pedir" onclick="pedirFoto()">
-                        <span class="icono-whatsapp">📱</span>
-                        <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
+                    <button class="btn-pedir" id="btnAccion" onclick="accionPrincipal()">
+                        <span class="icono-whatsapp">💎</span>
+                        <span id="btnPedirTexto">Descargar Foto HD</span>
                     </button>
                     <div class="mensaje-preview" id="mensajePreview">
-                        Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.
+                        Las fotos de la galería son una <strong>vista previa</strong>. Descarga la versión original (HD) usando tus créditos VIP.
                     </div>
                     <div class="mensaje-una-sola">
-                        <strong id="msgLimite">Tienes un número limitado de fotos para pedir</strong>
-                        <span id="msgEntrega"> · La recibirás por WhatsApp en minutos</span>
+                        <strong id="msgLimite">Créditos disponibles: --</strong>
                     </div>
                 </div>
             </div>
@@ -908,13 +907,63 @@
 
         <script>
             // ==========================================
-            // CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
+            // CONFIGURACIÓN
             // ==========================================
-            const URL_CLOUDFLARE =
-                "https://craft-prizes-infants-electro.trycloudflare.com";
-
-            // CONFIGURACIÓN DE CARGA PROGRESIVA
+            const URL_CLOUDFLARE = "https://craft-prizes-infants-electro.trycloudflare.com"; // TU URL ACTUAL
             const FOTOS_POR_CARGA = 6;
+            
+            // Detectar Fotógrafo
+            function getFotografoId() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get("f") || "default";
+            }
+            const FOTOGRAFO_ID = getFotografoId();
+
+            // ==========================================
+            // GESTIÓN DE USUARIO Y CRÉDITOS
+            // ==========================================
+            let usuarioActual = localStorage.getItem('ovj_usuario') || '';
+            let creditosActuales = 0;
+
+            async function iniciarSesion() {
+                if (!usuarioActual) {
+                    const nombre = prompt("👋 Bienvenido a la Galería VIP.\n\nPara acceder a las descargas exclusivas, por favor ingresa tu nombre:");
+                    if (nombre && nombre.trim() !== "") {
+                        usuarioActual = nombre.trim().replace(/[^a-zA-Z0-9]/g, '_'); // Sanitizar
+                        localStorage.setItem('ovj_usuario', usuarioActual);
+                        
+                        // Registrar en servidor
+                        try {
+                            const res = await fetch(`${URL_CLOUDFLARE}/registrar-usuario`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ fotografoId: FOTOGRAFO_ID, nombreUsuario: usuarioActual })
+                            });
+                            const data = await res.json();
+                            creditosActuales = data.descargasRestantes;
+                        } catch (e) {
+                            console.error("Error registrando usuario", e);
+                            creditosActuales = 25; // Fallback
+                        }
+                    } else {
+                        alert("Necesitas un nombre para continuar.");
+                        location.reload();
+                    }
+                } else {
+                    // Obtener créditos actuales
+                    try {
+                        const res = await fetch(`${URL_CLOUDFLARE}/mis-creditos?f=${FOTOGRAFO_ID}&user=${usuarioActual}`);
+                        const data = await res.json();
+                        creditosActuales = data.restantes;
+                    } catch (e) { creditosActuales = 0; }
+                }
+                actualizarUI();
+            }
+
+            function actualizarUI() {
+                const msgLimite = document.getElementById('msgLimite');
+                if(msgLimite) msgLimite.textContent = `${t('creditosDisponibles')}: ${creditosActuales}`;
+            }
 
             // ==========================================
             // SISTEMA DE IDIOMAS
@@ -937,15 +986,17 @@
                     fotosNuevas: "fotos nuevas",
                     disponibles: "disponible",
                     disponiblesPlural: "disponibles",
-                    pedirFoto: "Pedir foto gratis sin marca de agua",
-                    puedesPedir: "Tienes un número limitado de fotos para pedir",
-                    laRecibiras: " · La recibirás por WhatsApp en minutos",
+                    pedirFoto: "Descargar Foto HD",
+                    sinCreditos: "Sin Créditos - Contactar Anfitrión",
+                    creditosDisponibles: "Créditos",
+                    puedesPedir: "Tienes un número limitado de descargas VIP",
+                    laRecibiras: " · Se descontará 1 crédito al descargar",
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
                     langBandera: "🇧🇴",
-                    avisoHD: '<strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
-                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.'
+                    avisoHD: '<strong>Consejo:</strong> Usa tus créditos sabiamente para descargar las mejores fotos en calidad original.',
+                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Descarga la versión original (HD) usando tus créditos VIP.'
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -964,15 +1015,17 @@
                     fotosNuevas: "new photos",
                     disponibles: "available",
                     disponiblesPlural: "available",
-                    pedirFoto: "Request free photo without watermark",
-                    puedesPedir: "You have a limited number of photos to request",
-                    laRecibiras: " · You'll receive it on WhatsApp in minutes",
+                    pedirFoto: "Download HD Photo",
+                    sinCreditos: "No Credits - Contact Host",
+                    creditosDisponibles: "Credits",
+                    puedesPedir: "You have a limited number of VIP downloads",
+                    laRecibiras: " · 1 credit will be deducted per download",
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
                     langBandera: "🇺🇸",
-                    avisoHD: '<strong>Tip:</strong> Turn on <strong>HD</strong> quality in WhatsApp to receive your photos in maximum quality.',
-                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. You will receive your photo in original quality (HD) via WhatsApp.'
+                    avisoHD: '<strong>Tip:</strong> Use your credits wisely to download the best photos in original quality.',
+                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. Download the original version (HD) using your VIP credits.'
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -991,15 +1044,17 @@
                     fotosNuevas: "张新照片",
                     disponibles: "可用",
                     disponiblesPlural: "可用",
-                    pedirFoto: "免费索取无水印照片",
-                    puedesPedir: "您可以索取的张数有限",
-                    laRecibiras: " · 你将在几分钟内通过 WhatsApp 收到",
+                    pedirFoto: "下载高清照片",
+                    sinCreditos: "积分不足 - 联系主人",
+                    creditosDisponibles: "积分",
+                    puedesPedir: "您的 VIP 下载次数有限",
+                    laRecibiras: " · 每次下载扣除 1 积分",
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
                     langBandera: "🇨🇳",
-                    avisoHD: '<strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
-                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。'
+                    avisoHD: '<strong>提示：</strong>请明智地使用您的积分，下载最佳画质的原图。',
+                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。使用您的 VIP 积分下载原画质（高清）版本。'
                 },
                 ru: {
                     tituloVentana: "OVJ Studio - Живая галерея",
@@ -1018,15 +1073,17 @@
                     fotosNuevas: "новых фото",
                     disponibles: "доступно",
                     disponiblesPlural: "доступно",
-                    pedirFoto: "Получить фото без водяного знака",
-                    puedesPedir: "У вас ограниченное количество запросов",
-                    laRecibiras: " · Вы получите его в WhatsApp через несколько минут",
+                    pedirFoto: "Скачать HD Фото",
+                    sinCreditos: "Нет кредитов - Связаться с хозяином",
+                    creditosDisponibles: "Кредиты",
+                    puedesPedir: "У вас ограниченное количество VIP загрузок",
+                    laRecibiras: " · 1 кредит списывается за загрузку",
                     offlineTitulo: "Галерея недоступна",
                     offlineMensaje: "Галерея готовится.<br>Попробуйте снова через несколько минут.",
                     langTexto: "RU",
                     langBandera: "🇷🇺",
-                    avisoHD: '<strong>Совет:</strong> Включите качество <strong>HD</strong> в WhatsApp, чтобы получить фото в максимальном качестве.',
-                    mensajePreview: 'Фото в галерее — это <strong>превью</strong>. Вы получите оригинал (HD) через WhatsApp.'
+                    avisoHD: '<strong>Совет:</strong> Используйте кредиты с умом, чтобы скачать лучшие фото в оригинальном качестве.',
+                    mensajePreview: 'Фото в галерее — это <strong>превью</strong>. Скачайте оригинал (HD), используя свои VIP кредиты.'
                 }
             };
 
@@ -1072,9 +1129,7 @@
                     op.classList.toggle('activo', op.dataset.lang === idioma);
                 });
 
-                document.getElementById('btnPedirTexto').textContent = t('pedirFoto');
-                document.getElementById('msgLimite').textContent = t('puedesPedir');
-                document.getElementById('msgEntrega').textContent = t('laRecibiras');
+                document.getElementById('msgLimite').textContent = `${t('creditosDisponibles')}: ${creditosActuales}`;
                 document.getElementById('avisoHD').innerHTML = t('avisoHD');
                 document.getElementById('mensajePreview').innerHTML = t('mensajePreview');
 
@@ -1085,6 +1140,11 @@
                 actualizarEstado();
                 if (fotosCache.length > 0) {
                     renderizarGaleria();
+                }
+                
+                // Actualizar texto del botón si el modal está abierto
+                if(document.getElementById('modal').classList.contains('activo')) {
+                    configurarBotonAccion();
                 }
             }
 
@@ -1110,19 +1170,7 @@
             });
 
             // ==========================================
-            // CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
-            // ==========================================
-            function getFotografoId() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const id = urlParams.get("f");
-                console.log(`ID del fotógrafo detectado: "${id}"`);
-                return id || "default";
-            }
-
-            const FOTOGRAFO_ID = getFotografoId();
-
-            // ==========================================
-            // VARIABLES
+            // VARIABLES GLOBALES
             // ==========================================
             let fotosCache = [];
             let fotosVisibles = FOTOS_POR_CARGA;
@@ -1135,30 +1183,19 @@
             // ==========================================
             // CARGAR FOTOS
             // ==========================================
-
             async function cargarFotos() {
                 if (cargando) return;
                 cargando = true;
-
                 const estado = document.getElementById("estado");
-
                 try {
                     estado.innerHTML = t('cargando');
                     estado.className = "cargando";
-
-                    const respuesta = await fetch(
-                        `${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`,
-                    );
-                    if (!respuesta.ok)
-                        throw new Error(`HTTP ${respuesta.status}`);
-
+                    const respuesta = await fetch(`${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`);
+                    if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
                     const data = await respuesta.json();
-
-                    if (!servidorOnline) {
-                        servidorOnline = true;
-                        fotosCache = [];
-                    }
-
+                    
+                    if (!servidorOnline) { servidorOnline = true; fotosCache = []; }
+                    
                     if (data.evento) {
                         const eventoTexto = data.evento.trim();
                         const esDefault = eventoTexto === 'Galería en Vivo' || eventoTexto === 'Galería en vivo' || eventoTexto === 'Live Gallery';
@@ -1173,26 +1210,15 @@
                     }
 
                     const nuevasFotos = data.fotos || [];
-                    console.log("Fotos recibidas:", nuevasFotos.length);
-
-                    const huboCambio =
-                        JSON.stringify(nuevasFotos) !==
-                        JSON.stringify(fotosCache);
-
-                    if (huboCambio) {
+                    if (JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache)) {
                         fotosCache = nuevasFotos;
                         renderizarGaleria();
                     }
-
                     actualizarEstado();
-
                 } catch (error) {
-                    console.error("Error:", error);
-
                     servidorOnline = false;
                     mostrarOffline();
                 }
-
                 cargando = false;
             }
 
@@ -1202,10 +1228,8 @@
             function mostrarOffline() {
                 const estado = document.getElementById("estado");
                 const galeria = document.getElementById("galeria");
-
                 estado.innerHTML = "";
                 estado.className = "";
-
                 galeria.innerHTML = `
                     <div class="estado-offline">
                         <span class="icono">📸</span>
@@ -1222,15 +1246,12 @@
             // ==========================================
             function actualizarEstado() {
                 const estado = document.getElementById("estado");
-
                 if (servidorOnline === false) return;
-
                 if (fotosCache.length === 0) {
                     estado.innerHTML = t('noHayFotos');
                     estado.className = "ok";
                     return;
                 }
-
                 const visibles = Math.min(fotosVisibles, fotosCache.length);
                 estado.innerHTML = t('mostrando', visibles, fotosCache.length);
                 estado.className = "ok";
@@ -1239,14 +1260,9 @@
             // ==========================================
             // RENDERIZAR GALERÍA
             // ==========================================
-
             function renderizarGaleria() {
                 const galeria = document.getElementById("galeria");
-
-                if (!fotosCache || fotosCache.length === 0) {
-                    galeria.innerHTML = "";
-                    return;
-                }
+                if (!fotosCache || fotosCache.length === 0) { galeria.innerHTML = ""; return; }
 
                 const visibles = Math.min(fotosVisibles, fotosCache.length);
                 let html = "";
@@ -1254,7 +1270,6 @@
                 for (let i = 0; i < visibles; i++) {
                     const foto = fotosCache[i];
                     const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
-
                     html += `
                     <div class="foto" onclick="abrirModal('${foto.nombre}')">
                         <div class="skeleton"></div>
@@ -1262,20 +1277,15 @@
                              data-src="${urlImagen}"
                              onload="this.classList.add('cargada')"
                              onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
-                    </div>
-                `;
+                    </div>`;
                 }
-
+                
                 const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
                 if (hayNuevas) {
                     const nuevas = fotosCache.length - totalFotosAnterior;
                     const texto = nuevas === 1 ? t('fotoNueva') : t('fotosNuevas');
                     const disp = nuevas === 1 ? t('disponibles') : t('disponiblesPlural');
-                    html += `
-                    <div class="aviso-nuevas">
-                        ${nuevas} ${texto} ${disp}
-                    </div>
-                `;
+                    html += `<div class="aviso-nuevas">${nuevas} ${texto} ${disp}</div>`;
                 }
 
                 if (visibles < fotosCache.length) {
@@ -1289,58 +1299,41 @@
                         <div class="info-restantes">
                             <strong>${restantes}</strong> ${textoRestantes} ${t('porDescubrir')}
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 } else if (fotosCache.length > FOTOS_POR_CARGA) {
-                    html += `
-                    <div class="ver-mas-wrapper">
-                        <div class="info-restantes">
-                            ${t('hasVistoTodo')}
-                        </div>
-                    </div>
-                `;
+                    html += `<div class="ver-mas-wrapper"><div class="info-restantes">${t('hasVistoTodo')}</div></div>`;
                 }
 
                 galeria.innerHTML = html;
-
                 cargarImagenesSecuencialmente();
-
                 totalFotosAnterior = fotosCache.length;
             }
 
             // ==========================================
-            // CARGA SECUENCIAL CONTROLADA (2 A LA VEZ)
+            // CARGA SECUENCIAL CONTROLADA
             // ==========================================
             function cargarImagenesSecuencialmente() {
                 const imagenes = document.querySelectorAll('.foto img[data-src]');
                 const pendientes = Array.from(imagenes).filter(img => !img.src || img.src === window.location.href);
                 const CONCURRENTES = 2;
-
                 let indice = 0;
 
                 function cargarSiguiente() {
                     if (indice >= pendientes.length) return;
-
                     const img = pendientes[indice];
                     indice++;
-
                     if (img.dataset.src && (img.src === '' || img.src === window.location.href)) {
                         img.src = img.dataset.src;
                     }
-
                     const manejarSiguiente = () => {
                         img.removeEventListener('load', manejarSiguiente);
                         img.removeEventListener('error', manejarSiguiente);
                         cargarSiguiente();
                     };
-
                     img.addEventListener('load', manejarSiguiente);
                     img.addEventListener('error', manejarSiguiente);
                 }
-
-                for (let i = 0; i < CONCURRENTES; i++) {
-                    cargarSiguiente();
-                }
+                for (let i = 0; i < CONCURRENTES; i++) cargarSiguiente();
             }
 
             // ==========================================
@@ -1350,7 +1343,6 @@
                 fotosVisibles += FOTOS_POR_CARGA;
                 renderizarGaleria();
                 actualizarEstado();
-
                 setTimeout(() => {
                     const fotos = document.querySelectorAll('.foto');
                     if (fotos.length > 0) {
@@ -1363,23 +1355,19 @@
             }
 
             // ==========================================
-            // MODAL
+            // MODAL Y ACCIONES
             // ==========================================
-
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
-                if (index < 0) {
-                    console.error(`Foto no encontrada: ${nombreFoto}`);
-                    return;
-                }
+                if (index < 0) return;
 
                 fotoSeleccionadaIndex = index;
                 const foto = fotosCache[index];
-
+                
                 const modal = document.getElementById("modal");
                 const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
-
+                
                 const wrapper = document.querySelector('.imagen-wrapper');
                 wrapper.style.animation = 'none';
                 void wrapper.offsetHeight;
@@ -1387,12 +1375,63 @@
 
                 modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
                 modalImagen.alt = `Foto ${index + 1}`;
-
+                
                 modal.classList.add("activo");
                 fondo.classList.add("activo");
                 document.body.style.overflow = "hidden";
 
                 actualizarFlechas();
+                configurarBotonAccion();
+            }
+
+            function configurarBotonAccion() {
+                const btn = document.getElementById("btnAccion");
+                const txt = document.getElementById("btnPedirTexto");
+                const icon = btn.querySelector(".icono-whatsapp");
+
+                if (creditosActuales > 0) {
+                    btn.onclick = descargarFotoHD;
+                    txt.textContent = `${t('pedirFoto')} (${creditosActuales})`;
+                    icon.textContent = "💎";
+                    btn.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)"; // Verde
+                } else {
+                    btn.onclick = contactarAnfitrion;
+                    txt.textContent = t('sinCreditos');
+                    icon.textContent = "📱";
+                    btn.style.background = "linear-gradient(135deg, #e74c3c, #c0392b)"; // Rojo
+                }
+            }
+
+            async function descargarFotoHD() {
+                if (creditosActuales <= 0 || fotoSeleccionadaIndex < 0) return;
+                
+                const foto = fotosCache[fotoSeleccionadaIndex];
+                const urlDescarga = `${URL_CLOUDFLARE}/descargar-hd?f=${FOTOGRAFO_ID}&foto=${foto.nombre}&user=${usuarioActual}`;
+                
+                // Abrir en nueva pestaña para forzar descarga
+                window.open(urlDescarga, '_blank');
+                
+                // Actualizar localmente
+                creditosActuales--;
+                localStorage.setItem('ovj_creditos', creditosActuales);
+                
+                // Refrescar UI
+                configurarBotonAccion();
+                actualizarUI();
+                
+                if (creditosActuales === 0) {
+                    setTimeout(() => {
+                        alert("⚠️ " + t('sinCreditos'));
+                    }, 1000);
+                }
+            }
+
+            function contactarAnfitrion() {
+                // AQUÍ DEBES PONER EL NÚMERO DE TU CLIENTE (EL ANFITRIÓN DEL EVENTO)
+                // Este número se podría pasar dinámicamente si quisieras, pero por ahora es fijo o lo cambias tú.
+                const NUMERO_ANFITRION = "59170000000"; 
+                const mensaje = `Hola, soy ${usuarioActual}. Estoy en tu galería VIP y se acabaron mis créditos de descarga. ¿Podrías ayudarme a conseguir más acceso?`;
+                window.open(`https://wa.me/${NUMERO_ANFITRION}?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
 
             function cerrarModal() {
@@ -1405,7 +1444,6 @@
                 const total = fotosCache.length;
                 const flechaIzq = document.getElementById("flechaIzquierda");
                 const flechaDer = document.getElementById("flechaDerecha");
-
                 flechaIzq.classList.toggle("oculto", fotoSeleccionadaIndex <= 0);
                 flechaDer.classList.toggle("oculto", fotoSeleccionadaIndex >= total - 1);
             }
@@ -1413,11 +1451,10 @@
             function navegarFoto(direccion) {
                 const nuevoIndex = fotoSeleccionadaIndex + direccion;
                 if (nuevoIndex < 0 || nuevoIndex >= fotosCache.length) return;
-
                 fotoSeleccionadaIndex = nuevoIndex;
                 const foto = fotosCache[nuevoIndex];
                 const modalImagen = document.getElementById("modalImagen");
-
+                
                 const wrapper = document.querySelector('.imagen-wrapper');
                 wrapper.style.animation = 'none';
                 void wrapper.offsetHeight;
@@ -1425,36 +1462,13 @@
 
                 modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
                 modalImagen.alt = `Foto ${nuevoIndex + 1}`;
-
                 actualizarFlechas();
-            }
-
-            // ==========================================
-            // PEDIR FOTO
-            // ==========================================
-
-            function pedirFoto() {
-                if (
-                    fotoSeleccionadaIndex < 0 ||
-                    fotoSeleccionadaIndex >= fotosCache.length
-                ) {
-                    alert("No hay foto seleccionada");
-                    return;
-                }
-
-                const foto = fotosCache[fotoSeleccionadaIndex];
-                const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
-
-                const urlWhatsApp =
-                    `https://wa.me/59160004962?text=${encodeURIComponent(mensaje)}`;
-
-                window.open(urlWhatsApp, "_blank");
+                configurarBotonAccion();
             }
 
             // ==========================================
             // EVENTOS
             // ==========================================
-
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") {
                     if (document.getElementById("modal").classList.contains("activo")) {
@@ -1474,12 +1488,13 @@
             // ==========================================
             // INICIALIZAR
             // ==========================================
-
-            idiomaActual = detectarIdiomaInicial();
-            aplicarIdioma(idiomaActual);
-
-            cargarFotos();
-            setInterval(cargarFotos, 60000);
+            window.onload = () => {
+                idiomaActual = detectarIdiomaInicial();
+                aplicarIdioma(idiomaActual);
+                iniciarSesion();
+                cargarFotos();
+                setInterval(cargarFotos, 60000);
+            };
         </script>
     </body>
 </html>
