@@ -72,14 +72,12 @@
                 font-size: 0.6rem;
             }
 
-            /* ===== HEADER DERECHO (idioma + en vivo) ===== */
             .header-right {
                 display: flex;
                 align-items: center;
                 gap: 8px;
             }
 
-            /* SELECTOR DE IDIOMA */
             .lang-selector {
                 position: relative;
                 user-select: none;
@@ -275,6 +273,46 @@
                 color: #f1c40f;
             }
 
+            /* ===== AVISO INTERMITENTE ===== */
+            .aviso-intermitente {
+                max-width: 500px;
+                margin: 0 auto 12px;
+                padding: 10px 18px;
+                background: rgba(243, 156, 18, 0.06);
+                border: 1px solid rgba(243, 156, 18, 0.18);
+                border-radius: 12px;
+                font-size: 0.75rem;
+                color: #f39c12;
+                font-weight: 400;
+                letter-spacing: 0.3px;
+                line-height: 1.5;
+                text-align: center;
+                user-select: none;
+                -webkit-user-select: none;
+                backdrop-filter: blur(4px);
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+                overflow: hidden;
+                transition: opacity 0.6s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+            }
+            .aviso-intermitente.visible {
+                opacity: 1;
+                visibility: visible;
+                max-height: 200px;
+                margin-bottom: 12px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .aviso-intermitente strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
+
             /* ===== GALERÍA ===== */
             .galeria {
                 display: grid;
@@ -284,7 +322,6 @@
                 margin: 0 auto;
             }
 
-            /* ===== TARJETA ===== */
             .foto {
                 background: #111;
                 border-radius: 14px;
@@ -356,7 +393,6 @@
                 transform: translate(-4px, -4px);
             }
 
-            /* ===== BOTÓN "VER MÁS FOTOS" ===== */
             .ver-mas-wrapper {
                 grid-column: 1 / -1;
                 display: flex;
@@ -400,7 +436,6 @@
                 font-weight: 600;
             }
 
-            /* ===== AVISO DE FOTOS NUEVAS ===== */
             .aviso-nuevas {
                 grid-column: 1 / -1;
                 text-align: center;
@@ -422,7 +457,6 @@
                 50% { opacity: 1; }
             }
 
-            /* ===== ESTADO OFFLINE ===== */
             .estado-offline {
                 max-width: 400px;
                 margin: 60px auto;
@@ -603,40 +637,55 @@
                 margin-top: -1px;
             }
 
-            .modal-footer .mensaje-preview {
-                font-size: 0.7rem;
-                color: #888;
-                font-weight: 300;
-                text-align: center;
+            /* PUBLICIDAD */
+            .publicidad-wrapper {
                 width: 100%;
-                letter-spacing: 0.3px;
+                text-align: center;
+                padding: 12px 14px;
+                background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
+                border: 1px solid rgba(243, 156, 18, 0.15);
+                border-radius: 12px;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .publicidad-wrapper .pub-texto {
+                font-size: 0.72rem;
+                color: #c9c9c9;
                 line-height: 1.5;
-                padding: 8px 12px;
-                background: rgba(255, 215, 0, 0.04);
-                border: 1px solid rgba(255, 215, 0, 0.1);
-                border-radius: 10px;
-                user-select: none;
-                -webkit-user-select: none;
-            }
-            .modal-footer .mensaje-preview strong {
-                color: #f1c40f;
-                font-weight: 600;
-            }
-
-            .modal-footer .mensaje-una-sola {
-                font-size: 0.7rem;
-                color: #555;
-                font-weight: 300;
-                text-align: center;
-                padding-top: 6px;
-                width: 100%;
+                font-weight: 400;
+                margin-bottom: 8px;
                 letter-spacing: 0.3px;
-                user-select: none;
-                -webkit-user-select: none;
             }
-            .modal-footer .mensaje-una-sola strong {
+            .publicidad-wrapper .pub-texto strong {
                 color: #f1c40f;
                 font-weight: 600;
+            }
+            .publicidad-wrapper .pub-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(243, 156, 18, 0.15);
+                border: 1px solid rgba(243, 156, 18, 0.4);
+                color: #f39c12;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.72rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                letter-spacing: 0.3px;
+                font-family: inherit;
+            }
+            .publicidad-wrapper .pub-btn:hover {
+                background: rgba(243, 156, 18, 0.25);
+                transform: scale(1.04);
+                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
+            }
+            .publicidad-wrapper .pub-btn:active {
+                transform: scale(0.97);
+            }
+            .publicidad-wrapper .pub-btn .icono {
+                font-size: 0.9rem;
             }
 
             .btn-pedir {
@@ -884,7 +933,6 @@
                 font-weight: 600;
             }
 
-            /* Animación de la mano/dedo presionando */
             .anim-mano {
                 display: inline-block;
                 font-size: 1.4rem;
@@ -908,27 +956,61 @@
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
             }
 
-            .modal-instrucciones-contenido .btn-entendido {
+            /* BARRA DE PROGRESO */
+            .barra-progreso-wrapper {
                 margin-top: 18px;
                 width: 100%;
-                padding: 13px 20px;
-                border-radius: 12px;
-                border: none;
-                background: linear-gradient(135deg, #f39c12, #d68910);
-                color: #0a0a0a;
-                font-size: 0.9rem;
-                font-weight: 700;
-                cursor: pointer;
-                transition: all 0.25s ease;
-                font-family: inherit;
+            }
+            .barra-progreso-fondo {
+                width: 100%;
+                height: 6px;
+                background: rgba(255, 255, 255, 0.06);
+                border-radius: 50px;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+            .barra-progreso-relleno {
+                height: 100%;
+                background: linear-gradient(90deg, #f39c12, #f1c40f);
+                width: 0%;
+                transition: width 0.3s linear;
+                border-radius: 50px;
+                box-shadow: 0 0 12px rgba(243, 156, 18, 0.4);
+            }
+            .barra-progreso-texto {
+                font-size: 0.7rem;
+                color: #888;
                 letter-spacing: 0.3px;
+                font-weight: 400;
             }
-            .modal-instrucciones-contenido .btn-entendido:hover {
-                transform: scale(1.02);
-                box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+            .barra-progreso-texto strong {
+                color: #f39c12;
+                font-weight: 600;
             }
-            .modal-instrucciones-contenido .btn-entendido:active {
-                transform: scale(0.97);
+
+            .btn-cerrar-instr {
+                position: absolute;
+                top: 12px;
+                right: 14px;
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                color: #888;
+                font-size: 1.2rem;
+                cursor: pointer;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                z-index: 10;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            .btn-cerrar-instr:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
             }
 
             @media (max-width: 600px) {
@@ -991,9 +1073,12 @@
                 .modal-footer {
                     padding: 12px 14px 16px;
                 }
-                .modal-footer .mensaje-preview {
-                    font-size: 0.62rem;
-                    padding: 6px 10px;
+                .publicidad-wrapper .pub-texto {
+                    font-size: 0.65rem;
+                }
+                .publicidad-wrapper .pub-btn {
+                    font-size: 0.65rem;
+                    padding: 7px 14px;
                 }
                 .btn-pedir {
                     font-size: 0.9rem;
@@ -1026,6 +1111,10 @@
                     font-size: 0.8rem;
                     padding: 12px 28px;
                 }
+                .aviso-intermitente {
+                    font-size: 0.7rem;
+                    padding: 8px 14px;
+                }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -1051,7 +1140,6 @@
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                 </div>
                 <div class="header-right">
-                    <!-- SELECTOR DE IDIOMA -->
                     <div class="lang-selector" id="langSelector">
                         <div class="lang-btn" onclick="toggleLangMenu()">
                             <span class="bandera" id="langBanderaActual">🇧🇴</span>
@@ -1085,6 +1173,9 @@
             </div>
         </div>
 
+        <!-- ===== AVISO INTERMITENTE ===== -->
+        <div class="aviso-intermitente" id="avisoIntermitente"></div>
+
         <!-- ===== ESTADO ===== -->
         <div id="estado">Cargando...</div>
 
@@ -1107,14 +1198,18 @@
                 <div class="modal-footer">
                     <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
                         <span class="icono-whatsapp" id="btnIcono">📱</span>
-                        <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
+                        <span id="btnPedirTexto">Descargar foto</span>
                     </button>
-                    <div class="mensaje-preview" id="mensajePreview">
-                        Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD).
-                    </div>
-                    <div class="mensaje-una-sola">
-                        <strong id="msgLimite">Tienes un número limitado de fotos para pedir</strong>
-                        <span id="msgEntrega"></span>
+
+                    <!-- PUBLICIDAD OVJ STUDIO -->
+                    <div class="publicidad-wrapper">
+                        <div class="pub-texto" id="pubTexto">
+                            ¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?
+                        </div>
+                        <button class="pub-btn" onclick="abrirWhatsAppPublicidad()">
+                            <span class="icono">✨</span>
+                            <span id="pubBotonTexto">Agenda tu evento</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1144,6 +1239,8 @@
         <!-- ===== MODAL INSTRUCCIONES DE DESCARGA ===== -->
         <div class="modal-instrucciones" id="modalInstrucciones">
             <div class="modal-instrucciones-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarInstrucciones()">✕</button>
+
                 <span class="emoji-grande" id="instrEmoji">📥</span>
                 <div class="titulo" id="instrTitulo">Tu foto se está abriendo</div>
                 <div class="subtitulo" id="instrSubtitulo">
@@ -1176,29 +1273,34 @@
                     La foto puede tardar unos segundos en cargar por completo según tu conexión.
                 </div>
 
-                <button class="btn-entendido" id="btnEntendido" onclick="cerrarInstrucciones()">
-                    Entendido
-                </button>
+                <!-- BARRA DE PROGRESO -->
+                <div class="barra-progreso-wrapper">
+                    <div class="barra-progreso-fondo">
+                        <div class="barra-progreso-relleno" id="barraProgreso"></div>
+                    </div>
+                    <div class="barra-progreso-texto" id="barraTexto">
+                        Abriendo descarga en <strong>12</strong>s...
+                    </div>
+                </div>
             </div>
         </div>
 
         <script>
             // ==========================================
-            // CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
+            // CONFIGURACIÓN
             // ==========================================
-            const URL_CLOUDFLARE =
-                "https://relatively-calgary-architects-template.trycloudflare.com";
-
-            // CONFIGURACIÓN DE CARGA PROGRESIVA
+            const URL_CLOUDFLARE = "https://relatively-calgary-architects-template.trycloudflare.com";
             const FOTOS_POR_CARGA = 6;
-
-            // ==========================================
-            // MODO DE OPERACIÓN
-            // ==========================================
             const MODO_DESCARGAS = true;
 
+            const WHATSAPP_PUBLICIDAD = "59160004962";
             const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
-            const WHATSAPP_SERVIDOR = "59160004962";
+
+            // Duración del contador de instrucciones (segundos)
+            const DURACION_INSTRUCCIONES = 12;
+
+            // Frecuencia de los avisos intermitentes (segundos)
+            const INTERVALO_AVISOS = 45;
 
             // ==========================================
             // DETECCIÓN DE DISPOSITIVO
@@ -1229,17 +1331,9 @@
                     fotosNuevas: "fotos nuevas",
                     disponibles: "disponible",
                     disponiblesPlural: "disponibles",
-                    pedirFoto: "Pedir foto gratis sin marca de agua",
-                    descargarFoto: "Descargar foto en alta calidad",
+                    descargarFoto: "Descargar foto",
                     descargando: "Preparando descarga...",
                     sinCreditos: "No hay descargas disponibles. Contactar al anfitrión",
-                    puedesPedir: "Tienes un número limitado de fotos para descargar",
-                    laRecibiras: " · Descarga directa en alta calidad",
-                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original (HD).',
-                    modalNombreTitulo: "¿Cuál es tu nombre?",
-                    modalNombreSubtitulo: "Así identificamos tu descarga. Solo lo verá el anfitrión del evento.",
-                    modalNombrePlaceholder: "Tu nombre",
-                    modalNombreConfirmar: "Descargar",
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
@@ -1247,6 +1341,11 @@
                     alertSinNombre: "Por favor escribe tu nombre.",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
                     waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
+                    // Publicidad
+                    pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
+                    pubBoton: 'Agenda tu evento',
+                    waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
+                    // Instrucciones
                     instrTitulo: "Tu foto se está abriendo",
                     instrSubtitulo: "Para guardarla en tu dispositivo:",
                     instrPaso1: "Ve a la pestaña nueva donde se abrió tu foto.",
@@ -1255,7 +1354,17 @@
                     instrPaso3Movil: 'Elige <strong>Guardar imagen</strong> en el menú.',
                     instrPaso3PC: 'Elige <strong>Guardar imagen como...</strong>',
                     instrAviso: "La foto puede tardar unos segundos en cargar por completo según tu conexión.",
-                    instrBoton: "Entendido"
+                    barraAbriendo: (s) => `Abriendo descarga en <strong>${s}</strong>s...`,
+                    // Avisos intermitentes
+                    avisos: [
+                        'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
+                        'Tienes un número limitado de descargas para este evento.',
+                        'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
+                        'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
+                        'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
+                        'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
+                        'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
+                    ]
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -1274,17 +1383,9 @@
                     fotosNuevas: "new photos",
                     disponibles: "available",
                     disponiblesPlural: "available",
-                    pedirFoto: "Request free photo without watermark",
-                    descargarFoto: "Download photo in high quality",
+                    descargarFoto: "Download photo",
                     descargando: "Preparing download...",
                     sinCreditos: "No downloads available. Contact the host",
-                    puedesPedir: "You have a limited number of photos to download",
-                    laRecibiras: " · Direct download in high quality",
-                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. Download your photo in original quality (HD).',
-                    modalNombreTitulo: "What's your name?",
-                    modalNombreSubtitulo: "This identifies your download. Only the event host will see it.",
-                    modalNombrePlaceholder: "Your name",
-                    modalNombreConfirmar: "Download",
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
@@ -1292,6 +1393,9 @@
                     alertSinNombre: "Please write your name.",
                     alertErrorDescarga: "We couldn't prepare the download. Please try again.",
                     waSinCreditos: "Hi, I can't download this image, can you help me?",
+                    pubTexto: 'Want your own <strong>live gallery</strong> for your event?',
+                    pubBoton: 'Book your event',
+                    waPublicidad: "Hi, I'm interested in a live gallery for my event.",
                     instrTitulo: "Your photo is opening",
                     instrSubtitulo: "To save it on your device:",
                     instrPaso1: "Go to the new tab where your photo opened.",
@@ -1300,7 +1404,16 @@
                     instrPaso3Movil: 'Choose <strong>Save image</strong> in the menu.',
                     instrPaso3PC: 'Choose <strong>Save image as...</strong>',
                     instrAviso: "The photo may take a few seconds to fully load depending on your connection.",
-                    instrBoton: "Got it"
+                    barraAbriendo: (s) => `Opening download in <strong>${s}</strong>s...`,
+                    avisos: [
+                        'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
+                        'You have a limited number of downloads for this event.',
+                        'OVJ Studio · <strong>Photographing with heart</strong>',
+                        'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
+                        'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
+                        'Your event, your memories, <strong>your exclusive gallery</strong>.',
+                        'The best photos deserve to be <strong>downloaded and treasured</strong>.'
+                    ]
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -1319,17 +1432,9 @@
                     fotosNuevas: "张新照片",
                     disponibles: "可用",
                     disponiblesPlural: "可用",
-                    pedirFoto: "免费索取无水印照片",
-                    descargarFoto: "下载高清照片",
+                    descargarFoto: "下载照片",
                     descargando: "正在准备下载...",
                     sinCreditos: "没有可用下载。请联系主办方",
-                    puedesPedir: "您可以下载的张数有限",
-                    laRecibiras: " · 高清直接下载",
-                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。请下载原画质（高清）照片。',
-                    modalNombreTitulo: "你叫什么名字？",
-                    modalNombreSubtitulo: "用于识别你的下载，仅主办方可见。",
-                    modalNombrePlaceholder: "你的名字",
-                    modalNombreConfirmar: "下载",
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
@@ -1337,6 +1442,9 @@
                     alertSinNombre: "请写下你的名字。",
                     alertErrorDescarga: "无法准备下载，请重试。",
                     waSinCreditos: "你好，我无法下载这张图片，可以帮我吗？",
+                    pubTexto: '想要自己的 <strong>现场画廊</strong> 吗？',
+                    pubBoton: '预订活动',
+                    waPublicidad: "你好，我对现场画廊感兴趣。",
                     instrTitulo: "你的照片正在打开",
                     instrSubtitulo: "要保存到你的设备：",
                     instrPaso1: "前往打开照片的新标签页。",
@@ -1345,7 +1453,16 @@
                     instrPaso3Movil: '在菜单中选择 <strong>保存图片</strong>。',
                     instrPaso3PC: '选择 <strong>图片另存为...</strong>',
                     instrAviso: "根据你的网络情况，照片可能需要几秒钟才能完全加载。",
-                    instrBoton: "明白了"
+                    barraAbriendo: (s) => `${s} 秒后打开下载...`,
+                    avisos: [
+                        '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
+                        '本次活动的下载次数有限。',
+                        'OVJ Studio · <strong>用心拍摄</strong>',
+                        '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
+                        '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
+                        '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
+                        '最好的照片值得被 <strong>下载和珍藏</strong>。'
+                    ]
                 }
             };
 
@@ -1368,8 +1485,6 @@
                 const idiomaNavegador = navigator.language || navigator.userLanguage || 'en';
                 const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
 
-                // Si el idioma del navegador está entre los soportados, usarlo.
-                // Si no, caer a inglés por defecto.
                 if (TRADUCCIONES[idiomaBase]) {
                     return idiomaBase;
                 }
@@ -1393,14 +1508,14 @@
                     op.classList.toggle('activo', op.dataset.lang === idioma);
                 });
 
-                document.getElementById('mensajePreview').innerHTML = t('mensajePreview');
+                document.getElementById('pubTexto').innerHTML = t('pubTexto');
+                document.getElementById('pubBotonTexto').textContent = t('pubBoton');
 
-                document.getElementById('modalNombreTitulo').textContent = t('modalNombreTitulo');
-                document.getElementById('modalNombreSubtitulo').textContent = t('modalNombreSubtitulo');
-                document.getElementById('inputNombre').placeholder = t('modalNombrePlaceholder');
-                document.getElementById('btnConfirmarNombre').textContent = t('modalNombreConfirmar');
+                document.getElementById('modalNombreTitulo').textContent = t('modalNombreTitulo') || "¿Cuál es tu nombre?";
+                document.getElementById('modalNombreSubtitulo').textContent = t('modalNombreSubtitulo') || "";
+                document.getElementById('inputNombre').placeholder = t('modalNombrePlaceholder') || "Tu nombre";
+                document.getElementById('btnConfirmarNombre').textContent = t('modalNombreConfirmar') || "Descargar";
 
-                // Instrucciones de descarga
                 document.getElementById('instrTitulo').textContent = t('instrTitulo');
                 document.getElementById('instrSubtitulo').textContent = t('instrSubtitulo');
                 document.getElementById('instrPaso1').textContent = t('instrPaso1');
@@ -1411,14 +1526,12 @@
                     ? t('instrPaso3Movil')
                     : t('instrPaso3PC');
                 document.getElementById('instrAviso').textContent = t('instrAviso');
-                document.getElementById('btnEntendido').textContent = t('instrBoton');
 
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
                 }
 
                 actualizarBotonPrincipal();
-
                 actualizarEstado();
                 if (fotosCache.length > 0) {
                     renderizarGaleria();
@@ -1447,7 +1560,7 @@
             });
 
             // ==========================================
-            // CAPTURAR EL ID DEL FOTÓGRAFO DESDE LA URL
+            // CAPTURAR EL ID DEL FOTÓGRAFO
             // ==========================================
             function getFotografoId() {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1477,12 +1590,19 @@
             let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
             let modalNombreCallback = null;
 
-            let instrTimeoutId = null;
+            // Contador de instrucciones
+            let instrIntervalId = null;
+            let instrSegundosRestantes = 0;
+            let instrUrlPendiente = null;
+
+            // Avisos intermitentes
+            let avisoTimeoutId = null;
+            let avisoOcultoTimeoutId = null;
+            let indiceAviso = 0;
 
             // ==========================================
             // CARGAR FOTOS
             // ==========================================
-
             async function cargarFotos() {
                 if (cargando) return;
                 cargando = true;
@@ -1551,9 +1671,6 @@
                 cargando = false;
             }
 
-            // ==========================================
-            // MOSTRAR ESTADO OFFLINE
-            // ==========================================
             function mostrarOffline() {
                 const estado = document.getElementById("estado");
                 const galeria = document.getElementById("galeria");
@@ -1572,9 +1689,6 @@
                 `;
             }
 
-            // ==========================================
-            // ACTUALIZAR ESTADO (CONTADOR)
-            // ==========================================
             function actualizarEstado() {
                 const estado = document.getElementById("estado");
 
@@ -1591,41 +1705,29 @@
                 estado.className = "ok";
             }
 
-            // ==========================================
-            // ACTUALIZAR BOTÓN PRINCIPAL
-            // ==========================================
             function actualizarBotonPrincipal() {
                 const btn = document.getElementById('btnPedir');
                 const icono = document.getElementById('btnIcono');
                 const texto = document.getElementById('btnPedirTexto');
-                const msgLimite = document.getElementById('msgLimite');
-                const msgEntrega = document.getElementById('msgEntrega');
 
                 if (estadoCreditos.sinCreditos && MODO_DESCARGAS) {
                     btn.classList.add('agotado');
                     icono.textContent = "💬";
                     texto.textContent = t('sinCreditos');
-                    msgLimite.textContent = "";
-                    msgEntrega.textContent = "";
                 } else if (MODO_DESCARGAS) {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
                     texto.textContent = t('descargarFoto');
-                    msgLimite.textContent = t('puedesPedir');
-                    msgEntrega.textContent = t('laRecibiras');
                 } else {
                     btn.classList.remove('agotado');
                     icono.textContent = "📱";
-                    texto.textContent = t('pedirFoto');
-                    msgLimite.textContent = t('puedesPedir');
-                    msgEntrega.textContent = t('laRecibiras');
+                    texto.textContent = t('descargarFoto');
                 }
             }
 
             // ==========================================
             // RENDERIZAR GALERÍA
             // ==========================================
-
             function renderizarGaleria() {
                 const galeria = document.getElementById("galeria");
 
@@ -1694,9 +1796,6 @@
                 totalFotosAnterior = fotosCache.length;
             }
 
-            // ==========================================
-            // CARGA SECUENCIAL CONTROLADA (2 A LA VEZ)
-            // ==========================================
             function cargarImagenesSecuencialmente() {
                 const imagenes = document.querySelectorAll('.foto img[data-src]');
                 const pendientes = Array.from(imagenes).filter(img => !img.src || img.src === window.location.href);
@@ -1729,9 +1828,6 @@
                 }
             }
 
-            // ==========================================
-            // MOSTRAR MÁS FOTOS
-            // ==========================================
             function mostrarMasFotos() {
                 fotosVisibles += FOTOS_POR_CARGA;
                 renderizarGaleria();
@@ -1751,7 +1847,6 @@
             // ==========================================
             // MODAL FOTO
             // ==========================================
-
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
                 if (index < 0) {
@@ -1841,18 +1936,6 @@
                     }
                     return;
                 }
-
-                pedirFotoWhatsAppOriginal();
-            }
-
-            function pedirFotoWhatsAppOriginal() {
-                const foto = fotosCache[fotoSeleccionadaIndex];
-                const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
-
-                const urlWhatsApp =
-                    `https://wa.me/${WHATSAPP_SERVIDOR}?text=${encodeURIComponent(mensaje)}`;
-
-                window.open(urlWhatsApp, "_blank");
             }
 
             function abrirWhatsAppSinCreditos() {
@@ -1861,6 +1944,14 @@
 
                 const urlWhatsApp =
                     `https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`;
+
+                window.open(urlWhatsApp, "_blank");
+            }
+
+            function abrirWhatsAppPublicidad() {
+                const mensaje = t('waPublicidad');
+                const urlWhatsApp =
+                    `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`;
 
                 window.open(urlWhatsApp, "_blank");
             }
@@ -1923,17 +2014,20 @@
                 btn.classList.remove('cargando-btn');
                 texto.textContent = textoOriginal;
 
-                window.open(urlExterna, "_blank");
-
-                abrirInstrucciones();
+                // Abrir modal de instrucciones con barra de progreso.
+                // Al terminar la barra, se abre la pestaña nueva.
+                abrirInstrucciones(urlExterna);
             }
 
             // ==========================================
-            // MODAL INSTRUCCIONES
+            // MODAL INSTRUCCIONES CON BARRA DE PROGRESO
             // ==========================================
-            function abrirInstrucciones() {
+            function abrirInstrucciones(urlExterna) {
                 const modal = document.getElementById('modalInstrucciones');
+                const barra = document.getElementById('barraProgreso');
+                const barraTexto = document.getElementById('barraTexto');
 
+                // Refrescar textos según idioma y dispositivo
                 document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
                     ? t('instrPaso2Movil')
                     : t('instrPaso2PC');
@@ -1944,21 +2038,69 @@
 
                 document.getElementById('instrEmoji').textContent = esDispositivoMovil() ? '📱' : '💻';
 
+                // Guardar la URL pendiente
+                instrUrlPendiente = urlExterna;
+
+                // Resetear barra
+                barra.style.width = '0%';
+                instrSegundosRestantes = DURACION_INSTRUCCIONES;
+                barraTexto.innerHTML = t('barraAbriendo', instrSegundosRestantes);
+
                 modal.classList.add('activo');
 
-                if (instrTimeoutId) clearTimeout(instrTimeoutId);
-                instrTimeoutId = setTimeout(() => {
-                    cerrarInstrucciones();
-                }, 15000);
+                // Limpiar interval anterior si existe
+                if (instrIntervalId) {
+                    clearInterval(instrIntervalId);
+                    instrIntervalId = null;
+                }
+
+                // Iniciar contador
+                const inicio = Date.now();
+                const duracionTotalMs = DURACION_INSTRUCCIONES * 1000;
+
+                instrIntervalId = setInterval(() => {
+                    const transcurrido = Date.now() - inicio;
+                    const progreso = Math.min(100, (transcurrido / duracionTotalMs) * 100);
+                    barra.style.width = progreso + '%';
+
+                    const segundosRestantes = Math.max(0, Math.ceil((duracionTotalMs - transcurrido) / 1000));
+
+                    if (segundosRestantes !== instrSegundosRestantes) {
+                        instrSegundosRestantes = segundosRestantes;
+                        barraTexto.innerHTML = t('barraAbriendo', instrSegundosRestantes);
+                    }
+
+                    if (transcurrido >= duracionTotalMs) {
+                        clearInterval(instrIntervalId);
+                        instrIntervalId = null;
+
+                        // Abrir la pestaña nueva automáticamente
+                        if (instrUrlPendiente) {
+                            window.open(instrUrlPendiente, "_blank");
+                            instrUrlPendiente = null;
+                        }
+
+                        // Cerrar el modal automáticamente
+                        setTimeout(() => {
+                            cerrarInstrucciones();
+                        }, 500);
+                    }
+                }, 100);
             }
 
             function cerrarInstrucciones() {
                 const modal = document.getElementById('modalInstrucciones');
                 modal.classList.remove('activo');
 
-                if (instrTimeoutId) {
-                    clearTimeout(instrTimeoutId);
-                    instrTimeoutId = null;
+                if (instrIntervalId) {
+                    clearInterval(instrIntervalId);
+                    instrIntervalId = null;
+                }
+
+                // Si el usuario cierra antes de que termine, abrimos la pestaña manualmente
+                if (instrUrlPendiente) {
+                    window.open(instrUrlPendiente, "_blank");
+                    instrUrlPendiente = null;
                 }
             }
 
@@ -2003,9 +2145,40 @@
             }
 
             // ==========================================
+            // AVISOS INTERMITENTES
+            // ==========================================
+            function iniciarAvisosIntermitentes() {
+                const contenedor = document.getElementById('avisoIntermitente');
+
+                function mostrarAviso() {
+                    const listaAvisos = TRADUCCIONES[idiomaActual].avisos || [];
+                    if (listaAvisos.length === 0) return;
+
+                    // Elegir el siguiente aviso en orden circular
+                    const texto = listaAvisos[indiceAviso % listaAvisos.length];
+                    indiceAviso++;
+
+                    contenedor.innerHTML = texto;
+                    contenedor.classList.add('visible');
+
+                    // Ocultar después de 8 segundos
+                    if (avisoOcultoTimeoutId) clearTimeout(avisoOcultoTimeoutId);
+                    avisoOcultoTimeoutId = setTimeout(() => {
+                        contenedor.classList.remove('visible');
+                    }, 8000);
+
+                    // Programar el siguiente aviso
+                    if (avisoTimeoutId) clearTimeout(avisoTimeoutId);
+                    avisoTimeoutId = setTimeout(mostrarAviso, INTERVALO_AVISOS * 1000);
+                }
+
+                // Primer aviso después de 15 segundos
+                avisoTimeoutId = setTimeout(mostrarAviso, 15000);
+            }
+
+            // ==========================================
             // EVENTOS
             // ==========================================
-
             document.addEventListener("keydown", (e) => {
                 const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
                 const modalInstrActivo = document.getElementById('modalInstrucciones').classList.contains('activo');
@@ -2047,12 +2220,13 @@
             // ==========================================
             // INICIALIZAR
             // ==========================================
-
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
 
             cargarFotos();
             setInterval(cargarFotos, 60000);
+
+            iniciarAvisosIntermitentes();
         </script>
     </body>
 </html>
