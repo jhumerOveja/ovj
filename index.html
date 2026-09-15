@@ -821,6 +821,158 @@
                 transform: scale(0.97);
             }
 
+            /* ===== MODAL INSTRUCCIONES DE DESCARGA ===== */
+            .modal-instrucciones {
+                display: none;
+                position: fixed;
+                z-index: 1200;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+            .modal-instrucciones.activo {
+                display: flex;
+            }
+            .modal-instrucciones-contenido {
+                background: #141414;
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                border-radius: 20px;
+                padding: 30px 24px 24px;
+                max-width: 420px;
+                width: 100%;
+                text-align: center;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-instrucciones-contenido .emoji-grande {
+                font-size: 2rem;
+                margin-bottom: 10px;
+                display: block;
+            }
+            .modal-instrucciones-contenido .titulo {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 6px;
+                letter-spacing: 0.5px;
+            }
+            .modal-instrucciones-contenido .subtitulo {
+                font-size: 0.8rem;
+                color: #aaa;
+                margin-bottom: 22px;
+                line-height: 1.5;
+                font-weight: 300;
+            }
+            .modal-instrucciones-contenido .paso {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 12px 14px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 12px;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .modal-instrucciones-contenido .paso-num {
+                flex-shrink: 0;
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                background: rgba(243, 156, 18, 0.15);
+                border: 1px solid rgba(243, 156, 18, 0.3);
+                color: #f39c12;
+                font-size: 0.75rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-instrucciones-contenido .paso-texto {
+                font-size: 0.8rem;
+                color: #ccc;
+                line-height: 1.45;
+                font-weight: 400;
+            }
+            .modal-instrucciones-contenido .paso-texto strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
+
+            /* Animación de la mano/dedo presionando */
+            .anim-mano {
+                display: inline-block;
+                font-size: 1.4rem;
+                animation: tapGesture 1.6s ease-in-out infinite;
+                vertical-align: middle;
+                margin-left: 2px;
+            }
+            @keyframes tapGesture {
+                0%, 100% { transform: translateY(0) scale(1); }
+                40% { transform: translateY(-4px) scale(1.05); }
+                60% { transform: translateY(0) scale(0.95); }
+            }
+
+            .modal-instrucciones-contenido .aviso-tiempo {
+                font-size: 0.7rem;
+                color: #666;
+                margin-top: 16px;
+                line-height: 1.5;
+                font-style: italic;
+                padding-top: 14px;
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+            }
+
+            .modal-instrucciones-contenido .btn-entendido {
+                margin-top: 18px;
+                width: 100%;
+                padding: 13px 20px;
+                border-radius: 12px;
+                border: none;
+                background: linear-gradient(135deg, #f39c12, #d68910);
+                color: #0a0a0a;
+                font-size: 0.9rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+                letter-spacing: 0.3px;
+            }
+            .modal-instrucciones-contenido .btn-entendido:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+            }
+            .modal-instrucciones-contenido .btn-entendido:active {
+                transform: scale(0.97);
+            }
+
+            @media (max-width: 600px) {
+                .modal-instrucciones-contenido {
+                    padding: 24px 18px 20px;
+                }
+                .modal-instrucciones-contenido .emoji-grande {
+                    font-size: 1.8rem;
+                }
+                .modal-instrucciones-contenido .titulo {
+                    font-size: 1rem;
+                }
+                .modal-instrucciones-contenido .paso {
+                    padding: 10px 12px;
+                    gap: 10px;
+                }
+                .modal-instrucciones-contenido .paso-texto {
+                    font-size: 0.75rem;
+                }
+            }
+
             .footer {
                 text-align: center;
                 padding: 24px 10px 6px;
@@ -1022,12 +1174,53 @@
             </div>
         </div>
 
+        <!-- ===== MODAL INSTRUCCIONES DE DESCARGA ===== -->
+        <div class="modal-instrucciones" id="modalInstrucciones">
+            <div class="modal-instrucciones-contenido">
+                <span class="emoji-grande" id="instrEmoji">📥</span>
+                <div class="titulo" id="instrTitulo">Tu foto se está abriendo</div>
+                <div class="subtitulo" id="instrSubtitulo">
+                    Para guardarla en tu dispositivo, sigue estos pasos:
+                </div>
+
+                <div class="paso">
+                    <div class="paso-num">1</div>
+                    <div class="paso-texto" id="instrPaso1">
+                        Ve a la pestaña nueva donde se abrió tu foto.
+                    </div>
+                </div>
+
+                <div class="paso">
+                    <div class="paso-num">2</div>
+                    <div class="paso-texto" id="instrPaso2">
+                        <span id="instrPaso2Texto">Mantén presionada la imagen</span>
+                        <span class="anim-mano">👆</span>
+                    </div>
+                </div>
+
+                <div class="paso">
+                    <div class="paso-num">3</div>
+                    <div class="paso-texto" id="instrPaso3">
+                        Elige <strong>Guardar imagen</strong> en el menú.
+                    </div>
+                </div>
+
+                <div class="aviso-tiempo" id="instrAviso">
+                    La foto puede tardar unos segundos en cargar por completo según tu conexión.
+                </div>
+
+                <button class="btn-entendido" id="btnEntendido" onclick="cerrarInstrucciones()">
+                    Entendido
+                </button>
+            </div>
+        </div>
+
         <script>
             // ==========================================
             // CONFIGURACIÓN - URL ACTUAL DE CLOUDFLARE
             // ==========================================
             const URL_CLOUDFLARE =
-                "https://shapes-independence-borough-trance.trycloudflare.com";
+                "https://craft-prizes-infants-electro.trycloudflare.com";
 
             // CONFIGURACIÓN DE CARGA PROGRESIVA
             const FOTOS_POR_CARGA = 6;
@@ -1035,17 +1228,23 @@
             // ==========================================
             // MODO DE OPERACIÓN
             // ==========================================
-            // false → Botón pide la foto por WhatsApp (método original, ya probado)
-            // true  → Botón descarga directo desde Litterbox (Fase 3 ya implementada en el server)
+            // false → Botón pide la foto por WhatsApp (método original)
+            // true  → Botón descarga directo desde Litterbox (Fase 3 activa)
             const MODO_DESCARGAS = true;
 
-            // Número de WhatsApp del cliente/anfitrión (para cuando se agoten los créditos)
-            // Este valor debería venir del server en Fase 3 (campo `whatsappCliente` del evento).
-            // Por ahora se deja como fallback.
+            // Número de WhatsApp del cliente/anfitrión (fallback)
             const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
 
             // Número del servidor (fallback del modo original)
             const WHATSAPP_SERVIDOR = "59160004962";
+
+            // ==========================================
+            // DETECCIÓN DE DISPOSITIVO
+            // ==========================================
+            function esDispositivoMovil() {
+                return /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i
+                    .test(navigator.userAgent);
+            }
 
             // ==========================================
             // SISTEMA DE IDIOMAS
@@ -1068,35 +1267,35 @@
                     fotosNuevas: "fotos nuevas",
                     disponibles: "disponible",
                     disponiblesPlural: "disponibles",
-                    // Botón principal (modo original WhatsApp)
                     pedirFoto: "Pedir foto gratis sin marca de agua",
-                    // Botón principal (modo descarga directa)
                     descargarFoto: "Descargar foto en alta calidad",
                     descargando: "Preparando descarga...",
-                    // Estado agotado
                     sinCreditos: "No hay descargas disponibles. Contactar al anfitrión",
-                    // Mensajes secundarios
                     puedesPedir: "Tienes un número limitado de fotos para pedir",
                     laRecibiras: " · La recibirás por WhatsApp en minutos",
                     mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.',
-                    // Aviso HD
                     avisoHD: '<strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
-                    // Modal nombre
                     modalNombreTitulo: "¿Cuál es tu nombre?",
                     modalNombreSubtitulo: "Así identificamos tu descarga. Solo lo verá el anfitrión del evento.",
                     modalNombrePlaceholder: "Tu nombre",
                     modalNombreConfirmar: "Descargar",
-                    // Offline
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
-                    // Lang
                     langTexto: "ES",
                     langBandera: "🇧🇴",
-                    // Alertas
                     alertSinNombre: "Por favor escribe tu nombre.",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
-                    // Mensaje de WhatsApp cuando no hay créditos
-                    waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?"
+                    waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
+                    // Instrucciones de descarga
+                    instrTitulo: "Tu foto se está abriendo",
+                    instrSubtitulo: "Para guardarla en tu dispositivo:",
+                    instrPaso1: "Ve a la pestaña nueva donde se abrió tu foto.",
+                    instrPaso2Movil: "Mantén presionada la imagen",
+                    instrPaso2PC: "Haz clic derecho sobre la imagen",
+                    instrPaso3Movil: 'Elige <strong>Guardar imagen</strong> en el menú.',
+                    instrPaso3PC: 'Elige <strong>Guardar imagen como...</strong>',
+                    instrAviso: "La foto puede tardar unos segundos en cargar por completo según tu conexión.",
+                    instrBoton: "Entendido"
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -1133,7 +1332,16 @@
                     langBandera: "🇺🇸",
                     alertSinNombre: "Please write your name.",
                     alertErrorDescarga: "We couldn't prepare the download. Please try again.",
-                    waSinCreditos: "Hi, I can't download this image, can you help me?"
+                    waSinCreditos: "Hi, I can't download this image, can you help me?",
+                    instrTitulo: "Your photo is opening",
+                    instrSubtitulo: "To save it on your device:",
+                    instrPaso1: "Go to the new tab where your photo opened.",
+                    instrPaso2Movil: "Press and hold the image",
+                    instrPaso2PC: "Right-click on the image",
+                    instrPaso3Movil: 'Choose <strong>Save image</strong> in the menu.',
+                    instrPaso3PC: 'Choose <strong>Save image as...</strong>',
+                    instrAviso: "The photo may take a few seconds to fully load depending on your connection.",
+                    instrBoton: "Got it"
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -1170,7 +1378,16 @@
                     langBandera: "🇨🇳",
                     alertSinNombre: "请写下你的名字。",
                     alertErrorDescarga: "无法准备下载，请重试。",
-                    waSinCreditos: "你好，我无法下载这张图片，可以帮我吗？"
+                    waSinCreditos: "你好，我无法下载这张图片，可以帮我吗？",
+                    instrTitulo: "你的照片正在打开",
+                    instrSubtitulo: "要保存到你的设备：",
+                    instrPaso1: "前往打开照片的新标签页。",
+                    instrPaso2Movil: "长按图片",
+                    instrPaso2PC: "在图片上点右键",
+                    instrPaso3Movil: '在菜单中选择 <strong>保存图片</strong>。',
+                    instrPaso3PC: '选择 <strong>图片另存为...</strong>',
+                    instrAviso: "根据你的网络情况，照片可能需要几秒钟才能完全加载。",
+                    instrBoton: "明白了"
                 }
             };
 
@@ -1223,11 +1440,23 @@
                 document.getElementById('inputNombre').placeholder = t('modalNombrePlaceholder');
                 document.getElementById('btnConfirmarNombre').textContent = t('modalNombreConfirmar');
 
+                // Instrucciones de descarga
+                document.getElementById('instrTitulo').textContent = t('instrTitulo');
+                document.getElementById('instrSubtitulo').textContent = t('instrSubtitulo');
+                document.getElementById('instrPaso1').textContent = t('instrPaso1');
+                document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
+                    ? t('instrPaso2Movil')
+                    : t('instrPaso2PC');
+                document.getElementById('instrPaso3').innerHTML = esDispositivoMovil()
+                    ? t('instrPaso3Movil')
+                    : t('instrPaso3PC');
+                document.getElementById('instrAviso').textContent = t('instrAviso');
+                document.getElementById('btnEntendido').textContent = t('instrBoton');
+
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
                 }
 
-                // Refrescar el botón principal según el estado actual
                 actualizarBotonPrincipal();
 
                 actualizarEstado();
@@ -1280,17 +1509,16 @@
             let servidorOnline = true;
             let tituloEsDefault = true;
 
-            // Estado de descargas/créditos reportado por el server
             let estadoCreditos = {
                 sinCreditos: false,
                 whatsappCliente: null
             };
 
-            // Nombre del invitado (persistido)
             let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
-
-            // Modal nombre: contexto para saber qué hacer al confirmar
             let modalNombreCallback = null;
+
+            // Timer del modal de instrucciones (para autocierre)
+            let instrTimeoutId = null;
 
             // ==========================================
             // CARGAR FOTOS
@@ -1332,7 +1560,6 @@
                         }
                     }
 
-                    // Nuevos campos opcionales que el server puede devolver en Fase 3
                     if (typeof data.sinCreditos === 'boolean') {
                         estadoCreditos.sinCreditos = data.sinCreditos;
                     }
@@ -1416,21 +1643,18 @@
                 const msgEntrega = document.getElementById('msgEntrega');
 
                 if (estadoCreditos.sinCreditos && MODO_DESCARGAS) {
-                    // Modo descargas + sin créditos → botón naranja, "contactar anfitrión"
                     btn.classList.add('agotado');
                     icono.textContent = "💬";
                     texto.textContent = t('sinCreditos');
                     msgLimite.textContent = "";
                     msgEntrega.textContent = "";
                 } else if (MODO_DESCARGAS) {
-                    // Modo descargas normales
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
                     texto.textContent = t('descargarFoto');
                     msgLimite.textContent = t('puedesPedir');
                     msgEntrega.textContent = t('laRecibiras');
                 } else {
-                    // Modo original (WhatsApp)
                     btn.classList.remove('agotado');
                     icono.textContent = "📱";
                     texto.textContent = t('pedirFoto');
@@ -1635,7 +1859,7 @@
             }
 
             // ==========================================
-            // BOTÓN PRINCIPAL: decide entre WhatsApp o descarga
+            // BOTÓN PRINCIPAL
             // ==========================================
             function accionBotonPrincipal() {
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
@@ -1643,13 +1867,11 @@
                     return;
                 }
 
-                // Modo descargas + sin créditos → WhatsApp al cliente
                 if (MODO_DESCARGAS && estadoCreditos.sinCreditos) {
                     abrirWhatsAppSinCreditos();
                     return;
                 }
 
-                // Modo descargas normales → pedir nombre si no lo tiene
                 if (MODO_DESCARGAS) {
                     if (!nombreInvitado) {
                         abrirModalNombre(() => {
@@ -1661,13 +1883,9 @@
                     return;
                 }
 
-                // Modo original → WhatsApp
                 pedirFotoWhatsAppOriginal();
             }
 
-            // ==========================================
-            // MODO ORIGINAL: WhatsApp al servidor
-            // ==========================================
             function pedirFotoWhatsAppOriginal() {
                 const foto = fotosCache[fotoSeleccionadaIndex];
                 const mensaje = `Quiero mi foto: ${foto.nombre} (Fotógrafo: ${FOTOGRAFO_ID})`;
@@ -1678,9 +1896,6 @@
                 window.open(urlWhatsApp, "_blank");
             }
 
-            // ==========================================
-            // MODO NUEVO: WhatsApp al cliente cuando no hay créditos
-            // ==========================================
             function abrirWhatsAppSinCreditos() {
                 const numeroCliente = estadoCreditos.whatsappCliente || WHATSAPP_CLIENTE_FALLBACK;
                 const mensaje = t('waSinCreditos');
@@ -1692,7 +1907,7 @@
             }
 
             // ==========================================
-            // MODO NUEVO: descargar desde Litterbox
+            // DESCARGA + MODAL DE INSTRUCCIONES
             // ==========================================
             async function descargarFotoActual() {
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
@@ -1704,9 +1919,10 @@
                 const texto = document.getElementById('btnPedirTexto');
                 const textoOriginal = texto.textContent;
 
-                // Estado "cargando" en el botón
                 btn.classList.add('cargando-btn');
                 texto.textContent = t('descargando');
+
+                let urlExterna = null;
 
                 try {
                     const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -1716,7 +1932,6 @@
                     const respuesta = await fetch(url);
 
                     if (!respuesta.ok) {
-                        // Si es 403 por límite de créditos, refrescamos el estado
                         if (respuesta.status === 403) {
                             estadoCreditos.sinCreditos = true;
                             actualizarBotonPrincipal();
@@ -1730,10 +1945,8 @@
                         throw new Error('Sin URL en la respuesta');
                     }
 
-                    // Abrimos la URL de Litterbox: el navegador la descargará o mostrará
-                    window.open(data.url, "_blank");
+                    urlExterna = data.url;
 
-                    // Si el server reporta que ya no quedan créditos, refrescamos el estado
                     if (data.sinCreditos) {
                         estadoCreditos.sinCreditos = true;
                         actualizarBotonPrincipal();
@@ -1743,15 +1956,57 @@
                     console.error('Error al descargar:', error);
                     alert(t('alertErrorDescarga'));
 
-                    // Restaurar el botón
                     btn.classList.remove('cargando-btn');
                     texto.textContent = textoOriginal;
                     return;
                 }
 
-                // Restaurar el botón
+                // Restaurar botón
                 btn.classList.remove('cargando-btn');
                 texto.textContent = textoOriginal;
+
+                // Abrir URL externa
+                window.open(urlExterna, "_blank");
+
+                // Mostrar modal de instrucciones
+                abrirInstrucciones();
+            }
+
+            // ==========================================
+            // MODAL INSTRUCCIONES
+            // ==========================================
+            function abrirInstrucciones() {
+                const modal = document.getElementById('modalInstrucciones');
+
+                // Refrescar textos según idioma y dispositivo
+                document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
+                    ? t('instrPaso2Movil')
+                    : t('instrPaso2PC');
+
+                document.getElementById('instrPaso3').innerHTML = esDispositivoMovil()
+                    ? t('instrPaso3Movil')
+                    : t('instrPaso3PC');
+
+                // Cambiar emoji según dispositivo
+                document.getElementById('instrEmoji').textContent = esDispositivoMovil() ? '📱' : '💻';
+
+                modal.classList.add('activo');
+
+                // Autocierre a los 15 segundos
+                if (instrTimeoutId) clearTimeout(instrTimeoutId);
+                instrTimeoutId = setTimeout(() => {
+                    cerrarInstrucciones();
+                }, 15000);
+            }
+
+            function cerrarInstrucciones() {
+                const modal = document.getElementById('modalInstrucciones');
+                modal.classList.remove('activo');
+
+                if (instrTimeoutId) {
+                    clearTimeout(instrTimeoutId);
+                    instrTimeoutId = null;
+                }
             }
 
             // ==========================================
@@ -1765,7 +2020,6 @@
                 input.value = nombreInvitado || '';
                 modal.classList.add('activo');
 
-                // Foco automático
                 setTimeout(() => input.focus(), 100);
             }
 
@@ -1784,7 +2038,6 @@
                     return;
                 }
 
-                // Guardar en localStorage
                 nombreInvitado = valor;
                 localStorage.setItem('ovj_nombre', valor);
 
@@ -1802,9 +2055,12 @@
 
             document.addEventListener("keydown", (e) => {
                 const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
+                const modalInstrActivo = document.getElementById('modalInstrucciones').classList.contains('activo');
 
                 if (e.key === "Escape") {
-                    if (modalNombreActivo) {
+                    if (modalInstrActivo) {
+                        cerrarInstrucciones();
+                    } else if (modalNombreActivo) {
                         cerrarModalNombre();
                     } else if (document.getElementById("modal").classList.contains("activo")) {
                         cerrarModal();
@@ -1813,8 +2069,7 @@
                     }
                 }
 
-                // No navegar fotos mientras el modal nombre está abierto
-                if (modalNombreActivo) return;
+                if (modalNombreActivo || modalInstrActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -1824,10 +2079,15 @@
                 if (e.target === e.currentTarget) cerrarModal();
             });
 
-            // Cerrar modal nombre si hacen click fuera
             document.getElementById('modalNombre').addEventListener('click', (e) => {
                 if (e.target.id === 'modalNombre') {
                     cerrarModalNombre();
+                }
+            });
+
+            document.getElementById('modalInstrucciones').addEventListener('click', (e) => {
+                if (e.target.id === 'modalInstrucciones') {
+                    cerrarInstrucciones();
                 }
             });
 
