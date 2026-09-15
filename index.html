@@ -250,29 +250,6 @@
                 }
             }
 
-            /* ===== AVISO HD ===== */
-            .aviso-hd {
-                max-width: 900px;
-                margin: 0 auto 12px;
-                text-align: center;
-                padding: 10px 18px;
-                background: rgba(46, 204, 113, 0.06);
-                border: 1px solid rgba(46, 204, 113, 0.15);
-                border-radius: 12px;
-                font-size: 0.72rem;
-                color: #2ecc71;
-                font-weight: 400;
-                letter-spacing: 0.3px;
-                line-height: 1.5;
-                user-select: none;
-                -webkit-user-select: none;
-                backdrop-filter: blur(4px);
-            }
-            .aviso-hd strong {
-                color: #27ae60;
-                font-weight: 600;
-            }
-
             /* ===== ESTADO MINI ===== */
             #estado {
                 text-align: center;
@@ -997,11 +974,6 @@
                 body {
                     padding: 8px 10px 16px;
                 }
-                .aviso-hd {
-                    font-size: 0.65rem;
-                    padding: 8px 12px;
-                    margin-bottom: 10px;
-                }
                 .galeria {
                     grid-template-columns: repeat(
                         auto-fill,
@@ -1113,11 +1085,6 @@
             </div>
         </div>
 
-        <!-- ===== AVISO HD ===== -->
-        <div class="aviso-hd" id="avisoHD">
-            <strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.
-        </div>
-
         <!-- ===== ESTADO ===== -->
         <div id="estado">Cargando...</div>
 
@@ -1143,11 +1110,11 @@
                         <span id="btnPedirTexto">Pedir foto gratis sin marca de agua</span>
                     </button>
                     <div class="mensaje-preview" id="mensajePreview">
-                        Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.
+                        Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD).
                     </div>
                     <div class="mensaje-una-sola">
                         <strong id="msgLimite">Tienes un número limitado de fotos para pedir</strong>
-                        <span id="msgEntrega"> · La recibirás por WhatsApp en minutos</span>
+                        <span id="msgEntrega"></span>
                     </div>
                 </div>
             </div>
@@ -1228,14 +1195,9 @@
             // ==========================================
             // MODO DE OPERACIÓN
             // ==========================================
-            // false → Botón pide la foto por WhatsApp (método original)
-            // true  → Botón descarga directo desde Litterbox (Fase 3 activa)
             const MODO_DESCARGAS = true;
 
-            // Número de WhatsApp del cliente/anfitrión (fallback)
             const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
-
-            // Número del servidor (fallback del modo original)
             const WHATSAPP_SERVIDOR = "59160004962";
 
             // ==========================================
@@ -1271,10 +1233,9 @@
                     descargarFoto: "Descargar foto en alta calidad",
                     descargando: "Preparando descarga...",
                     sinCreditos: "No hay descargas disponibles. Contactar al anfitrión",
-                    puedesPedir: "Tienes un número limitado de fotos para pedir",
-                    laRecibiras: " · La recibirás por WhatsApp en minutos",
-                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Recibirás tu foto en calidad original (HD) por WhatsApp.',
-                    avisoHD: '<strong>Consejo:</strong> Activa la calidad <strong>HD</strong> en WhatsApp para recibir tus fotos en máxima calidad.',
+                    puedesPedir: "Tienes un número limitado de fotos para descargar",
+                    laRecibiras: " · Descarga directa en alta calidad",
+                    mensajePreview: 'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original (HD).',
                     modalNombreTitulo: "¿Cuál es tu nombre?",
                     modalNombreSubtitulo: "Así identificamos tu descarga. Solo lo verá el anfitrión del evento.",
                     modalNombrePlaceholder: "Tu nombre",
@@ -1286,7 +1247,6 @@
                     alertSinNombre: "Por favor escribe tu nombre.",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
                     waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
-                    // Instrucciones de descarga
                     instrTitulo: "Tu foto se está abriendo",
                     instrSubtitulo: "Para guardarla en tu dispositivo:",
                     instrPaso1: "Ve a la pestaña nueva donde se abrió tu foto.",
@@ -1318,10 +1278,9 @@
                     descargarFoto: "Download photo in high quality",
                     descargando: "Preparing download...",
                     sinCreditos: "No downloads available. Contact the host",
-                    puedesPedir: "You have a limited number of photos to request",
-                    laRecibiras: " · You'll receive it on WhatsApp in minutes",
-                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. You will receive your photo in original quality (HD) via WhatsApp.',
-                    avisoHD: '<strong>Tip:</strong> Turn on <strong>HD</strong> quality in WhatsApp to receive your photos in maximum quality.',
+                    puedesPedir: "You have a limited number of photos to download",
+                    laRecibiras: " · Direct download in high quality",
+                    mensajePreview: 'Gallery photos are a <strong>preview</strong>. Download your photo in original quality (HD).',
                     modalNombreTitulo: "What's your name?",
                     modalNombreSubtitulo: "This identifies your download. Only the event host will see it.",
                     modalNombrePlaceholder: "Your name",
@@ -1364,10 +1323,9 @@
                     descargarFoto: "下载高清照片",
                     descargando: "正在准备下载...",
                     sinCreditos: "没有可用下载。请联系主办方",
-                    puedesPedir: "您可以索取的张数有限",
-                    laRecibiras: " · 你将在几分钟内通过 WhatsApp 收到",
-                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。您将通过 WhatsApp 收到原画质（高清）照片。',
-                    avisoHD: '<strong>提示：</strong>请在 WhatsApp 中开启 <strong>高清</strong> 画质，以获得最高画质的照片。',
+                    puedesPedir: "您可以下载的张数有限",
+                    laRecibiras: " · 高清直接下载",
+                    mensajePreview: '画廊中的照片为 <strong>预览图</strong>。请下载原画质（高清）照片。',
                     modalNombreTitulo: "你叫什么名字？",
                     modalNombreSubtitulo: "用于识别你的下载，仅主办方可见。",
                     modalNombrePlaceholder: "你的名字",
@@ -1407,12 +1365,15 @@
                     return guardado;
                 }
 
-                const idiomaNavegador = navigator.language || navigator.userLanguage || 'es';
+                const idiomaNavegador = navigator.language || navigator.userLanguage || 'en';
                 const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
 
-                if (idiomaBase === 'en') return 'en';
-                if (idiomaBase === 'zh') return 'zh';
-                return 'es';
+                // Si el idioma del navegador está entre los soportados, usarlo.
+                // Si no, caer a inglés por defecto.
+                if (TRADUCCIONES[idiomaBase]) {
+                    return idiomaBase;
+                }
+                return 'en';
             }
 
             function aplicarIdioma(idioma) {
@@ -1432,7 +1393,6 @@
                     op.classList.toggle('activo', op.dataset.lang === idioma);
                 });
 
-                document.getElementById('avisoHD').innerHTML = t('avisoHD');
                 document.getElementById('mensajePreview').innerHTML = t('mensajePreview');
 
                 document.getElementById('modalNombreTitulo').textContent = t('modalNombreTitulo');
@@ -1517,7 +1477,6 @@
             let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
             let modalNombreCallback = null;
 
-            // Timer del modal de instrucciones (para autocierre)
             let instrTimeoutId = null;
 
             // ==========================================
@@ -1961,14 +1920,11 @@
                     return;
                 }
 
-                // Restaurar botón
                 btn.classList.remove('cargando-btn');
                 texto.textContent = textoOriginal;
 
-                // Abrir URL externa
                 window.open(urlExterna, "_blank");
 
-                // Mostrar modal de instrucciones
                 abrirInstrucciones();
             }
 
@@ -1978,7 +1934,6 @@
             function abrirInstrucciones() {
                 const modal = document.getElementById('modalInstrucciones');
 
-                // Refrescar textos según idioma y dispositivo
                 document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
                     ? t('instrPaso2Movil')
                     : t('instrPaso2PC');
@@ -1987,12 +1942,10 @@
                     ? t('instrPaso3Movil')
                     : t('instrPaso3PC');
 
-                // Cambiar emoji según dispositivo
                 document.getElementById('instrEmoji').textContent = esDispositivoMovil() ? '📱' : '💻';
 
                 modal.classList.add('activo');
 
-                // Autocierre a los 15 segundos
                 if (instrTimeoutId) clearTimeout(instrTimeoutId);
                 instrTimeoutId = setTimeout(() => {
                     cerrarInstrucciones();
