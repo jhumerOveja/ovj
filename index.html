@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>OVJ Studio - Galería en Vivo</title>
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
         <style>
             /* ===== RESET ===== */
             * {
@@ -21,7 +22,59 @@
                 padding: 12px 16px 20px;
             }
 
-            /* ===== HEADER CON CO-BRANDING ===== */
+            /* ===== BLOQUEO (sin acceso) ===== */
+            .bloqueo {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 5000;
+                background: #0a0a0a;
+                justify-content: center;
+                align-items: center;
+                padding: 30px 24px;
+                text-align: center;
+            }
+            .bloqueo.activo {
+                display: flex;
+            }
+            .bloqueo-contenido {
+                max-width: 400px;
+            }
+            .bloqueo .icono {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                display: block;
+                opacity: 0.4;
+            }
+            .bloqueo .titulo {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #f39c12;
+                letter-spacing: 1px;
+                margin-bottom: 12px;
+            }
+            .bloqueo .subtitulo {
+                font-size: 0.9rem;
+                color: #888;
+                line-height: 1.6;
+                font-weight: 300;
+            }
+            .bloqueo .marca {
+                margin-top: 40px;
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                color: #333;
+            }
+
+            /* ===== APP (con acceso) ===== */
+            #app {
+                display: none;
+            }
+            #app.activo {
+                display: block;
+            }
+
+            /* ===== HEADER ===== */
             .header {
                 padding: 12px 0 8px;
                 border-bottom: 1px solid rgba(255, 215, 0, 0.08);
@@ -37,7 +90,6 @@
                 height: 1px;
                 background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
             }
-
             .header-top {
                 display: flex;
                 justify-content: space-between;
@@ -45,14 +97,11 @@
                 flex-wrap: wrap;
                 gap: 6px;
             }
-
             .header-left .ovj-studio {
                 font-size: 1.4rem;
                 font-weight: 300;
                 letter-spacing: 1px;
                 user-select: none;
-                -webkit-user-select: none;
-                -moz-user-select: none;
                 cursor: default;
                 position: relative;
             }
@@ -71,17 +120,14 @@
                 color: rgba(243, 156, 18, 0.3);
                 font-size: 0.6rem;
             }
-
             .header-right {
                 display: flex;
                 align-items: center;
                 gap: 8px;
             }
-
             .lang-selector {
                 position: relative;
                 user-select: none;
-                -webkit-user-select: none;
             }
             .lang-btn {
                 display: inline-flex;
@@ -91,7 +137,6 @@
                 color: #ccc;
                 font-size: 0.7rem;
                 font-weight: 600;
-                letter-spacing: 0.5px;
                 padding: 5px 10px;
                 border-radius: 50px;
                 border: 1px solid rgba(255, 255, 255, 0.08);
@@ -116,7 +161,6 @@
             .lang-selector.abierto .lang-btn .flecha {
                 transform: rotate(180deg);
             }
-
             .lang-menu {
                 position: absolute;
                 top: calc(100% + 6px);
@@ -164,8 +208,7 @@
                 color: #f39c12;
                 font-weight: 600;
             }
-
-            .header-right .badge-en-vivo {
+            .badge-en-vivo {
                 display: inline-flex;
                 align-items: center;
                 gap: 5px;
@@ -179,10 +222,9 @@
                 text-transform: uppercase;
                 border: 1px solid rgba(231, 76, 60, 0.15);
                 user-select: none;
-                -webkit-user-select: none;
                 backdrop-filter: blur(4px);
             }
-            .header-right .badge-en-vivo .punto {
+            .badge-en-vivo .punto {
                 display: inline-block;
                 width: 6px;
                 height: 6px;
@@ -196,7 +238,6 @@
                 50% { opacity: 1; transform: scale(1.2); }
                 100% { opacity: 0.3; transform: scale(0.8); }
             }
-
             .header-bottom {
                 text-align: center;
                 padding-top: 4px;
@@ -206,7 +247,6 @@
                 font-weight: 700;
                 letter-spacing: 3px;
                 color: #fff;
-                text-shadow: 0 0 80px rgba(255, 255, 255, 0.04);
                 background: linear-gradient(135deg, #fff, #ccc);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -224,28 +264,79 @@
                 background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
             }
 
-            @media (max-width: 600px) {
-                .header-left .ovj-studio {
-                    font-size: 1.1rem;
-                }
-                .header-left .ovj-studio::before {
-                    display: none;
-                }
-                .header-right .badge-en-vivo {
-                    font-size: 0.5rem;
-                    padding: 3px 10px 3px 6px;
-                }
-                .lang-btn {
-                    font-size: 0.6rem;
-                    padding: 4px 8px;
-                }
-                .lang-btn .bandera {
-                    font-size: 0.8rem;
-                }
-                .header-bottom .evento-titulo {
-                    font-size: 1.5rem;
-                    letter-spacing: 1px;
-                }
+            /* ===== BARRA DE ROL ===== */
+            .barra-rol {
+                max-width: 1200px;
+                margin: 0 auto 14px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 16px;
+                background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
+                border: 1px solid rgba(243, 156, 18, 0.15);
+                border-radius: 14px;
+                flex-wrap: wrap;
+            }
+            .barra-rol .rol-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .barra-rol .rol-emoji {
+                font-size: 1.3rem;
+            }
+            .barra-rol .rol-texto {
+                font-size: 0.8rem;
+                color: #ccc;
+                letter-spacing: 0.3px;
+            }
+            .barra-rol .rol-texto strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
+            .barra-rol .btn-invitar {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(243, 156, 18, 0.15);
+                border: 1px solid rgba(243, 156, 18, 0.4);
+                color: #f39c12;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                letter-spacing: 0.3px;
+                font-family: inherit;
+            }
+            .barra-rol .btn-invitar:hover {
+                background: rgba(243, 156, 18, 0.25);
+                transform: scale(1.04);
+                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
+            }
+            .barra-rol .btn-invitar:active {
+                transform: scale(0.97);
+            }
+            .barra-rol .btn-butacas {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #ccc;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+            }
+            .barra-rol .btn-butacas:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
             }
 
             /* ===== ESTADO MINI ===== */
@@ -257,7 +348,6 @@
                 color: #444;
                 font-weight: 300;
                 user-select: none;
-                -webkit-user-select: none;
             }
             #estado .num {
                 color: #888;
@@ -288,17 +378,14 @@
                 line-height: 1.5;
                 text-align: center;
                 user-select: none;
-                -webkit-user-select: none;
-                backdrop-filter: blur(4px);
                 opacity: 0;
                 visibility: hidden;
                 max-height: 0;
-                margin-top: 0;
                 margin-bottom: 0;
                 padding-top: 0;
                 padding-bottom: 0;
                 overflow: hidden;
-                transition: opacity 0.6s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+                transition: opacity 0.6s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
             }
             .aviso-intermitente.visible {
                 opacity: 1;
@@ -321,16 +408,13 @@
                 max-width: 1200px;
                 margin: 0 auto;
             }
-
             .foto {
                 background: #111;
                 border-radius: 14px;
                 overflow: hidden;
                 border: 1px solid #1a1a1a;
                 cursor: pointer;
-                transition:
-                    transform 0.3s ease,
-                    box-shadow 0.3s ease;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
                 position: relative;
                 aspect-ratio: 1 / 1;
             }
@@ -339,19 +423,13 @@
                 box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
                 border-color: rgba(255, 215, 0, 0.15);
             }
-
             .foto .skeleton {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(
-                    90deg,
-                    #111 0%,
-                    #1a1a1a 50%,
-                    #111 100%
-                );
+                background: linear-gradient(90deg, #111 0%, #1a1a1a 50%, #111 100%);
                 background-size: 200% 100%;
                 animation: skeleton 1.5s infinite;
                 z-index: 1;
@@ -360,7 +438,6 @@
                 0% { background-position: 200% 0; }
                 100% { background-position: -200% 0; }
             }
-
             .foto img {
                 width: 100%;
                 height: 100%;
@@ -392,7 +469,6 @@
                 color: rgba(255, 215, 0, 0.2);
                 transform: translate(-4px, -4px);
             }
-
             .ver-mas-wrapper {
                 grid-column: 1 / -1;
                 display: flex;
@@ -420,22 +496,16 @@
                 transform: scale(1.03);
                 box-shadow: 0 8px 35px rgba(243, 156, 18, 0.15);
             }
-            .btn-ver-mas:active {
-                transform: scale(0.97);
-            }
             .info-restantes {
                 font-size: 0.7rem;
                 color: #555;
                 font-weight: 300;
                 letter-spacing: 0.5px;
-                user-select: none;
-                -webkit-user-select: none;
             }
             .info-restantes strong {
                 color: #f39c12;
                 font-weight: 600;
             }
-
             .aviso-nuevas {
                 grid-column: 1 / -1;
                 text-align: center;
@@ -456,7 +526,6 @@
                 0%, 100% { opacity: 0.85; }
                 50% { opacity: 1; }
             }
-
             .estado-offline {
                 max-width: 400px;
                 margin: 60px auto;
@@ -477,7 +546,6 @@
                 font-weight: 600;
                 color: #f39c12;
                 margin-bottom: 10px;
-                letter-spacing: 0.5px;
             }
             .estado-offline .mensaje {
                 font-size: 0.85rem;
@@ -502,7 +570,6 @@
             .modal.activo {
                 display: flex;
             }
-
             .modal-fondo {
                 position: fixed;
                 top: 0;
@@ -511,7 +578,6 @@
                 height: 100%;
                 background: rgba(0, 0, 0, 0.92);
                 backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
                 z-index: 998;
                 display: none;
                 animation: blurIn 0.4s ease;
@@ -523,7 +589,6 @@
                 from { backdrop-filter: blur(0px); opacity: 0; }
                 to { backdrop-filter: blur(12px); opacity: 1; }
             }
-
             .modal-contenido {
                 max-width: 850px;
                 width: 100%;
@@ -537,7 +602,6 @@
                 0% { transform: scale(0.85); opacity: 0; }
                 100% { transform: scale(1); opacity: 1; }
             }
-
             .modal-contenido .imagen-wrapper {
                 position: relative;
                 border-radius: 16px;
@@ -546,32 +610,6 @@
                 border: 1px solid rgba(255, 255, 255, 0.06);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
             }
-
-            .modal-contenido .imagen-wrapper::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: linear-gradient(
-                    45deg,
-                    transparent 30%,
-                    rgba(255, 255, 255, 0.02) 45%,
-                    rgba(255, 255, 255, 0.12) 50%,
-                    rgba(255, 255, 255, 0.02) 55%,
-                    transparent 70%
-                );
-                transform: rotate(45deg) translateX(-100%);
-                animation: brillo 1.4s ease forwards;
-                z-index: 2;
-                pointer-events: none;
-            }
-            @keyframes brillo {
-                0% { transform: rotate(45deg) translateX(-100%); }
-                100% { transform: rotate(45deg) translateX(100%); }
-            }
-
             .modal-contenido img {
                 width: 100%;
                 max-height: 68vh;
@@ -581,7 +619,6 @@
                 padding: 16px;
                 transition: transform 0.3s ease;
             }
-
             .nav-flecha {
                 position: absolute;
                 top: 50%;
@@ -601,17 +638,12 @@
                 transition: all 0.3s ease;
                 z-index: 3;
                 user-select: none;
-                -webkit-user-select: none;
                 box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
             }
             .nav-flecha:hover {
                 background: rgba(255, 255, 255, 0.15);
                 border-color: rgba(255, 215, 0, 0.25);
                 transform: translateY(-50%) scale(1.08);
-                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
-            }
-            .nav-flecha:active {
-                transform: translateY(-50%) scale(0.95);
             }
             .nav-flecha.izquierda {
                 left: 18px;
@@ -623,7 +655,6 @@
                 opacity: 0;
                 pointer-events: none;
             }
-
             .modal-footer {
                 padding: 16px 20px 20px;
                 display: flex;
@@ -636,7 +667,6 @@
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
                 margin-top: -1px;
             }
-
             .publicidad-wrapper {
                 width: 100%;
                 text-align: center;
@@ -644,16 +674,12 @@
                 background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
                 border: 1px solid rgba(243, 156, 18, 0.15);
                 border-radius: 12px;
-                user-select: none;
-                -webkit-user-select: none;
             }
             .publicidad-wrapper .pub-texto {
                 font-size: 0.72rem;
                 color: #c9c9c9;
                 line-height: 1.5;
-                font-weight: 400;
                 margin-bottom: 8px;
-                letter-spacing: 0.3px;
             }
             .publicidad-wrapper .pub-texto strong {
                 color: #f1c40f;
@@ -672,21 +698,12 @@
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.25s ease;
-                letter-spacing: 0.3px;
                 font-family: inherit;
             }
             .publicidad-wrapper .pub-btn:hover {
                 background: rgba(243, 156, 18, 0.25);
                 transform: scale(1.04);
-                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
             }
-            .publicidad-wrapper .pub-btn:active {
-                transform: scale(0.97);
-            }
-            .publicidad-wrapper .pub-btn .icono {
-                font-size: 0.9rem;
-            }
-
             .btn-pedir {
                 background: linear-gradient(135deg, #2ecc71, #27ae60);
                 color: #0a0a0a;
@@ -703,36 +720,19 @@
                 width: 100%;
                 justify-content: center;
                 max-width: 340px;
-                letter-spacing: 0.3px;
-                user-select: none;
-                -webkit-user-select: none;
                 box-shadow: 0 4px 25px rgba(46, 204, 113, 0.15);
             }
             .btn-pedir:hover {
                 transform: scale(1.03);
                 box-shadow: 0 8px 35px rgba(46, 204, 113, 0.25);
-                background: linear-gradient(135deg, #27ae60, #1e8449);
-            }
-            .btn-pedir:active {
-                transform: scale(0.97);
-            }
-            .btn-pedir .icono-whatsapp {
-                font-size: 1.3rem;
-            }
-            .btn-pedir.cargando-btn {
-                opacity: 0.7;
-                cursor: wait;
-                pointer-events: none;
             }
             .btn-pedir.agotado {
                 background: linear-gradient(135deg, #e67e22, #d35400);
                 box-shadow: 0 4px 25px rgba(230, 126, 34, 0.2);
             }
-            .btn-pedir.agotado:hover {
-                background: linear-gradient(135deg, #d35400, #a04000);
-                box-shadow: 0 8px 35px rgba(230, 126, 34, 0.3);
+            .btn-pedir .icono-whatsapp {
+                font-size: 1.3rem;
             }
-
             .btn-cerrar-modal {
                 position: absolute;
                 top: 10px;
@@ -749,15 +749,11 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: all 0.3s ease;
                 z-index: 10;
-                user-select: none;
-                -webkit-user-select: none;
             }
             .btn-cerrar-modal:hover {
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
-                border-color: rgba(255, 255, 255, 0.12);
             }
 
             /* ===== MODAL NOMBRE ===== */
@@ -774,7 +770,6 @@
                 padding: 20px;
                 background: rgba(0, 0, 0, 0.88);
                 backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
             }
             .modal-nombre.activo {
                 display: flex;
@@ -795,7 +790,6 @@
                 font-weight: 600;
                 color: #fff;
                 margin-bottom: 8px;
-                letter-spacing: 0.5px;
             }
             .modal-nombre-contenido .subtitulo {
                 font-size: 0.75rem;
@@ -812,7 +806,6 @@
                 color: #fff;
                 font-size: 0.95rem;
                 outline: none;
-                transition: all 0.25s ease;
                 font-family: inherit;
                 text-align: center;
             }
@@ -836,14 +829,10 @@
                 cursor: pointer;
                 transition: all 0.25s ease;
                 font-family: inherit;
-                letter-spacing: 0.3px;
             }
             .modal-nombre-contenido .btn-confirmar:hover {
                 transform: scale(1.02);
                 box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
-            }
-            .modal-nombre-contenido .btn-confirmar:active {
-                transform: scale(0.97);
             }
 
             /* ===== MODAL INSTRUCCIONES ===== */
@@ -860,7 +849,6 @@
                 padding: 20px;
                 background: rgba(0, 0, 0, 0.9);
                 backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
             }
             .modal-instrucciones.activo {
                 display: flex;
@@ -887,7 +875,6 @@
                 font-weight: 700;
                 color: #f1c40f;
                 margin-bottom: 6px;
-                letter-spacing: 0.5px;
             }
             .modal-instrucciones-contenido .subtitulo {
                 font-size: 0.8rem;
@@ -925,13 +912,11 @@
                 font-size: 0.8rem;
                 color: #ccc;
                 line-height: 1.45;
-                font-weight: 400;
             }
             .modal-instrucciones-contenido .paso-texto strong {
                 color: #f1c40f;
                 font-weight: 600;
             }
-
             .anim-mano {
                 display: inline-block;
                 font-size: 1.4rem;
@@ -944,7 +929,6 @@
                 40% { transform: translateY(-4px) scale(1.05); }
                 60% { transform: translateY(0) scale(0.95); }
             }
-
             .modal-instrucciones-contenido .aviso-tiempo {
                 font-size: 0.7rem;
                 color: #666;
@@ -954,7 +938,6 @@
                 padding-top: 14px;
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
             }
-
             .barra-progreso-wrapper {
                 margin-top: 18px;
                 width: 100%;
@@ -978,14 +961,12 @@
             .barra-progreso-texto {
                 font-size: 0.7rem;
                 color: #888;
-                letter-spacing: 0.3px;
                 font-weight: 400;
             }
             .barra-progreso-texto strong {
                 color: #f39c12;
                 font-weight: 600;
             }
-
             .btn-cerrar-instr {
                 position: absolute;
                 top: 12px;
@@ -1001,33 +982,394 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: all 0.3s ease;
                 z-index: 10;
-                user-select: none;
-                -webkit-user-select: none;
             }
             .btn-cerrar-instr:hover {
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
             }
 
-            @media (max-width: 600px) {
-                .modal-instrucciones-contenido {
-                    padding: 24px 18px 20px;
-                }
-                .modal-instrucciones-contenido .emoji-grande {
-                    font-size: 1.8rem;
-                }
-                .modal-instrucciones-contenido .titulo {
-                    font-size: 1rem;
-                }
-                .modal-instrucciones-contenido .paso {
-                    padding: 10px 12px;
-                    gap: 10px;
-                }
-                .modal-instrucciones-contenido .paso-texto {
-                    font-size: 0.75rem;
-                }
+            /* ===== MODAL BUTACAS ===== */
+            .modal-butacas {
+                display: none;
+                position: fixed;
+                z-index: 1300;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(12px);
+            }
+            .modal-butacas.activo {
+                display: flex;
+            }
+            .modal-butacas-contenido {
+                background: #141414;
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 500px;
+                width: 100%;
+                max-height: 85vh;
+                overflow-y: auto;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-butacas-contenido .titulo {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 4px;
+                letter-spacing: 0.5px;
+                text-align: center;
+            }
+            .modal-butacas-contenido .subtitulo {
+                font-size: 0.75rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .fila-butacas {
+                margin-bottom: 20px;
+            }
+            .fila-titulo {
+                font-size: 0.7rem;
+                color: #666;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+                padding-left: 4px;
+                font-weight: 600;
+            }
+            .butaca {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 14px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 12px;
+                margin-bottom: 8px;
+                transition: all 0.2s ease;
+            }
+            .butaca.activa {
+                background: rgba(243, 156, 18, 0.08);
+                border-color: rgba(243, 156, 18, 0.3);
+            }
+            .butaca.vacia {
+                opacity: 0.5;
+            }
+            .butaca .emoji {
+                font-size: 1.2rem;
+                flex-shrink: 0;
+            }
+            .butaca .info {
+                flex: 1;
+                min-width: 0;
+            }
+            .butaca .nombre {
+                font-size: 0.85rem;
+                color: #fff;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .butaca .detalle {
+                font-size: 0.65rem;
+                color: #666;
+                margin-top: 2px;
+                letter-spacing: 0.3px;
+            }
+            .butaca .estado {
+                font-size: 0.65rem;
+                padding: 3px 8px;
+                border-radius: 50px;
+                background: rgba(46, 204, 113, 0.15);
+                color: #2ecc71;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                flex-shrink: 0;
+            }
+            .butaca.vacia .estado {
+                background: rgba(255, 255, 255, 0.05);
+                color: #555;
+            }
+            .modal-butacas-contenido .btn-cerrar {
+                margin-top: 12px;
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            .modal-butacas-contenido .btn-cerrar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            /* ===== MODAL INVITAR ===== */
+            .modal-invitar {
+                display: none;
+                position: fixed;
+                z-index: 1300;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(12px);
+            }
+            .modal-invitar.activo {
+                display: flex;
+            }
+            .modal-invitar-contenido {
+                background: #141414;
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 420px;
+                width: 100%;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-invitar-contenido .titulo {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 4px;
+                text-align: center;
+            }
+            .modal-invitar-contenido .subtitulo {
+                font-size: 0.75rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .tipo-selector {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+            .tipo-btn {
+                flex: 1;
+                padding: 14px 12px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                color: #ccc;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+                text-align: center;
+                line-height: 1.4;
+            }
+            .tipo-btn .emoji {
+                font-size: 1.4rem;
+                display: block;
+                margin-bottom: 4px;
+            }
+            .tipo-btn.activo {
+                background: rgba(243, 156, 18, 0.12);
+                border-color: rgba(243, 156, 18, 0.4);
+                color: #f39c12;
+            }
+            .modal-invitar-contenido input[type="text"],
+            .modal-invitar-contenido input[type="tel"] {
+                width: 100%;
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: rgba(255, 255, 255, 0.04);
+                color: #fff;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: inherit;
+                margin-bottom: 12px;
+            }
+            .modal-invitar-contenido input::placeholder {
+                color: #555;
+            }
+            .modal-invitar-contenido input:focus {
+                border-color: rgba(255, 215, 0, 0.3);
+                background: rgba(255, 255, 255, 0.06);
+            }
+            .modal-invitar-contenido .btn-generar {
+                width: 100%;
+                padding: 14px 20px;
+                border-radius: 12px;
+                border: none;
+                background: linear-gradient(135deg, #f39c12, #d68910);
+                color: #0a0a0a;
+                font-size: 0.9rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+            }
+            .modal-invitar-contenido .btn-generar:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+            }
+            .modal-invitar-contenido .btn-generar:disabled {
+                opacity: 0.5;
+                cursor: wait;
+                pointer-events: none;
+            }
+            .modal-invitar-contenido .btn-cancelar {
+                margin-top: 10px;
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            .modal-invitar-contenido .btn-cancelar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            /* ===== MODAL RESULTADO INVITACIÓN ===== */
+            .modal-resultado {
+                display: none;
+                position: fixed;
+                z-index: 1400;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(12px);
+            }
+            .modal-resultado.activo {
+                display: flex;
+            }
+            .modal-resultado-contenido {
+                background: #141414;
+                border: 1px solid rgba(243, 156, 18, 0.3);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 420px;
+                width: 100%;
+                text-align: center;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-resultado-contenido .emoji-grande {
+                font-size: 2.5rem;
+                display: block;
+                margin-bottom: 12px;
+            }
+            .modal-resultado-contenido .titulo {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #2ecc71;
+                margin-bottom: 6px;
+            }
+            .modal-resultado-contenido .subtitulo {
+                font-size: 0.8rem;
+                color: #aaa;
+                margin-bottom: 18px;
+                line-height: 1.5;
+            }
+            .modal-resultado-contenido .qr-wrapper {
+                background: #fff;
+                border-radius: 12px;
+                padding: 12px;
+                display: inline-block;
+                margin-bottom: 16px;
+            }
+            .modal-resultado-contenido .qr-wrapper img,
+            .modal-resultado-contenido .qr-wrapper canvas {
+                display: block;
+                width: 200px;
+                height: 200px;
+            }
+            .modal-resultado-contenido .url-box {
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 10px;
+                padding: 10px 12px;
+                font-size: 0.7rem;
+                color: #888;
+                word-break: break-all;
+                margin-bottom: 14px;
+                max-height: 80px;
+                overflow-y: auto;
+                text-align: left;
+                font-family: monospace;
+                line-height: 1.4;
+            }
+            .modal-resultado-contenido .acciones {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .modal-resultado-contenido .btn-accion {
+                width: 100%;
+                padding: 12px 18px;
+                border-radius: 12px;
+                border: none;
+                font-size: 0.85rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .modal-resultado-contenido .btn-whatsapp {
+                background: linear-gradient(135deg, #2ecc71, #27ae60);
+                color: #0a0a0a;
+            }
+            .modal-resultado-contenido .btn-whatsapp:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
+            }
+            .modal-resultado-contenido .btn-copiar {
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+            }
+            .modal-resultado-contenido .btn-copiar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            .modal-resultado-contenido .btn-cerrar-res {
+                margin-top: 8px;
+                background: transparent;
+                color: #666;
+                font-size: 0.75rem;
+                padding: 10px;
+            }
+            .modal-resultado-contenido .btn-cerrar-res:hover {
+                color: #aaa;
             }
 
             .footer {
@@ -1038,8 +1380,6 @@
                 letter-spacing: 1px;
                 border-top: 1px solid #111;
                 margin-top: 24px;
-                user-select: none;
-                -webkit-user-select: none;
                 position: relative;
             }
             .footer::before {
@@ -1055,10 +1395,7 @@
                     padding: 8px 10px 16px;
                 }
                 .galeria {
-                    grid-template-columns: repeat(
-                        auto-fill,
-                        minmax(150px, 1fr)
-                    );
+                    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                     gap: 10px;
                 }
                 .modal {
@@ -1098,10 +1435,6 @@
                     font-size: 0.6rem;
                     padding: 2px 0 8px;
                 }
-                .header-bottom .evento-titulo::after {
-                    width: 40%;
-                    left: 30%;
-                }
                 .foto::after {
                     display: none;
                 }
@@ -1112,6 +1445,27 @@
                 .aviso-intermitente {
                     font-size: 0.7rem;
                     padding: 8px 14px;
+                }
+                .header-left .ovj-studio {
+                    font-size: 1.1rem;
+                }
+                .header-left .ovj-studio::before {
+                    display: none;
+                }
+                .header-bottom .evento-titulo {
+                    font-size: 1.5rem;
+                    letter-spacing: 1px;
+                }
+                .barra-rol {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .barra-rol .rol-info {
+                    justify-content: center;
+                }
+                .barra-rol .btn-invitar,
+                .barra-rol .btn-butacas {
+                    justify-content: center;
                 }
             }
             @media (max-width: 400px) {
@@ -1131,54 +1485,89 @@
         </style>
     </head>
     <body>
-        <!-- ===== HEADER ===== -->
-        <div class="header">
-            <div class="header-top">
-                <div class="header-left">
-                    <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
+        <!-- ===== BLOQUEO ===== -->
+        <div class="bloqueo" id="bloqueo">
+            <div class="bloqueo-contenido">
+                <span class="icono" id="bloqueoIcono">🔒</span>
+                <div class="titulo" id="bloqueoTitulo">Galería Privada</div>
+                <div class="subtitulo" id="bloqueoMensaje">
+                    Este es un evento exclusivo.<br>
+                    Necesitas una invitación para acceder.
                 </div>
-                <div class="header-right">
-                    <div class="lang-selector" id="langSelector">
-                        <div class="lang-btn" onclick="toggleLangMenu()">
-                            <span class="bandera" id="langBanderaActual">🇧🇴</span>
-                            <span id="langTextoActual">ES</span>
-                            <span class="flecha">▼</span>
-                        </div>
-                        <div class="lang-menu">
-                            <div class="lang-opcion" onclick="cambiarIdioma('es')" data-lang="es">
-                                <span class="bandera">🇧🇴</span>
-                                <span>Español</span>
-                            </div>
-                            <div class="lang-opcion" onclick="cambiarIdioma('en')" data-lang="en">
-                                <span class="bandera">🇺🇸</span>
-                                <span>English</span>
-                            </div>
-                            <div class="lang-opcion" onclick="cambiarIdioma('zh')" data-lang="zh">
-                                <span class="bandera">🇨🇳</span>
-                                <span>中文</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="badge-en-vivo">
-                        <span class="punto"></span>
-                        <span id="badgeEnVivo">En vivo</span>
-                    </div>
-                </div>
-            </div>
-            <div class="header-bottom">
-                <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
+                <div class="marca">OVJ STUDIO</div>
             </div>
         </div>
 
-        <div class="aviso-intermitente" id="avisoIntermitente"></div>
+        <!-- ===== APP ===== -->
+        <div id="app">
+            <!-- ===== HEADER ===== -->
+            <div class="header">
+                <div class="header-top">
+                    <div class="header-left">
+                        <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
+                    </div>
+                    <div class="header-right">
+                        <div class="lang-selector" id="langSelector">
+                            <div class="lang-btn" onclick="toggleLangMenu()">
+                                <span class="bandera" id="langBanderaActual">🇧🇴</span>
+                                <span id="langTextoActual">ES</span>
+                                <span class="flecha">▼</span>
+                            </div>
+                            <div class="lang-menu">
+                                <div class="lang-opcion" onclick="cambiarIdioma('es')" data-lang="es">
+                                    <span class="bandera">🇧🇴</span>
+                                    <span>Español</span>
+                                </div>
+                                <div class="lang-opcion" onclick="cambiarIdioma('en')" data-lang="en">
+                                    <span class="bandera">🇺🇸</span>
+                                    <span>English</span>
+                                </div>
+                                <div class="lang-opcion" onclick="cambiarIdioma('zh')" data-lang="zh">
+                                    <span class="bandera">🇨🇳</span>
+                                    <span>中文</span>
+                                </div>
+                            </div>
+                        </div>
 
-        <div id="estado">Cargando...</div>
+                        <div class="badge-en-vivo">
+                            <span class="punto"></span>
+                            <span id="badgeEnVivo">En vivo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-bottom">
+                    <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
+                </div>
+            </div>
 
-        <div class="galeria" id="galeria"></div>
+            <!-- ===== BARRA DE ROL ===== -->
+            <div class="barra-rol" id="barraRol" style="display: none;">
+                <div class="rol-info">
+                    <span class="rol-emoji" id="rolEmoji">🎟️</span>
+                    <div class="rol-texto" id="rolTexto">
+                        Bienvenido, <strong id="rolNombre">Invitado</strong>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-butacas" onclick="abrirButacas()">
+                        💺 <span id="textoButacas">Butacas</span>
+                    </button>
+                    <button class="btn-invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
+                        ✨ <span id="textoInvitar">Invitar</span>
+                    </button>
+                </div>
+            </div>
 
-        <div class="footer">OVJ STUDIO · Fotografía con alma</div>
+            <div class="aviso-intermitente" id="avisoIntermitente"></div>
 
+            <div id="estado">Cargando...</div>
+
+            <div class="galeria" id="galeria"></div>
+
+            <div class="footer">OVJ STUDIO · Fotografía con alma</div>
+        </div>
+
+        <!-- ===== MODAL FOTO ===== -->
         <div class="modal-fondo" id="modalFondo"></div>
         <div class="modal" id="modal">
             <div class="modal-contenido">
@@ -1207,6 +1596,7 @@
             </div>
         </div>
 
+        <!-- ===== MODAL NOMBRE ===== -->
         <div class="modal-nombre" id="modalNombre">
             <div class="modal-nombre-contenido">
                 <div class="titulo" id="modalNombreTitulo">¿Cuál es tu nombre?</div>
@@ -1227,6 +1617,7 @@
             </div>
         </div>
 
+        <!-- ===== MODAL INSTRUCCIONES ===== -->
         <div class="modal-instrucciones" id="modalInstrucciones">
             <div class="modal-instrucciones-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarInstrucciones()">✕</button>
@@ -1274,23 +1665,152 @@
             </div>
         </div>
 
+        <!-- ===== MODAL BUTACAS ===== -->
+        <div class="modal-butacas" id="modalButacas">
+            <div class="modal-butacas-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarButacas()">✕</button>
+                <div class="titulo">💺 Butacas del Evento</div>
+                <div class="subtitulo">Los invitados que ya ingresaron</div>
+                <div id="butacasLista"></div>
+                <button class="btn-cerrar" onclick="cerrarButacas()">Cerrar</button>
+            </div>
+        </div>
+
+        <!-- ===== MODAL INVITAR ===== -->
+        <div class="modal-invitar" id="modalInvitar">
+            <div class="modal-invitar-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarInvitar()">✕</button>
+                <div class="titulo">✨ Nueva Invitación</div>
+                <div class="subtitulo">Genera un pase único para compartir</div>
+
+                <div class="tipo-selector">
+                    <button class="tipo-btn activo" id="tipoInvitado" onclick="seleccionarTipo('invitado')">
+                        <span class="emoji">🎟️</span>
+                        Invitado
+                    </button>
+                    <button class="tipo-btn" id="tipoAdmin" onclick="seleccionarTipo('admin')">
+                        <span class="emoji">👑</span>
+                        Admin
+                    </button>
+                </div>
+
+                <input
+                    type="text"
+                    id="inputNombreInvitacion"
+                    placeholder="Nombre (opcional)"
+                    maxlength="40"
+                    autocomplete="off"
+                />
+
+                <input
+                    type="tel"
+                    id="inputWhatsAppInvitacion"
+                    placeholder="WhatsApp destino (opcional)"
+                    maxlength="20"
+                    autocomplete="off"
+                />
+
+                <button class="btn-generar" id="btnGenerarInvitacion" onclick="generarInvitacion()">
+                    Generar Invitación
+                </button>
+                <button class="btn-cancelar" onclick="cerrarInvitar()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- ===== MODAL RESULTADO ===== -->
+        <div class="modal-resultado" id="modalResultado">
+            <div class="modal-resultado-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarResultado()">✕</button>
+                <span class="emoji-grande" id="resultadoEmoji">🎉</span>
+                <div class="titulo" id="resultadoTitulo">¡Invitación generada!</div>
+                <div class="subtitulo" id="resultadoSubtitulo">
+                    Comparte el QR o el link con tu invitado
+                </div>
+
+                <div class="qr-wrapper" id="qrWrapper">
+                    <canvas id="qrCanvas"></canvas>
+                </div>
+
+                <div class="url-box" id="resultadoUrl"></div>
+
+                <div class="acciones">
+                    <button class="btn-accion btn-whatsapp" id="btnEnviarWhatsApp" onclick="enviarPorWhatsApp()">
+                        📲 Enviar por WhatsApp
+                    </button>
+                    <button class="btn-accion btn-copiar" onclick="copiarUrl()">
+                        📋 Copiar link
+                    </button>
+                    <button class="btn-accion btn-cerrar-res" onclick="cerrarResultado()">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script>
             // ==========================================
             // ⚙️ CONFIGURACIÓN RÁPIDA
             // ==========================================
-            // Editar aquí cuando cambie la URL del túnel
-            // o el número de contacto de OVJ Studio.
-            // ==========================================
             const URL_CLOUDFLARE = "https://donor-beatles-skirts-skin.trycloudflare.com";
             const WHATSAPP_PUBLICIDAD = "59160004962";
             const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
-            // ==========================================
 
             const FOTOS_POR_CARGA = 6;
             const MODO_DESCARGAS = true;
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
 
+            // ==========================================
+            // 🔑 PARÁMETROS DEL URL
+            // ==========================================
+            function getParametrosURL() {
+                const params = new URLSearchParams(window.location.search);
+                return {
+                    fotografo: params.get('f') || 'default',
+                    eventoId: params.get('e'),
+                    token: params.get('t')
+                };
+            }
+
+            const PARAMS = getParametrosURL();
+            const FOTOGRAFO_ID = PARAMS.fotografo;
+            const EVENTO_ID = PARAMS.eventoId;
+            const TOKEN = PARAMS.token;
+
+            // ==========================================
+            // 🌍 VARIABLES GLOBALES
+            // ==========================================
+            let sesion = null;
+            let fotosCache = [];
+            let fotosVisibles = FOTOS_POR_CARGA;
+            let fotoSeleccionadaIndex = -1;
+            let cargando = false;
+            let totalFotosAnterior = 0;
+            let servidorOnline = true;
+            let tituloEsDefault = true;
+
+            let estadoCreditos = {
+                sinCreditos: false,
+                whatsappCliente: null
+            };
+
+            let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
+            let modalNombreCallback = null;
+
+            let instrIntervalId = null;
+            let instrSegundosRestantes = 0;
+            let instrUrlPendiente = null;
+
+            let avisoTimeoutId = null;
+            let avisoOcultoTimeoutId = null;
+            let indiceAviso = 0;
+
+            let invitacionTipo = 'invitado';
+            let invitacionGenerada = null;
+
+            // ==========================================
+            // 🌍 IDIOMA
+            // ==========================================
             function esDispositivoMovil() {
                 return /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i
                     .test(navigator.userAgent);
@@ -1302,7 +1822,6 @@
                     tituloDefault: "Galería en Vivo",
                     enVivo: "En vivo",
                     cargando: "Cargando...",
-                    error: "Error",
                     noHayFotos: "No hay fotos aún",
                     mostrando: (v, t) => `Mostrando <span class="num">${v}</span> de <span class="num">${t}</span> fotos`,
                     verMas: "Ver más fotos ↓",
@@ -1348,14 +1867,23 @@
                         'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
                         'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
                         'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
-                    ]
+                    ],
+                    bloqueoTitulo: "Galería Privada",
+                    bloqueoMensaje: "Este es un evento exclusivo.<br>Necesitas una invitación para acceder.",
+                    bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
+                    bloqueoExpirado: "Este evento ha finalizado.<br>Gracias por participar.",
+                    rolAdmin: "Administrador",
+                    rolInvitado: "Invitado",
+                    textoButacas: "Butacas",
+                    textoInvitar: "Invitar",
+                    tipoInvitado: "Invitado",
+                    tipoAdmin: "Admin"
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
                     tituloDefault: "Live Gallery",
                     enVivo: "Live",
                     cargando: "Loading...",
-                    error: "Error",
                     noHayFotos: "No photos yet",
                     mostrando: (v, t) => `Showing <span class="num">${v}</span> of <span class="num">${t}</span> photos`,
                     verMas: "See more photos ↓",
@@ -1401,14 +1929,23 @@
                         'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
                         'Your event, your memories, <strong>your exclusive gallery</strong>.',
                         'The best photos deserve to be <strong>downloaded and treasured</strong>.'
-                    ]
+                    ],
+                    bloqueoTitulo: "Private Gallery",
+                    bloqueoMensaje: "This is an exclusive event.<br>You need an invitation to access.",
+                    bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
+                    bloqueoExpirado: "This event has ended.<br>Thanks for participating.",
+                    rolAdmin: "Administrator",
+                    rolInvitado: "Guest",
+                    textoButacas: "Seats",
+                    textoInvitar: "Invite",
+                    tipoInvitado: "Guest",
+                    tipoAdmin: "Admin"
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
                     tituloDefault: "现场画廊",
                     enVivo: "直播",
                     cargando: "加载中...",
-                    error: "错误",
                     noHayFotos: "暂无照片",
                     mostrando: (v, t) => `显示 <span class="num">${v}</span> / <span class="num">${t}</span> 张照片`,
                     verMas: "查看更多照片 ↓",
@@ -1454,7 +1991,17 @@
                         '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
                         '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
                         '最好的照片值得被 <strong>下载和珍藏</strong>。'
-                    ]
+                    ],
+                    bloqueoTitulo: "私人画廊",
+                    bloqueoMensaje: "这是一个专属活动。<br>你需要邀请才能访问。",
+                    bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
+                    bloqueoExpirado: "本次活动已结束。<br>感谢参与。",
+                    rolAdmin: "管理员",
+                    rolInvitado: "嘉宾",
+                    textoButacas: "座位",
+                    textoInvitar: "邀请",
+                    tipoInvitado: "嘉宾",
+                    tipoAdmin: "管理员"
                 }
             };
 
@@ -1473,10 +2020,8 @@
                 if (guardado && TRADUCCIONES[guardado]) {
                     return guardado;
                 }
-
                 const idiomaNavegador = navigator.language || navigator.userLanguage || 'en';
                 const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
-
                 if (TRADUCCIONES[idiomaBase]) {
                     return idiomaBase;
                 }
@@ -1485,9 +2030,7 @@
 
             function aplicarIdioma(idioma) {
                 if (!TRADUCCIONES[idioma]) return;
-
                 idiomaActual = idioma;
-
                 localStorage.setItem('ovj_idioma', idioma);
                 document.documentElement.lang = idioma;
                 document.title = t('tituloVentana');
@@ -1519,6 +2062,15 @@
                     : t('instrPaso3PC');
                 document.getElementById('instrAviso').textContent = t('instrAviso');
 
+                document.getElementById('bloqueoTitulo').textContent = t('bloqueoTitulo');
+                document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoMensaje');
+
+                document.getElementById('textoButacas').textContent = t('textoButacas');
+                document.getElementById('textoInvitar').textContent = t('textoInvitar');
+
+                document.getElementById('tipoInvitado').innerHTML = `<span class="emoji">🎟️</span>${t('tipoInvitado')}`;
+                document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
+
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
                 }
@@ -1536,8 +2088,7 @@
             }
 
             function toggleLangMenu() {
-                const selector = document.getElementById('langSelector');
-                selector.classList.toggle('abierto');
+                document.getElementById('langSelector').classList.toggle('abierto');
             }
 
             function cerrarLangMenu() {
@@ -1551,39 +2102,111 @@
                 }
             });
 
-            function getFotografoId() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const id = urlParams.get("f");
-                console.log(`ID del fotógrafo detectado: "${id}"`);
-                return id || "default";
+            // ==========================================
+            // 🔒 BLOQUEO / ACCESO
+            // ==========================================
+            function mostrarBloqueo(tipo, mensajeCustom) {
+                document.getElementById('bloqueo').classList.add('activo');
+                document.getElementById('app').classList.remove('activo');
+
+                const iconos = {
+                    sinToken: '🔒',
+                    invalido: '🚫',
+                    reclamada: '⚠️',
+                    error: '❌'
+                };
+
+                document.getElementById('bloqueoIcono').textContent = iconos[tipo] || '🔒';
+
+                if (mensajeCustom) {
+                    document.getElementById('bloqueoMensaje').innerHTML = mensajeCustom;
+                }
             }
 
-            const FOTOGRAFO_ID = getFotografoId();
+            async function validarAcceso() {
+                if (!EVENTO_ID || !TOKEN) {
+                    mostrarBloqueo('sinToken');
+                    return false;
+                }
 
-            let fotosCache = [];
-            let fotosVisibles = FOTOS_POR_CARGA;
-            let fotoSeleccionadaIndex = -1;
-            let cargando = false;
-            let totalFotosAnterior = 0;
-            let servidorOnline = true;
-            let tituloEsDefault = true;
+                try {
+                    const url = `${URL_CLOUDFLARE}/acceso?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
 
-            let estadoCreditos = {
-                sinCreditos: false,
-                whatsappCliente: null
-            };
+                    const respuesta = await fetch(url);
+                    const data = await respuesta.json();
 
-            let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
-            let modalNombreCallback = null;
+                    if (!respuesta.ok || !data.valido) {
+                        if (data.reclamada) {
+                            // Pase ya reclamado. Verificar si es el mismo dispositivo
+                            const tokenGuardado = localStorage.getItem('ovj_token');
+                            if (tokenGuardado === TOKEN) {
+                                // Mismo dispositivo, ya lo tenía
+                                sesion = {
+                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'invitado',
+                                    nombre: data.nombre || localStorage.getItem('ovj_rol_nombre') || '',
+                                    id: data.id || localStorage.getItem('ovj_rol_id') || ''
+                                };
+                                return true;
+                            }
 
-            let instrIntervalId = null;
-            let instrSegundosRestantes = 0;
-            let instrUrlPendiente = null;
+                            mostrarBloqueo('reclamada', t('bloqueoInvalido'));
+                            return false;
+                        }
 
-            let avisoTimeoutId = null;
-            let avisoOcultoTimeoutId = null;
-            let indiceAviso = 0;
+                        mostrarBloqueo('invalido', t('bloqueoInvalido'));
+                        return false;
+                    }
 
+                    // Acceso válido
+                    sesion = {
+                        tipo: data.tipo,
+                        nombre: data.nombre,
+                        id: data.id
+                    };
+
+                    // Guardar en localStorage
+                    localStorage.setItem('ovj_token', TOKEN);
+                    localStorage.setItem('ovj_tipo', data.tipo);
+                    localStorage.setItem('ovj_rol_nombre', data.nombre || '');
+                    localStorage.setItem('ovj_rol_id', data.id || '');
+
+                    return true;
+
+                } catch (error) {
+                    console.error('Error validando acceso:', error);
+                    mostrarBloqueo('error', t('offlineMensaje'));
+                    return false;
+                }
+            }
+
+            function activarApp() {
+                document.getElementById('bloqueo').classList.remove('activo');
+                document.getElementById('app').classList.add('activo');
+
+                // Actualizar barra de rol
+                const barraRol = document.getElementById('barraRol');
+                const rolEmoji = document.getElementById('rolEmoji');
+                const rolNombre = document.getElementById('rolNombre');
+                const btnInvitar = document.getElementById('btnInvitar');
+
+                barraRol.style.display = 'flex';
+
+                if (sesion.tipo === 'admin') {
+                    rolEmoji.textContent = '👑';
+                    rolNombre.textContent = sesion.nombre || t('rolAdmin');
+                    btnInvitar.style.display = 'inline-flex';
+                } else {
+                    rolEmoji.textContent = '🎟️';
+                    rolNombre.textContent = sesion.nombre || t('rolInvitado');
+                    btnInvitar.style.display = 'none';
+                }
+            }
+
+            // ==========================================
+            // 📷 GALERÍA
+            // ==========================================
             async function cargarFotos() {
                 if (cargando) return;
                 cargando = true;
@@ -1594,9 +2217,18 @@
                     estado.innerHTML = t('cargando');
                     estado.className = "cargando";
 
-                    const respuesta = await fetch(
-                        `${URL_CLOUDFLARE}/fotos?f=${FOTOGRAFO_ID}`,
-                    );
+                    const url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
+
+                    const respuesta = await fetch(url);
+
+                    if (respuesta.status === 403) {
+                        mostrarBloqueo('invalido', t('bloqueoInvalido'));
+                        cargando = false;
+                        return;
+                    }
+
                     if (!respuesta.ok)
                         throw new Error(`HTTP ${respuesta.status}`);
 
@@ -1628,7 +2260,6 @@
                     }
 
                     const nuevasFotos = data.fotos || [];
-                    console.log("Fotos recibidas:", nuevasFotos.length);
 
                     const huboCambio =
                         JSON.stringify(nuevasFotos) !==
@@ -1662,9 +2293,7 @@
                     <div class="estado-offline">
                         <span class="icono">📸</span>
                         <div class="titulo">${t('offlineTitulo')}</div>
-                        <div class="mensaje">
-                            ${t('offlineMensaje')}
-                        </div>
+                        <div class="mensaje">${t('offlineMensaje')}</div>
                     </div>
                 `;
             }
@@ -1759,17 +2388,13 @@
                 } else if (fotosCache.length > FOTOS_POR_CARGA) {
                     html += `
                     <div class="ver-mas-wrapper">
-                        <div class="info-restantes">
-                            ${t('hasVistoTodo')}
-                        </div>
+                        <div class="info-restantes">${t('hasVistoTodo')}</div>
                     </div>
                 `;
                 }
 
                 galeria.innerHTML = html;
-
                 cargarImagenesSecuencialmente();
-
                 totalFotosAnterior = fotosCache.length;
             }
 
@@ -1777,12 +2402,10 @@
                 const imagenes = document.querySelectorAll('.foto img[data-src]');
                 const pendientes = Array.from(imagenes).filter(img => !img.src || img.src === window.location.href);
                 const CONCURRENTES = 2;
-
                 let indice = 0;
 
                 function cargarSiguiente() {
                     if (indice >= pendientes.length) return;
-
                     const img = pendientes[indice];
                     indice++;
 
@@ -1821,12 +2444,12 @@
                 }, 100);
             }
 
+            // ==========================================
+            // 🖼️ MODAL FOTO
+            // ==========================================
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
-                if (index < 0) {
-                    console.error(`Foto no encontrada: ${nombreFoto}`);
-                    return;
-                }
+                if (index < 0) return;
 
                 fotoSeleccionadaIndex = index;
                 const foto = fotosCache[index];
@@ -1834,11 +2457,6 @@
                 const modal = document.getElementById("modal");
                 const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
-
-                const wrapper = document.querySelector('.imagen-wrapper');
-                wrapper.style.animation = 'none';
-                void wrapper.offsetHeight;
-                wrapper.style.animation = '';
 
                 modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
                 modalImagen.alt = `Foto ${index + 1}`;
@@ -1859,11 +2477,8 @@
 
             function actualizarFlechas() {
                 const total = fotosCache.length;
-                const flechaIzq = document.getElementById("flechaIzquierda");
-                const flechaDer = document.getElementById("flechaDerecha");
-
-                flechaIzq.classList.toggle("oculto", fotoSeleccionadaIndex <= 0);
-                flechaDer.classList.toggle("oculto", fotoSeleccionadaIndex >= total - 1);
+                document.getElementById("flechaIzquierda").classList.toggle("oculto", fotoSeleccionadaIndex <= 0);
+                document.getElementById("flechaDerecha").classList.toggle("oculto", fotoSeleccionadaIndex >= total - 1);
             }
 
             function navegarFoto(direccion) {
@@ -1872,20 +2487,17 @@
 
                 fotoSeleccionadaIndex = nuevoIndex;
                 const foto = fotosCache[nuevoIndex];
-                const modalImagen = document.getElementById("modalImagen");
 
-                const wrapper = document.querySelector('.imagen-wrapper');
-                wrapper.style.animation = 'none';
-                void wrapper.offsetHeight;
-                wrapper.style.animation = '';
-
-                modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
-                modalImagen.alt = `Foto ${nuevoIndex + 1}`;
+                document.getElementById("modalImagen").src = `${URL_CLOUDFLARE}${foto.url}`;
+                document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
                 actualizarFlechas();
                 actualizarBotonPrincipal();
             }
 
+            // ==========================================
+            // 📥 DESCARGA
+            // ==========================================
             function accionBotonPrincipal() {
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
                     alert("No hay foto seleccionada");
@@ -1912,25 +2524,16 @@
             function abrirWhatsAppSinCreditos() {
                 const numeroCliente = estadoCreditos.whatsappCliente || WHATSAPP_CLIENTE_FALLBACK;
                 const mensaje = t('waSinCreditos');
-
-                const urlWhatsApp =
-                    `https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`;
-
-                window.open(urlWhatsApp, "_blank");
+                window.open(`https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`, "_blank");
             }
 
             function abrirWhatsAppPublicidad() {
                 const mensaje = t('waPublicidad');
-                const urlWhatsApp =
-                    `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`;
-
-                window.open(urlWhatsApp, "_blank");
+                window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, "_blank");
             }
 
             async function descargarFotoActual() {
-                if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
-                    return;
-                }
+                if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) return;
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
                 const btn = document.getElementById('btnPedir');
@@ -1945,7 +2548,9 @@
                 try {
                     const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                                 `&foto=${encodeURIComponent(foto.nombre)}` +
-                                `&invitado=${encodeURIComponent(nombreInvitado)}`;
+                                `&invitado=${encodeURIComponent(nombreInvitado)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
 
                     const respuesta = await fetch(url);
 
@@ -1959,9 +2564,7 @@
 
                     const data = await respuesta.json();
 
-                    if (!data.url) {
-                        throw new Error('Sin URL en la respuesta');
-                    }
+                    if (!data.url) throw new Error('Sin URL');
 
                     urlExterna = data.url;
 
@@ -1973,7 +2576,6 @@
                 } catch (error) {
                     console.error('Error al descargar:', error);
                     alert(t('alertErrorDescarga'));
-
                     btn.classList.remove('cargando-btn');
                     texto.textContent = textoOriginal;
                     return;
@@ -2008,10 +2610,7 @@
 
                 modal.classList.add('activo');
 
-                if (instrIntervalId) {
-                    clearInterval(instrIntervalId);
-                    instrIntervalId = null;
-                }
+                if (instrIntervalId) clearInterval(instrIntervalId);
 
                 const inicio = Date.now();
                 const duracionTotalMs = DURACION_INSTRUCCIONES * 1000;
@@ -2037,16 +2636,13 @@
                             instrUrlPendiente = null;
                         }
 
-                        setTimeout(() => {
-                            cerrarInstrucciones();
-                        }, 500);
+                        setTimeout(() => cerrarInstrucciones(), 500);
                     }
                 }, 100);
             }
 
             function cerrarInstrucciones() {
-                const modal = document.getElementById('modalInstrucciones');
-                modal.classList.remove('activo');
+                document.getElementById('modalInstrucciones').classList.remove('activo');
 
                 if (instrIntervalId) {
                     clearInterval(instrIntervalId);
@@ -2059,6 +2655,9 @@
                 }
             }
 
+            // ==========================================
+            // 📝 MODAL NOMBRE
+            // ==========================================
             function abrirModalNombre(callback) {
                 modalNombreCallback = callback;
                 const modal = document.getElementById('modalNombre');
@@ -2066,7 +2665,6 @@
 
                 input.value = nombreInvitado || '';
                 modal.classList.add('activo');
-
                 setTimeout(() => input.focus(), 100);
             }
 
@@ -2091,11 +2689,232 @@
                 const cb = modalNombreCallback;
                 cerrarModalNombre();
 
-                if (typeof cb === 'function') {
-                    cb();
+                if (typeof cb === 'function') cb();
+            }
+
+            // ==========================================
+            // 💺 BUTACAS
+            // ==========================================
+            async function abrirButacas() {
+                const modal = document.getElementById('modalButacas');
+                const lista = document.getElementById('butacasLista');
+
+                lista.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Cargando...</div>';
+                modal.classList.add('activo');
+
+                try {
+                    const url = `${URL_CLOUDFLARE}/butacas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
+
+                    const respuesta = await fetch(url);
+                    const data = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        lista.innerHTML = '<div style="text-align:center; color:#e74c3c; padding:20px;">No se pudieron cargar las butacas</div>';
+                        return;
+                    }
+
+                    const { admins, invitados } = data.butacas;
+
+                    let html = '';
+
+                    if (admins.length > 0) {
+                        html += `<div class="fila-butacas"><div class="fila-titulo">👑 Administradores</div>`;
+                        admins.forEach(a => {
+                            const activa = a.reclamada ? 'activa' : 'vacia';
+                            const emoji = a.rol === 'admin_fotografo' ? '📸' : '👑';
+                            const estado = a.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
+                            html += `
+                                <div class="butaca ${activa}">
+                                    <span class="emoji">${emoji}</span>
+                                    <div class="info">
+                                        <div class="nombre">${escapeHtml(a.nombre)}</div>
+                                        <div class="detalle">${a.rol === 'admin_fotografo' ? 'Fotógrafo' : 'Cliente'}</div>
+                                    </div>
+                                    <span class="estado">${estado}</span>
+                                </div>
+                            `;
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (invitados.length > 0) {
+                        html += `<div class="fila-butacas"><div class="fila-titulo">🎟️ Invitados</div>`;
+                        invitados.forEach(i => {
+                            const activa = i.reclamada ? 'activa' : 'vacia';
+                            const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
+                            html += `
+                                <div class="butaca ${activa}">
+                                    <span class="emoji">🎟️</span>
+                                    <div class="info">
+                                        <div class="nombre">${escapeHtml(i.nombre)}</div>
+                                        <div class="detalle">${i.descargas} descarga${i.descargas === 1 ? '' : 's'}</div>
+                                    </div>
+                                    <span class="estado">${estado}</span>
+                                </div>
+                            `;
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (!html) {
+                        html = '<div style="text-align:center; color:#666; padding:20px;">Aún no hay invitaciones</div>';
+                    }
+
+                    lista.innerHTML = html;
+
+                } catch (error) {
+                    console.error('Error butacas:', error);
+                    lista.innerHTML = '<div style="text-align:center; color:#e74c3c; padding:20px;">Error de conexión</div>';
                 }
             }
 
+            function cerrarButacas() {
+                document.getElementById('modalButacas').classList.remove('activo');
+            }
+
+            // ==========================================
+            // ✨ INVITAR
+            // ==========================================
+            function abrirInvitar() {
+                document.getElementById('modalInvitar').classList.add('activo');
+                document.getElementById('inputNombreInvitacion').value = '';
+                document.getElementById('inputWhatsAppInvitacion').value = '';
+                seleccionarTipo('invitado');
+            }
+
+            function cerrarInvitar() {
+                document.getElementById('modalInvitar').classList.remove('activo');
+            }
+
+            function seleccionarTipo(tipo) {
+                invitacionTipo = tipo;
+                document.getElementById('tipoInvitado').classList.toggle('activo', tipo === 'invitado');
+                document.getElementById('tipoAdmin').classList.toggle('activo', tipo === 'admin');
+            }
+
+            async function generarInvitacion() {
+                const btn = document.getElementById('btnGenerarInvitacion');
+                btn.disabled = true;
+                btn.textContent = 'Generando...';
+
+                const nombre = document.getElementById('inputNombreInvitacion').value.trim();
+                const whatsapp = document.getElementById('inputWhatsAppInvitacion').value.trim();
+
+                try {
+                    const url = `${URL_CLOUDFLARE}/invitar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
+
+                    const respuesta = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            tipo: invitacionTipo,
+                            nombre: nombre || (invitacionTipo === 'admin' ? 'Admin' : 'Invitado')
+                        })
+                    });
+
+                    const data = await respuesta.json();
+
+                    if (!respuesta.ok || !data.ok) {
+                        alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
+                        btn.disabled = false;
+                        btn.textContent = 'Generar Invitación';
+                        return;
+                    }
+
+                    invitacionGenerada = data;
+                    invitacionGenerada.whatsapp = whatsapp;
+
+                    cerrarInvitar();
+                    mostrarResultado();
+
+                } catch (error) {
+                    console.error('Error generando invitación:', error);
+                    alert('Error de conexión');
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Generar Invitación';
+            }
+
+            function mostrarResultado() {
+                const modal = document.getElementById('modalResultado');
+
+                document.getElementById('resultadoEmoji').textContent = invitacionGenerada.tipo === 'admin' ? '👑' : '🎉';
+                document.getElementById('resultadoTitulo').textContent = invitacionGenerada.tipo === 'admin' ? '¡Admin generado!' : '¡Invitación generada!';
+                document.getElementById('resultadoSubtitulo').textContent = invitacionGenerada.tipo === 'admin'
+                    ? 'Este usuario tendrá control total del evento'
+                    : 'Comparte el QR o el link con tu invitado';
+
+                document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
+
+                // Generar QR
+                const canvas = document.getElementById('qrCanvas');
+                QRCode.toCanvas(canvas, invitacionGenerada.url, { width: 200, margin: 1 }, (error) => {
+                    if (error) console.error('Error QR:', error);
+                });
+
+                // WhatsApp
+                const btnWa = document.getElementById('btnEnviarWhatsApp');
+                if (invitacionGenerada.whatsapp) {
+                    btnWa.style.display = 'inline-flex';
+                } else {
+                    btnWa.style.display = 'none';
+                }
+
+                modal.classList.add('activo');
+            }
+
+            function cerrarResultado() {
+                document.getElementById('modalResultado').classList.remove('activo');
+                invitacionGenerada = null;
+            }
+
+            function enviarPorWhatsApp() {
+                if (!invitacionGenerada || !invitacionGenerada.whatsapp) return;
+
+                const numeroLimpio = invitacionGenerada.whatsapp.replace(/[^0-9]/g, '');
+                const mensaje = `¡Hola! Te invito a la galería del evento.\n\n${invitacionGenerada.url}\n\nEntra desde tu celular para ver las fotos.`;
+
+                window.open(`https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`, "_blank");
+            }
+
+            function copiarUrl() {
+                if (!invitacionGenerada) return;
+
+                navigator.clipboard.writeText(invitacionGenerada.url).then(() => {
+                    alert('✅ Link copiado al portapapeles');
+                }).catch(() => {
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = invitacionGenerada.url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('✅ Link copiado');
+                });
+            }
+
+            // ==========================================
+            // 🛡️ UTILIDADES
+            // ==========================================
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            // ==========================================
+            // 💬 AVISOS INTERMITENTES
+            // ==========================================
             function iniciarAvisosIntermitentes() {
                 const contenedor = document.getElementById('avisoIntermitente');
 
@@ -2121,23 +2940,27 @@
                 avisoTimeoutId = setTimeout(mostrarAviso, 15000);
             }
 
+            // ==========================================
+            // 🎧 EVENTOS
+            // ==========================================
             document.addEventListener("keydown", (e) => {
                 const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
                 const modalInstrActivo = document.getElementById('modalInstrucciones').classList.contains('activo');
+                const modalButacasActivo = document.getElementById('modalButacas').classList.contains('activo');
+                const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
+                const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
 
                 if (e.key === "Escape") {
-                    if (modalInstrActivo) {
-                        cerrarInstrucciones();
-                    } else if (modalNombreActivo) {
-                        cerrarModalNombre();
-                    } else if (document.getElementById("modal").classList.contains("activo")) {
-                        cerrarModal();
-                    } else {
-                        cerrarLangMenu();
-                    }
+                    if (modalResultadoActivo) cerrarResultado();
+                    else if (modalInvitarActivo) cerrarInvitar();
+                    else if (modalButacasActivo) cerrarButacas();
+                    else if (modalInstrActivo) cerrarInstrucciones();
+                    else if (modalNombreActivo) cerrarModalNombre();
+                    else if (document.getElementById("modal").classList.contains("activo")) cerrarModal();
+                    else cerrarLangMenu();
                 }
 
-                if (modalNombreActivo || modalInstrActivo) return;
+                if (modalNombreActivo || modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -2148,24 +2971,43 @@
             });
 
             document.getElementById('modalNombre').addEventListener('click', (e) => {
-                if (e.target.id === 'modalNombre') {
-                    cerrarModalNombre();
-                }
+                if (e.target.id === 'modalNombre') cerrarModalNombre();
             });
 
             document.getElementById('modalInstrucciones').addEventListener('click', (e) => {
-                if (e.target.id === 'modalInstrucciones') {
-                    cerrarInstrucciones();
-                }
+                if (e.target.id === 'modalInstrucciones') cerrarInstrucciones();
             });
 
-            idiomaActual = detectarIdiomaInicial();
-            aplicarIdioma(idiomaActual);
+            document.getElementById('modalButacas').addEventListener('click', (e) => {
+                if (e.target.id === 'modalButacas') cerrarButacas();
+            });
 
-            cargarFotos();
-            setInterval(cargarFotos, 60000);
+            document.getElementById('modalInvitar').addEventListener('click', (e) => {
+                if (e.target.id === 'modalInvitar') cerrarInvitar();
+            });
 
-            iniciarAvisosIntermitentes();
+            document.getElementById('modalResultado').addEventListener('click', (e) => {
+                if (e.target.id === 'modalResultado') cerrarResultado();
+            });
+
+            // ==========================================
+            // 🚀 INICIALIZACIÓN
+            // ==========================================
+            async function inicializar() {
+                idiomaActual = detectarIdiomaInicial();
+                aplicarIdioma(idiomaActual);
+
+                const accesoValido = await validarAcceso();
+
+                if (!accesoValido) return;
+
+                activarApp();
+                cargarFotos();
+                setInterval(cargarFotos, 60000);
+                iniciarAvisosIntermitentes();
+            }
+
+            inicializar();
         </script>
     </body>
 </html>
