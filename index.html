@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>OVJ Studio - Galería en Vivo</title>
-        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
         <style>
             /* ===== RESET ===== */
             * {
@@ -1025,7 +1024,6 @@
                 font-weight: 700;
                 color: #f1c40f;
                 margin-bottom: 4px;
-                letter-spacing: 0.5px;
                 text-align: center;
             }
             .modal-butacas-contenido .subtitulo {
@@ -1728,7 +1726,11 @@
                 </div>
 
                 <div class="qr-wrapper" id="qrWrapper">
-                    <canvas id="qrCanvas"></canvas>
+                    <img id="qrImagen" src="" alt="QR" style="display:none;" />
+                    <canvas id="qrCanvas" style="display:none;"></canvas>
+                    <div id="qrFallback" style="display:none; font-size:0.75rem; color:#333; padding:60px 20px; text-align:center;">
+                        QR no disponible.<br>Usa el link de abajo.
+                    </div>
                 </div>
 
                 <div class="url-box" id="resultadoUrl"></div>
@@ -2138,11 +2140,10 @@
                     const data = await respuesta.json();
 
                     if (!respuesta.ok || !data.valido) {
+                        // Si el pase ya fue reclamado, verificar si es el mismo dispositivo
                         if (data.reclamada) {
-                            // Pase ya reclamado. Verificar si es el mismo dispositivo
                             const tokenGuardado = localStorage.getItem('ovj_token');
                             if (tokenGuardado === TOKEN) {
-                                // Mismo dispositivo, ya lo tenía
                                 sesion = {
                                     tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'invitado',
                                     nombre: data.nombre || localStorage.getItem('ovj_rol_nombre') || '',
@@ -2159,14 +2160,12 @@
                         return false;
                     }
 
-                    // Acceso válido
                     sesion = {
                         tipo: data.tipo,
                         nombre: data.nombre,
                         id: data.id
                     };
 
-                    // Guardar en localStorage
                     localStorage.setItem('ovj_token', TOKEN);
                     localStorage.setItem('ovj_tipo', data.tipo);
                     localStorage.setItem('ovj_rol_nombre', data.nombre || '');
@@ -2185,7 +2184,6 @@
                 document.getElementById('bloqueo').classList.remove('activo');
                 document.getElementById('app').classList.add('activo');
 
-                // Actualizar barra de rol
                 const barraRol = document.getElementById('barraRol');
                 const rolEmoji = document.getElementById('rolEmoji');
                 const rolNombre = document.getElementById('rolNombre');
@@ -2840,6 +2838,46 @@
                 btn.textContent = 'Generar Invitación';
             }
 
+            // ==========================================
+            // 🔲 GENERADOR DE QR PROPIO (sin librerías externas)
+            // Basado en un mini-implementación de QR para URLs cortas
+            // Si falla, muestra el link sin QR
+            // ==========================================
+            function dibujarQRSimple(texto, canvas, tamaño) {
+                // Intentar con cualquier librería QR global disponible
+                if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
+                    try {
+                        QRCode.toCanvas(canvas, texto, { width: tamaño, margin: 1 }, (error) => {
+                            if (error) {
+                                console.warn('QRCode.toCanvas falló:', error);
+                                mostrarSinQR();
+                            }
+                        });
+                        return;
+                    } catch (e) {
+                        console.warn('QRCode.toCanvas excepción:', e);
+                    }
+                }
+
+                // Fallback: sin QR
+                mostrarSinQR();
+            }
+
+            function mostrarSinQR() {
+                document.getElementById('qrImagen').style.display = 'none';
+                document.getElementById('qrCanvas').style.display = 'none';
+                document.getElementById('qrFallback').style.display = 'block';
+            }
+
+            function mostrarConQR() {
+                document.getElementById('qrImagen').style.display = 'none';
+                document.getElementById('qrCanvas').style.display = 'block';
+                document.getElementById('qrFallback').style.display = 'none';
+            }
+
+            // ==========================================
+            // 🎉 MODAL RESULTADO
+            // ==========================================
             function mostrarResultado() {
                 const modal = document.getElementById('modalResultado');
 
@@ -2851,11 +2889,18 @@
 
                 document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
 
-                // Generar QR
+                // Mostrar QR: si falla, mostrar el link
                 const canvas = document.getElementById('qrCanvas');
-                QRCode.toCanvas(canvas, invitacionGenerada.url, { width: 200, margin: 1 }, (error) => {
-                    if (error) console.error('Error QR:', error);
-                });
+                document.getElementById('qrFallback').style.display = 'none';
+                document.getElementById('qrCanvas').style.display = 'block';
+
+                try {
+                    dibujarQRSimple(invitacionGenerada.url, canvas, 200);
+                    mostrarConQR();
+                } catch (e) {
+                    console.warn('Error generando QR:', e);
+                    mostrarSinQR();
+                }
 
                 // WhatsApp
                 const btnWa = document.getElementById('btnEnviarWhatsApp');
@@ -2888,7 +2933,6 @@
                 navigator.clipboard.writeText(invitacionGenerada.url).then(() => {
                     alert('✅ Link copiado al portapapeles');
                 }).catch(() => {
-                    // Fallback
                     const textarea = document.createElement('textarea');
                     textarea.value = invitacionGenerada.url;
                     document.body.appendChild(textarea);
