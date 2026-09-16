@@ -637,7 +637,6 @@
                 margin-top: -1px;
             }
 
-            /* PUBLICIDAD */
             .publicidad-wrapper {
                 width: 100%;
                 text-align: center;
@@ -847,7 +846,7 @@
                 transform: scale(0.97);
             }
 
-            /* ===== MODAL INSTRUCCIONES DE DESCARGA ===== */
+            /* ===== MODAL INSTRUCCIONES ===== */
             .modal-instrucciones {
                 display: none;
                 position: fixed;
@@ -956,7 +955,6 @@
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
             }
 
-            /* BARRA DE PROGRESO */
             .barra-progreso-wrapper {
                 margin-top: 18px;
                 width: 100%;
@@ -1133,7 +1131,7 @@
         </style>
     </head>
     <body>
-        <!-- ===== HEADER CON CO-BRANDING ===== -->
+        <!-- ===== HEADER ===== -->
         <div class="header">
             <div class="header-top">
                 <div class="header-left">
@@ -1173,19 +1171,14 @@
             </div>
         </div>
 
-        <!-- ===== AVISO INTERMITENTE ===== -->
         <div class="aviso-intermitente" id="avisoIntermitente"></div>
 
-        <!-- ===== ESTADO ===== -->
         <div id="estado">Cargando...</div>
 
-        <!-- ===== GALERÍA ===== -->
         <div class="galeria" id="galeria"></div>
 
-        <!-- ===== PIE ===== -->
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
 
-        <!-- ===== MODAL FOTO ===== -->
         <div class="modal-fondo" id="modalFondo"></div>
         <div class="modal" id="modal">
             <div class="modal-contenido">
@@ -1201,7 +1194,6 @@
                         <span id="btnPedirTexto">Descargar foto</span>
                     </button>
 
-                    <!-- PUBLICIDAD OVJ STUDIO -->
                     <div class="publicidad-wrapper">
                         <div class="pub-texto" id="pubTexto">
                             ¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?
@@ -1215,7 +1207,6 @@
             </div>
         </div>
 
-        <!-- ===== MODAL NOMBRE ===== -->
         <div class="modal-nombre" id="modalNombre">
             <div class="modal-nombre-contenido">
                 <div class="titulo" id="modalNombreTitulo">¿Cuál es tu nombre?</div>
@@ -1236,7 +1227,6 @@
             </div>
         </div>
 
-        <!-- ===== MODAL INSTRUCCIONES DE DESCARGA ===== -->
         <div class="modal-instrucciones" id="modalInstrucciones">
             <div class="modal-instrucciones-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarInstrucciones()">✕</button>
@@ -1273,7 +1263,6 @@
                     La foto puede tardar unos segundos en cargar por completo según tu conexión.
                 </div>
 
-                <!-- BARRA DE PROGRESO -->
                 <div class="barra-progreso-wrapper">
                     <div class="barra-progreso-fondo">
                         <div class="barra-progreso-relleno" id="barraProgreso"></div>
@@ -1287,32 +1276,26 @@
 
         <script>
             // ==========================================
-            // CONFIGURACIÓN
+            // ⚙️ CONFIGURACIÓN RÁPIDA
             // ==========================================
-            const URL_CLOUDFLARE = "https://afternoon-bio-sur-transport.trycloudflare.com";
-            const FOTOS_POR_CARGA = 6;
-            const MODO_DESCARGAS = true;
-
+            // Editar aquí cuando cambie la URL del túnel
+            // o el número de contacto de OVJ Studio.
+            // ==========================================
+            const URL_CLOUDFLARE = "https://relatively-calgary-architects-template.trycloudflare.com";
             const WHATSAPP_PUBLICIDAD = "59160004962";
             const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
+            // ==========================================
 
-            // Duración del contador de instrucciones (segundos)
+            const FOTOS_POR_CARGA = 6;
+            const MODO_DESCARGAS = true;
             const DURACION_INSTRUCCIONES = 12;
-
-            // Frecuencia de los avisos intermitentes (segundos)
             const INTERVALO_AVISOS = 45;
 
-            // ==========================================
-            // DETECCIÓN DE DISPOSITIVO
-            // ==========================================
             function esDispositivoMovil() {
                 return /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i
                     .test(navigator.userAgent);
             }
 
-            // ==========================================
-            // SISTEMA DE IDIOMAS
-            // ==========================================
             const TRADUCCIONES = {
                 es: {
                     tituloVentana: "OVJ Studio - Galería en Vivo",
@@ -1341,11 +1324,9 @@
                     alertSinNombre: "Por favor escribe tu nombre.",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
                     waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
-                    // Publicidad
                     pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
                     pubBoton: 'Agenda tu evento',
                     waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
-                    // Instrucciones
                     instrTitulo: "Tu foto se está abriendo",
                     instrSubtitulo: "Para guardarla en tu dispositivo:",
                     instrPaso1: "Ve a la pestaña nueva donde se abrió tu foto.",
@@ -1355,7 +1336,10 @@
                     instrPaso3PC: 'Elige <strong>Guardar imagen como...</strong>',
                     instrAviso: "La foto puede tardar unos segundos en cargar por completo según tu conexión.",
                     barraAbriendo: (s) => `Abriendo descarga en <strong>${s}</strong>s...`,
-                    // Avisos intermitentes
+                    modalNombreTitulo: "¿Cuál es tu nombre?",
+                    modalNombreSubtitulo: "Así identificamos tu descarga. Solo lo verá el anfitrión del evento.",
+                    modalNombrePlaceholder: "Tu nombre",
+                    modalNombreConfirmar: "Descargar",
                     avisos: [
                         'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
                         'Tienes un número limitado de descargas para este evento.',
@@ -1405,6 +1389,10 @@
                     instrPaso3PC: 'Choose <strong>Save image as...</strong>',
                     instrAviso: "The photo may take a few seconds to fully load depending on your connection.",
                     barraAbriendo: (s) => `Opening download in <strong>${s}</strong>s...`,
+                    modalNombreTitulo: "What's your name?",
+                    modalNombreSubtitulo: "This identifies your download. Only the event host will see it.",
+                    modalNombrePlaceholder: "Your name",
+                    modalNombreConfirmar: "Download",
                     avisos: [
                         'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
                         'You have a limited number of downloads for this event.',
@@ -1454,6 +1442,10 @@
                     instrPaso3PC: '选择 <strong>图片另存为...</strong>',
                     instrAviso: "根据你的网络情况，照片可能需要几秒钟才能完全加载。",
                     barraAbriendo: (s) => `${s} 秒后打开下载...`,
+                    modalNombreTitulo: "你叫什么名字？",
+                    modalNombreSubtitulo: "用于识别你的下载，仅主办方可见。",
+                    modalNombrePlaceholder: "你的名字",
+                    modalNombreConfirmar: "下载",
                     avisos: [
                         '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
                         '本次活动的下载次数有限。',
@@ -1511,10 +1503,10 @@
                 document.getElementById('pubTexto').innerHTML = t('pubTexto');
                 document.getElementById('pubBotonTexto').textContent = t('pubBoton');
 
-                document.getElementById('modalNombreTitulo').textContent = t('modalNombreTitulo') || "¿Cuál es tu nombre?";
-                document.getElementById('modalNombreSubtitulo').textContent = t('modalNombreSubtitulo') || "";
-                document.getElementById('inputNombre').placeholder = t('modalNombrePlaceholder') || "Tu nombre";
-                document.getElementById('btnConfirmarNombre').textContent = t('modalNombreConfirmar') || "Descargar";
+                document.getElementById('modalNombreTitulo').textContent = t('modalNombreTitulo');
+                document.getElementById('modalNombreSubtitulo').textContent = t('modalNombreSubtitulo');
+                document.getElementById('inputNombre').placeholder = t('modalNombrePlaceholder');
+                document.getElementById('btnConfirmarNombre').textContent = t('modalNombreConfirmar');
 
                 document.getElementById('instrTitulo').textContent = t('instrTitulo');
                 document.getElementById('instrSubtitulo').textContent = t('instrSubtitulo');
@@ -1559,9 +1551,6 @@
                 }
             });
 
-            // ==========================================
-            // CAPTURAR EL ID DEL FOTÓGRAFO
-            // ==========================================
             function getFotografoId() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get("f");
@@ -1571,9 +1560,6 @@
 
             const FOTOGRAFO_ID = getFotografoId();
 
-            // ==========================================
-            // VARIABLES
-            // ==========================================
             let fotosCache = [];
             let fotosVisibles = FOTOS_POR_CARGA;
             let fotoSeleccionadaIndex = -1;
@@ -1590,19 +1576,14 @@
             let nombreInvitado = localStorage.getItem('ovj_nombre') || '';
             let modalNombreCallback = null;
 
-            // Contador de instrucciones
             let instrIntervalId = null;
             let instrSegundosRestantes = 0;
             let instrUrlPendiente = null;
 
-            // Avisos intermitentes
             let avisoTimeoutId = null;
             let avisoOcultoTimeoutId = null;
             let indiceAviso = 0;
 
-            // ==========================================
-            // CARGAR FOTOS
-            // ==========================================
             async function cargarFotos() {
                 if (cargando) return;
                 cargando = true;
@@ -1663,7 +1644,6 @@
 
                 } catch (error) {
                     console.error("Error:", error);
-
                     servidorOnline = false;
                     mostrarOffline();
                 }
@@ -1725,9 +1705,6 @@
                 }
             }
 
-            // ==========================================
-            // RENDERIZAR GALERÍA
-            // ==========================================
             function renderizarGaleria() {
                 const galeria = document.getElementById("galeria");
 
@@ -1844,9 +1821,6 @@
                 }, 100);
             }
 
-            // ==========================================
-            // MODAL FOTO
-            // ==========================================
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
                 if (index < 0) {
@@ -1912,9 +1886,6 @@
                 actualizarBotonPrincipal();
             }
 
-            // ==========================================
-            // BOTÓN PRINCIPAL
-            // ==========================================
             function accionBotonPrincipal() {
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
                     alert("No hay foto seleccionada");
@@ -1956,9 +1927,6 @@
                 window.open(urlWhatsApp, "_blank");
             }
 
-            // ==========================================
-            // DESCARGA + MODAL DE INSTRUCCIONES
-            // ==========================================
             async function descargarFotoActual() {
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
                     return;
@@ -2014,20 +1982,14 @@
                 btn.classList.remove('cargando-btn');
                 texto.textContent = textoOriginal;
 
-                // Abrir modal de instrucciones con barra de progreso.
-                // Al terminar la barra, se abre la pestaña nueva.
                 abrirInstrucciones(urlExterna);
             }
 
-            // ==========================================
-            // MODAL INSTRUCCIONES CON BARRA DE PROGRESO
-            // ==========================================
             function abrirInstrucciones(urlExterna) {
                 const modal = document.getElementById('modalInstrucciones');
                 const barra = document.getElementById('barraProgreso');
                 const barraTexto = document.getElementById('barraTexto');
 
-                // Refrescar textos según idioma y dispositivo
                 document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
                     ? t('instrPaso2Movil')
                     : t('instrPaso2PC');
@@ -2038,23 +2000,19 @@
 
                 document.getElementById('instrEmoji').textContent = esDispositivoMovil() ? '📱' : '💻';
 
-                // Guardar la URL pendiente
                 instrUrlPendiente = urlExterna;
 
-                // Resetear barra
                 barra.style.width = '0%';
                 instrSegundosRestantes = DURACION_INSTRUCCIONES;
                 barraTexto.innerHTML = t('barraAbriendo', instrSegundosRestantes);
 
                 modal.classList.add('activo');
 
-                // Limpiar interval anterior si existe
                 if (instrIntervalId) {
                     clearInterval(instrIntervalId);
                     instrIntervalId = null;
                 }
 
-                // Iniciar contador
                 const inicio = Date.now();
                 const duracionTotalMs = DURACION_INSTRUCCIONES * 1000;
 
@@ -2074,13 +2032,11 @@
                         clearInterval(instrIntervalId);
                         instrIntervalId = null;
 
-                        // Abrir la pestaña nueva automáticamente
                         if (instrUrlPendiente) {
                             window.open(instrUrlPendiente, "_blank");
                             instrUrlPendiente = null;
                         }
 
-                        // Cerrar el modal automáticamente
                         setTimeout(() => {
                             cerrarInstrucciones();
                         }, 500);
@@ -2097,16 +2053,12 @@
                     instrIntervalId = null;
                 }
 
-                // Si el usuario cierra antes de que termine, abrimos la pestaña manualmente
                 if (instrUrlPendiente) {
                     window.open(instrUrlPendiente, "_blank");
                     instrUrlPendiente = null;
                 }
             }
 
-            // ==========================================
-            // MODAL NOMBRE
-            // ==========================================
             function abrirModalNombre(callback) {
                 modalNombreCallback = callback;
                 const modal = document.getElementById('modalNombre');
@@ -2144,9 +2096,6 @@
                 }
             }
 
-            // ==========================================
-            // AVISOS INTERMITENTES
-            // ==========================================
             function iniciarAvisosIntermitentes() {
                 const contenedor = document.getElementById('avisoIntermitente');
 
@@ -2154,31 +2103,24 @@
                     const listaAvisos = TRADUCCIONES[idiomaActual].avisos || [];
                     if (listaAvisos.length === 0) return;
 
-                    // Elegir el siguiente aviso en orden circular
                     const texto = listaAvisos[indiceAviso % listaAvisos.length];
                     indiceAviso++;
 
                     contenedor.innerHTML = texto;
                     contenedor.classList.add('visible');
 
-                    // Ocultar después de 8 segundos
                     if (avisoOcultoTimeoutId) clearTimeout(avisoOcultoTimeoutId);
                     avisoOcultoTimeoutId = setTimeout(() => {
                         contenedor.classList.remove('visible');
                     }, 8000);
 
-                    // Programar el siguiente aviso
                     if (avisoTimeoutId) clearTimeout(avisoTimeoutId);
                     avisoTimeoutId = setTimeout(mostrarAviso, INTERVALO_AVISOS * 1000);
                 }
 
-                // Primer aviso después de 15 segundos
                 avisoTimeoutId = setTimeout(mostrarAviso, 15000);
             }
 
-            // ==========================================
-            // EVENTOS
-            // ==========================================
             document.addEventListener("keydown", (e) => {
                 const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
                 const modalInstrActivo = document.getElementById('modalInstrucciones').classList.contains('activo');
@@ -2217,9 +2159,6 @@
                 }
             });
 
-            // ==========================================
-            // INICIALIZAR
-            // ==========================================
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
 
