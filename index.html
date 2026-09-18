@@ -337,6 +337,27 @@
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
             }
+            /* 🔥 NUEVO: botón subir fotos (solo admin) */
+            .barra-rol .btn-subir {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(46, 204, 113, 0.15);
+                border: 1px solid rgba(46, 204, 113, 0.4);
+                color: #2ecc71;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+            }
+            .barra-rol .btn-subir:hover {
+                background: rgba(46, 204, 113, 0.25);
+                transform: scale(1.04);
+                box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
+            }
 
             /* ===== ESTADO MINI ===== */
             #estado {
@@ -1336,6 +1357,146 @@
                 color: #aaa;
             }
 
+            /* ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== */
+            .modal-subir {
+                display: none;
+                position: fixed;
+                z-index: 1500;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(12px);
+            }
+            .modal-subir.activo {
+                display: flex;
+            }
+            .modal-subir-contenido {
+                background: #141414;
+                border: 1px solid rgba(46, 204, 113, 0.3);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 480px;
+                width: 100%;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-subir-contenido .titulo {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #2ecc71;
+                margin-bottom: 6px;
+                text-align: center;
+            }
+            .modal-subir-contenido .subtitulo {
+                font-size: 0.78rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
+            .zona-drop {
+                border: 2px dashed rgba(46, 204, 113, 0.3);
+                border-radius: 14px;
+                padding: 28px 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                background: rgba(46, 204, 113, 0.03);
+                margin-bottom: 16px;
+            }
+            .zona-drop:hover, .zona-drop.arrastrando {
+                border-color: rgba(46, 204, 113, 0.6);
+                background: rgba(46, 204, 113, 0.08);
+            }
+            .zona-drop .icono {
+                font-size: 2.2rem;
+                display: block;
+                margin-bottom: 8px;
+            }
+            .zona-drop .texto {
+                font-size: 0.85rem;
+                color: #ccc;
+                font-weight: 500;
+            }
+            .zona-drop .subtexto {
+                font-size: 0.7rem;
+                color: #666;
+                margin-top: 6px;
+            }
+            .lista-subidas {
+                max-height: 240px;
+                overflow-y: auto;
+                margin-bottom: 14px;
+            }
+            .item-subida {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 12px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 10px;
+                margin-bottom: 8px;
+                font-size: 0.75rem;
+            }
+            .item-subida .nombre {
+                flex: 1;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #ccc;
+            }
+            .item-subida .estado {
+                flex-shrink: 0;
+                font-size: 0.7rem;
+                font-weight: 600;
+                padding: 3px 8px;
+                border-radius: 50px;
+            }
+            .item-subida .estado.pendiente {
+                background: rgba(255, 255, 255, 0.06);
+                color: #888;
+            }
+            .item-subida .estado.subiendo {
+                background: rgba(243, 156, 18, 0.15);
+                color: #f39c12;
+            }
+            .item-subida .estado.ok {
+                background: rgba(46, 204, 113, 0.15);
+                color: #2ecc71;
+            }
+            .item-subida .estado.error {
+                background: rgba(231, 76, 60, 0.15);
+                color: #e74c3c;
+            }
+            .modal-subir-contenido .btn-cerrar-subir {
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            .modal-subir-contenido .btn-cerrar-subir:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            .modal-subir-contenido .btn-cerrar-subir:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
             .footer {
                 text-align: center;
                 padding: 24px 10px 6px;
@@ -1428,7 +1589,8 @@
                     justify-content: center;
                 }
                 .barra-rol .btn-invitar,
-                .barra-rol .btn-butacas {
+                .barra-rol .btn-butacas,
+                .barra-rol .btn-subir {
                     justify-content: center;
                 }
             }
@@ -1518,6 +1680,9 @@
                     </button>
                     <button class="btn-invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
                         ✨ <span id="textoInvitar">Invitar</span>
+                    </button>
+                    <button class="btn-subir" id="btnSubir" onclick="abrirSubir()" style="display: none;">
+                        📤 <span id="textoSubir">Subir fotos</span>
                     </button>
                 </div>
             </div>
@@ -1699,6 +1864,36 @@
             </div>
         </div>
 
+        <!-- ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== -->
+        <div class="modal-subir" id="modalSubir">
+            <div class="modal-subir-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
+                <div class="titulo">📤 Subir Fotos</div>
+                <div class="subtitulo">
+                    Selecciona las fotos que quieres publicar.<br>
+                    Se subirán directo a la nube, sin pasar por tu conexión.
+                </div>
+
+                <div class="zona-drop" id="zonaDrop" onclick="document.getElementById('inputFotos').click()">
+                    <span class="icono">📸</span>
+                    <div class="texto">Toca aquí para elegir fotos</div>
+                    <div class="subtexto">Máximo 15 MB por foto · JPG</div>
+                </div>
+                <input
+                    type="file"
+                    id="inputFotos"
+                    accept="image/jpeg,image/jpg"
+                    multiple
+                    style="display:none"
+                    onchange="manejarSeleccionFotos(event)"
+                />
+
+                <div class="lista-subidas" id="listaSubidas"></div>
+
+                <button class="btn-cerrar-subir" id="btnCerrarSubir" onclick="cerrarSubir()">Cerrar</button>
+            </div>
+        </div>
+
         <script>
             // ==========================================
             // ⚙️ CONFIGURACIÓN RÁPIDA
@@ -1712,6 +1907,10 @@
             const MODO_DESCARGAS = true;
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
+
+            // 🔥 NUEVO: límites de subida
+            const TAMANO_MAX_FOTO = 15 * 1024 * 1024; // 15 MB
+            const REINTENTOS_SUBIDA = 3;
 
             // ==========================================
             // 🔑 PARÁMETROS DEL URL
@@ -1757,6 +1956,10 @@
 
             let invitacionTipo = 'invitado';
             let invitacionGenerada = null;
+
+            // 🔥 NUEVO: subidas
+            let colaSubidas = [];
+            let subidaEnProceso = false;
 
             // ==========================================
             // 🌍 IDIOMA
@@ -1821,7 +2024,25 @@
                     textoButacas: "Butacas",
                     textoInvitar: "Invitar",
                     tipoInvitado: "Invitado",
-                    tipoAdmin: "Admin"
+                    tipoAdmin: "Admin",
+                    // 🔥 NUEVO: subida
+                    textoSubir: "Subir fotos",
+                    subirTitulo: "Subir Fotos",
+                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por tu conexión.",
+                    subirZonaTexto: "Toca aquí para elegir fotos",
+                    subirZonaSubtexto: "Máximo 15 MB por foto · JPG",
+                    subirEstadoPendiente: "En espera",
+                    subirEstadoSubiendo: "Subiendo...",
+                    subirEstadoOk: "✓ Subida",
+                    subirEstadoError: "✗ Error",
+                    subirSinConexion: "Sin conexión. Necesitas internet para subir fotos.",
+                    subirFotoMuyGrande: "La foto supera 15 MB. Elige una más pequeña.",
+                    subirTipoInvalido: "Solo se aceptan JPG.",
+                    subirErrorGenerico: "No se pudo subir. Reintenta.",
+                    subirProgreso: (ok, total) => `${ok} de ${total} subidas`,
+                    subirTodoOk: "✅ Todas las fotos subidas",
+                    subirAlgunasFallaron: "⚠️ Algunas fotos no se pudieron subir",
+                    subirCerrando: "Espera a que terminen las subidas..."
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -1877,7 +2098,24 @@
                     textoButacas: "Seats",
                     textoInvitar: "Invite",
                     tipoInvitado: "Guest",
-                    tipoAdmin: "Admin"
+                    tipoAdmin: "Admin",
+                    textoSubir: "Upload photos",
+                    subirTitulo: "Upload Photos",
+                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing your connection.",
+                    subirZonaTexto: "Tap here to choose photos",
+                    subirZonaSubtexto: "Max 15 MB per photo · JPG",
+                    subirEstadoPendiente: "Waiting",
+                    subirEstadoSubiendo: "Uploading...",
+                    subirEstadoOk: "✓ Uploaded",
+                    subirEstadoError: "✗ Error",
+                    subirSinConexion: "No connection. You need internet to upload photos.",
+                    subirFotoMuyGrande: "Photo exceeds 15 MB. Choose a smaller one.",
+                    subirTipoInvalido: "Only JPG files allowed.",
+                    subirErrorGenerico: "Upload failed. Try again.",
+                    subirProgreso: (ok, total) => `${ok} of ${total} uploaded`,
+                    subirTodoOk: "✅ All photos uploaded",
+                    subirAlgunasFallaron: "⚠️ Some photos failed to upload",
+                    subirCerrando: "Wait for uploads to finish..."
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -1933,7 +2171,24 @@
                     textoButacas: "座位",
                     textoInvitar: "邀请",
                     tipoInvitado: "嘉宾",
-                    tipoAdmin: "管理员"
+                    tipoAdmin: "管理员",
+                    textoSubir: "上传照片",
+                    subirTitulo: "上传照片",
+                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过你的连接。",
+                    subirZonaTexto: "点击此处选择照片",
+                    subirZonaSubtexto: "每张最多 15 MB · JPG",
+                    subirEstadoPendiente: "等待中",
+                    subirEstadoSubiendo: "上传中...",
+                    subirEstadoOk: "✓ 已上传",
+                    subirEstadoError: "✗ 错误",
+                    subirSinConexion: "无连接。上传照片需要互联网。",
+                    subirFotoMuyGrande: "照片超过 15 MB，请选择更小的。",
+                    subirTipoInvalido: "仅支持 JPG。",
+                    subirErrorGenerico: "上传失败，请重试。",
+                    subirProgreso: (ok, total) => `${ok} / ${total} 已上传`,
+                    subirTodoOk: "✅ 全部照片已上传",
+                    subirAlgunasFallaron: "⚠️ 部分照片上传失败",
+                    subirCerrando: "请等待上传完成..."
                 }
             };
 
@@ -1994,9 +2249,20 @@
 
                 document.getElementById('textoButacas').textContent = t('textoButacas');
                 document.getElementById('textoInvitar').textContent = t('textoInvitar');
+                document.getElementById('textoSubir').textContent = t('textoSubir');
 
                 document.getElementById('tipoInvitado').innerHTML = `<span class="emoji">🎟️</span>${t('tipoInvitado')}`;
                 document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
+
+                // 🔥 NUEVO: modal subir
+                const tituloSubir = document.querySelector('.modal-subir-contenido .titulo');
+                const subSubir = document.querySelector('.modal-subir-contenido .subtitulo');
+                if (tituloSubir) tituloSubir.textContent = '📤 ' + t('subirTitulo');
+                if (subSubir) subSubir.innerHTML = t('subirSubtitulo');
+                const zonaTexto = document.querySelector('.zona-drop .texto');
+                const zonaSub = document.querySelector('.zona-drop .subtexto');
+                if (zonaTexto) zonaTexto.textContent = t('subirZonaTexto');
+                if (zonaSub) zonaSub.textContent = t('subirZonaSubtexto');
 
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
@@ -2112,6 +2378,7 @@
                 const rolEmoji = document.getElementById('rolEmoji');
                 const rolNombre = document.getElementById('rolNombre');
                 const btnInvitar = document.getElementById('btnInvitar');
+                const btnSubir = document.getElementById('btnSubir');
 
                 barraRol.style.display = 'flex';
 
@@ -2119,10 +2386,12 @@
                     rolEmoji.textContent = '👑';
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
+                    btnSubir.style.display = 'inline-flex';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
                     btnInvitar.style.display = 'none';
+                    btnSubir.style.display = 'none';
                 }
             }
 
@@ -2816,6 +3085,230 @@
             }
 
             // ==========================================
+            // 🔥 NUEVO: SUBIR FOTOS
+            // ==========================================
+            function abrirSubir() {
+                document.getElementById('modalSubir').classList.add('activo');
+            }
+
+            function cerrarSubir() {
+                if (subidaEnProceso) {
+                    alert(t('subirCerrando'));
+                    return;
+                }
+                document.getElementById('modalSubir').classList.remove('activo');
+            }
+
+            function manejarSeleccionFotos(event) {
+                const archivos = Array.from(event.target.files || []);
+                if (archivos.length === 0) return;
+
+                // Validar y encolar
+                for (const archivo of archivos) {
+                    if (!archivo.type.startsWith('image/jpeg')) {
+                        alert(t('subirTipoInvalido') + ': ' + archivo.name);
+                        continue;
+                    }
+                    if (archivo.size > TAMANO_MAX_FOTO) {
+                        alert(t('subirFotoMuyGrande') + ': ' + archivo.name);
+                        continue;
+                    }
+
+                    colaSubidas.push({
+                        archivo,
+                        estado: 'pendiente',
+                        progreso: 0,
+                        error: null
+                    });
+                }
+
+                // Limpiar input para permitir seleccionar el mismo archivo después
+                event.target.value = '';
+
+                renderizarListaSubidas();
+                procesarColaSubidas();
+            }
+
+            function renderizarListaSubidas() {
+                const contenedor = document.getElementById('listaSubidas');
+
+                if (colaSubidas.length === 0) {
+                    contenedor.innerHTML = '';
+                    return;
+                }
+
+                const total = colaSubidas.length;
+                const ok = colaSubidas.filter(s => s.estado === 'ok').length;
+
+                let html = '';
+
+                colaSubidas.forEach((subida, idx) => {
+                    let estadoTexto = '';
+                    let estadoClase = '';
+
+                    switch (subida.estado) {
+                        case 'pendiente':
+                            estadoTexto = t('subirEstadoPendiente');
+                            estadoClase = 'pendiente';
+                            break;
+                        case 'subiendo':
+                            estadoTexto = t('subirEstadoSubiendo');
+                            estadoClase = 'subiendo';
+                            break;
+                        case 'ok':
+                            estadoTexto = t('subirEstadoOk');
+                            estadoClase = 'ok';
+                            break;
+                        case 'error':
+                            estadoTexto = t('subirEstadoError');
+                            estadoClase = 'error';
+                            break;
+                    }
+
+                    html += `
+                        <div class="item-subida">
+                            <div class="nombre">${escapeHtml(subida.archivo.name)}</div>
+                            <div class="estado ${estadoClase}">${estadoTexto}</div>
+                        </div>
+                    `;
+                });
+
+                if (subidaEnProceso) {
+                    html += `<div style="text-align:center; color:#f39c12; font-size:0.75rem; padding:8px 0;">${t('subirProgreso', ok, total)}</div>`;
+                } else if (ok === total && total > 0) {
+                    html += `<div style="text-align:center; color:#2ecc71; font-size:0.75rem; padding:8px 0;">${t('subirTodoOk')}</div>`;
+                } else if (ok < total && colaSubidas.some(s => s.estado === 'error')) {
+                    html += `<div style="text-align:center; color:#e67e22; font-size:0.75rem; padding:8px 0;">${t('subirAlgunasFallaron')}</div>`;
+                }
+
+                contenedor.innerHTML = html;
+            }
+
+            async function procesarColaSubidas() {
+                if (subidaEnProceso) return;
+
+                subidaEnProceso = true;
+                actualizarBotonCerrarSubir();
+
+                try {
+                    for (const subida of colaSubidas) {
+                        if (subida.estado === 'ok') continue;
+
+                        subida.estado = 'subiendo';
+                        renderizarListaSubidas();
+
+                        try {
+                            await subirUnaFoto(subida);
+                            subida.estado = 'ok';
+                        } catch (error) {
+                            console.error('Error subiendo foto:', error);
+                            subida.estado = 'error';
+                            subida.error = error.message;
+                        }
+
+                        renderizarListaSubidas();
+                    }
+
+                    // Esperar un momento y luego recargar fotos
+                    setTimeout(() => {
+                        cargarFotos();
+                    }, 2000);
+
+                } finally {
+                    subidaEnProceso = false;
+                    actualizarBotonCerrarSubir();
+                    renderizarListaSubidas();
+                }
+            }
+
+            function actualizarBotonCerrarSubir() {
+                const btn = document.getElementById('btnCerrarSubir');
+                if (subidaEnProceso) {
+                    btn.disabled = true;
+                    btn.textContent = t('subirEstadoSubiendo');
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Cerrar';
+                }
+            }
+
+            async function subirUnaFoto(subida) {
+                const { archivo } = subida;
+
+                // 1. Pedir URL firmada al server
+                const urlPedido = `${URL_CLOUDFLARE}/subir_url`;
+
+                const respPedido = await fetch(urlPedido, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        f: FOTOGRAFO_ID,
+                        e: EVENTO_ID,
+                        t: TOKEN,
+                        nombreOriginal: archivo.name
+                    })
+                });
+
+                if (!respPedido.ok) {
+                    throw new Error('No se pudo obtener URL de subida');
+                }
+
+                const dataPedido = await respPedido.json();
+
+                if (!dataPedido.ok || !dataPedido.url) {
+                    throw new Error(dataPedido.error || 'URL de subida inválida');
+                }
+
+                // 2. Subir directo a B2
+                let ultimoError = null;
+                for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
+                    try {
+                        const respSubida = await fetch(dataPedido.url, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'image/jpeg'
+                            },
+                            body: archivo
+                        });
+
+                        if (!respSubida.ok) {
+                            const texto = await respSubida.text().catch(() => '');
+                            throw new Error(`HTTP ${respSubida.status}${texto ? ' - ' + texto.slice(0, 80) : ''}`);
+                        }
+
+                        // Éxito
+                        // 3. Confirmar al server
+                        try {
+                            await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    f: FOTOGRAFO_ID,
+                                    e: EVENTO_ID,
+                                    t: TOKEN,
+                                    key: dataPedido.key
+                                })
+                            });
+                        } catch (e) {
+                            // No importa si falla la confirmación, el recolector lo encontrará
+                            console.warn('No se pudo confirmar subida (no crítico):', e.message);
+                        }
+
+                        return;
+
+                    } catch (error) {
+                        ultimoError = error;
+                        console.warn(`Intento ${intento}/${REINTENTOS_SUBIDA} falló:`, error.message);
+                        if (intento < REINTENTOS_SUBIDA) {
+                            await new Promise(r => setTimeout(r, 1000 * intento));
+                        }
+                    }
+                }
+
+                throw new Error(ultimoError ? ultimoError.message : t('subirErrorGenerico'));
+            }
+
+            // ==========================================
             // 🛡️ UTILIDADES
             // ==========================================
             function escapeHtml(str) {
@@ -2864,9 +3357,11 @@
                 const modalButacasActivo = document.getElementById('modalButacas').classList.contains('activo');
                 const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
                 const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
+                const modalSubirActivo = document.getElementById('modalSubir').classList.contains('activo');
 
                 if (e.key === "Escape") {
-                    if (modalResultadoActivo) cerrarResultado();
+                    if (modalSubirActivo) cerrarSubir();
+                    else if (modalResultadoActivo) cerrarResultado();
                     else if (modalInvitarActivo) cerrarInvitar();
                     else if (modalButacasActivo) cerrarButacas();
                     else if (modalInstrActivo) cerrarInstrucciones();
@@ -2874,7 +3369,7 @@
                     else cerrarLangMenu();
                 }
 
-                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo) return;
+                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo || modalSubirActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -2898,6 +3393,10 @@
 
             document.getElementById('modalResultado').addEventListener('click', (e) => {
                 if (e.target.id === 'modalResultado') cerrarResultado();
+            });
+
+            document.getElementById('modalSubir').addEventListener('click', (e) => {
+                if (e.target.id === 'modalSubir') cerrarSubir();
             });
 
             // ==========================================
