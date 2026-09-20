@@ -6,7 +6,11 @@
         <title>OVJ Studio - Galería en Vivo</title>
         <style>
             /* ===== RESET ===== */
-            * { margin: 0; padding: 0; box-sizing: border-box; }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
             /* ===== BASE ===== */
             body {
@@ -17,7 +21,7 @@
                 padding: 12px 16px 20px;
             }
 
-            /* ===== BLOQUEO ===== */
+            /* ===== BLOQUEO (sin acceso) ===== */
             .bloqueo {
                 display: none;
                 position: fixed;
@@ -29,31 +33,45 @@
                 padding: 30px 24px;
                 text-align: center;
             }
-            .bloqueo.activo { display: flex; }
-            .bloqueo-contenido { max-width: 400px; }
-            .bloqueo .icono { font-size: 4rem; margin-bottom: 20px; display: block; opacity: 0.4; }
-            .bloqueo .titulo { font-size: 1.3rem; font-weight: 700; color: #f39c12; letter-spacing: 1px; margin-bottom: 12px; }
-            .bloqueo .subtitulo { font-size: 0.9rem; color: #888; line-height: 1.6; font-weight: 300; }
-            .bloqueo .marca { margin-top: 40px; font-size: 0.75rem; letter-spacing: 2px; color: #333; }
-            .bloqueo .btn-reintentar {
-                margin-top: 20px;
-                background: rgba(243, 156, 18, 0.15);
-                border: 1px solid rgba(243, 156, 18, 0.4);
-                color: #f39c12;
-                padding: 12px 28px;
-                border-radius: 50px;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                font-family: inherit;
+            .bloqueo.activo {
+                display: flex;
             }
-            .bloqueo .btn-reintentar:hover {
-                background: rgba(243, 156, 18, 0.25);
+            .bloqueo-contenido {
+                max-width: 400px;
+            }
+            .bloqueo .icono {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                display: block;
+                opacity: 0.4;
+            }
+            .bloqueo .titulo {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #f39c12;
+                letter-spacing: 1px;
+                margin-bottom: 12px;
+            }
+            .bloqueo .subtitulo {
+                font-size: 0.9rem;
+                color: #888;
+                line-height: 1.6;
+                font-weight: 300;
+            }
+            .bloqueo .marca {
+                margin-top: 40px;
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                color: #333;
             }
 
             /* ===== APP ===== */
-            #app { display: none; }
-            #app.activo { display: block; }
+            #app {
+                display: none;
+            }
+            #app.activo {
+                display: block;
+            }
 
             /* ===== HEADER ===== */
             .header {
@@ -65,8 +83,10 @@
             .header::after {
                 content: '';
                 position: absolute;
-                bottom: -1px; left: 25%;
-                width: 50%; height: 1px;
+                bottom: -1px;
+                left: 25%;
+                width: 50%;
+                height: 1px;
                 background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
             }
             .header-top {
@@ -93,59 +113,122 @@
             .header-left .ovj-studio::before {
                 content: '✦';
                 position: absolute;
-                left: -18px; top: 50%;
+                left: -18px;
+                top: 50%;
                 transform: translateY(-50%);
                 color: rgba(243, 156, 18, 0.3);
                 font-size: 0.6rem;
             }
-            .header-right { display: flex; align-items: center; gap: 8px; }
-
-            .lang-selector { position: relative; user-select: none; }
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .lang-selector {
+                position: relative;
+                user-select: none;
+            }
             .lang-btn {
-                display: inline-flex; align-items: center; gap: 5px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
                 background: rgba(255, 255, 255, 0.05);
-                color: #ccc; font-size: 0.7rem; font-weight: 600;
-                padding: 5px 10px; border-radius: 50px;
+                color: #ccc;
+                font-size: 0.7rem;
+                font-weight: 600;
+                padding: 5px 10px;
+                border-radius: 50px;
                 border: 1px solid rgba(255, 255, 255, 0.08);
-                cursor: pointer; transition: all 0.25s ease;
+                cursor: pointer;
+                transition: all 0.25s ease;
                 backdrop-filter: blur(4px);
             }
-            .lang-btn:hover { background: rgba(255, 215, 0, 0.08); border-color: rgba(255, 215, 0, 0.25); color: #f39c12; }
-            .lang-btn .bandera { font-size: 0.9rem; line-height: 1; }
-            .lang-btn .flecha { font-size: 0.5rem; opacity: 0.6; transition: transform 0.25s ease; }
-            .lang-selector.abierto .lang-btn .flecha { transform: rotate(180deg); }
+            .lang-btn:hover {
+                background: rgba(255, 215, 0, 0.08);
+                border-color: rgba(255, 215, 0, 0.25);
+                color: #f39c12;
+            }
+            .lang-btn .bandera {
+                font-size: 0.9rem;
+                line-height: 1;
+            }
+            .lang-btn .flecha {
+                font-size: 0.5rem;
+                opacity: 0.6;
+                transition: transform 0.25s ease;
+            }
+            .lang-selector.abierto .lang-btn .flecha {
+                transform: rotate(180deg);
+            }
             .lang-menu {
-                position: absolute; top: calc(100% + 6px); right: 0;
-                background: #111; border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 12px; padding: 6px; min-width: 140px;
+                position: absolute;
+                top: calc(100% + 6px);
+                right: 0;
+                background: #111;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                padding: 6px;
+                min-width: 140px;
                 box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-                opacity: 0; visibility: hidden; transform: translateY(-6px);
-                transition: all 0.2s ease; z-index: 100;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-6px);
+                transition: all 0.2s ease;
+                z-index: 100;
                 backdrop-filter: blur(12px);
             }
-            .lang-selector.abierto .lang-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-            .lang-opcion {
-                display: flex; align-items: center; gap: 8px;
-                padding: 8px 12px; border-radius: 8px;
-                cursor: pointer; font-size: 0.75rem; color: #aaa;
-                transition: all 0.2s ease; font-weight: 500;
+            .lang-selector.abierto .lang-menu {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
             }
-            .lang-opcion .bandera { font-size: 1rem; line-height: 1; }
-            .lang-opcion:hover { background: rgba(255, 215, 0, 0.08); color: #f39c12; }
-            .lang-opcion.activo { background: rgba(255, 215, 0, 0.12); color: #f39c12; font-weight: 600; }
-
+            .lang-opcion {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.75rem;
+                color: #aaa;
+                transition: all 0.2s ease;
+                font-weight: 500;
+            }
+            .lang-opcion .bandera {
+                font-size: 1rem;
+                line-height: 1;
+            }
+            .lang-opcion:hover {
+                background: rgba(255, 215, 0, 0.08);
+                color: #f39c12;
+            }
+            .lang-opcion.activo {
+                background: rgba(255, 215, 0, 0.12);
+                color: #f39c12;
+                font-weight: 600;
+            }
             .badge-en-vivo {
-                display: inline-flex; align-items: center; gap: 5px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
                 background: rgba(231, 76, 60, 0.12);
-                color: #e74c3c; font-size: 0.6rem; font-weight: 700;
-                letter-spacing: 1.5px; padding: 4px 14px 4px 10px;
-                border-radius: 50px; text-transform: uppercase;
+                color: #e74c3c;
+                font-size: 0.6rem;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                padding: 4px 14px 4px 10px;
+                border-radius: 50px;
+                text-transform: uppercase;
                 border: 1px solid rgba(231, 76, 60, 0.15);
-                user-select: none; backdrop-filter: blur(4px);
+                user-select: none;
+                backdrop-filter: blur(4px);
             }
             .badge-en-vivo .punto {
-                display: inline-block; width: 6px; height: 6px;
-                background: #e74c3c; border-radius: 50%;
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                background: #e74c3c;
+                border-radius: 50%;
                 animation: pulse 1.8s infinite;
                 box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
             }
@@ -154,65 +237,120 @@
                 50% { opacity: 1; transform: scale(1.2); }
                 100% { opacity: 0.3; transform: scale(0.8); }
             }
-            .header-bottom { text-align: center; padding-top: 4px; }
+            .header-bottom {
+                text-align: center;
+                padding-top: 4px;
+            }
             .header-bottom .evento-titulo {
-                font-size: 2.0rem; font-weight: 700; letter-spacing: 3px; color: #fff;
+                font-size: 2.0rem;
+                font-weight: 700;
+                letter-spacing: 3px;
+                color: #fff;
                 background: linear-gradient(135deg, #fff, #ccc);
-                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-                line-height: 1.2; position: relative; display: inline-block;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                line-height: 1.2;
+                position: relative;
+                display: inline-block;
             }
             .header-bottom .evento-titulo::after {
                 content: '';
                 position: absolute;
-                bottom: -4px; left: 20%;
-                width: 60%; height: 1px;
+                bottom: -4px;
+                left: 20%;
+                width: 60%;
+                height: 1px;
                 background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
             }
 
             /* ===== BARRA DE ROL ===== */
             .barra-rol {
-                max-width: 1200px; margin: 0 auto 14px;
-                display: flex; justify-content: space-between; align-items: center;
-                gap: 10px; padding: 10px 16px;
+                max-width: 1200px;
+                margin: 0 auto 14px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 16px;
                 background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
                 border: 1px solid rgba(243, 156, 18, 0.15);
-                border-radius: 14px; flex-wrap: wrap;
+                border-radius: 14px;
+                flex-wrap: wrap;
             }
-            .barra-rol .rol-info { display: flex; align-items: center; gap: 10px; }
-            .barra-rol .rol-emoji { font-size: 1.3rem; }
-            .barra-rol .rol-texto { font-size: 0.8rem; color: #ccc; letter-spacing: 0.3px; }
-            .barra-rol .rol-texto strong { color: #f1c40f; font-weight: 600; }
+            .barra-rol .rol-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .barra-rol .rol-emoji {
+                font-size: 1.3rem;
+            }
+            .barra-rol .rol-texto {
+                font-size: 0.8rem;
+                color: #ccc;
+                letter-spacing: 0.3px;
+            }
+            .barra-rol .rol-texto strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
             .barra-rol .btn-invitar {
-                display: inline-flex; align-items: center; gap: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
                 background: rgba(243, 156, 18, 0.15);
                 border: 1px solid rgba(243, 156, 18, 0.4);
-                color: #f39c12; padding: 8px 16px; border-radius: 50px;
-                font-size: 0.75rem; font-weight: 600;
-                cursor: pointer; transition: all 0.25s ease;
-                letter-spacing: 0.3px; font-family: inherit;
+                color: #f39c12;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                letter-spacing: 0.3px;
+                font-family: inherit;
             }
             .barra-rol .btn-invitar:hover {
                 background: rgba(243, 156, 18, 0.25);
                 transform: scale(1.04);
                 box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
             }
+            .barra-rol .btn-invitar:active {
+                transform: scale(0.97);
+            }
             .barra-rol .btn-butacas {
-                display: inline-flex; align-items: center; gap: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #ccc; padding: 8px 16px; border-radius: 50px;
-                font-size: 0.75rem; font-weight: 600;
-                cursor: pointer; transition: all 0.25s ease;
+                color: #ccc;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
                 font-family: inherit;
             }
-            .barra-rol .btn-butacas:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+            .barra-rol .btn-butacas:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            /* 🔥 NUEVO: botón subir fotos (solo admin) */
             .barra-rol .btn-subir {
-                display: inline-flex; align-items: center; gap: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
                 background: rgba(46, 204, 113, 0.15);
                 border: 1px solid rgba(46, 204, 113, 0.4);
-                color: #2ecc71; padding: 8px 16px; border-radius: 50px;
-                font-size: 0.75rem; font-weight: 600;
-                cursor: pointer; transition: all 0.25s ease;
+                color: #2ecc71;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
                 font-family: inherit;
             }
             .barra-rol .btn-subir:hover {
@@ -221,51 +359,84 @@
                 box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
             }
 
-            /* ===== ESTADO ===== */
+            /* ===== ESTADO MINI ===== */
             #estado {
-                text-align: center; padding: 4px 0 12px;
-                font-size: 0.7rem; letter-spacing: 0.5px;
-                color: #444; font-weight: 300; user-select: none;
+                text-align: center;
+                padding: 4px 0 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+                color: #444;
+                font-weight: 300;
+                user-select: none;
             }
-            #estado .num { color: #888; font-weight: 600; }
-            .ok .num { color: #2ecc71; }
-            .error { color: #e74c3c; }
-            .cargando { color: #f1c40f; }
+            #estado .num {
+                color: #888;
+                font-weight: 600;
+            }
+            .ok .num {
+                color: #2ecc71;
+            }
+            .error {
+                color: #e74c3c;
+            }
+            .cargando {
+                color: #f1c40f;
+            }
 
             /* ===== AVISO INTERMITENTE ===== */
             .aviso-intermitente {
-                max-width: 500px; margin: 0 auto 12px;
+                max-width: 500px;
+                margin: 0 auto 12px;
                 padding: 10px 18px;
                 background: rgba(243, 156, 18, 0.06);
                 border: 1px solid rgba(243, 156, 18, 0.18);
-                border-radius: 12px; font-size: 0.75rem;
-                color: #f39c12; font-weight: 400;
-                letter-spacing: 0.3px; line-height: 1.5;
-                text-align: center; user-select: none;
-                opacity: 0; visibility: hidden;
-                max-height: 0; margin-bottom: 0;
-                padding-top: 0; padding-bottom: 0;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                color: #f39c12;
+                font-weight: 400;
+                letter-spacing: 0.3px;
+                line-height: 1.5;
+                text-align: center;
+                user-select: none;
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                margin-bottom: 0;
+                padding-top: 0;
+                padding-bottom: 0;
                 overflow: hidden;
                 transition: opacity 0.6s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
             }
             .aviso-intermitente.visible {
-                opacity: 1; visibility: visible;
-                max-height: 200px; margin-bottom: 12px;
-                padding-top: 10px; padding-bottom: 10px;
+                opacity: 1;
+                visibility: visible;
+                max-height: 200px;
+                margin-bottom: 12px;
+                padding-top: 10px;
+                padding-bottom: 10px;
             }
-            .aviso-intermitente strong { color: #f1c40f; font-weight: 600; }
+            .aviso-intermitente strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
 
             /* ===== GALERÍA ===== */
             .galeria {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 14px; max-width: 1200px; margin: 0 auto;
+                gap: 14px;
+                max-width: 1200px;
+                margin: 0 auto;
             }
             .foto {
-                background: #111; border-radius: 14px;
-                overflow: hidden; border: 1px solid #1a1a1a;
-                cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
-                position: relative; aspect-ratio: 1 / 1;
+                background: #111;
+                border-radius: 14px;
+                overflow: hidden;
+                border: 1px solid #1a1a1a;
+                cursor: pointer;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                position: relative;
+                aspect-ratio: 1 / 1;
             }
             .foto:hover {
                 transform: translateY(-6px) scale(1.01);
@@ -273,8 +444,11 @@
                 border-color: rgba(255, 215, 0, 0.15);
             }
             .foto .skeleton {
-                position: absolute; top: 0; left: 0;
-                width: 100%; height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
                 background: linear-gradient(90deg, #111 0%, #1a1a1a 50%, #111 100%);
                 background-size: 200% 100%;
                 animation: skeleton 1.5s infinite;
@@ -285,33 +459,55 @@
                 100% { background-position: -200% 0; }
             }
             .foto img {
-                width: 100%; height: 100%;
-                object-fit: cover; display: block;
-                background: #0a0a0a; position: relative;
-                z-index: 2; opacity: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                background: #0a0a0a;
+                position: relative;
+                z-index: 2;
+                opacity: 0;
                 transition: opacity 0.6s ease, filter 0.4s ease;
             }
-            .foto img.cargada { opacity: 1; }
-            .foto:hover img { filter: brightness(1.06); }
+            .foto img.cargada {
+                opacity: 1;
+            }
+            .foto:hover img {
+                filter: brightness(1.06);
+            }
             .foto::after {
                 content: '↗';
-                position: absolute; bottom: 12px; right: 14px;
+                position: absolute;
+                bottom: 12px;
+                right: 14px;
                 color: rgba(255, 255, 255, 0.08);
-                font-size: 1.2rem; transition: all 0.3s ease; z-index: 3;
+                font-size: 1.2rem;
+                transition: all 0.3s ease;
+                z-index: 3;
             }
-            .foto:hover::after { color: rgba(255, 215, 0, 0.2); transform: translate(-4px, -4px); }
+            .foto:hover::after {
+                color: rgba(255, 215, 0, 0.2);
+                transform: translate(-4px, -4px);
+            }
             .ver-mas-wrapper {
-                grid-column: 1 / -1; display: flex;
-                flex-direction: column; align-items: center;
-                gap: 12px; padding: 20px 0 10px;
+                grid-column: 1 / -1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 20px 0 10px;
             }
             .btn-ver-mas {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 215, 0, 0.2);
-                color: #f39c12; padding: 14px 38px;
-                border-radius: 50px; font-size: 0.9rem;
-                font-weight: 600; cursor: pointer;
-                transition: all 0.3s ease; letter-spacing: 0.5px;
+                color: #f39c12;
+                padding: 14px 38px;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                letter-spacing: 0.5px;
                 backdrop-filter: blur(4px);
             }
             .btn-ver-mas:hover {
@@ -320,310 +516,354 @@
                 transform: scale(1.03);
                 box-shadow: 0 8px 35px rgba(243, 156, 18, 0.15);
             }
-            .info-restantes { font-size: 0.7rem; color: #555; font-weight: 300; letter-spacing: 0.5px; }
-            .info-restantes strong { color: #f39c12; font-weight: 600; }
+            .info-restantes {
+                font-size: 0.7rem;
+                color: #555;
+                font-weight: 300;
+                letter-spacing: 0.5px;
+            }
+            .info-restantes strong {
+                color: #f39c12;
+                font-weight: 600;
+            }
             .aviso-nuevas {
-                grid-column: 1 / -1; text-align: center;
+                grid-column: 1 / -1;
+                text-align: center;
                 padding: 10px 16px;
                 background: rgba(46, 204, 113, 0.08);
                 border: 1px solid rgba(46, 204, 113, 0.2);
-                border-radius: 50px; color: #2ecc71;
-                font-size: 0.75rem; font-weight: 600;
-                letter-spacing: 0.5px; animation: pulseNuevas 2s infinite;
-                margin: 0 auto; max-width: 340px; width: 100%;
+                border-radius: 50px;
+                color: #2ecc71;
+                font-size: 0.75rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                animation: pulseNuevas 2s infinite;
+                margin: 0 auto;
+                max-width: 340px;
+                width: 100%;
             }
-            @keyframes pulseNuevas { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+            @keyframes pulseNuevas {
+                0%, 100% { opacity: 0.85; }
+                50% { opacity: 1; }
+            }
             .estado-offline {
-                max-width: 400px; margin: 60px auto;
-                text-align: center; padding: 40px 24px;
+                max-width: 400px;
+                margin: 60px auto;
+                text-align: center;
+                padding: 40px 24px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 215, 0, 0.15);
                 border-radius: 16px;
             }
-            .estado-offline .icono { font-size: 3rem; margin-bottom: 16px; display: block; opacity: 0.9; }
-            .estado-offline .titulo { font-size: 1.1rem; font-weight: 600; color: #f39c12; margin-bottom: 10px; }
-            .estado-offline .mensaje { font-size: 0.85rem; color: #888; line-height: 1.6; font-weight: 300; }
-
-            /* ===== PANTALLA DESPEDIDA ===== */
-            .despedida {
-                display: none;
-                max-width: 480px;
-                margin: 80px auto;
-                text-align: center;
-                padding: 50px 30px;
-                background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
-                border: 1px solid rgba(243, 156, 18, 0.2);
-                border-radius: 24px;
+            .estado-offline .icono {
+                font-size: 3rem;
+                margin-bottom: 16px;
+                display: block;
+                opacity: 0.9;
             }
-            .despedida.activo { display: block; }
-            .despedida .icono { font-size: 3.5rem; margin-bottom: 20px; display: block; }
-            .despedida .titulo {
-                font-size: 1.5rem; font-weight: 700;
-                color: #f1c40f; margin-bottom: 14px;
-                letter-spacing: 0.5px;
+            .estado-offline .titulo {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #f39c12;
+                margin-bottom: 10px;
             }
-            .despedida .mensaje {
-                font-size: 0.9rem; color: #aaa;
-                line-height: 1.6; font-weight: 300;
-                margin-bottom: 24px;
+            .estado-offline .mensaje {
+                font-size: 0.85rem;
+                color: #888;
+                line-height: 1.6;
+                font-weight: 300;
             }
-            .despedida .marca {
-                font-size: 0.7rem; color: #444;
-                letter-spacing: 2px; margin-top: 30px;
-            }
-
-            /* ===== PANTALLA RECESO ===== */
-            .receso {
-                display: none;
-                max-width: 480px;
-                margin: 80px auto;
-                text-align: center;
-                padding: 50px 30px;
-                background: linear-gradient(135deg, rgba(231, 76, 60, 0.06), rgba(231, 76, 60, 0.02));
-                border: 1px solid rgba(231, 76, 60, 0.2);
-                border-radius: 24px;
-            }
-            .receso.activo { display: block; }
-            .receso .icono { font-size: 3.5rem; margin-bottom: 20px; display: block; }
-            .receso .titulo { font-size: 1.4rem; font-weight: 700; color: #e74c3c; margin-bottom: 14px; }
-            .receso .mensaje { font-size: 0.9rem; color: #aaa; line-height: 1.6; font-weight: 300; margin-bottom: 24px; }
-            .receso .contador {
-                font-size: 1.1rem; color: #f1c40f; font-weight: 700;
-                letter-spacing: 1px;
-            }
-
-            /* ===== FORMULARIO TELÉFONO ===== */
-            .formulario-telefono {
-                display: none;
-                max-width: 460px;
-                margin: 60px auto;
-                padding: 40px 28px;
-                background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
-                border: 1px solid rgba(243, 156, 18, 0.2);
-                border-radius: 24px;
-                text-align: center;
-            }
-            .formulario-telefono.activo { display: block; }
-            .formulario-telefono .emoji-grande { font-size: 3rem; display: block; margin-bottom: 16px; }
-            .formulario-telefono .titulo { font-size: 1.3rem; font-weight: 700; color: #f1c40f; margin-bottom: 10px; }
-            .formulario-telefono .subtitulo { font-size: 0.85rem; color: #aaa; line-height: 1.5; margin-bottom: 24px; font-weight: 300; }
-            .formulario-telefono .input-con-prefijo { display: flex; align-items: stretch; gap: 8px; margin-bottom: 20px; }
-            .formulario-telefono .input-prefijo {
-                display: flex; align-items: center;
-                padding: 0 14px;
-                background: rgba(243, 156, 18, 0.1);
-                border: 1px solid rgba(243, 156, 18, 0.3);
-                border-radius: 12px; color: #f39c12;
-                font-size: 0.95rem; font-weight: 600;
-                flex-shrink: 0; user-select: none;
-            }
-            .formulario-telefono input {
-                flex: 1;
-                padding: 14px 16px;
-                border-radius: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                background: rgba(255, 255, 255, 0.04);
-                color: #fff; font-size: 0.95rem;
-                outline: none; font-family: inherit;
-            }
-            .formulario-telefono input:focus { border-color: rgba(255, 215, 0, 0.3); }
-            .formulario-telefono .btn-entrar {
-                width: 100%;
-                padding: 15px 20px;
-                border-radius: 12px; border: none;
-                background: linear-gradient(135deg, #f39c12, #d68910);
-                color: #0a0a0a; font-size: 0.95rem;
-                font-weight: 700; cursor: pointer;
-                transition: all 0.25s ease;
-                font-family: inherit;
-            }
-            .formulario-telefono .btn-entrar:hover {
-                transform: scale(1.02);
-                box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
-            }
-            .formulario-telefono .btn-entrar:disabled {
-                opacity: 0.5; cursor: wait; pointer-events: none;
-            }
-            .formulario-telefono .btn-saltar {
-                margin-top: 12px;
-                background: transparent; border: none;
-                color: #666; font-size: 0.8rem;
-                cursor: pointer; font-family: inherit;
-                padding: 8px;
-                transition: color 0.2s ease;
-            }
-            .formulario-telefono .btn-saltar:hover { color: #aaa; }
 
             /* ===== MODAL ===== */
-            .modal { display: none; position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; padding: 20px; }
-            .modal.activo { display: flex; }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 999;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            .modal.activo {
+                display: flex;
+            }
             .modal-fondo {
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
                 background: rgba(0, 0, 0, 0.92);
                 backdrop-filter: blur(12px);
-                z-index: 998; display: none;
+                z-index: 998;
+                display: none;
                 animation: blurIn 0.4s ease;
             }
-            .modal-fondo.activo { display: block; }
-            @keyframes blurIn { from { backdrop-filter: blur(0px); opacity: 0; } to { backdrop-filter: blur(12px); opacity: 1; } }
+            .modal-fondo.activo {
+                display: block;
+            }
+            @keyframes blurIn {
+                from { backdrop-filter: blur(0px); opacity: 0; }
+                to { backdrop-filter: blur(12px); opacity: 1; }
+            }
             .modal-contenido {
-                max-width: 850px; width: 100%;
-                background: transparent; border-radius: 18px;
-                position: relative; z-index: 999;
+                max-width: 850px;
+                width: 100%;
+                background: transparent;
+                border-radius: 18px;
+                position: relative;
+                z-index: 999;
                 animation: zoomIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
-            @keyframes zoomIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+            @keyframes zoomIn {
+                0% { transform: scale(0.85); opacity: 0; }
+                100% { transform: scale(1); opacity: 1; }
+            }
             .modal-contenido .imagen-wrapper {
-                position: relative; border-radius: 16px;
-                overflow: hidden; background: #0a0a0a;
+                position: relative;
+                border-radius: 16px;
+                overflow: hidden;
+                background: #0a0a0a;
                 border: 1px solid rgba(255, 255, 255, 0.06);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
             }
             .modal-contenido img {
-                width: 100%; max-height: 68vh;
-                object-fit: contain; display: block;
-                background: #0a0a0a; padding: 16px;
+                width: 100%;
+                max-height: 68vh;
+                object-fit: contain;
+                display: block;
+                background: #0a0a0a;
+                padding: 16px;
                 transition: transform 0.3s ease;
             }
             .nav-flecha {
-                position: absolute; top: 50%; transform: translateY(-50%);
-                background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(8px);
                 border: 2px solid rgba(255, 255, 255, 0.12);
-                color: #fff; width: 50px; height: 50px;
-                border-radius: 50%; cursor: pointer;
-                font-size: 1.5rem; display: flex;
-                align-items: center; justify-content: center;
-                transition: all 0.3s ease; z-index: 3;
-                user-select: none; box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+                color: #fff;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                z-index: 3;
+                user-select: none;
+                box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
             }
-            .nav-flecha:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 215, 0, 0.25); transform: translateY(-50%) scale(1.08); }
-            .nav-flecha.izquierda { left: 18px; }
-            .nav-flecha.derecha { right: 18px; }
-            .nav-flecha.oculto { opacity: 0; pointer-events: none; }
-
+            .nav-flecha:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 215, 0, 0.25);
+                transform: translateY(-50%) scale(1.08);
+            }
+            .nav-flecha.izquierda {
+                left: 18px;
+            }
+            .nav-flecha.derecha {
+                right: 18px;
+            }
+            .nav-flecha.oculto {
+                opacity: 0;
+                pointer-events: none;
+            }
             .modal-footer {
                 padding: 16px 20px 20px;
-                display: flex; flex-direction: column;
-                align-items: center; gap: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
                 background: rgba(0, 0, 0, 0.5);
                 backdrop-filter: blur(4px);
                 border-radius: 0 0 16px 16px;
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
                 margin-top: -1px;
             }
-            .contador-descargas {
-                font-size: 0.72rem; color: #f39c12;
-                font-weight: 500; text-align: center;
-                letter-spacing: 0.3px;
-                padding: 4px 12px;
-                background: rgba(243, 156, 18, 0.08);
-                border: 1px solid rgba(243, 156, 18, 0.2);
-                border-radius: 50px;
-            }
-            .contador-descargas.ilimitado {
-                color: #f1c40f; font-weight: 600;
-                letter-spacing: 1px;
-                background: rgba(241, 196, 15, 0.08);
-                border-color: rgba(241, 196, 15, 0.25);
-            }
-
             .publicidad-wrapper {
-                width: 100%; text-align: center;
+                width: 100%;
+                text-align: center;
                 padding: 12px 14px;
                 background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
                 border: 1px solid rgba(243, 156, 18, 0.15);
                 border-radius: 12px;
             }
-            .publicidad-wrapper .pub-texto { font-size: 0.72rem; color: #c9c9c9; line-height: 1.5; margin-bottom: 8px; }
-            .publicidad-wrapper .pub-texto strong { color: #f1c40f; font-weight: 600; }
+            .publicidad-wrapper .pub-texto {
+                font-size: 0.72rem;
+                color: #c9c9c9;
+                line-height: 1.5;
+                margin-bottom: 8px;
+            }
+            .publicidad-wrapper .pub-texto strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
             .publicidad-wrapper .pub-btn {
-                display: inline-flex; align-items: center; gap: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
                 background: rgba(243, 156, 18, 0.15);
                 border: 1px solid rgba(243, 156, 18, 0.4);
-                color: #f39c12; padding: 8px 16px;
-                border-radius: 50px; font-size: 0.72rem;
-                font-weight: 600; cursor: pointer;
-                transition: all 0.25s ease; font-family: inherit;
+                color: #f39c12;
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.72rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
             }
-            .publicidad-wrapper .pub-btn:hover { background: rgba(243, 156, 18, 0.25); transform: scale(1.04); }
+            .publicidad-wrapper .pub-btn:hover {
+                background: rgba(243, 156, 18, 0.25);
+                transform: scale(1.04);
+            }
             .btn-pedir {
                 background: linear-gradient(135deg, #2ecc71, #27ae60);
-                color: #0a0a0a; border: none;
-                padding: 14px 38px; border-radius: 50px;
-                font-size: 1rem; font-weight: 700;
-                cursor: pointer; transition: all 0.3s ease;
-                display: inline-flex; align-items: center;
-                gap: 10px; width: 100%; justify-content: center;
+                color: #0a0a0a;
+                border: none;
+                padding: 14px 38px;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                justify-content: center;
                 max-width: 340px;
                 box-shadow: 0 4px 25px rgba(46, 204, 113, 0.15);
             }
-            .btn-pedir:hover { transform: scale(1.03); box-shadow: 0 8px 35px rgba(46, 204, 113, 0.25); }
-            .btn-pedir.limitado {
-                background: linear-gradient(135deg, #7f8c8d, #576574);
-                cursor: not-allowed;
-                box-shadow: 0 4px 25px rgba(127, 140, 141, 0.2);
+            .btn-pedir:hover {
+                transform: scale(1.03);
+                box-shadow: 0 8px 35px rgba(46, 204, 113, 0.25);
             }
-            .btn-pedir.limitado:hover { transform: none; box-shadow: 0 4px 25px rgba(127, 140, 141, 0.2); }
-            .btn-pedir .icono-whatsapp { font-size: 1.3rem; }
+            .btn-pedir.agotado {
+                background: linear-gradient(135deg, #e67e22, #d35400);
+                box-shadow: 0 4px 25px rgba(230, 126, 34, 0.2);
+            }
+            .btn-pedir .icono-whatsapp {
+                font-size: 1.3rem;
+            }
             .btn-cerrar-modal {
-                position: absolute; top: 10px; right: 14px;
+                position: absolute;
+                top: 10px;
+                right: 14px;
                 background: rgba(0, 0, 0, 0.6);
                 backdrop-filter: blur(4px);
                 border: 1px solid rgba(255, 255, 255, 0.06);
-                color: #aaa; font-size: 1.4rem;
-                cursor: pointer; width: 42px; height: 42px;
-                border-radius: 50%; display: flex;
-                align-items: center; justify-content: center;
+                color: #aaa;
+                font-size: 1.4rem;
+                cursor: pointer;
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 z-index: 10;
             }
-            .btn-cerrar-modal:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+            .btn-cerrar-modal:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
 
             /* ===== MODAL INSTRUCCIONES ===== */
             .modal-instrucciones {
-                display: none; position: fixed; z-index: 1200;
-                top: 0; left: 0; width: 100%; height: 100%;
-                justify-content: center; align-items: center;
-                padding: 20px; background: rgba(0, 0, 0, 0.9);
+                display: none;
+                position: fixed;
+                z-index: 1200;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
                 backdrop-filter: blur(12px);
             }
-            .modal-instrucciones.activo { display: flex; }
+            .modal-instrucciones.activo {
+                display: flex;
+            }
             .modal-instrucciones-contenido {
                 background: #141414;
                 border: 1px solid rgba(255, 215, 0, 0.2);
                 border-radius: 20px;
                 padding: 30px 24px 24px;
-                max-width: 420px; width: 100%;
+                max-width: 420px;
+                width: 100%;
                 text-align: center;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
             }
-            .modal-instrucciones-contenido .emoji-grande { font-size: 2rem; margin-bottom: 10px; display: block; }
-            .modal-instrucciones-contenido .titulo { font-size: 1.15rem; font-weight: 700; color: #f1c40f; margin-bottom: 6px; }
-            .modal-instrucciones-contenido .subtitulo { font-size: 0.8rem; color: #aaa; margin-bottom: 22px; line-height: 1.5; font-weight: 300; }
+            .modal-instrucciones-contenido .emoji-grande {
+                font-size: 2rem;
+                margin-bottom: 10px;
+                display: block;
+            }
+            .modal-instrucciones-contenido .titulo {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 6px;
+            }
+            .modal-instrucciones-contenido .subtitulo {
+                font-size: 0.8rem;
+                color: #aaa;
+                margin-bottom: 22px;
+                line-height: 1.5;
+                font-weight: 300;
+            }
             .modal-instrucciones-contenido .paso {
-                display: flex; align-items: center; gap: 14px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
                 padding: 12px 14px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 255, 255, 0.06);
-                border-radius: 12px; margin-bottom: 10px;
+                border-radius: 12px;
+                margin-bottom: 10px;
                 text-align: left;
             }
             .modal-instrucciones-contenido .paso-num {
-                flex-shrink: 0; width: 26px; height: 26px;
+                flex-shrink: 0;
+                width: 26px;
+                height: 26px;
                 border-radius: 50%;
                 background: rgba(243, 156, 18, 0.15);
                 border: 1px solid rgba(243, 156, 18, 0.3);
-                color: #f39c12; font-size: 0.75rem;
-                font-weight: 700; display: flex;
-                align-items: center; justify-content: center;
+                color: #f39c12;
+                font-size: 0.75rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-            .modal-instrucciones-contenido .paso-texto { font-size: 0.8rem; color: #ccc; line-height: 1.45; }
-            .modal-instrucciones-contenido .paso-texto strong { color: #f1c40f; font-weight: 600; }
+            .modal-instrucciones-contenido .paso-texto {
+                font-size: 0.8rem;
+                color: #ccc;
+                line-height: 1.45;
+            }
+            .modal-instrucciones-contenido .paso-texto strong {
+                color: #f1c40f;
+                font-weight: 600;
+            }
             .anim-mano {
-                display: inline-block; font-size: 1.4rem;
+                display: inline-block;
+                font-size: 1.4rem;
                 animation: tapGesture 1.6s ease-in-out infinite;
-                vertical-align: middle; margin-left: 2px;
+                vertical-align: middle;
+                margin-left: 2px;
             }
             @keyframes tapGesture {
                 0%, 100% { transform: translateY(0) scale(1); }
@@ -631,390 +871,743 @@
                 60% { transform: translateY(0) scale(0.95); }
             }
             .modal-instrucciones-contenido .aviso-tiempo {
-                font-size: 0.7rem; color: #666;
-                margin-top: 16px; line-height: 1.5;
-                font-style: italic; padding-top: 14px;
+                font-size: 0.7rem;
+                color: #666;
+                margin-top: 16px;
+                line-height: 1.5;
+                font-style: italic;
+                padding-top: 14px;
                 border-top: 1px solid rgba(255, 255, 255, 0.04);
             }
-            .barra-progreso-wrapper { margin-top: 18px; width: 100%; }
+            .barra-progreso-wrapper {
+                margin-top: 18px;
+                width: 100%;
+            }
             .barra-progreso-fondo {
-                width: 100%; height: 6px;
+                width: 100%;
+                height: 6px;
                 background: rgba(255, 255, 255, 0.06);
-                border-radius: 50px; overflow: hidden;
+                border-radius: 50px;
+                overflow: hidden;
                 margin-bottom: 8px;
             }
             .barra-progreso-relleno {
                 height: 100%;
                 background: linear-gradient(90deg, #f39c12, #f1c40f);
-                width: 0%; transition: width 0.3s linear;
+                width: 0%;
+                transition: width 0.3s linear;
                 border-radius: 50px;
                 box-shadow: 0 0 12px rgba(243, 156, 18, 0.4);
             }
-            .barra-progreso-texto { font-size: 0.7rem; color: #888; font-weight: 400; }
-            .barra-progreso-texto strong { color: #f39c12; font-weight: 600; }
+            .barra-progreso-texto {
+                font-size: 0.7rem;
+                color: #888;
+                font-weight: 400;
+            }
+            .barra-progreso-texto strong {
+                color: #f39c12;
+                font-weight: 600;
+            }
             .btn-cerrar-instr {
-                position: absolute; top: 12px; right: 14px;
+                position: absolute;
+                top: 12px;
+                right: 14px;
                 background: rgba(255, 255, 255, 0.04);
                 border: 1px solid rgba(255, 255, 255, 0.06);
-                color: #888; font-size: 1.2rem;
-                cursor: pointer; width: 36px; height: 36px;
-                border-radius: 50%; display: flex;
-                align-items: center; justify-content: center;
+                color: #888;
+                font-size: 1.2rem;
+                cursor: pointer;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 z-index: 10;
             }
-            .btn-cerrar-instr:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+            .btn-cerrar-instr:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
 
             /* ===== MODAL BUTACAS ===== */
             .modal-butacas {
-                display: none; position: fixed; z-index: 1300;
-                top: 0; left: 0; width: 100%; height: 100%;
-                justify-content: center; align-items: center;
-                padding: 20px; background: rgba(0, 0, 0, 0.9);
+                display: none;
+                position: fixed;
+                z-index: 1300;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
                 backdrop-filter: blur(12px);
             }
-            .modal-butacas.activo { display: flex; }
+            .modal-butacas.activo {
+                display: flex;
+            }
             .modal-butacas-contenido {
                 background: #141414;
                 border: 1px solid rgba(255, 215, 0, 0.2);
                 border-radius: 20px;
                 padding: 28px 24px 24px;
-                max-width: 500px; width: 100%;
-                max-height: 85vh; overflow-y: auto;
+                max-width: 500px;
+                width: 100%;
+                max-height: 85vh;
+                overflow-y: auto;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
             }
-            .modal-butacas-contenido .titulo { font-size: 1.1rem; font-weight: 700; color: #f1c40f; margin-bottom: 4px; text-align: center; }
-            .modal-butacas-contenido .subtitulo { font-size: 0.75rem; color: #888; text-align: center; margin-bottom: 20px; }
-            .fila-butacas { margin-bottom: 20px; }
+            .modal-butacas-contenido .titulo {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 4px;
+                text-align: center;
+            }
+            .modal-butacas-contenido .subtitulo {
+                font-size: 0.75rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .fila-butacas {
+                margin-bottom: 20px;
+            }
             .fila-titulo {
-                font-size: 0.7rem; color: #666;
-                letter-spacing: 2px; text-transform: uppercase;
-                margin-bottom: 10px; padding-left: 4px;
+                font-size: 0.7rem;
+                color: #666;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+                padding-left: 4px;
                 font-weight: 600;
             }
             .butaca {
-                display: flex; align-items: center; gap: 12px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
                 padding: 10px 14px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 255, 255, 0.06);
-                border-radius: 12px; margin-bottom: 8px;
+                border-radius: 12px;
+                margin-bottom: 8px;
                 transition: all 0.2s ease;
             }
-            .butaca.activa { background: rgba(243, 156, 18, 0.08); border-color: rgba(243, 156, 18, 0.3); }
-            .butaca.vacia { opacity: 0.5; }
-            .butaca.vip { background: rgba(241, 196, 15, 0.06); border-color: rgba(241, 196, 15, 0.2); }
-            .butaca .emoji { font-size: 1.2rem; flex-shrink: 0; }
-            .butaca .info { flex: 1; min-width: 0; }
-            .butaca .nombre {
-                font-size: 0.85rem; color: #fff;
-                font-weight: 500; white-space: nowrap;
-                overflow: hidden; text-overflow: ellipsis;
+            .butaca.activa {
+                background: rgba(243, 156, 18, 0.08);
+                border-color: rgba(243, 156, 18, 0.3);
             }
-            .butaca .detalle { font-size: 0.65rem; color: #666; margin-top: 2px; letter-spacing: 0.3px; }
+            .butaca.vacia {
+                opacity: 0.5;
+            }
+            .butaca .emoji {
+                font-size: 1.2rem;
+                flex-shrink: 0;
+            }
+            .butaca .info {
+                flex: 1;
+                min-width: 0;
+            }
+            .butaca .nombre {
+                font-size: 0.85rem;
+                color: #fff;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .butaca .detalle {
+                font-size: 0.65rem;
+                color: #666;
+                margin-top: 2px;
+                letter-spacing: 0.3px;
+            }
             .butaca .estado {
-                font-size: 0.65rem; padding: 3px 8px;
+                font-size: 0.65rem;
+                padding: 3px 8px;
                 border-radius: 50px;
                 background: rgba(46, 204, 113, 0.15);
-                color: #2ecc71; font-weight: 600;
-                letter-spacing: 0.3px; flex-shrink: 0;
+                color: #2ecc71;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                flex-shrink: 0;
             }
-            .butaca .estado.ilimitado { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
-            .butaca.vacia .estado { background: rgba(255, 255, 255, 0.05); color: #555; }
+            .butaca.vacia .estado {
+                background: rgba(255, 255, 255, 0.05);
+                color: #555;
+            }
             .modal-butacas-contenido .btn-cerrar {
-                margin-top: 12px; width: 100%;
-                padding: 12px 20px; border-radius: 12px;
-                border: none; background: rgba(255, 255, 255, 0.06);
-                color: #ccc; font-size: 0.85rem;
-                font-weight: 600; cursor: pointer;
+                margin-top: 12px;
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
                 font-family: inherit;
             }
-            .modal-butacas-contenido .btn-cerrar:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+            .modal-butacas-contenido .btn-cerrar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
 
             /* ===== MODAL INVITAR ===== */
             .modal-invitar {
-                display: none; position: fixed; z-index: 1300;
-                top: 0; left: 0; width: 100%; height: 100%;
-                justify-content: center; align-items: center;
-                padding: 20px; background: rgba(0, 0, 0, 0.9);
+                display: none;
+                position: fixed;
+                z-index: 1300;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.9);
                 backdrop-filter: blur(12px);
             }
-            .modal-invitar.activo { display: flex; }
+            .modal-invitar.activo {
+                display: flex;
+            }
             .modal-invitar-contenido {
                 background: #141414;
                 border: 1px solid rgba(255, 215, 0, 0.2);
                 border-radius: 20px;
                 padding: 28px 24px 24px;
-                max-width: 460px; width: 100%;
+                max-width: 420px;
+                width: 100%;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
-                max-height: 90vh; overflow-y: auto;
             }
-            .modal-invitar-contenido .titulo { font-size: 1.1rem; font-weight: 700; color: #f1c40f; margin-bottom: 4px; text-align: center; }
-            .modal-invitar-contenido .subtitulo { font-size: 0.75rem; color: #888; text-align: center; margin-bottom: 20px; }
-            .tipo-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+            .modal-invitar-contenido .titulo {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #f1c40f;
+                margin-bottom: 4px;
+                text-align: center;
+            }
+            .modal-invitar-contenido .subtitulo {
+                font-size: 0.75rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .tipo-selector {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
             .tipo-btn {
-                padding: 12px 8px;
+                flex: 1;
+                padding: 14px 12px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 12px; color: #ccc;
-                font-size: 0.72rem; font-weight: 600;
-                cursor: pointer; transition: all 0.25s ease;
-                font-family: inherit; text-align: center;
-                line-height: 1.3;
+                border-radius: 12px;
+                color: #ccc;
+                font-size: 0.75rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+                text-align: center;
+                line-height: 1.4;
             }
-            .tipo-btn .emoji { font-size: 1.3rem; display: block; margin-bottom: 4px; }
-            .tipo-btn .sub {
-                display: block; font-size: 0.6rem;
-                opacity: 0.7; margin-top: 2px; font-weight: 400;
+            .tipo-btn .emoji {
+                font-size: 1.4rem;
+                display: block;
+                margin-bottom: 4px;
             }
             .tipo-btn.activo {
                 background: rgba(243, 156, 18, 0.12);
                 border-color: rgba(243, 156, 18, 0.4);
                 color: #f39c12;
             }
-            .tipo-btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-            .contador-vip {
-                text-align: center; font-size: 0.7rem;
-                color: #888; margin-bottom: 16px;
-                letter-spacing: 0.3px;
+            .input-group {
+                margin-bottom: 12px;
             }
-            .contador-vip strong { color: #f1c40f; font-weight: 600; }
-            .input-group { margin-bottom: 12px; }
             .input-group label {
-                display: block; font-size: 0.7rem; color: #888;
-                margin-bottom: 6px; padding-left: 4px;
+                display: block;
+                font-size: 0.7rem;
+                color: #888;
+                margin-bottom: 6px;
+                padding-left: 4px;
                 letter-spacing: 0.3px;
             }
             .input-group input {
-                width: 100%; padding: 12px 14px;
+                width: 100%;
+                padding: 12px 14px;
                 border-radius: 12px;
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 background: rgba(255, 255, 255, 0.04);
-                color: #fff; font-size: 0.9rem;
-                outline: none; font-family: inherit;
+                color: #fff;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: inherit;
             }
-            .input-group input::placeholder { color: #555; }
-            .input-group input:focus { border-color: rgba(255, 215, 0, 0.3); background: rgba(255, 255, 255, 0.06); }
-            .input-con-prefijo { display: flex; align-items: stretch; gap: 8px; }
+            .input-group input::placeholder {
+                color: #555;
+            }
+            .input-group input:focus {
+                border-color: rgba(255, 215, 0, 0.3);
+                background: rgba(255, 255, 255, 0.06);
+            }
+            .input-con-prefijo {
+                display: flex;
+                align-items: stretch;
+                gap: 8px;
+            }
             .input-prefijo {
-                display: flex; align-items: center;
+                display: flex;
+                align-items: center;
                 padding: 0 12px;
                 background: rgba(243, 156, 18, 0.1);
                 border: 1px solid rgba(243, 156, 18, 0.3);
-                border-radius: 12px; color: #f39c12;
-                font-size: 0.9rem; font-weight: 600;
-                flex-shrink: 0; user-select: none;
+                border-radius: 12px;
+                color: #f39c12;
+                font-size: 0.9rem;
+                font-weight: 600;
+                flex-shrink: 0;
+                user-select: none;
             }
-            .input-con-prefijo input { flex: 1; margin: 0; }
+            .input-con-prefijo input {
+                flex: 1;
+                margin: 0;
+            }
             .input-ayuda {
-                font-size: 0.65rem; color: #666;
-                margin-top: 6px; padding-left: 4px;
-                letter-spacing: 0.2px; line-height: 1.4;
+                font-size: 0.65rem;
+                color: #666;
+                margin-top: 6px;
+                padding-left: 4px;
+                letter-spacing: 0.2px;
+                line-height: 1.4;
             }
             .modal-invitar-contenido .btn-generar {
-                margin-top: 8px; width: 100%;
-                padding: 14px 20px; border-radius: 12px;
+                margin-top: 8px;
+                width: 100%;
+                padding: 14px 20px;
+                border-radius: 12px;
                 border: none;
                 background: linear-gradient(135deg, #f39c12, #d68910);
-                color: #0a0a0a; font-size: 0.9rem;
-                font-weight: 700; cursor: pointer;
+                color: #0a0a0a;
+                font-size: 0.9rem;
+                font-weight: 700;
+                cursor: pointer;
                 transition: all 0.25s ease;
                 font-family: inherit;
             }
-            .modal-invitar-contenido .btn-generar:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3); }
-            .modal-invitar-contenido .btn-generar:disabled { opacity: 0.5; cursor: wait; pointer-events: none; }
+            .modal-invitar-contenido .btn-generar:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+            }
+            .modal-invitar-contenido .btn-generar:disabled {
+                opacity: 0.5;
+                cursor: wait;
+                pointer-events: none;
+            }
             .modal-invitar-contenido .btn-cancelar {
-                margin-top: 10px; width: 100%;
-                padding: 12px 20px; border-radius: 12px;
+                margin-top: 10px;
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
                 border: none;
                 background: rgba(255, 255, 255, 0.06);
-                color: #ccc; font-size: 0.85rem;
-                font-weight: 600; cursor: pointer;
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
                 font-family: inherit;
             }
-            .modal-invitar-contenido .btn-cancelar:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+            .modal-invitar-contenido .btn-cancelar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
 
-            /* ===== MODAL RESULTADO ===== */
+            /* ===== MODAL RESULTADO INVITACIÓN ===== */
             .modal-resultado {
-                display: none; position: fixed; z-index: 1400;
-                top: 0; left: 0; width: 100%; height: 100%;
-                justify-content: center; align-items: center;
-                padding: 20px; background: rgba(0, 0, 0, 0.92);
+                display: none;
+                position: fixed;
+                z-index: 1400;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
                 backdrop-filter: blur(12px);
             }
-            .modal-resultado.activo { display: flex; }
+            .modal-resultado.activo {
+                display: flex;
+            }
             .modal-resultado-contenido {
                 background: #141414;
                 border: 1px solid rgba(243, 156, 18, 0.3);
                 border-radius: 20px;
                 padding: 28px 24px 24px;
-                max-width: 420px; width: 100%;
+                max-width: 420px;
+                width: 100%;
                 text-align: center;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
             }
-            .modal-resultado-contenido .emoji-grande { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-            .modal-resultado-contenido .titulo { font-size: 1.05rem; font-weight: 700; color: #2ecc71; margin-bottom: 6px; }
-            .modal-resultado-contenido .subtitulo { font-size: 0.8rem; color: #aaa; margin-bottom: 18px; line-height: 1.5; }
-            .modal-resultado-contenido .qr-wrapper {
-                background: #fff; border-radius: 12px;
-                padding: 12px; display: inline-block;
-                margin-bottom: 16px;
-                min-width: 220px; min-height: 220px;
-                display: flex; align-items: center; justify-content: center;
+            .modal-resultado-contenido .emoji-grande {
+                font-size: 2.5rem;
+                display: block;
+                margin-bottom: 12px;
             }
-            .modal-resultado-contenido .qr-wrapper img { display: block; width: 200px; height: 200px; border-radius: 4px; }
+            .modal-resultado-contenido .titulo {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #2ecc71;
+                margin-bottom: 6px;
+            }
+            .modal-resultado-contenido .subtitulo {
+                font-size: 0.8rem;
+                color: #aaa;
+                margin-bottom: 18px;
+                line-height: 1.5;
+            }
+            .modal-resultado-contenido .qr-wrapper {
+                background: #fff;
+                border-radius: 12px;
+                padding: 12px;
+                display: inline-block;
+                margin-bottom: 16px;
+                min-width: 220px;
+                min-height: 220px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-resultado-contenido .qr-wrapper img {
+                display: block;
+                width: 200px;
+                height: 200px;
+                border-radius: 4px;
+            }
             .modal-resultado-contenido .url-box {
                 background: rgba(255, 255, 255, 0.04);
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 border-radius: 10px;
                 padding: 10px 12px;
-                font-size: 0.7rem; color: #888;
-                word-break: break-all; margin-bottom: 14px;
-                max-height: 80px; overflow-y: auto;
-                text-align: left; font-family: monospace;
+                font-size: 0.7rem;
+                color: #888;
+                word-break: break-all;
+                margin-bottom: 14px;
+                max-height: 80px;
+                overflow-y: auto;
+                text-align: left;
+                font-family: monospace;
                 line-height: 1.4;
             }
-            .modal-resultado-contenido .acciones { display: flex; flex-direction: column; gap: 8px; }
+            .modal-resultado-contenido .acciones {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
             .modal-resultado-contenido .btn-accion {
-                width: 100%; padding: 12px 18px;
-                border-radius: 12px; border: none;
-                font-size: 0.85rem; font-weight: 700;
-                cursor: pointer; transition: all 0.25s ease;
+                width: 100%;
+                padding: 12px 18px;
+                border-radius: 12px;
+                border: none;
+                font-size: 0.85rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.25s ease;
                 font-family: inherit;
-                display: inline-flex; align-items: center;
-                justify-content: center; gap: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
             }
             .modal-resultado-contenido .btn-whatsapp {
                 background: linear-gradient(135deg, #2ecc71, #27ae60);
                 color: #0a0a0a;
             }
-            .modal-resultado-contenido .btn-whatsapp:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3); }
-            .modal-resultado-contenido .btn-copiar { background: rgba(255, 255, 255, 0.06); color: #ccc; }
-            .modal-resultado-contenido .btn-copiar:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-            .modal-resultado-contenido .btn-cerrar-res {
-                margin-top: 8px; background: transparent;
-                color: #666; font-size: 0.75rem; padding: 10px;
+            .modal-resultado-contenido .btn-whatsapp:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
             }
-            .modal-resultado-contenido .btn-cerrar-res:hover { color: #aaa; }
+            .modal-resultado-contenido .btn-copiar {
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+            }
+            .modal-resultado-contenido .btn-copiar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            .modal-resultado-contenido .btn-cerrar-res {
+                margin-top: 8px;
+                background: transparent;
+                color: #666;
+                font-size: 0.75rem;
+                padding: 10px;
+            }
+            .modal-resultado-contenido .btn-cerrar-res:hover {
+                color: #aaa;
+            }
 
-            /* ===== MODAL SUBIR ===== */
+            /* ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== */
             .modal-subir {
-                display: none; position: fixed; z-index: 1500;
-                top: 0; left: 0; width: 100%; height: 100%;
-                justify-content: center; align-items: center;
-                padding: 20px; background: rgba(0, 0, 0, 0.92);
+                display: none;
+                position: fixed;
+                z-index: 1500;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
                 backdrop-filter: blur(12px);
             }
-            .modal-subir.activo { display: flex; }
+            .modal-subir.activo {
+                display: flex;
+            }
             .modal-subir-contenido {
                 background: #141414;
                 border: 1px solid rgba(46, 204, 113, 0.3);
                 border-radius: 20px;
                 padding: 28px 24px 24px;
-                max-width: 480px; width: 100%;
+                max-width: 480px;
+                width: 100%;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
             }
-            .modal-subir-contenido .titulo { font-size: 1.15rem; font-weight: 700; color: #2ecc71; margin-bottom: 6px; text-align: center; }
-            .modal-subir-contenido .subtitulo { font-size: 0.78rem; color: #888; text-align: center; margin-bottom: 20px; line-height: 1.5; }
+            .modal-subir-contenido .titulo {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #2ecc71;
+                margin-bottom: 6px;
+                text-align: center;
+            }
+            .modal-subir-contenido .subtitulo {
+                font-size: 0.78rem;
+                color: #888;
+                text-align: center;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
             .zona-drop {
                 border: 2px dashed rgba(46, 204, 113, 0.3);
-                border-radius: 14px; padding: 28px 20px;
-                text-align: center; cursor: pointer;
+                border-radius: 14px;
+                padding: 28px 20px;
+                text-align: center;
+                cursor: pointer;
                 transition: all 0.25s ease;
                 background: rgba(46, 204, 113, 0.03);
                 margin-bottom: 16px;
             }
-            .zona-drop:hover, .zona-drop.arrastrando { border-color: rgba(46, 204, 113, 0.6); background: rgba(46, 204, 113, 0.08); }
-            .zona-drop .icono { font-size: 2.2rem; display: block; margin-bottom: 8px; }
-            .zona-drop .texto { font-size: 0.85rem; color: #ccc; font-weight: 500; }
-            .zona-drop .subtexto { font-size: 0.7rem; color: #666; margin-top: 6px; }
-            .lista-subidas { max-height: 240px; overflow-y: auto; margin-bottom: 14px; }
+            .zona-drop:hover, .zona-drop.arrastrando {
+                border-color: rgba(46, 204, 113, 0.6);
+                background: rgba(46, 204, 113, 0.08);
+            }
+            .zona-drop .icono {
+                font-size: 2.2rem;
+                display: block;
+                margin-bottom: 8px;
+            }
+            .zona-drop .texto {
+                font-size: 0.85rem;
+                color: #ccc;
+                font-weight: 500;
+            }
+            .zona-drop .subtexto {
+                font-size: 0.7rem;
+                color: #666;
+                margin-top: 6px;
+            }
+            .lista-subidas {
+                max-height: 240px;
+                overflow-y: auto;
+                margin-bottom: 14px;
+            }
             .item-subida {
-                display: flex; align-items: center; gap: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
                 padding: 10px 12px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 255, 255, 0.06);
-                border-radius: 10px; margin-bottom: 8px;
+                border-radius: 10px;
+                margin-bottom: 8px;
                 font-size: 0.75rem;
             }
             .item-subida .nombre {
-                flex: 1; min-width: 0;
-                white-space: nowrap; overflow: hidden;
-                text-overflow: ellipsis; color: #ccc;
+                flex: 1;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #ccc;
             }
             .item-subida .estado {
-                flex-shrink: 0; font-size: 0.7rem;
-                font-weight: 600; padding: 3px 8px;
+                flex-shrink: 0;
+                font-size: 0.7rem;
+                font-weight: 600;
+                padding: 3px 8px;
                 border-radius: 50px;
             }
-            .item-subida .estado.pendiente { background: rgba(255, 255, 255, 0.06); color: #888; }
-            .item-subida .estado.subiendo { background: rgba(243, 156, 18, 0.15); color: #f39c12; }
-            .item-subida .estado.ok { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
-            .item-subida .estado.error { background: rgba(231, 76, 60, 0.15); color: #e74c3c; }
-            .modal-subir-contenido .btn-cerrar-subir {
-                width: 100%; padding: 12px 20px;
-                border-radius: 12px; border: none;
+            .item-subida .estado.pendiente {
                 background: rgba(255, 255, 255, 0.06);
-                color: #ccc; font-size: 0.85rem;
-                font-weight: 600; cursor: pointer;
+                color: #888;
+            }
+            .item-subida .estado.subiendo {
+                background: rgba(243, 156, 18, 0.15);
+                color: #f39c12;
+            }
+            .item-subida .estado.ok {
+                background: rgba(46, 204, 113, 0.15);
+                color: #2ecc71;
+            }
+            .item-subida .estado.error {
+                background: rgba(231, 76, 60, 0.15);
+                color: #e74c3c;
+            }
+            .modal-subir-contenido .btn-cerrar-subir {
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
                 font-family: inherit;
             }
-            .modal-subir-contenido .btn-cerrar-subir:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-            .modal-subir-contenido .btn-cerrar-subir:disabled { opacity: 0.5; cursor: not-allowed; }
+            .modal-subir-contenido .btn-cerrar-subir:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            .modal-subir-contenido .btn-cerrar-subir:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
 
             .footer {
-                text-align: center; padding: 24px 10px 6px;
-                color: #1a1a1a; font-size: 0.6rem;
-                letter-spacing: 1px; border-top: 1px solid #111;
-                margin-top: 24px; position: relative;
+                text-align: center;
+                padding: 24px 10px 6px;
+                color: #1a1a1a;
+                font-size: 0.6rem;
+                letter-spacing: 1px;
+                border-top: 1px solid #111;
+                margin-top: 24px;
+                position: relative;
             }
             .footer::before {
-                content: '✦'; display: block;
+                content: '✦';
+                display: block;
                 color: rgba(255, 215, 0, 0.05);
-                font-size: 0.8rem; margin-bottom: 4px;
+                font-size: 0.8rem;
+                margin-bottom: 4px;
             }
 
             @media (max-width: 600px) {
-                body { padding: 8px 10px 16px; }
-                .galeria { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-                .modal { padding: 8px; }
-                .modal-contenido img { max-height: 48vh; padding: 10px; }
-                .modal-footer { padding: 12px 14px 16px; }
-                .publicidad-wrapper .pub-texto { font-size: 0.65rem; }
-                .publicidad-wrapper .pub-btn { font-size: 0.65rem; padding: 7px 14px; }
-                .btn-pedir { font-size: 0.9rem; padding: 11px 16px; max-width: 100%; }
-                .nav-flecha { width: 38px; height: 38px; font-size: 1.1rem; }
-                .nav-flecha.izquierda { left: 6px; }
-                .nav-flecha.derecha { right: 6px; }
-                #estado { font-size: 0.6rem; padding: 2px 0 8px; }
-                .foto::after { display: none; }
-                .btn-ver-mas { font-size: 0.8rem; padding: 12px 28px; }
-                .aviso-intermitente { font-size: 0.7rem; padding: 8px 14px; }
-                .header-left .ovj-studio { font-size: 1.1rem; }
-                .header-left .ovj-studio::before { display: none; }
-                .header-bottom .evento-titulo { font-size: 1.5rem; letter-spacing: 1px; }
-                .barra-rol { flex-direction: column; align-items: stretch; }
-                .barra-rol .rol-info { justify-content: center; }
+                body {
+                    padding: 8px 10px 16px;
+                }
+                .galeria {
+                    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                    gap: 10px;
+                }
+                .modal {
+                    padding: 8px;
+                }
+                .modal-contenido img {
+                    max-height: 48vh;
+                    padding: 10px;
+                }
+                .modal-footer {
+                    padding: 12px 14px 16px;
+                }
+                .publicidad-wrapper .pub-texto {
+                    font-size: 0.65rem;
+                }
+                .publicidad-wrapper .pub-btn {
+                    font-size: 0.65rem;
+                    padding: 7px 14px;
+                }
+                .btn-pedir {
+                    font-size: 0.9rem;
+                    padding: 11px 16px;
+                    max-width: 100%;
+                }
+                .nav-flecha {
+                    width: 38px;
+                    height: 38px;
+                    font-size: 1.1rem;
+                }
+                .nav-flecha.izquierda {
+                    left: 6px;
+                }
+                .nav-flecha.derecha {
+                    right: 6px;
+                }
+                #estado {
+                    font-size: 0.6rem;
+                    padding: 2px 0 8px;
+                }
+                .foto::after {
+                    display: none;
+                }
+                .btn-ver-mas {
+                    font-size: 0.8rem;
+                    padding: 12px 28px;
+                }
+                .aviso-intermitente {
+                    font-size: 0.7rem;
+                    padding: 8px 14px;
+                }
+                .header-left .ovj-studio {
+                    font-size: 1.1rem;
+                }
+                .header-left .ovj-studio::before {
+                    display: none;
+                }
+                .header-bottom .evento-titulo {
+                    font-size: 1.5rem;
+                    letter-spacing: 1px;
+                }
+                .barra-rol {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .barra-rol .rol-info {
+                    justify-content: center;
+                }
                 .barra-rol .btn-invitar,
                 .barra-rol .btn-butacas,
-                .barra-rol .btn-subir { justify-content: center; }
-                .tipo-selector { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-                .tipo-btn { padding: 10px 6px; font-size: 0.68rem; }
-                .despedida, .receso, .formulario-telefono { margin: 40px auto; padding: 35px 22px; }
-                .despedida .titulo, .receso .titulo { font-size: 1.25rem; }
+                .barra-rol .btn-subir {
+                    justify-content: center;
+                }
             }
             @media (max-width: 400px) {
-                .galeria { grid-template-columns: 1fr 1fr; gap: 8px; }
+                .galeria {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                }
             }
 
-            html { scroll-behavior: smooth; }
-            ::selection { background: #f39c12; color: #0a0a0a; }
+            html {
+                scroll-behavior: smooth;
+            }
+            ::selection {
+                background: #f39c12;
+                color: #0a0a0a;
+            }
         </style>
     </head>
     <body>
@@ -1027,61 +1620,13 @@
                     Este es un evento exclusivo.<br>
                     Necesitas una invitación para acceder.
                 </div>
-                <button class="btn-reintentar" id="btnReintentarBloqueo" onclick="window.location.reload()" style="display:none;">
-                    Reintentar
-                </button>
                 <div class="marca">OVJ STUDIO</div>
             </div>
         </div>
 
-        <!-- ===== PANTALLA RECESO ===== -->
-        <div class="receso" id="pantallaReceso">
-            <span class="icono">⏳</span>
-            <div class="titulo">Un momento...</div>
-            <div class="mensaje">
-                Estamos recibiendo muchos invitados.<br>
-                Volvé en unos minutos.
-            </div>
-            <div class="contador" id="contadorReceso">10:00</div>
-        </div>
-
-        <!-- ===== FORMULARIO TELÉFONO ===== -->
-        <div class="formulario-telefono" id="formularioTelefono">
-            <span class="emoji-grande">🎁</span>
-            <div class="titulo" id="formTitulo">Un regalo para vos</div>
-            <div class="subtitulo" id="formSubtitulo">
-                Dejanos tu WhatsApp y te enviamos tu foto destacada del evento.
-            </div>
-            <div class="input-con-prefijo">
-                <div class="input-prefijo">+591</div>
-                <input
-                    type="tel"
-                    id="inputTelefonoPublico"
-                    placeholder="Ej: 70000000"
-                    maxlength="15"
-                    autocomplete="off"
-                />
-            </div>
-            <button class="btn-entrar" id="btnEntrarPublico" onclick="enviarTelefonoYEntrar()">
-                Entrar a la galería
-            </button>
-            <button class="btn-saltar" onclick="entrarSinTelefono()">
-                Saltar este paso
-            </button>
-        </div>
-
-        <!-- ===== PANTALLA DESPEDIDA ===== -->
-        <div class="despedida" id="pantallaDespedida">
-            <span class="icono">🎉</span>
-            <div class="titulo" id="despTitulo">¡Disfrutaste tus fotos!</div>
-            <div class="mensaje" id="despMensaje">
-                Descargaste tus fotos del evento.<br>Gracias por ser parte.
-            </div>
-            <div class="marca">OVJ STUDIO</div>
-        </div>
-
         <!-- ===== APP ===== -->
         <div id="app">
+            <!-- ===== HEADER ===== -->
             <div class="header">
                 <div class="header-top">
                     <div class="header-left">
@@ -1121,6 +1666,7 @@
                 </div>
             </div>
 
+            <!-- ===== BARRA DE ROL ===== -->
             <div class="barra-rol" id="barraRol" style="display: none;">
                 <div class="rol-info">
                     <span class="rol-emoji" id="rolEmoji">🎟️</span>
@@ -1161,12 +1707,8 @@
                     <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
                 </div>
                 <div class="modal-footer">
-                    <div id="contadorDescargasWrapper" style="display: none;">
-                        <div class="contador-descargas" id="contadorDescargas">Te quedan 5 descargas</div>
-                    </div>
-
                     <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
-                        <span class="icono-whatsapp" id="btnIcono">⬇️</span>
+                        <span class="icono-whatsapp" id="btnIcono">📱</span>
                         <span id="btnPedirTexto">Descargar foto</span>
                     </button>
 
@@ -1250,25 +1792,14 @@
                 <div class="subtitulo">Genera un pase único para compartir</div>
 
                 <div class="tipo-selector">
-                    <button class="tipo-btn activo" id="tipoGeneral" onclick="seleccionarTipo('general')">
+                    <button class="tipo-btn activo" id="tipoInvitado" onclick="seleccionarTipo('invitado')">
                         <span class="emoji">🎟️</span>
-                        General
-                        <span class="sub">Con límite</span>
-                    </button>
-                    <button class="tipo-btn" id="tipoVip" onclick="seleccionarTipo('vip')">
-                        <span class="emoji">⭐</span>
-                        VIP
-                        <span class="sub">Ilimitado</span>
+                        Invitado
                     </button>
                     <button class="tipo-btn" id="tipoAdmin" onclick="seleccionarTipo('admin')">
                         <span class="emoji">👑</span>
                         Admin
-                        <span class="sub">Control total</span>
                     </button>
-                </div>
-
-                <div class="contador-vip" id="contadorVip">
-                    VIPs disponibles: <strong>3</strong> de <strong>3</strong>
                 </div>
 
                 <div class="input-group">
@@ -1333,7 +1864,7 @@
             </div>
         </div>
 
-        <!-- ===== MODAL SUBIR FOTOS ===== -->
+        <!-- ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== -->
         <div class="modal-subir" id="modalSubir">
             <div class="modal-subir-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
@@ -1367,8 +1898,9 @@
             // ==========================================
             // ⚙️ CONFIGURACIÓN RÁPIDA
             // ==========================================
-            const URL_CLOUDFLARE = "https://print-spec-planets-care.trycloudflare.com";
+            const URL_CLOUDFLARE = "https://debian-hosted-profits-tiger.trycloudflare.com";
             const WHATSAPP_PUBLICIDAD = "59160004962";
+            const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
             const CODIGO_PAIS_DEFECTO = "591";
 
             const FOTOS_POR_CARGA = 6;
@@ -1376,12 +1908,9 @@
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
 
-            const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
+            // 🔥 NUEVO: límites de subida
+            const TAMANO_MAX_FOTO = 15 * 1024 * 1024; // 15 MB
             const REINTENTOS_SUBIDA = 3;
-
-            const CLAVE_DEVICE_ID = 'ovj_publico_deviceId';
-            const CLAVE_TELEFONO = 'ovj_publico_telefono';
-            const CLAVE_TELEFONO_PREGUNTADO = 'ovj_publico_telefono_preguntado';
 
             // ==========================================
             // 🔑 PARÁMETROS DEL URL
@@ -1391,8 +1920,7 @@
                 return {
                     fotografo: params.get('f') || 'default',
                     eventoId: params.get('e'),
-                    token: params.get('t'),
-                    esPublico: params.get('publico') === '1'
+                    token: params.get('t')
                 };
             }
 
@@ -1400,13 +1928,11 @@
             const FOTOGRAFO_ID = PARAMS.fotografo;
             const EVENTO_ID = PARAMS.eventoId;
             const TOKEN = PARAMS.token;
-            const ES_PUBLICO = PARAMS.esPublico;
 
             // ==========================================
             // 🌍 VARIABLES GLOBALES
             // ==========================================
             let sesion = null;
-            let deviceIdPublico = null;
             let fotosCache = [];
             let fotosVisibles = FOTOS_POR_CARGA;
             let fotoSeleccionadaIndex = -1;
@@ -1415,17 +1941,9 @@
             let servidorOnline = true;
             let tituloEsDefault = true;
 
-            let estadoInvitado = {
-                tipoInvitado: null,
-                maxDescargas: null,
-                descargasRealizadas: 0,
-                limiteAlcanzado: false
-            };
-
-            let infoEvento = {
-                vipMax: 3,
-                vipActuales: 0,
-                vipDisponibles: 3
+            let estadoCreditos = {
+                sinCreditos: false,
+                whatsappCliente: null
             };
 
             let instrIntervalId = null;
@@ -1436,13 +1954,12 @@
             let avisoOcultoTimeoutId = null;
             let indiceAviso = 0;
 
-            let invitacionTipo = 'general';
+            let invitacionTipo = 'invitado';
             let invitacionGenerada = null;
 
+            // 🔥 NUEVO: subidas
             let colaSubidas = [];
             let subidaEnProceso = false;
-
-            let recesoIntervalId = null;
 
             // ==========================================
             // 🌍 IDIOMA
@@ -1471,12 +1988,13 @@
                     disponiblesPlural: "disponibles",
                     descargarFoto: "Descargar foto",
                     descargando: "Preparando descarga...",
-                    limiteAlcanzado: "Ya disfrutaste este evento. Gracias por ser parte.",
+                    sinCreditos: "No hay descargas disponibles. Contactar al anfitrión",
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
                     langBandera: "🇧🇴",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
+                    waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
                     pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
                     pubBoton: 'Agenda tu evento',
                     waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
@@ -1493,6 +2011,7 @@
                         'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
                         'Tienes un número limitado de descargas para este evento.',
                         'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
+                        'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
                         'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
                         'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
                         'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
@@ -1500,49 +2019,30 @@
                     bloqueoTitulo: "Galería Privada",
                     bloqueoMensaje: "Este es un evento exclusivo.<br>Necesitas una invitación para acceder.",
                     bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
-                    bloqueoEventoInactivo: "El evento no ha comenzado todavía.<br>Vuelve cuando esté activo.",
                     rolAdmin: "Administrador",
-                    rolVip: "VIP",
                     rolInvitado: "Invitado",
                     textoButacas: "Butacas",
                     textoInvitar: "Invitar",
-                    tipoGeneral: "General",
-                    tipoVip: "VIP",
+                    tipoInvitado: "Invitado",
                     tipoAdmin: "Admin",
-                    tipoGeneralSub: "Con límite",
-                    tipoVipSub: "Ilimitado",
-                    tipoAdminSub: "Control total",
-                    contadorVip: (disp, max) => `VIPs disponibles: <strong>${disp}</strong> de <strong>${max}</strong>`,
-                    contadorVipLleno: "VIPs al máximo alcanzado",
-                    descargasIlimitadas: "Descargas ilimitadas",
-                    contadorDescargas: (restantes, max) => `Te quedan ${restantes} de ${max} descargas`,
-                    contadorDescargas1: (restantes, max) => `Te queda ${restantes} de ${max} descarga`,
+                    // 🔥 NUEVO: subida
                     textoSubir: "Subir fotos",
                     subirTitulo: "Subir Fotos",
-                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube.",
+                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por tu conexión.",
                     subirZonaTexto: "Toca aquí para elegir fotos",
                     subirZonaSubtexto: "Máximo 15 MB por foto · JPG",
                     subirEstadoPendiente: "En espera",
                     subirEstadoSubiendo: "Subiendo...",
                     subirEstadoOk: "✓ Subida",
                     subirEstadoError: "✗ Error",
+                    subirSinConexion: "Sin conexión. Necesitas internet para subir fotos.",
                     subirFotoMuyGrande: "La foto supera 15 MB. Elige una más pequeña.",
                     subirTipoInvalido: "Solo se aceptan JPG.",
                     subirErrorGenerico: "No se pudo subir. Reintenta.",
                     subirProgreso: (ok, total) => `${ok} de ${total} subidas`,
                     subirTodoOk: "✅ Todas las fotos subidas",
                     subirAlgunasFallaron: "⚠️ Algunas fotos no se pudieron subir",
-                    subirCerrando: "Espera a que terminen las subidas...",
-                    // 🔥 FASE 1: pantallas nuevas
-                    formTitulo: "Un regalo para vos",
-                    formSubtitulo: "Dejanos tu WhatsApp y te enviamos tu foto destacada del evento.",
-                    formBtnEntrar: "Entrar a la galería",
-                    formBtnSaltar: "Saltar este paso",
-                    despTitulo: "¡Disfrutaste tus fotos!",
-                    despMensaje: "Descargaste tus fotos del evento.<br>Gracias por ser parte.",
-                    recesoTitulo: "Un momento...",
-                    recesoMensaje: "Estamos recibiendo muchos invitados.<br>Volvé en unos minutos.",
-                    generalesConectados: "generales conectados"
+                    subirCerrando: "Espera a que terminen las subidas..."
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -1562,12 +2062,13 @@
                     disponiblesPlural: "available",
                     descargarFoto: "Download photo",
                     descargando: "Preparing download...",
-                    limiteAlcanzado: "You've already enjoyed this event. Thanks for being part of it.",
+                    sinCreditos: "No downloads available. Contact the host",
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
                     langBandera: "🇺🇸",
                     alertErrorDescarga: "We couldn't prepare the download. Please try again.",
+                    waSinCreditos: "Hi, I can't download this image, can you help me?",
                     pubTexto: 'Want your own <strong>live gallery</strong> for your event?',
                     pubBoton: 'Book your event',
                     waPublicidad: "Hi, I'm interested in a live gallery for my event.",
@@ -1584,6 +2085,7 @@
                         'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
                         'You have a limited number of downloads for this event.',
                         'OVJ Studio · <strong>Photographing with heart</strong>',
+                        'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
                         'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
                         'Your event, your memories, <strong>your exclusive gallery</strong>.',
                         'The best photos deserve to be <strong>downloaded and treasured</strong>.'
@@ -1591,48 +2093,29 @@
                     bloqueoTitulo: "Private Gallery",
                     bloqueoMensaje: "This is an exclusive event.<br>You need an invitation to access.",
                     bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
-                    bloqueoEventoInactivo: "The event hasn't started yet.<br>Come back when it's active.",
                     rolAdmin: "Administrator",
-                    rolVip: "VIP",
                     rolInvitado: "Guest",
                     textoButacas: "Seats",
                     textoInvitar: "Invite",
-                    tipoGeneral: "General",
-                    tipoVip: "VIP",
+                    tipoInvitado: "Guest",
                     tipoAdmin: "Admin",
-                    tipoGeneralSub: "Limited",
-                    tipoVipSub: "Unlimited",
-                    tipoAdminSub: "Full control",
-                    contadorVip: (disp, max) => `VIPs available: <strong>${disp}</strong> of <strong>${max}</strong>`,
-                    contadorVipLleno: "VIPs at maximum",
-                    descargasIlimitadas: "Unlimited downloads",
-                    contadorDescargas: (restantes, max) => `${restantes} of ${max} downloads left`,
-                    contadorDescargas1: (restantes, max) => `${restantes} of ${max} download left`,
                     textoSubir: "Upload photos",
                     subirTitulo: "Upload Photos",
-                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud.",
+                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing your connection.",
                     subirZonaTexto: "Tap here to choose photos",
                     subirZonaSubtexto: "Max 15 MB per photo · JPG",
                     subirEstadoPendiente: "Waiting",
                     subirEstadoSubiendo: "Uploading...",
                     subirEstadoOk: "✓ Uploaded",
                     subirEstadoError: "✗ Error",
+                    subirSinConexion: "No connection. You need internet to upload photos.",
                     subirFotoMuyGrande: "Photo exceeds 15 MB. Choose a smaller one.",
                     subirTipoInvalido: "Only JPG files allowed.",
                     subirErrorGenerico: "Upload failed. Try again.",
                     subirProgreso: (ok, total) => `${ok} of ${total} uploaded`,
                     subirTodoOk: "✅ All photos uploaded",
                     subirAlgunasFallaron: "⚠️ Some photos failed to upload",
-                    subirCerrando: "Wait for uploads to finish...",
-                    formTitulo: "A gift for you",
-                    formSubtitulo: "Leave us your WhatsApp and we'll send you your featured photo from the event.",
-                    formBtnEntrar: "Enter the gallery",
-                    formBtnSaltar: "Skip this step",
-                    despTitulo: "You enjoyed your photos!",
-                    despMensaje: "You downloaded your photos from the event.<br>Thanks for being part of it.",
-                    recesoTitulo: "One moment...",
-                    recesoMensaje: "We're receiving many guests.<br>Come back in a few minutes.",
-                    generalesConectados: "general guests connected"
+                    subirCerrando: "Wait for uploads to finish..."
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -1652,12 +2135,13 @@
                     disponiblesPlural: "可用",
                     descargarFoto: "下载照片",
                     descargando: "正在准备下载...",
-                    limiteAlcanzado: "你已享受完本次活动的照片。感谢参与。",
+                    sinCreditos: "没有可用下载。请联系主办方",
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
                     langBandera: "🇨🇳",
                     alertErrorDescarga: "无法准备下载，请重试。",
+                    waSinCreditos: "你好，我无法下载这张图片，可以帮我吗？",
                     pubTexto: '想要自己的 <strong>现场画廊</strong> 吗？',
                     pubBoton: '预订活动',
                     waPublicidad: "你好，我对现场画廊感兴趣。",
@@ -1674,6 +2158,7 @@
                         '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
                         '本次活动的下载次数有限。',
                         'OVJ Studio · <strong>用心拍摄</strong>',
+                        '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
                         '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
                         '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
                         '最好的照片值得被 <strong>下载和珍藏</strong>。'
@@ -1681,48 +2166,29 @@
                     bloqueoTitulo: "私人画廊",
                     bloqueoMensaje: "这是一个专属活动。<br>你需要邀请才能访问。",
                     bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
-                    bloqueoEventoInactivo: "活动尚未开始。<br>请在活动开始时再来。",
                     rolAdmin: "管理员",
-                    rolVip: "VIP",
                     rolInvitado: "嘉宾",
                     textoButacas: "座位",
                     textoInvitar: "邀请",
-                    tipoGeneral: "普通",
-                    tipoVip: "VIP",
+                    tipoInvitado: "嘉宾",
                     tipoAdmin: "管理员",
-                    tipoGeneralSub: "有限制",
-                    tipoVipSub: "无限",
-                    tipoAdminSub: "完全控制",
-                    contadorVip: (disp, max) => `VIP 可用：<strong>${disp}</strong> / <strong>${max}</strong>`,
-                    contadorVipLleno: "VIP 已达上限",
-                    descargasIlimitadas: "无限下载",
-                    contadorDescargas: (restantes, max) => `剩余 ${restantes} / ${max} 次下载`,
-                    contadorDescargas1: (restantes, max) => `剩余 ${restantes} / ${max} 次下载`,
                     textoSubir: "上传照片",
                     subirTitulo: "上传照片",
-                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端。",
+                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过你的连接。",
                     subirZonaTexto: "点击此处选择照片",
                     subirZonaSubtexto: "每张最多 15 MB · JPG",
                     subirEstadoPendiente: "等待中",
                     subirEstadoSubiendo: "上传中...",
                     subirEstadoOk: "✓ 已上传",
                     subirEstadoError: "✗ 错误",
+                    subirSinConexion: "无连接。上传照片需要互联网。",
                     subirFotoMuyGrande: "照片超过 15 MB，请选择更小的。",
                     subirTipoInvalido: "仅支持 JPG。",
                     subirErrorGenerico: "上传失败，请重试。",
                     subirProgreso: (ok, total) => `${ok} / ${total} 已上传`,
                     subirTodoOk: "✅ 全部照片已上传",
                     subirAlgunasFallaron: "⚠️ 部分照片上传失败",
-                    subirCerrando: "请等待上传完成...",
-                    formTitulo: "给你的礼物",
-                    formSubtitulo: "留下你的 WhatsApp，我们会把活动精选照片发给你。",
-                    formBtnEntrar: "进入画廊",
-                    formBtnSaltar: "跳过此步骤",
-                    despTitulo: "你已享受完照片！",
-                    despMensaje: "你已下载活动照片。<br>感谢参与。",
-                    recesoTitulo: "请稍等...",
-                    recesoMensaje: "我们正接待大量客人。<br>请几分钟后再来。",
-                    generalesConectados: "位普通嘉宾已连接"
+                    subirCerrando: "请等待上传完成..."
                 }
             };
 
@@ -1738,10 +2204,14 @@
 
             function detectarIdiomaInicial() {
                 const guardado = localStorage.getItem('ovj_idioma');
-                if (guardado && TRADUCCIONES[guardado]) return guardado;
+                if (guardado && TRADUCCIONES[guardado]) {
+                    return guardado;
+                }
                 const idiomaNavegador = navigator.language || navigator.userLanguage || 'en';
                 const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
-                if (TRADUCCIONES[idiomaBase]) return idiomaBase;
+                if (TRADUCCIONES[idiomaBase]) {
+                    return idiomaBase;
+                }
                 return 'en';
             }
 
@@ -1752,8 +2222,7 @@
                 document.documentElement.lang = idioma;
                 document.title = t('tituloVentana');
 
-                const badgeEnVivo = document.getElementById('badgeEnVivo');
-                if (badgeEnVivo) badgeEnVivo.textContent = t('enVivo');
+                document.getElementById('badgeEnVivo').textContent = t('enVivo');
                 document.getElementById('langTextoActual').textContent = t('langTexto');
                 document.getElementById('langBanderaActual').textContent = t('langBandera');
 
@@ -1782,10 +2251,10 @@
                 document.getElementById('textoInvitar').textContent = t('textoInvitar');
                 document.getElementById('textoSubir').textContent = t('textoSubir');
 
-                document.getElementById('tipoGeneral').innerHTML = `<span class="emoji">🎟️</span>${t('tipoGeneral')}<span class="sub">${t('tipoGeneralSub')}</span>`;
-                document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}<span class="sub">${t('tipoVipSub')}</span>`;
-                document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}<span class="sub">${t('tipoAdminSub')}</span>`;
+                document.getElementById('tipoInvitado').innerHTML = `<span class="emoji">🎟️</span>${t('tipoInvitado')}`;
+                document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
 
+                // 🔥 NUEVO: modal subir
                 const tituloSubir = document.querySelector('.modal-subir-contenido .titulo');
                 const subSubir = document.querySelector('.modal-subir-contenido .subtitulo');
                 if (tituloSubir) tituloSubir.textContent = '📤 ' + t('subirTitulo');
@@ -1794,26 +2263,6 @@
                 const zonaSub = document.querySelector('.zona-drop .subtexto');
                 if (zonaTexto) zonaTexto.textContent = t('subirZonaTexto');
                 if (zonaSub) zonaSub.textContent = t('subirZonaSubtexto');
-
-                // Formulario
-                const formTitulo = document.getElementById('formTitulo');
-                const formSubtitulo = document.getElementById('formSubtitulo');
-                const btnEntrar = document.getElementById('btnEntrarPublico');
-                if (formTitulo) formTitulo.textContent = t('formTitulo');
-                if (formSubtitulo) formSubtitulo.textContent = t('formSubtitulo');
-                if (btnEntrar) btnEntrar.textContent = t('formBtnEntrar');
-
-                // Despedida
-                const despTitulo = document.getElementById('despTitulo');
-                const despMensaje = document.getElementById('despMensaje');
-                if (despTitulo) despTitulo.textContent = t('despTitulo');
-                if (despMensaje) despMensaje.innerHTML = t('despMensaje');
-
-                // Receso
-                const recesoTitulo = document.querySelector('#pantallaReceso .titulo');
-                const recesoMensaje = document.querySelector('#pantallaReceso .mensaje');
-                if (recesoTitulo) recesoTitulo.textContent = t('recesoTitulo');
-                if (recesoMensaje) recesoMensaje.innerHTML = t('recesoMensaje');
 
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
@@ -1852,16 +2301,12 @@
             function mostrarBloqueo(tipo, mensajeCustom) {
                 document.getElementById('bloqueo').classList.add('activo');
                 document.getElementById('app').classList.remove('activo');
-                document.getElementById('pantallaReceso').classList.remove('activo');
-                document.getElementById('formularioTelefono').classList.remove('activo');
-                document.getElementById('pantallaDespedida').classList.remove('activo');
 
                 const iconos = {
                     sinToken: '🔒',
                     invalido: '🚫',
                     reclamada: '⚠️',
-                    error: '❌',
-                    evento_inactivo: '⏰'
+                    error: '❌'
                 };
 
                 document.getElementById('bloqueoIcono').textContent = iconos[tipo] || '🔒';
@@ -1871,213 +2316,6 @@
                 }
             }
 
-            // ==========================================
-            // 🔑 DEVICE ID
-            // ==========================================
-            function obtenerDeviceId() {
-                let deviceId = localStorage.getItem(CLAVE_DEVICE_ID);
-                if (!deviceId) {
-                    deviceId = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 15);
-                    localStorage.setItem(CLAVE_DEVICE_ID, deviceId);
-                }
-                return deviceId;
-            }
-
-            // ==========================================
-            // 🔥 FLUJO PÚBLICO: ACCESO
-            // ==========================================
-            async function iniciarFlujoPublico() {
-                deviceIdPublico = obtenerDeviceId();
-
-                // ¿Ya se le preguntó el teléfono antes?
-                const yaPreguntado = localStorage.getItem(CLAVE_TELEFONO_PREGUNTADO) === '1';
-                const telefonoGuardado = localStorage.getItem(CLAVE_TELEFONO);
-
-                if (!yaPreguntado) {
-                    // Mostrar formulario de teléfono
-                    document.getElementById('bloqueo').classList.remove('activo');
-                    document.getElementById('formularioTelefono').classList.add('activo');
-                    return;
-                }
-
-                // Ya se preguntó → entrar directo
-                await entrarAGaleriaPublica(telefonoGuardado || null);
-            }
-
-            async function enviarTelefonoYEntrar() {
-                const btn = document.getElementById('btnEntrarPublico');
-                btn.disabled = true;
-
-                let telefonoLocal = document.getElementById('inputTelefonoPublico').value.trim();
-                telefonoLocal = telefonoLocal.replace(/[^0-9]/g, '');
-
-                let telefonoCompleto = null;
-                if (telefonoLocal.length > 0) {
-                    if (telefonoLocal.startsWith(CODIGO_PAIS_DEFECTO)) {
-                        telefonoCompleto = telefonoLocal;
-                    } else {
-                        telefonoCompleto = CODIGO_PAIS_DEFECTO + telefonoLocal;
-                    }
-                }
-
-                localStorage.setItem(CLAVE_TELEFONO_PREGUNTADO, '1');
-                if (telefonoCompleto) {
-                    localStorage.setItem(CLAVE_TELEFONO, telefonoCompleto);
-                }
-
-                await entrarAGaleriaPublica(telefonoCompleto);
-                btn.disabled = false;
-            }
-
-            async function entrarSinTelefono() {
-                localStorage.setItem(CLAVE_TELEFONO_PREGUNTADO, '1');
-                await entrarAGaleriaPublica(null);
-            }
-
-            async function entrarAGaleriaPublica(telefono) {
-                try {
-                    const url = `${URL_CLOUDFLARE}/acceso_publico`;
-
-                    const respuesta = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            f: FOTOGRAFO_ID,
-                            e: EVENTO_ID,
-                            t: TOKEN,
-                            deviceId: deviceIdPublico,
-                            telefono: telefono
-                        })
-                    });
-
-                    const data = await respuesta.json();
-
-                    if (!respuesta.ok || !data.valido) {
-                        // 🔥 Manejar receso
-                        if (data.error === 'receso' || respuesta.status === 429) {
-                            mostrarReceso(data.segundosRestantes || 600);
-                            return;
-                        }
-
-                        // 🔥 Manejar evento inactivo
-                        if (data.motivo === 'evento_inactivo') {
-                            mostrarBloqueo('evento_inactivo', t('bloqueoEventoInactivo'));
-                            return;
-                        }
-
-                        mostrarBloqueo('invalido', t('bloqueoInvalido'));
-                        return;
-                    }
-
-                    sesion = {
-                        tipo: 'general_publico',
-                        deviceId: data.deviceId,
-                        nombre: null,
-                        id: data.deviceId
-                    };
-
-                    estadoInvitado.tipoInvitado = 'general_publico';
-                    estadoInvitado.maxDescargas = data.maxDescargas;
-                    estadoInvitado.descargasRealizadas = data.descargasRealizadas;
-                    estadoInvitado.limiteAlcanzado = data.limiteAlcanzado;
-
-                    // 🔥 Si ya alcanzó el límite → pantalla de despedida
-                    if (data.limiteAlcanzado) {
-                        mostrarDespedida();
-                        return;
-                    }
-
-                    document.getElementById('formularioTelefono').classList.remove('activo');
-                    activarAppPublico();
-
-                    if (data.evento) {
-                        const eventoTexto = data.evento.trim();
-                        const esDefault = eventoTexto === 'Galería en Vivo' || eventoTexto === 'Live Gallery';
-                        if (esDefault) {
-                            tituloEsDefault = true;
-                            document.getElementById('eventoTitulo').textContent = t('tituloDefault');
-                        } else {
-                            tituloEsDefault = false;
-                            document.getElementById('eventoTitulo').textContent = eventoTexto;
-                        }
-                    }
-
-                    await cargarFotos();
-                    setInterval(cargarFotos, 60000);
-                    iniciarAvisosIntermitentes();
-
-                } catch (error) {
-                    console.error('Error en acceso público:', error);
-                    mostrarBloqueo('error', t('offlineMensaje'));
-                }
-            }
-
-            function activarAppPublico() {
-                document.getElementById('bloqueo').classList.remove('activo');
-                document.getElementById('formularioTelefono').classList.remove('activo');
-                document.getElementById('app').classList.add('activo');
-
-                const barraRol = document.getElementById('barraRol');
-                const rolEmoji = document.getElementById('rolEmoji');
-                const rolNombre = document.getElementById('rolNombre');
-                const btnInvitar = document.getElementById('btnInvitar');
-                const btnSubir = document.getElementById('btnSubir');
-
-                barraRol.style.display = 'flex';
-                rolEmoji.textContent = '🎟️';
-                rolNombre.textContent = t('rolInvitado');
-                btnInvitar.style.display = 'none';
-                btnSubir.style.display = 'none';
-            }
-
-            // ==========================================
-            // 🚫 PANTALLA DESPEDIDA
-            // ==========================================
-            function mostrarDespedida() {
-                document.getElementById('app').classList.remove('activo');
-                document.getElementById('bloqueo').classList.remove('activo');
-                document.getElementById('formularioTelefono').classList.remove('activo');
-                document.getElementById('pantallaReceso').classList.remove('activo');
-                document.getElementById('pantallaDespedida').classList.add('activo');
-            }
-
-            // ==========================================
-            // ⏳ PANTALLA RECESO
-            // ==========================================
-            function mostrarReceso(segundos) {
-                document.getElementById('app').classList.remove('activo');
-                document.getElementById('bloqueo').classList.remove('activo');
-                document.getElementById('formularioTelefono').classList.remove('activo');
-                document.getElementById('pantallaDespedida').classList.remove('activo');
-                document.getElementById('pantallaReceso').classList.add('activo');
-
-                if (recesoIntervalId) clearInterval(recesoIntervalId);
-
-                let restantes = segundos;
-                actualizarContadorReceso(restantes);
-
-                recesoIntervalId = setInterval(() => {
-                    restantes--;
-                    actualizarContadorReceso(restantes);
-                    if (restantes <= 0) {
-                        clearInterval(recesoIntervalId);
-                        recesoIntervalId = null;
-                        // Reintentar
-                        window.location.reload();
-                    }
-                }, 1000);
-            }
-
-            function actualizarContadorReceso(segundos) {
-                const min = Math.floor(segundos / 60);
-                const seg = segundos % 60;
-                document.getElementById('contadorReceso').textContent =
-                    `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
-            }
-
-            // ==========================================
-            // 🔒 ACCESO PERSONAL (VIP/Admin)
-            // ==========================================
             async function validarAcceso() {
                 if (!EVENTO_ID || !TOKEN) {
                     mostrarBloqueo('sinToken');
@@ -2097,7 +2335,7 @@
                             const tokenGuardado = localStorage.getItem('ovj_token');
                             if (tokenGuardado === TOKEN) {
                                 sesion = {
-                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'general',
+                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'invitado',
                                     nombre: data.nombre || localStorage.getItem('ovj_rol_nombre') || '',
                                     id: data.id || localStorage.getItem('ovj_rol_id') || ''
                                 };
@@ -2149,11 +2387,6 @@
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
                     btnSubir.style.display = 'inline-flex';
-                } else if (sesion.tipo === 'vip') {
-                    rolEmoji.textContent = '⭐';
-                    rolNombre.textContent = (sesion.nombre || t('rolVip')) + ' · ' + t('rolVip');
-                    btnInvitar.style.display = 'none';
-                    btnSubir.style.display = 'none';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
@@ -2175,14 +2408,9 @@
                     estado.innerHTML = t('cargando');
                     estado.className = "cargando";
 
-                    let url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                              `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                              `&t=${encodeURIComponent(TOKEN || '')}`;
-
-                    // 🔥 Si es modo público, agregar deviceId
-                    if (ES_PUBLICO && deviceIdPublico) {
-                        url += `&deviceId=${encodeURIComponent(deviceIdPublico)}`;
-                    }
+                    const url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
 
                     const respuesta = await fetch(url);
 
@@ -2215,16 +2443,11 @@
                         }
                     }
 
-                    if (data.tipoInvitado !== undefined) estadoInvitado.tipoInvitado = data.tipoInvitado;
-                    if (typeof data.maxDescargas !== 'undefined') estadoInvitado.maxDescargas = data.maxDescargas;
-                    if (typeof data.descargasRealizadas === 'number') estadoInvitado.descargasRealizadas = data.descargasRealizadas;
-                    if (typeof data.limiteAlcanzado === 'boolean') estadoInvitado.limiteAlcanzado = data.limiteAlcanzado;
-
-                    // 🔥 Si es público y ya alcanzó el límite → despedida
-                    if (estadoInvitado.limiteAlcanzado && ES_PUBLICO) {
-                        mostrarDespedida();
-                        cargando = false;
-                        return;
+                    if (typeof data.sinCreditos === 'boolean') {
+                        estadoCreditos.sinCreditos = data.sinCreditos;
+                    }
+                    if (data.whatsappCliente) {
+                        estadoCreditos.whatsappCliente = data.whatsappCliente;
                     }
 
                     const nuevasFotos = data.fotos || [];
@@ -2240,7 +2463,6 @@
 
                     actualizarEstado();
                     actualizarBotonPrincipal();
-                    actualizarContadorDescargas();
 
                 } catch (error) {
                     console.error("Error:", error);
@@ -2283,59 +2505,24 @@
                 estado.className = "ok";
             }
 
-            function actualizarContadorDescargas() {
-                const wrapper = document.getElementById('contadorDescargasWrapper');
-                const contador = document.getElementById('contadorDescargas');
-
-                if (!sesion) {
-                    wrapper.style.display = 'none';
-                    return;
-                }
-
-                if (sesion.tipo === 'admin' || sesion.tipo === 'vip') {
-                    wrapper.style.display = 'block';
-                    contador.classList.add('ilimitado');
-                    contador.textContent = t('descargasIlimitadas');
-                    return;
-                }
-
-                // General (personal o público)
-                const max = estadoInvitado.maxDescargas;
-                const realizadas = estadoInvitado.descargasRealizadas || 0;
-                const restantes = Math.max(0, max - realizadas);
-
-                wrapper.style.display = 'block';
-                contador.classList.remove('ilimitado');
-
-                if (restantes === 1) {
-                    contador.textContent = t('contadorDescargas1', restantes, max);
-                } else {
-                    contador.textContent = t('contadorDescargas', restantes, max);
-                }
-            }
-
             function actualizarBotonPrincipal() {
                 const btn = document.getElementById('btnPedir');
                 const icono = document.getElementById('btnIcono');
                 const texto = document.getElementById('btnPedirTexto');
 
-                if (!MODO_DESCARGAS) {
-                    btn.classList.remove('limitado');
+                if (estadoCreditos.sinCreditos && MODO_DESCARGAS) {
+                    btn.classList.add('agotado');
+                    icono.textContent = "💬";
+                    texto.textContent = t('sinCreditos');
+                } else if (MODO_DESCARGAS) {
+                    btn.classList.remove('agotado');
+                    icono.textContent = "⬇️";
+                    texto.textContent = t('descargarFoto');
+                } else {
+                    btn.classList.remove('agotado');
                     icono.textContent = "📱";
                     texto.textContent = t('descargarFoto');
-                    return;
                 }
-
-                if (estadoInvitado.limiteAlcanzado && sesion && sesion.tipo !== 'admin' && sesion.tipo !== 'vip') {
-                    btn.classList.add('limitado');
-                    icono.textContent = "🚫";
-                    texto.textContent = t('limiteAlcanzado');
-                    return;
-                }
-
-                btn.classList.remove('limitado');
-                icono.textContent = "⬇️";
-                texto.textContent = t('descargarFoto');
             }
 
             function renderizarGaleria() {
@@ -2471,7 +2658,6 @@
 
                 actualizarFlechas();
                 actualizarBotonPrincipal();
-                actualizarContadorDescargas();
             }
 
             function cerrarModal() {
@@ -2498,7 +2684,6 @@
 
                 actualizarFlechas();
                 actualizarBotonPrincipal();
-                actualizarContadorDescargas();
             }
 
             // ==========================================
@@ -2510,13 +2695,21 @@
                     return;
                 }
 
-                if (!MODO_DESCARGAS) return;
-
-                if (estadoInvitado.limiteAlcanzado && sesion && sesion.tipo !== 'admin' && sesion.tipo !== 'vip') {
+                if (MODO_DESCARGAS && estadoCreditos.sinCreditos) {
+                    abrirWhatsAppSinCreditos();
                     return;
                 }
 
-                descargarFotoActual();
+                if (MODO_DESCARGAS) {
+                    descargarFotoActual();
+                    return;
+                }
+            }
+
+            function abrirWhatsAppSinCreditos() {
+                const numeroCliente = estadoCreditos.whatsappCliente || WHATSAPP_CLIENTE_FALLBACK;
+                const mensaje = t('waSinCreditos');
+                window.open(`https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`, "_blank");
             }
 
             function abrirWhatsAppPublicidad() {
@@ -2538,34 +2731,17 @@
                 let urlExterna = null;
 
                 try {
-                    let url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                              `&foto=${encodeURIComponent(foto.nombre)}` +
-                              `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                              `&t=${encodeURIComponent(TOKEN || '')}`;
-
-                    if (ES_PUBLICO && deviceIdPublico) {
-                        url += `&deviceId=${encodeURIComponent(deviceIdPublico)}`;
-                    }
+                    const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&foto=${encodeURIComponent(foto.nombre)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
 
                     const respuesta = await fetch(url);
 
                     if (!respuesta.ok) {
                         if (respuesta.status === 403) {
-                            try {
-                                const errData = await respuesta.json();
-                                if (errData.error === 'limite_alcanzado' || errData.limiteAlcanzado) {
-                                    estadoInvitado.limiteAlcanzado = true;
-                                    actualizarBotonPrincipal();
-                                    actualizarContadorDescargas();
-                                    btn.classList.remove('cargando-btn');
-                                    texto.textContent = textoOriginal;
-
-                                    if (ES_PUBLICO) {
-                                        mostrarDespedida();
-                                    }
-                                    return;
-                                }
-                            } catch (e) {}
+                            estadoCreditos.sinCreditos = true;
+                            actualizarBotonPrincipal();
                         }
                         throw new Error(`HTTP ${respuesta.status}`);
                     }
@@ -2576,18 +2752,10 @@
 
                     urlExterna = data.url;
 
-                    if (typeof data.descargasRealizadas === 'number') {
-                        estadoInvitado.descargasRealizadas = data.descargasRealizadas;
+                    if (data.sinCreditos) {
+                        estadoCreditos.sinCreditos = true;
+                        actualizarBotonPrincipal();
                     }
-                    if (typeof data.limiteAlcanzado === 'boolean') {
-                        estadoInvitado.limiteAlcanzado = data.limiteAlcanzado;
-                    }
-                    if (data.maxDescargas !== undefined) {
-                        estadoInvitado.maxDescargas = data.maxDescargas;
-                    }
-
-                    actualizarBotonPrincipal();
-                    actualizarContadorDescargas();
 
                 } catch (error) {
                     console.error('Error al descargar:', error);
@@ -2694,7 +2862,7 @@
                         return;
                     }
 
-                    const { admins, invitados, resumen } = data.butacas;
+                    const { admins, invitados } = data.butacas;
 
                     let html = '';
 
@@ -2711,47 +2879,6 @@
                                         <div class="nombre">${escapeHtml(a.nombre)}</div>
                                         <div class="detalle">${a.rol === 'admin_fotografo' ? 'Fotógrafo' : 'Cliente'}</div>
                                     </div>
-                                    <span class="estado ilimitado">${t('descargasIlimitadas')}</span>
-                                </div>
-                            `;
-                        });
-                        html += `</div>`;
-                    }
-
-                    const vips = invitados.filter(i => i.tipo === 'vip');
-                    const generales = invitados.filter(i => i.tipo !== 'vip');
-
-                    if (vips.length > 0) {
-                        html += `<div class="fila-butacas"><div class="fila-titulo">⭐ VIPs</div>`;
-                        vips.forEach(i => {
-                            const activa = i.reclamada ? 'activa' : 'vacia';
-                            const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
-                            html += `
-                                <div class="butaca vip ${activa}">
-                                    <span class="emoji">⭐</span>
-                                    <div class="info">
-                                        <div class="nombre">${escapeHtml(i.nombre)}</div>
-                                        <div class="detalle">${i.descargas}</div>
-                                    </div>
-                                    <span class="estado ${activa === 'activa' ? 'ilimitado' : ''}">${estado}</span>
-                                </div>
-                            `;
-                        });
-                        html += `</div>`;
-                    }
-
-                    if (generales.length > 0) {
-                        html += `<div class="fila-butacas"><div class="fila-titulo">🎟️ Invitados</div>`;
-                        generales.forEach(i => {
-                            const activa = i.reclamada ? 'activa' : 'vacia';
-                            const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
-                            html += `
-                                <div class="butaca ${activa}">
-                                    <span class="emoji">🎟️</span>
-                                    <div class="info">
-                                        <div class="nombre">${escapeHtml(i.nombre)}</div>
-                                        <div class="detalle">${i.descargas}</div>
-                                    </div>
                                     <span class="estado">${estado}</span>
                                 </div>
                             `;
@@ -2759,21 +2886,23 @@
                         html += `</div>`;
                     }
 
-                    // 🔥 Generales públicos como total
-                    if (resumen && resumen.generalesConectados > 0) {
-                        html += `
-                            <div class="fila-butacas">
-                                <div class="fila-titulo">👥 Generales</div>
-                                <div class="butaca activa">
-                                    <span class="emoji">👥</span>
+                    if (invitados.length > 0) {
+                        html += `<div class="fila-butacas"><div class="fila-titulo">🎟️ Invitados</div>`;
+                        invitados.forEach(i => {
+                            const activa = i.reclamada ? 'activa' : 'vacia';
+                            const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
+                            html += `
+                                <div class="butaca ${activa}">
+                                    <span class="emoji">🎟️</span>
                                     <div class="info">
-                                        <div class="nombre">${resumen.generalesConectados} ${t('generalesConectados')}</div>
-                                        <div class="detalle">Acceso por QR general</div>
+                                        <div class="nombre">${escapeHtml(i.nombre)}</div>
+                                        <div class="detalle">${i.descargas} descarga${i.descargas === 1 ? '' : 's'}</div>
                                     </div>
-                                    <span class="estado">ACTIVO</span>
+                                    <span class="estado">${estado}</span>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        });
+                        html += `</div>`;
                     }
 
                     if (!html) {
@@ -2795,50 +2924,11 @@
             // ==========================================
             // ✨ INVITAR
             // ==========================================
-            async function actualizarContadorVip() {
-                const contador = document.getElementById('contadorVip');
-                const btnVip = document.getElementById('tipoVip');
-
-                try {
-                    const url = `${URL_CLOUDFLARE}/butacas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                                `&e=${encodeURIComponent(EVENTO_ID)}` +
-                                `&t=${encodeURIComponent(TOKEN)}`;
-
-                    const respuesta = await fetch(url);
-                    const data = await respuesta.json();
-
-                    if (!respuesta.ok || !data.butacas) return;
-
-                    const vipActuales = data.butacas.resumen.vipActuales || 0;
-                    const vipMax = data.butacas.resumen.vipMax || 3;
-                    const vipDisponibles = Math.max(0, vipMax - vipActuales);
-
-                    infoEvento.vipActuales = vipActuales;
-                    infoEvento.vipMax = vipMax;
-                    infoEvento.vipDisponibles = vipDisponibles;
-
-                    if (vipDisponibles <= 0) {
-                        contador.innerHTML = t('contadorVipLleno');
-                        btnVip.disabled = true;
-                        if (invitacionTipo === 'vip') {
-                            seleccionarTipo('general');
-                        }
-                    } else {
-                        contador.innerHTML = t('contadorVip', vipDisponibles, vipMax);
-                        btnVip.disabled = false;
-                    }
-
-                } catch (error) {
-                    console.error('Error contador VIP:', error);
-                }
-            }
-
             function abrirInvitar() {
                 document.getElementById('modalInvitar').classList.add('activo');
                 document.getElementById('inputNombreInvitacion').value = '';
                 document.getElementById('inputWhatsAppInvitacion').value = '';
-                seleccionarTipo('general');
-                actualizarContadorVip();
+                seleccionarTipo('invitado');
             }
 
             function cerrarInvitar() {
@@ -2847,8 +2937,7 @@
 
             function seleccionarTipo(tipo) {
                 invitacionTipo = tipo;
-                document.getElementById('tipoGeneral').classList.toggle('activo', tipo === 'general');
-                document.getElementById('tipoVip').classList.toggle('activo', tipo === 'vip');
+                document.getElementById('tipoInvitado').classList.toggle('activo', tipo === 'invitado');
                 document.getElementById('tipoAdmin').classList.toggle('activo', tipo === 'admin');
             }
 
@@ -2881,19 +2970,14 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             tipo: invitacionTipo,
-                            nombre: nombre || (invitacionTipo === 'admin' ? 'Admin' : (invitacionTipo === 'vip' ? 'VIP' : 'Invitado'))
+                            nombre: nombre || (invitacionTipo === 'admin' ? 'Admin' : 'Invitado')
                         })
                     });
 
                     const data = await respuesta.json();
 
                     if (!respuesta.ok || !data.ok) {
-                        if (data.error === 'vip_max_alcanzado') {
-                            alert(data.mensaje || 'Ya se alcanzó el máximo de VIPs para este evento.');
-                            actualizarContadorVip();
-                        } else {
-                            alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
-                        }
+                        alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
                         btn.disabled = false;
                         btn.textContent = 'Generar Invitación';
                         return;
@@ -2901,8 +2985,6 @@
 
                     invitacionGenerada = data;
                     invitacionGenerada.whatsapp = whatsappCompleto;
-
-                    actualizarContadorVip();
 
                     cerrarInvitar();
                     mostrarResultado();
@@ -2917,7 +2999,7 @@
             }
 
             // ==========================================
-            // 🔲 GENERADOR DE QR
+            // 🔲 GENERADOR DE QR (servicio externo)
             // ==========================================
             function dibujarQR(texto, contenedor, tamaño) {
                 try {
@@ -2951,25 +3033,11 @@
             function mostrarResultado() {
                 const modal = document.getElementById('modalResultado');
 
-                let emoji, titulo, subtitulo;
-
-                if (invitacionGenerada.tipo === 'admin') {
-                    emoji = '👑';
-                    titulo = '¡Admin generado!';
-                    subtitulo = 'Este usuario tendrá control total del evento';
-                } else if (invitacionGenerada.tipo === 'vip') {
-                    emoji = '⭐';
-                    titulo = '¡VIP generado!';
-                    subtitulo = 'Este invitado tendrá descargas ilimitadas';
-                } else {
-                    emoji = '🎟️';
-                    titulo = '¡Invitación generada!';
-                    subtitulo = 'Comparte el QR o el link con tu invitado';
-                }
-
-                document.getElementById('resultadoEmoji').textContent = emoji;
-                document.getElementById('resultadoTitulo').textContent = titulo;
-                document.getElementById('resultadoSubtitulo').textContent = subtitulo;
+                document.getElementById('resultadoEmoji').textContent = invitacionGenerada.tipo === 'admin' ? '👑' : '🎉';
+                document.getElementById('resultadoTitulo').textContent = invitacionGenerada.tipo === 'admin' ? '¡Admin generado!' : '¡Invitación generada!';
+                document.getElementById('resultadoSubtitulo').textContent = invitacionGenerada.tipo === 'admin'
+                    ? 'Este usuario tendrá control total del evento'
+                    : 'Comparte el QR o el link con tu invitado';
 
                 document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
 
@@ -3017,7 +3085,7 @@
             }
 
             // ==========================================
-            // 🔥 SUBIR FOTOS
+            // 🔥 NUEVO: SUBIR FOTOS
             // ==========================================
             function abrirSubir() {
                 document.getElementById('modalSubir').classList.add('activo');
@@ -3035,6 +3103,7 @@
                 const archivos = Array.from(event.target.files || []);
                 if (archivos.length === 0) return;
 
+                // Validar y encolar
                 for (const archivo of archivos) {
                     if (!archivo.type.startsWith('image/jpeg')) {
                         alert(t('subirTipoInvalido') + ': ' + archivo.name);
@@ -3053,7 +3122,9 @@
                     });
                 }
 
+                // Limpiar input para permitir seleccionar el mismo archivo después
                 event.target.value = '';
+
                 renderizarListaSubidas();
                 procesarColaSubidas();
             }
@@ -3071,7 +3142,7 @@
 
                 let html = '';
 
-                colaSubidas.forEach((subida) => {
+                colaSubidas.forEach((subida, idx) => {
                     let estadoTexto = '';
                     let estadoClase = '';
 
@@ -3138,6 +3209,7 @@
                         renderizarListaSubidas();
                     }
 
+                    // Esperar un momento y luego recargar fotos
                     setTimeout(() => {
                         cargarFotos();
                     }, 2000);
@@ -3163,6 +3235,7 @@
             async function subirUnaFoto(subida) {
                 const { archivo } = subida;
 
+                // 1. Pedir URL firmada al server
                 const urlPedido = `${URL_CLOUDFLARE}/subir_url`;
 
                 const respPedido = await fetch(urlPedido, {
@@ -3186,12 +3259,15 @@
                     throw new Error(dataPedido.error || 'URL de subida inválida');
                 }
 
+                // 2. Subir directo a B2
                 let ultimoError = null;
                 for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
                     try {
                         const respSubida = await fetch(dataPedido.url, {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'image/jpeg' },
+                            headers: {
+                                'Content-Type': 'image/jpeg'
+                            },
                             body: archivo
                         });
 
@@ -3200,6 +3276,8 @@
                             throw new Error(`HTTP ${respSubida.status}${texto ? ' - ' + texto.slice(0, 80) : ''}`);
                         }
 
+                        // Éxito
+                        // 3. Confirmar al server
                         try {
                             await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
                                 method: 'POST',
@@ -3212,6 +3290,7 @@
                                 })
                             });
                         } catch (e) {
+                            // No importa si falla la confirmación, el recolector lo encontrará
                             console.warn('No se pudo confirmar subida (no crítico):', e.message);
                         }
 
@@ -3327,20 +3406,14 @@
                 idiomaActual = detectarIdiomaInicial();
                 aplicarIdioma(idiomaActual);
 
-                if (ES_PUBLICO) {
-                    // 🔥 Modo público general
-                    await iniciarFlujoPublico();
-                } else {
-                    // 🔥 Modo personal (VIP/Admin)
-                    const accesoValido = await validarAcceso();
+                const accesoValido = await validarAcceso();
 
-                    if (!accesoValido) return;
+                if (!accesoValido) return;
 
-                    activarApp();
-                    await cargarFotos();
-                    setInterval(cargarFotos, 60000);
-                    iniciarAvisosIntermitentes();
-                }
+                activarApp();
+                cargarFotos();
+                setInterval(cargarFotos, 60000);
+                iniciarAvisosIntermitentes();
             }
 
             inicializar();
