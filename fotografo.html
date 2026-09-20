@@ -1807,21 +1807,15 @@
     async function subirUnaFoto(subida) {
         const { archivo } = subida;
 
-        // 1. Pedir URL firmada
+        // 1. Pedir URL firmada (el backend nos autoriza por el session token)
         const dataPedido = await apiFetch('/subir_url', {
             method: 'POST',
             body: JSON.stringify({
                 f: nombreFotografoActual,
                 e: eventoActivo.id,
-                t: null, // El backend valida por token de admin del evento... 
-                // En realidad necesitamos el token del evento (admin_fotografo).
-                // Lo vamos a resolver abajo.
                 nombreOriginal: archivo.name
             })
         });
-
-        // NOTA: /subir_url exige token del evento. Lo tenemos que pasar.
-        // Lo resolvemos abajo con el token de admin del fotógrafo.
 
         if (!dataPedido.ok || !dataPedido.url) {
             throw new Error(dataPedido.error || 'URL inválida');
@@ -1839,14 +1833,13 @@
 
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                // 3. Confirmar
+                // 3. Confirmar (también autorizado por session token)
                 try {
                     await apiFetch('/confirmar_subida', {
                         method: 'POST',
                         body: JSON.stringify({
                             f: nombreFotografoActual,
                             e: eventoActivo.id,
-                            t: null,
                             key: dataPedido.key
                         })
                     });
