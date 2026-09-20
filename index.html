@@ -337,7 +337,6 @@
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
             }
-            /* 🔥 NUEVO: botón subir fotos (solo admin) */
             .barra-rol .btn-subir {
                 display: inline-flex;
                 align-items: center;
@@ -746,9 +745,14 @@
                 transform: scale(1.03);
                 box-shadow: 0 8px 35px rgba(46, 204, 113, 0.25);
             }
-            .btn-pedir.agotado {
-                background: linear-gradient(135deg, #e67e22, #d35400);
-                box-shadow: 0 4px 25px rgba(230, 126, 34, 0.2);
+            .btn-pedir.limitado {
+                background: linear-gradient(135deg, #7f8c8d, #576574);
+                cursor: not-allowed;
+                box-shadow: 0 4px 25px rgba(127, 140, 141, 0.2);
+            }
+            .btn-pedir.limitado:hover {
+                transform: none;
+                box-shadow: 0 4px 25px rgba(127, 140, 141, 0.2);
             }
             .btn-pedir .icono-whatsapp {
                 font-size: 1.3rem;
@@ -774,6 +778,26 @@
             .btn-cerrar-modal:hover {
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
+            }
+
+            /* ===== CONTADOR DE DESCARGAS (para generales) ===== */
+            .contador-descargas {
+                font-size: 0.72rem;
+                color: #f39c12;
+                font-weight: 500;
+                text-align: center;
+                letter-spacing: 0.3px;
+                padding: 4px 12px;
+                background: rgba(243, 156, 18, 0.08);
+                border: 1px solid rgba(243, 156, 18, 0.2);
+                border-radius: 50px;
+            }
+            .contador-descargas.ilimitado {
+                color: #f1c40f;
+                font-weight: 600;
+                letter-spacing: 1px;
+                background: rgba(241, 196, 15, 0.08);
+                border-color: rgba(241, 196, 15, 0.25);
             }
 
             /* ===== MODAL INSTRUCCIONES ===== */
@@ -1004,6 +1028,10 @@
             .butaca.vacia {
                 opacity: 0.5;
             }
+            .butaca.vip {
+                background: rgba(241, 196, 15, 0.06);
+                border-color: rgba(241, 196, 15, 0.2);
+            }
             .butaca .emoji {
                 font-size: 1.2rem;
                 flex-shrink: 0;
@@ -1035,6 +1063,10 @@
                 font-weight: 600;
                 letter-spacing: 0.3px;
                 flex-shrink: 0;
+            }
+            .butaca .estado.ilimitado {
+                background: rgba(241, 196, 15, 0.15);
+                color: #f1c40f;
             }
             .butaca.vacia .estado {
                 background: rgba(255, 255, 255, 0.05);
@@ -1081,11 +1113,13 @@
                 border: 1px solid rgba(255, 215, 0, 0.2);
                 border-radius: 20px;
                 padding: 28px 24px 24px;
-                max-width: 420px;
+                max-width: 460px;
                 width: 100%;
                 animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
                 position: relative;
+                max-height: 90vh;
+                overflow-y: auto;
             }
             .modal-invitar-contenido .titulo {
                 font-size: 1.1rem;
@@ -1101,34 +1135,57 @@
                 margin-bottom: 20px;
             }
             .tipo-selector {
-                display: flex;
-                gap: 10px;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
                 margin-bottom: 18px;
             }
             .tipo-btn {
-                flex: 1;
-                padding: 14px 12px;
+                padding: 12px 8px;
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 border-radius: 12px;
                 color: #ccc;
-                font-size: 0.75rem;
+                font-size: 0.72rem;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.25s ease;
                 font-family: inherit;
                 text-align: center;
-                line-height: 1.4;
+                line-height: 1.3;
             }
             .tipo-btn .emoji {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 display: block;
                 margin-bottom: 4px;
+            }
+            .tipo-btn .sub {
+                display: block;
+                font-size: 0.6rem;
+                opacity: 0.7;
+                margin-top: 2px;
+                font-weight: 400;
             }
             .tipo-btn.activo {
                 background: rgba(243, 156, 18, 0.12);
                 border-color: rgba(243, 156, 18, 0.4);
                 color: #f39c12;
+            }
+            .tipo-btn:disabled {
+                opacity: 0.35;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .contador-vip {
+                text-align: center;
+                font-size: 0.7rem;
+                color: #888;
+                margin-bottom: 16px;
+                letter-spacing: 0.3px;
+            }
+            .contador-vip strong {
+                color: #f1c40f;
+                font-weight: 600;
             }
             .input-group {
                 margin-bottom: 12px;
@@ -1357,7 +1414,7 @@
                 color: #aaa;
             }
 
-            /* ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== */
+            /* ===== MODAL SUBIR FOTOS ===== */
             .modal-subir {
                 display: none;
                 position: fixed;
@@ -1593,6 +1650,14 @@
                 .barra-rol .btn-subir {
                     justify-content: center;
                 }
+                .tipo-selector {
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 6px;
+                }
+                .tipo-btn {
+                    padding: 10px 6px;
+                    font-size: 0.68rem;
+                }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -1707,8 +1772,12 @@
                     <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
                 </div>
                 <div class="modal-footer">
+                    <div id="contadorDescargasWrapper" style="display: none;">
+                        <div class="contador-descargas" id="contadorDescargas">Te quedan 5 descargas</div>
+                    </div>
+
                     <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
-                        <span class="icono-whatsapp" id="btnIcono">📱</span>
+                        <span class="icono-whatsapp" id="btnIcono">⬇️</span>
                         <span id="btnPedirTexto">Descargar foto</span>
                     </button>
 
@@ -1792,14 +1861,25 @@
                 <div class="subtitulo">Genera un pase único para compartir</div>
 
                 <div class="tipo-selector">
-                    <button class="tipo-btn activo" id="tipoInvitado" onclick="seleccionarTipo('invitado')">
+                    <button class="tipo-btn activo" id="tipoGeneral" onclick="seleccionarTipo('general')">
                         <span class="emoji">🎟️</span>
-                        Invitado
+                        General
+                        <span class="sub">Con límite</span>
+                    </button>
+                    <button class="tipo-btn" id="tipoVip" onclick="seleccionarTipo('vip')">
+                        <span class="emoji">⭐</span>
+                        VIP
+                        <span class="sub">Ilimitado</span>
                     </button>
                     <button class="tipo-btn" id="tipoAdmin" onclick="seleccionarTipo('admin')">
                         <span class="emoji">👑</span>
                         Admin
+                        <span class="sub">Control total</span>
                     </button>
+                </div>
+
+                <div class="contador-vip" id="contadorVip">
+                    VIPs disponibles: <strong>3</strong> de <strong>3</strong>
                 </div>
 
                 <div class="input-group">
@@ -1864,7 +1944,7 @@
             </div>
         </div>
 
-        <!-- ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== -->
+        <!-- ===== MODAL SUBIR FOTOS ===== -->
         <div class="modal-subir" id="modalSubir">
             <div class="modal-subir-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
@@ -1900,7 +1980,6 @@
             // ==========================================
             const URL_CLOUDFLARE = "https://debian-hosted-profits-tiger.trycloudflare.com";
             const WHATSAPP_PUBLICIDAD = "59160004962";
-            const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
             const CODIGO_PAIS_DEFECTO = "591";
 
             const FOTOS_POR_CARGA = 6;
@@ -1908,7 +1987,7 @@
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
 
-            // 🔥 NUEVO: límites de subida
+            // 🔥 Límites de subida
             const TAMANO_MAX_FOTO = 15 * 1024 * 1024; // 15 MB
             const REINTENTOS_SUBIDA = 3;
 
@@ -1941,9 +2020,19 @@
             let servidorOnline = true;
             let tituloEsDefault = true;
 
-            let estadoCreditos = {
-                sinCreditos: false,
-                whatsappCliente: null
+            // 🔥 Nuevo modelo: info del invitado y descargas
+            let estadoInvitado = {
+                tipoInvitado: null,       // 'admin' | 'vip' | 'general' | null
+                maxDescargas: null,       // null si ilimitado
+                descargasRealizadas: 0,
+                limiteAlcanzado: false
+            };
+
+            // 🔥 VIP: contador y estado del evento
+            let infoEvento = {
+                vipMax: 3,
+                vipActuales: 0,
+                vipDisponibles: 3
             };
 
             let instrIntervalId = null;
@@ -1954,10 +2043,10 @@
             let avisoOcultoTimeoutId = null;
             let indiceAviso = 0;
 
-            let invitacionTipo = 'invitado';
+            let invitacionTipo = 'general';
             let invitacionGenerada = null;
 
-            // 🔥 NUEVO: subidas
+            // 🔥 Subidas
             let colaSubidas = [];
             let subidaEnProceso = false;
 
@@ -1988,13 +2077,12 @@
                     disponiblesPlural: "disponibles",
                     descargarFoto: "Descargar foto",
                     descargando: "Preparando descarga...",
-                    sinCreditos: "No hay descargas disponibles. Contactar al anfitrión",
+                    limiteAlcanzado: "El anfitrión ha pausado las descargas por ahora. Gracias por ser parte.",
                     offlineTitulo: "Galería no disponible",
                     offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
                     langTexto: "ES",
                     langBandera: "🇧🇴",
                     alertErrorDescarga: "No pudimos preparar la descarga. Intenta de nuevo.",
-                    waSinCreditos: "Hola, no puedo descargar esta imagen, me ayudas?",
                     pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
                     pubBoton: 'Agenda tu evento',
                     waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
@@ -2011,7 +2099,6 @@
                         'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
                         'Tienes un número limitado de descargas para este evento.',
                         'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
-                        'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
                         'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
                         'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
                         'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
@@ -2020,12 +2107,23 @@
                     bloqueoMensaje: "Este es un evento exclusivo.<br>Necesitas una invitación para acceder.",
                     bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
                     rolAdmin: "Administrador",
+                    rolVip: "VIP",
                     rolInvitado: "Invitado",
                     textoButacas: "Butacas",
                     textoInvitar: "Invitar",
-                    tipoInvitado: "Invitado",
+                    tipoGeneral: "General",
+                    tipoVip: "VIP",
                     tipoAdmin: "Admin",
-                    // 🔥 NUEVO: subida
+                    tipoGeneralSub: "Con límite",
+                    tipoVipSub: "Ilimitado",
+                    tipoAdminSub: "Control total",
+                    contadorVip: (disp, max) => `VIPs disponibles: <strong>${disp}</strong> de <strong>${max}</strong>`,
+                    contadorVipLleno: "VIPs al máximo alcanzado",
+                    // 🔥 Descargas
+                    descargasIlimitadas: "Descargas ilimitadas",
+                    contadorDescargas: (restantes, max) => `Te quedan ${restantes} de ${max} descargas`,
+                    contadorDescargas1: (restantes, max) => `Te queda ${restantes} de ${max} descarga`,
+                    // 🔥 Subida
                     textoSubir: "Subir fotos",
                     subirTitulo: "Subir Fotos",
                     subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por tu conexión.",
@@ -2062,13 +2160,12 @@
                     disponiblesPlural: "available",
                     descargarFoto: "Download photo",
                     descargando: "Preparing download...",
-                    sinCreditos: "No downloads available. Contact the host",
+                    limiteAlcanzado: "The host has paused downloads for now. Thanks for being part of it.",
                     offlineTitulo: "Gallery not available",
                     offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
                     langTexto: "EN",
                     langBandera: "🇺🇸",
                     alertErrorDescarga: "We couldn't prepare the download. Please try again.",
-                    waSinCreditos: "Hi, I can't download this image, can you help me?",
                     pubTexto: 'Want your own <strong>live gallery</strong> for your event?',
                     pubBoton: 'Book your event',
                     waPublicidad: "Hi, I'm interested in a live gallery for my event.",
@@ -2085,7 +2182,6 @@
                         'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
                         'You have a limited number of downloads for this event.',
                         'OVJ Studio · <strong>Photographing with heart</strong>',
-                        'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
                         'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
                         'Your event, your memories, <strong>your exclusive gallery</strong>.',
                         'The best photos deserve to be <strong>downloaded and treasured</strong>.'
@@ -2094,11 +2190,21 @@
                     bloqueoMensaje: "This is an exclusive event.<br>You need an invitation to access.",
                     bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
                     rolAdmin: "Administrator",
+                    rolVip: "VIP",
                     rolInvitado: "Guest",
                     textoButacas: "Seats",
                     textoInvitar: "Invite",
-                    tipoInvitado: "Guest",
+                    tipoGeneral: "General",
+                    tipoVip: "VIP",
                     tipoAdmin: "Admin",
+                    tipoGeneralSub: "Limited",
+                    tipoVipSub: "Unlimited",
+                    tipoAdminSub: "Full control",
+                    contadorVip: (disp, max) => `VIPs available: <strong>${disp}</strong> of <strong>${max}</strong>`,
+                    contadorVipLleno: "VIPs at maximum",
+                    descargasIlimitadas: "Unlimited downloads",
+                    contadorDescargas: (restantes, max) => `${restantes} of ${max} downloads left`,
+                    contadorDescargas1: (restantes, max) => `${restantes} of ${max} download left`,
                     textoSubir: "Upload photos",
                     subirTitulo: "Upload Photos",
                     subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing your connection.",
@@ -2135,13 +2241,12 @@
                     disponiblesPlural: "可用",
                     descargarFoto: "下载照片",
                     descargando: "正在准备下载...",
-                    sinCreditos: "没有可用下载。请联系主办方",
+                    limiteAlcanzado: "主办方已暂时停止下载。感谢你的参与。",
                     offlineTitulo: "画廊暂不可用",
                     offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
                     langTexto: "中文",
                     langBandera: "🇨🇳",
                     alertErrorDescarga: "无法准备下载，请重试。",
-                    waSinCreditos: "你好，我无法下载这张图片，可以帮我吗？",
                     pubTexto: '想要自己的 <strong>现场画廊</strong> 吗？',
                     pubBoton: '预订活动',
                     waPublicidad: "你好，我对现场画廊感兴趣。",
@@ -2158,7 +2263,6 @@
                         '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
                         '本次活动的下载次数有限。',
                         'OVJ Studio · <strong>用心拍摄</strong>',
-                        '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
                         '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
                         '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
                         '最好的照片值得被 <strong>下载和珍藏</strong>。'
@@ -2167,11 +2271,21 @@
                     bloqueoMensaje: "这是一个专属活动。<br>你需要邀请才能访问。",
                     bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
                     rolAdmin: "管理员",
+                    rolVip: "VIP",
                     rolInvitado: "嘉宾",
                     textoButacas: "座位",
                     textoInvitar: "邀请",
-                    tipoInvitado: "嘉宾",
+                    tipoGeneral: "普通",
+                    tipoVip: "VIP",
                     tipoAdmin: "管理员",
+                    tipoGeneralSub: "有限制",
+                    tipoVipSub: "无限",
+                    tipoAdminSub: "完全控制",
+                    contadorVip: (disp, max) => `VIP 可用：<strong>${disp}</strong> / <strong>${max}</strong>`,
+                    contadorVipLleno: "VIP 已达上限",
+                    descargasIlimitadas: "无限下载",
+                    contadorDescargas: (restantes, max) => `剩余 ${restantes} / ${max} 次下载`,
+                    contadorDescargas1: (restantes, max) => `剩余 ${restantes} / ${max} 次下载`,
                     textoSubir: "上传照片",
                     subirTitulo: "上传照片",
                     subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过你的连接。",
@@ -2251,10 +2365,11 @@
                 document.getElementById('textoInvitar').textContent = t('textoInvitar');
                 document.getElementById('textoSubir').textContent = t('textoSubir');
 
-                document.getElementById('tipoInvitado').innerHTML = `<span class="emoji">🎟️</span>${t('tipoInvitado')}`;
-                document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
+                document.getElementById('tipoGeneral').innerHTML = `<span class="emoji">🎟️</span>${t('tipoGeneral')}<span class="sub">${t('tipoGeneralSub')}</span>`;
+                document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}<span class="sub">${t('tipoVipSub')}</span>`;
+                document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}<span class="sub">${t('tipoAdminSub')}</span>`;
 
-                // 🔥 NUEVO: modal subir
+                // 🔥 Modal subir
                 const tituloSubir = document.querySelector('.modal-subir-contenido .titulo');
                 const subSubir = document.querySelector('.modal-subir-contenido .subtitulo');
                 if (tituloSubir) tituloSubir.textContent = '📤 ' + t('subirTitulo');
@@ -2335,7 +2450,7 @@
                             const tokenGuardado = localStorage.getItem('ovj_token');
                             if (tokenGuardado === TOKEN) {
                                 sesion = {
-                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'invitado',
+                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'general',
                                     nombre: data.nombre || localStorage.getItem('ovj_rol_nombre') || '',
                                     id: data.id || localStorage.getItem('ovj_rol_id') || ''
                                 };
@@ -2387,6 +2502,11 @@
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
                     btnSubir.style.display = 'inline-flex';
+                } else if (sesion.tipo === 'vip') {
+                    rolEmoji.textContent = '⭐';
+                    rolNombre.textContent = (sesion.nombre || t('rolVip')) + ' · ' + t('rolVip');
+                    btnInvitar.style.display = 'none';
+                    btnSubir.style.display = 'none';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
@@ -2443,11 +2563,18 @@
                         }
                     }
 
-                    if (typeof data.sinCreditos === 'boolean') {
-                        estadoCreditos.sinCreditos = data.sinCreditos;
+                    // 🔥 NUEVO: info del invitado
+                    if (data.tipoInvitado !== undefined) {
+                        estadoInvitado.tipoInvitado = data.tipoInvitado;
                     }
-                    if (data.whatsappCliente) {
-                        estadoCreditos.whatsappCliente = data.whatsappCliente;
+                    if (typeof data.maxDescargas !== 'undefined') {
+                        estadoInvitado.maxDescargas = data.maxDescargas;
+                    }
+                    if (typeof data.descargasRealizadas === 'number') {
+                        estadoInvitado.descargasRealizadas = data.descargasRealizadas;
+                    }
+                    if (typeof data.limiteAlcanzado === 'boolean') {
+                        estadoInvitado.limiteAlcanzado = data.limiteAlcanzado;
                     }
 
                     const nuevasFotos = data.fotos || [];
@@ -2463,6 +2590,7 @@
 
                     actualizarEstado();
                     actualizarBotonPrincipal();
+                    actualizarContadorDescargas();
 
                 } catch (error) {
                     console.error("Error:", error);
@@ -2505,24 +2633,58 @@
                 estado.className = "ok";
             }
 
+            // 🔥 NUEVO: actualizar contador visible en modal
+            function actualizarContadorDescargas() {
+                const wrapper = document.getElementById('contadorDescargasWrapper');
+                const contador = document.getElementById('contadorDescargas');
+
+                if (!sesion || sesion.tipo === 'admin' || sesion.tipo === 'vip') {
+                    wrapper.style.display = 'block';
+                    contador.classList.add('ilimitado');
+                    contador.textContent = t('descargasIlimitadas');
+                    return;
+                }
+
+                // General
+                const max = estadoInvitado.maxDescargas;
+                const realizadas = estadoInvitado.descargasRealizadas || 0;
+                const restantes = Math.max(0, max - realizadas);
+
+                wrapper.style.display = 'block';
+                contador.classList.remove('ilimitado');
+
+                if (restantes === 1) {
+                    contador.textContent = t('contadorDescargas1', restantes, max);
+                } else {
+                    contador.textContent = t('contadorDescargas', restantes, max);
+                }
+            }
+
             function actualizarBotonPrincipal() {
                 const btn = document.getElementById('btnPedir');
                 const icono = document.getElementById('btnIcono');
                 const texto = document.getElementById('btnPedirTexto');
 
-                if (estadoCreditos.sinCreditos && MODO_DESCARGAS) {
-                    btn.classList.add('agotado');
-                    icono.textContent = "💬";
-                    texto.textContent = t('sinCreditos');
-                } else if (MODO_DESCARGAS) {
-                    btn.classList.remove('agotado');
-                    icono.textContent = "⬇️";
-                    texto.textContent = t('descargarFoto');
-                } else {
-                    btn.classList.remove('agotado');
+                // 🔥 NUEVA LÓGICA
+                if (!MODO_DESCARGAS) {
+                    btn.classList.remove('limitado');
                     icono.textContent = "📱";
                     texto.textContent = t('descargarFoto');
+                    return;
                 }
+
+                // Si el límite está alcanzado → botón limitado con mensaje elegante
+                if (estadoInvitado.limiteAlcanzado && sesion && sesion.tipo === 'general') {
+                    btn.classList.add('limitado');
+                    icono.textContent = "🚫";
+                    texto.textContent = t('limiteAlcanzado');
+                    return;
+                }
+
+                // Si no, botón normal
+                btn.classList.remove('limitado');
+                icono.textContent = "⬇️";
+                texto.textContent = t('descargarFoto');
             }
 
             function renderizarGaleria() {
@@ -2658,6 +2820,7 @@
 
                 actualizarFlechas();
                 actualizarBotonPrincipal();
+                actualizarContadorDescargas();
             }
 
             function cerrarModal() {
@@ -2684,6 +2847,7 @@
 
                 actualizarFlechas();
                 actualizarBotonPrincipal();
+                actualizarContadorDescargas();
             }
 
             // ==========================================
@@ -2695,21 +2859,14 @@
                     return;
                 }
 
-                if (MODO_DESCARGAS && estadoCreditos.sinCreditos) {
-                    abrirWhatsAppSinCreditos();
+                if (!MODO_DESCARGAS) return;
+
+                // Si el límite está alcanzado → no hacer nada (ya muestra el mensaje)
+                if (estadoInvitado.limiteAlcanzado && sesion && sesion.tipo === 'general') {
                     return;
                 }
 
-                if (MODO_DESCARGAS) {
-                    descargarFotoActual();
-                    return;
-                }
-            }
-
-            function abrirWhatsAppSinCreditos() {
-                const numeroCliente = estadoCreditos.whatsappCliente || WHATSAPP_CLIENTE_FALLBACK;
-                const mensaje = t('waSinCreditos');
-                window.open(`https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`, "_blank");
+                descargarFotoActual();
             }
 
             function abrirWhatsAppPublicidad() {
@@ -2739,9 +2896,19 @@
                     const respuesta = await fetch(url);
 
                     if (!respuesta.ok) {
+                        // 🔥 403 puede ser por límite alcanzado
                         if (respuesta.status === 403) {
-                            estadoCreditos.sinCreditos = true;
-                            actualizarBotonPrincipal();
+                            try {
+                                const errData = await respuesta.json();
+                                if (errData.error === 'limite_alcanzado' || errData.limiteAlcanzado) {
+                                    estadoInvitado.limiteAlcanzado = true;
+                                    actualizarBotonPrincipal();
+                                    actualizarContadorDescargas();
+                                    btn.classList.remove('cargando-btn');
+                                    texto.textContent = textoOriginal;
+                                    return;
+                                }
+                            } catch (e) {}
                         }
                         throw new Error(`HTTP ${respuesta.status}`);
                     }
@@ -2752,10 +2919,19 @@
 
                     urlExterna = data.url;
 
-                    if (data.sinCreditos) {
-                        estadoCreditos.sinCreditos = true;
-                        actualizarBotonPrincipal();
+                    // 🔥 Actualizar estado del invitado según la respuesta
+                    if (typeof data.descargasRealizadas === 'number') {
+                        estadoInvitado.descargasRealizadas = data.descargasRealizadas;
                     }
+                    if (typeof data.limiteAlcanzado === 'boolean') {
+                        estadoInvitado.limiteAlcanzado = data.limiteAlcanzado;
+                    }
+                    if (data.maxDescargas !== undefined) {
+                        estadoInvitado.maxDescargas = data.maxDescargas;
+                    }
+
+                    actualizarBotonPrincipal();
+                    actualizarContadorDescargas();
 
                 } catch (error) {
                     console.error('Error al descargar:', error);
@@ -2879,7 +3055,7 @@
                                         <div class="nombre">${escapeHtml(a.nombre)}</div>
                                         <div class="detalle">${a.rol === 'admin_fotografo' ? 'Fotógrafo' : 'Cliente'}</div>
                                     </div>
-                                    <span class="estado">${estado}</span>
+                                    <span class="estado ilimitado">${t('descargasIlimitadas')}</span>
                                 </div>
                             `;
                         });
@@ -2887,22 +3063,47 @@
                     }
 
                     if (invitados.length > 0) {
-                        html += `<div class="fila-butacas"><div class="fila-titulo">🎟️ Invitados</div>`;
-                        invitados.forEach(i => {
-                            const activa = i.reclamada ? 'activa' : 'vacia';
-                            const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
-                            html += `
-                                <div class="butaca ${activa}">
-                                    <span class="emoji">🎟️</span>
-                                    <div class="info">
-                                        <div class="nombre">${escapeHtml(i.nombre)}</div>
-                                        <div class="detalle">${i.descargas} descarga${i.descargas === 1 ? '' : 's'}</div>
+                        // Separar VIPs y generales
+                        const vips = invitados.filter(i => i.tipo === 'vip');
+                        const generales = invitados.filter(i => i.tipo !== 'vip');
+
+                        if (vips.length > 0) {
+                            html += `<div class="fila-butacas"><div class="fila-titulo">⭐ VIPs</div>`;
+                            vips.forEach(i => {
+                                const activa = i.reclamada ? 'activa' : 'vacia';
+                                const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
+                                html += `
+                                    <div class="butaca vip ${activa}">
+                                        <span class="emoji">⭐</span>
+                                        <div class="info">
+                                            <div class="nombre">${escapeHtml(i.nombre)}</div>
+                                            <div class="detalle">${i.descargas}</div>
+                                        </div>
+                                        <span class="estado ${activa === 'activa' ? 'ilimitado' : ''}">${estado}</span>
                                     </div>
-                                    <span class="estado">${estado}</span>
-                                </div>
-                            `;
-                        });
-                        html += `</div>`;
+                                `;
+                            });
+                            html += `</div>`;
+                        }
+
+                        if (generales.length > 0) {
+                            html += `<div class="fila-butacas"><div class="fila-titulo">🎟️ Invitados</div>`;
+                            generales.forEach(i => {
+                                const activa = i.reclamada ? 'activa' : 'vacia';
+                                const estado = i.reclamada ? 'EN LÍNEA' : 'PENDIENTE';
+                                html += `
+                                    <div class="butaca ${activa}">
+                                        <span class="emoji">🎟️</span>
+                                        <div class="info">
+                                            <div class="nombre">${escapeHtml(i.nombre)}</div>
+                                            <div class="detalle">${i.descargas}</div>
+                                        </div>
+                                        <span class="estado">${estado}</span>
+                                    </div>
+                                `;
+                            });
+                            html += `</div>`;
+                        }
                     }
 
                     if (!html) {
@@ -2924,11 +3125,51 @@
             // ==========================================
             // ✨ INVITAR
             // ==========================================
+            async function actualizarContadorVip() {
+                const contador = document.getElementById('contadorVip');
+                const btnVip = document.getElementById('tipoVip');
+
+                try {
+                    const url = `${URL_CLOUDFLARE}/butacas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
+
+                    const respuesta = await fetch(url);
+                    const data = await respuesta.json();
+
+                    if (!respuesta.ok || !data.butacas) return;
+
+                    const vipActuales = data.butacas.resumen.vipActuales || 0;
+                    const vipMax = data.butacas.resumen.vipMax || 3;
+                    const vipDisponibles = Math.max(0, vipMax - vipActuales);
+
+                    infoEvento.vipActuales = vipActuales;
+                    infoEvento.vipMax = vipMax;
+                    infoEvento.vipDisponibles = vipDisponibles;
+
+                    if (vipDisponibles <= 0) {
+                        contador.innerHTML = t('contadorVipLleno');
+                        btnVip.disabled = true;
+                        // Si estaba seleccionado VIP, cambiar a general
+                        if (invitacionTipo === 'vip') {
+                            seleccionarTipo('general');
+                        }
+                    } else {
+                        contador.innerHTML = t('contadorVip', vipDisponibles, vipMax);
+                        btnVip.disabled = false;
+                    }
+
+                } catch (error) {
+                    console.error('Error contador VIP:', error);
+                }
+            }
+
             function abrirInvitar() {
                 document.getElementById('modalInvitar').classList.add('activo');
                 document.getElementById('inputNombreInvitacion').value = '';
                 document.getElementById('inputWhatsAppInvitacion').value = '';
-                seleccionarTipo('invitado');
+                seleccionarTipo('general');
+                actualizarContadorVip();
             }
 
             function cerrarInvitar() {
@@ -2937,7 +3178,8 @@
 
             function seleccionarTipo(tipo) {
                 invitacionTipo = tipo;
-                document.getElementById('tipoInvitado').classList.toggle('activo', tipo === 'invitado');
+                document.getElementById('tipoGeneral').classList.toggle('activo', tipo === 'general');
+                document.getElementById('tipoVip').classList.toggle('activo', tipo === 'vip');
                 document.getElementById('tipoAdmin').classList.toggle('activo', tipo === 'admin');
             }
 
@@ -2970,14 +3212,20 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             tipo: invitacionTipo,
-                            nombre: nombre || (invitacionTipo === 'admin' ? 'Admin' : 'Invitado')
+                            nombre: nombre || (invitacionTipo === 'admin' ? 'Admin' : (invitacionTipo === 'vip' ? 'VIP' : 'Invitado'))
                         })
                     });
 
                     const data = await respuesta.json();
 
                     if (!respuesta.ok || !data.ok) {
-                        alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
+                        // 🔥 Manejo del error vip_max_alcanzado
+                        if (data.error === 'vip_max_alcanzado') {
+                            alert(data.mensaje || 'Ya se alcanzó el máximo de VIPs para este evento.');
+                            actualizarContadorVip();
+                        } else {
+                            alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
+                        }
                         btn.disabled = false;
                         btn.textContent = 'Generar Invitación';
                         return;
@@ -2985,6 +3233,9 @@
 
                     invitacionGenerada = data;
                     invitacionGenerada.whatsapp = whatsappCompleto;
+
+                    // Refrescar contador VIP después de crear
+                    actualizarContadorVip();
 
                     cerrarInvitar();
                     mostrarResultado();
@@ -3033,11 +3284,25 @@
             function mostrarResultado() {
                 const modal = document.getElementById('modalResultado');
 
-                document.getElementById('resultadoEmoji').textContent = invitacionGenerada.tipo === 'admin' ? '👑' : '🎉';
-                document.getElementById('resultadoTitulo').textContent = invitacionGenerada.tipo === 'admin' ? '¡Admin generado!' : '¡Invitación generada!';
-                document.getElementById('resultadoSubtitulo').textContent = invitacionGenerada.tipo === 'admin'
-                    ? 'Este usuario tendrá control total del evento'
-                    : 'Comparte el QR o el link con tu invitado';
+                let emoji, titulo, subtitulo;
+
+                if (invitacionGenerada.tipo === 'admin') {
+                    emoji = '👑';
+                    titulo = '¡Admin generado!';
+                    subtitulo = 'Este usuario tendrá control total del evento';
+                } else if (invitacionGenerada.tipo === 'vip') {
+                    emoji = '⭐';
+                    titulo = '¡VIP generado!';
+                    subtitulo = 'Este invitado tendrá descargas ilimitadas';
+                } else {
+                    emoji = '🎟️';
+                    titulo = '¡Invitación generada!';
+                    subtitulo = 'Comparte el QR o el link con tu invitado';
+                }
+
+                document.getElementById('resultadoEmoji').textContent = emoji;
+                document.getElementById('resultadoTitulo').textContent = titulo;
+                document.getElementById('resultadoSubtitulo').textContent = subtitulo;
 
                 document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
 
@@ -3085,7 +3350,7 @@
             }
 
             // ==========================================
-            // 🔥 NUEVO: SUBIR FOTOS
+            // 🔥 SUBIR FOTOS
             // ==========================================
             function abrirSubir() {
                 document.getElementById('modalSubir').classList.add('activo');
@@ -3103,7 +3368,6 @@
                 const archivos = Array.from(event.target.files || []);
                 if (archivos.length === 0) return;
 
-                // Validar y encolar
                 for (const archivo of archivos) {
                     if (!archivo.type.startsWith('image/jpeg')) {
                         alert(t('subirTipoInvalido') + ': ' + archivo.name);
@@ -3122,7 +3386,6 @@
                     });
                 }
 
-                // Limpiar input para permitir seleccionar el mismo archivo después
                 event.target.value = '';
 
                 renderizarListaSubidas();
@@ -3209,7 +3472,6 @@
                         renderizarListaSubidas();
                     }
 
-                    // Esperar un momento y luego recargar fotos
                     setTimeout(() => {
                         cargarFotos();
                     }, 2000);
@@ -3235,7 +3497,6 @@
             async function subirUnaFoto(subida) {
                 const { archivo } = subida;
 
-                // 1. Pedir URL firmada al server
                 const urlPedido = `${URL_CLOUDFLARE}/subir_url`;
 
                 const respPedido = await fetch(urlPedido, {
@@ -3259,7 +3520,6 @@
                     throw new Error(dataPedido.error || 'URL de subida inválida');
                 }
 
-                // 2. Subir directo a B2
                 let ultimoError = null;
                 for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
                     try {
@@ -3276,8 +3536,6 @@
                             throw new Error(`HTTP ${respSubida.status}${texto ? ' - ' + texto.slice(0, 80) : ''}`);
                         }
 
-                        // Éxito
-                        // 3. Confirmar al server
                         try {
                             await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
                                 method: 'POST',
@@ -3290,7 +3548,6 @@
                                 })
                             });
                         } catch (e) {
-                            // No importa si falla la confirmación, el recolector lo encontrará
                             console.warn('No se pudo confirmar subida (no crítico):', e.message);
                         }
 
