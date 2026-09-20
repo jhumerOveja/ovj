@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OVJ Studio — Panel del Fotógrafo</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            body {
+                font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
+                background: #0a0a0a;
+                color: #fff;
+                min-height: 100vh;
+                padding: 16px;
+            }
+
+            /* BLOQUEO */
+            .bloqueo {
+                display: none;
+                position: fixed; inset: 0; z-index: 5000;
+                background: #0a0a0a;
+                justify-content: center; align-items: center;
+                padding: 30px 24px; text-align: center;
+            }
+            .bloqueo.activo { display: flex; }
+            .bloqueo-contenido { max-width: 400px; }
+            .bloqueo .icono { font-size: 4rem; margin-bottom: 20px; display: block; opacity: 0.4; }
+            .bloqueo .titulo { font-size: 1.3rem; font-weight: 700; color: #f39c12; letter-spacing: 1px; margin-bottom: 12px; }
+            .bloqueo .subtitulo { font-size: 0.9rem; color: #888; line-height: 1.6; font-weight: 300; }
+            .bloqueo .btn-reintentar {
+                margin-top: 24px; background: rgba(243, 156, 18, 0.15);
+                border: 1px solid rgba(243, 156, 18, 0.4); color: #f39c12;
+                padding: 12px 28px; border-radius: 50px;
+                font-size: 0.85rem; font-weight: 600;
+                cursor: pointer; font-family: inherit;
+            }
+
+            #app { display: none; max-width: 720px; margin: 0 auto; }
+            #app.activo { display: block; }
+
+            /* HEADER */
+            .header {
+                padding: 12px 0 16px;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .header-left {
+                font-size: 1.4rem; font-weight: 300;
+                letter-spacing: 1px; user-select: none;
+            }
+            .header-left span {
+                font-weight: 700;
+                background: linear-gradient(135deg, #f9d976, #f39c12);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .header-right {
+                display: flex; align-items: center; gap: 10px;
+                font-size: 0.75rem; color: #888;
+            }
+            .badge-fotografo {
+                background: rgba(46, 204, 113, 0.15);
+                border: 1px solid rgba(46, 204, 113, 0.3);
+                color: #2ecc71; padding: 4px 12px;
+                border-radius: 50px; font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+
+            /* CARD */
+            .card {
+                background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
+                border: 1px solid rgba(243, 156, 18, 0.2);
+                border-radius: 18px;
+                padding: 24px 22px;
+                margin-bottom: 18px;
+            }
+            .card h2 {
+                font-size: 1.1rem; font-weight: 700;
+                color: #f1c40f; margin-bottom: 14px;
+                letter-spacing: 0.5px;
+                display: flex; align-items: center; gap: 8px;
+            }
+            .card .info-linea {
+                display: flex; justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+                font-size: 0.85rem;
+            }
+            .card .info-linea:last-child { border-bottom: none; }
+            .card .info-linea .label { color: #888; font-weight: 400; }
+            .card .info-linea .valor { color: #fff; font-weight: 600; }
+
+            /* BOTONES */
+            .btn {
+                display: inline-flex; align-items: center; justify-content: center;
+                gap: 8px; padding: 14px 20px;
+                border-radius: 12px; border: none;
+                font-size: 0.9rem; font-weight: 700;
+                cursor: pointer; transition: all 0.25s ease;
+                font-family: inherit; width: 100%;
+                margin-top: 10px;
+            }
+            .btn:hover { transform: scale(1.02); }
+            .btn:disabled { opacity: 0.5; cursor: wait; pointer-events: none; }
+            .btn-primario {
+                background: linear-gradient(135deg, #f39c12, #d68910);
+                color: #0a0a0a;
+            }
+            .btn-verde {
+                background: linear-gradient(135deg, #2ecc71, #27ae60);
+                color: #0a0a0a;
+            }
+            .btn-rojo {
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: #fff;
+            }
+            .btn-azul {
+                background: rgba(52, 152, 219, 0.15);
+                border: 1px solid rgba(52, 152, 219, 0.4);
+                color: #5dade2;
+            }
+            .btn-secundario {
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #ccc;
+            }
+            .btn-secundario:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+            .btn-grid {
+                display: grid; grid-template-columns: 1fr 1fr;
+                gap: 10px; margin-top: 10px;
+            }
+            .btn-grid .btn { margin-top: 0; }
+
+            /* MODAL */
+            .modal {
+                display: none;
+                position: fixed; z-index: 1500;
+                top: 0; left: 0; width: 100%; height: 100%;
+                justify-content: center; align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(12px);
+            }
+            .modal.activo { display: flex; }
+            .modal-contenido {
+                background: #141414;
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 440px; width: 100%;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            @keyframes zoomIn {
+                0% { transform: scale(0.85); opacity: 0; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            .modal-contenido .titulo {
+                font-size: 1.1rem; font-weight: 700;
+                color: #f1c40f; margin-bottom: 6px;
+                text-align: center;
+            }
+            .modal-contenido .subtitulo {
+                font-size: 0.8rem; color: #888;
+                text-align: center; margin-bottom: 20px;
+                line-height: 1.5;
+            }
+            .btn-cerrar {
+                position: absolute; top: 12px; right: 14px;
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                color: #888; font-size: 1.2rem;
+                cursor: pointer; width: 36px; height: 36px;
+                border-radius: 50%; display: flex;
+                align-items: center; justify-content: center;
+            }
+            .btn-cerrar:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+            /* INPUT */
+            .input-group { margin-bottom: 14px; }
+            .input-group label {
+                display: block; font-size: 0.75rem;
+                color: #888; margin-bottom: 6px;
+                padding-left: 4px;
+            }
+            .input-group input {
+                width: 100%; padding: 14px 16px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: rgba(255, 255, 255, 0.04);
+                color: #fff; font-size: 0.95rem;
+                outline: none; font-family: inherit;
+            }
+            .input-group input:focus {
+                border-color: rgba(255, 215, 0, 0.3);
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            /* PAQUETES */
+            .paquete-opcion {
+                display: flex; justify-content: space-between;
+                align-items: center; gap: 12px;
+                padding: 14px 16px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                margin-bottom: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .paquete-opcion:hover {
+                background: rgba(243, 156, 18, 0.08);
+                border-color: rgba(243, 156, 18, 0.3);
+            }
+            .paquete-opcion .nombre {
+                font-size: 0.9rem; font-weight: 600;
+                color: #f1c40f;
+            }
+            .paquete-opcion .detalle {
+                font-size: 0.7rem; color: #888;
+                margin-top: 4px;
+            }
+            .paquete-opcion .precio {
+                font-size: 1rem; font-weight: 700;
+                color: #2ecc71;
+                flex-shrink: 0;
+            }
+
+            /* LISTA EVENTOS */
+            .evento-item {
+                padding: 14px 16px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 12px;
+                margin-bottom: 10px;
+            }
+            .evento-item .nombre {
+                font-size: 0.95rem; font-weight: 600;
+                color: #fff; margin-bottom: 6px;
+            }
+            .evento-item .detalle {
+                font-size: 0.75rem; color: #888;
+                line-height: 1.5;
+            }
+            .evento-item .estado {
+                display: inline-block; font-size: 0.65rem;
+                font-weight: 700; letter-spacing: 0.5px;
+                padding: 3px 10px; border-radius: 50px;
+                margin-top: 8px;
+            }
+            .evento-item .estado.activo {
+                background: rgba(46, 204, 113, 0.15);
+                color: #2ecc71;
+            }
+            .evento-item .estado.agendado {
+                background: rgba(243, 156, 18, 0.15);
+                color: #f39c12;
+            }
+
+            /* TOAST */
+            .toast {
+                position: fixed; bottom: 24px; left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #fff;
+                padding: 14px 24px; border-radius: 50px;
+                font-size: 0.85rem; font-weight: 600;
+                z-index: 9000;
+                opacity: 0; visibility: hidden;
+                transition: all 0.3s ease;
+                max-width: 90%;
+                text-align: center;
+            }
+            .toast.activo { opacity: 1; visibility: visible; }
+            .toast.ok { border-color: rgba(46, 204, 113, 0.4); color: #2ecc71; }
+            .toast.error { border-color: rgba(231, 76, 60, 0.4); color: #e74c3c; }
+
+            /* EMPTY STATE */
+            .empty {
+                text-align: center; padding: 40px 20px;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 16px;
+            }
+            .empty .icono { font-size: 3rem; opacity: 0.4; margin-bottom: 14px; display: block; }
+            .empty .titulo { font-size: 1rem; font-weight: 600; color: #ccc; margin-bottom: 8px; }
+            .empty .mensaje { font-size: 0.8rem; color: #666; line-height: 1.6; }
+
+            .footer {
+                text-align: center; padding: 24px 10px 6px;
+                color: #1a1a1a; font-size: 0.6rem;
+                letter-spacing: 1px;
+                margin-top: 24px;
+            }
+
+            @media (max-width: 480px) {
+                .btn-grid { grid-template-columns: 1fr; }
+                .card { padding: 18px 16px; }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- BLOQUEO -->
+        <div class="bloqueo" id="bloqueo">
+            <div class="bloqueo-contenido">
+                <span class="icono" id="bloqueoIcono">🔒</span>
+                <div class="titulo" id="bloqueoTitulo">Panel del Fotógrafo</div>
+                <div class="subtitulo" id="bloqueoMensaje">
+                    Este link no es válido o ya expiró.
+                </div>
+                <button class="btn-reintentar" onclick="window.location.reload()">Reintentar</button>
+            </div>
+        </div>
+
+        <!-- APP -->
+        <div id="app">
+            <div class="header">
+                <div class="header-left">OVJ <span>Studio</span></div>
+                <div class="header-right">
+                    <span class="badge-fotografo" id="badgeFotografo">📸 Fotógrafo</span>
+                </div>
+            </div>
+
+            <!-- ESTADO DEL EVENTO ACTIVO -->
+            <div id="panelActivo" style="display: none;">
+                <div class="card">
+                    <h2>🟢 Evento Activo</h2>
+                    <div class="info-linea">
+                        <span class="label">Evento</span>
+                        <span class="valor" id="activoNombre">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Inicio</span>
+                        <span class="valor" id="activoInicio">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Duración</span>
+                        <span class="valor" id="activoDuracion">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Fin programado</span>
+                        <span class="valor" id="activoFin">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Fotos subidas</span>
+                        <span class="valor" id="activoFotos">0</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">En goteo</span>
+                        <span class="valor" id="activoPendientes">0</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Visibles</span>
+                        <span class="valor" id="activoVisibles">0</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Generales conectados</span>
+                        <span class="valor" id="activoGenerales">0</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">VIPs</span>
+                        <span class="valor" id="activoVips">0 / 3</span>
+                    </div>
+
+                    <button class="btn btn-verde" onclick="abrirSubir()">
+                        📤 Subir fotos
+                    </button>
+
+                    <div class="btn-grid">
+                        <button class="btn btn-azul" onclick="abrirAmpliar()">
+                            ➕ Ampliar tiempo
+                        </button>
+                        <button class="btn btn-secundario" onclick="abrirInvitar()">
+                            ✨ Invitar
+                        </button>
+                    </div>
+
+                    <button class="btn btn-rojo" onclick="abrirFinalizar()">
+                        🏁 Finalizar evento
+                    </button>
+                </div>
+            </div>
+
+            <!-- EVENTO AGENDADO -->
+            <div id="panelAgendado" style="display: none;">
+                <div class="card">
+                    <h2>⏳ Evento Agendado</h2>
+                    <div class="info-linea">
+                        <span class="label">Evento</span>
+                        <span class="valor" id="agendadoNombre">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Fecha</span>
+                        <span class="valor" id="agendadoFecha">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Hora</span>
+                        <span class="valor" id="agendadoHora">—</span>
+                    </div>
+                    <div class="info-linea">
+                        <span class="label">Duración</span>
+                        <span class="valor" id="agendadoDuracion">—</span>
+                    </div>
+
+                    <button class="btn btn-primario" id="btnActivar" onclick="activarEvento()">
+                        ▶️ Activar evento
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIN EVENTO ACTIVO -->
+            <div id="panelVacio" style="display: none;">
+                <div class="card">
+                    <h2>📅 Sin evento activo</h2>
+                    <div class="empty">
+                        <span class="icono">🎬</span>
+                        <div class="titulo">No tienes eventos activos</div>
+                        <div class="mensaje">
+                            Contacta al admin para que te asigne un evento.<br>
+                            O usa el modo libre si es una urgencia.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primario" onclick="abrirModoLibre()">
+                        🆘 Activar modo libre
+                    </button>
+                </div>
+            </div>
+
+            <!-- MIS EVENTOS -->
+            <div class="card">
+                <h2>📋 Mis eventos</h2>
+                <div id="listaEventos"></div>
+            </div>
+
+            <div class="footer">OVJ STUDIO · Panel del Fotógrafo</div>
+        </div>
+
+        <!-- MODAL MODO LIBRE -->
+        <div class="modal" id="modalModoLibre">
+            <div class="modal-contenido">
+                <button class="btn-cerrar" onclick="cerrarModoLibre()">✕</button>
+                <div class="titulo">🆘 Modo Libre</div>
+                <div class="subtitulo">
+                    Para eventos de urgencia.<br>
+                    Escribe el nombre del evento.
+                </div>
+                <div class="input-group">
+                    <label>Nombre del evento</label>
+                    <input type="text" id="inputNombreLibre" placeholder="Ej: BODA LOPEZ" maxlength="50" autocomplete="off" />
+                </div>
+                <button class="btn btn-primario" onclick="confirmarModoLibre()">Activar modo libre</button>
+                <button class="btn btn-secundario" onclick="cerrarModoLibre()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- MODAL AMPLIAR -->
+        <div class="modal" id="modalAmpliar">
+            <div class="modal-contenido">
+                <button class="btn-cerrar" onclick="cerrarAmpliar()">✕</button>
+                <div class="titulo">➕ Ampliar Evento</div>
+                <div class="subtitulo">Elige un paquete para extender el tiempo.</div>
+
+                <div class="paquete-opcion" onclick="ampliar('basico')">
+                    <div>
+                        <div class="nombre">Básico</div>
+                        <div class="detalle">+30 minutos</div>
+                    </div>
+                    <div class="precio">Bs. 80</div>
+                </div>
+
+                <div class="paquete-opcion" onclick="ampliar('estandar')">
+                    <div>
+                        <div class="nombre">Estándar</div>
+                        <div class="detalle">+1 hora</div>
+                    </div>
+                    <div class="precio">Bs. 150</div>
+                </div>
+
+                <div class="paquete-opcion" onclick="ampliar('premium')">
+                    <div>
+                        <div class="nombre">Premium</div>
+                        <div class="detalle">+2 horas</div>
+                    </div>
+                    <div class="precio">Bs. 350</div>
+                </div>
+
+                <button class="btn btn-secundario" onclick="cerrarAmpliar()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- MODAL FINALIZAR -->
+        <div class="modal" id="modalFinalizar">
+            <div class="modal-contenido">
+                <button class="btn-cerrar" onclick="cerrarFinalizar()">✕</button>
+                <div class="titulo">🏁 Finalizar Evento</div>
+                <div class="subtitulo">
+                    Se borrarán las fotos locales, invitaciones y las fotos de B2.<br>
+                    Esta acción NO se puede deshacer.
+                </div>
+                <button class="btn btn-rojo" id="btnConfirmarFinalizar" onclick="confirmarFinalizar()">
+                    Sí, finalizar
+                </button>
+                <button class="btn btn-secundario" onclick="cerrarFinalizar()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- MODAL SUBIR FOTOS -->
+        <div class="modal" id="modalSubir">
+            <div class="modal-contenido">
+                <button class="btn-cerrar" onclick="cerrarSubir()">✕</button>
+                <div class="titulo">📤 Subir Fotos</div>
+                <div class="subtitulo">
+                    Se suben directo a la nube.<br>
+                    No pasan por tu conexión.
+                </div>
+
+                <div id="zonaDrop" onclick="document.getElementById('inputFotos').click()"
+                     style="border: 2px dashed rgba(46, 204, 113, 0.3); border-radius: 14px; padding: 28px 20px; text-align: center; cursor: pointer; background: rgba(46, 204, 113, 0.03); margin-bottom: 16px;">
+                    <span style="font-size: 2.2rem; display: block; margin-bottom: 8px;">📸</span>
+                    <div style="font-size: 0.85rem; color: #ccc; font-weight: 500;">Toca aquí para elegir fotos</div>
+                    <div style="font-size: 0.7rem; color: #666; margin-top: 6px;">Máximo 15 MB por foto · JPG</div>
+                </div>
+                <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none" onchange="manejarSeleccionFotos(event)" />
+
+                <div id="listaSubidas" style="max-height: 240px; overflow-y: auto; margin-bottom: 14px;"></div>
+
+                <button class="btn btn-secundario" id="btnCerrarSubir" onclick="cerrarSubir()">Cerrar</button>
+            </div>
+        </div>
+
+        <!-- MODAL INVITAR (simple) -->
+        <div class="modal" id="modalInvitar">
+            <div class="modal-contenido">
+                <button class="btn-cerrar" onclick="cerrarInvitar()">✕</button>
+                <div class="titulo">✨ Nueva Invitación</div>
+                <div class="subtitulo">Genera un pase para VIP o Admin.</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                    <button class="btn btn-secundario" id="tipoVipBtn" onclick="seleccionarTipoInv('vip')" style="margin: 0;">⭐ VIP</button>
+                    <button class="btn btn-secundario" id="tipoAdminBtn" onclick="seleccionarTipoInv('admin')" style="margin: 0;">👑 Admin</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" id="inputNombreInv" placeholder="Ej: Familia Pérez" maxlength="40" autocomplete="off" />
+                </div>
+
+                <button class="btn btn-primario" id="btnGenerarInv" onclick="generarInvitacion()">Generar invitación</button>
+                <button class="btn btn-secundario" onclick="cerrarInvitar()">Cancelar</button>
+
+                <div id="resultadoInv" style="margin-top: 16px; display: none;">
+                    <div style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">Link de invitación:</div>
+                    <div id="resultadoInvUrl" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px; font-size: 0.7rem; color: #ccc; word-break: break-all; font-family: monospace; max-height: 100px; overflow-y: auto;"></div>
+                    <button class="btn btn-verde" onclick="copiarLinkInv()" style="margin-top: 10px;">📋 Copiar link</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOAST -->
+        <div class="toast" id="toast"></div>
+
+        <script>
+            // ==========================================
+            // 🔑 CONFIGURACIÓN
+            // ==========================================
+            const URL_CLOUDFLARE = "https://debian-hosted-profits-tiger.trycloudflare.com";
+            const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
+            const REINTENTOS_SUBIDA = 3;
+
+            // ==========================================
+            // 🔑 PARÁMETROS DEL URL
+            // ==========================================
+            function getParametrosURL() {
+                const params = new URLSearchParams(window.location.search);
+                return {
+                    fotografo: params.get('f') || 'default',
+                    eventoId: params.get('e'),
+                    token: params.get('t')
+                };
+            }
+
+            const PARAMS = getParametrosURL();
+            const FOTOGRAFO_ID = PARAMS.fotografo;
+            const EVENTO_ID = PARAMS.eventoId;
+            const TOKEN = PARAMS.token;
+
+            // ==========================================
+            // 🌍 VARIABLES GLOBALES
+            // ==========================================
+            let estado = {
+                tipo: null,
+                eventoActivo: null,
+                eventoAgendado: null,
+                eventos: [],
+                generalesConectados: 0,
+                vipActuales: 0,
+                vipMax: 3
+            };
+
+            let intervaloRefresh = null;
+            let colaSubidas = [];
+            let subidaEnProceso = false;
+            let invitacionTipo = 'vip';
+            let linkInvitacionActual = null;
+
+            // ==========================================
+            // 🔒 ACCESO
+            // ==========================================
+            function mostrarBloqueo(icono, titulo, mensaje) {
+                document.getElementById('bloqueo').classList.add('activo');
+                document.getElementById('app').classList.remove('activo');
+                document.getElementById('bloqueoIcono').textContent = icono;
+                document.getElementById('bloqueoTitulo').textContent = titulo;
+                document.getElementById('bloqueoMensaje').innerHTML = mensaje;
+            }
+
+            async function validarAcceso() {
+                if (!EVENTO_ID || !TOKEN) {
+                    mostrarBloqueo('🔒', 'Acceso denegado', 'Faltan parámetros en la URL.');
+                    return false;
+                }
+
+                try {
+                    const url = `${URL_CLOUDFLARE}/acceso?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
+
+                    const respuesta = await fetch(url);
+                    const data = await respuesta.json();
+
+                    if (!respuesta.ok || !data.valido) {
+                        if (data.reclamada) {
+                            const tokenGuardado = localStorage.getItem('ovj_token');
+                            if (tokenGuardado === TOKEN) {
+                                estado.tipo = data.tipo;
+                                return true;
+                            }
+                            mostrarBloqueo('⚠️', 'Pase ya reclamado', 'Este link ya fue usado en otro dispositivo.<br>Contacta al admin para uno nuevo.');
+                            return false;
+                        }
+
+                        mostrarBloqueo('🚫', 'Link inválido', 'El link no es válido o el evento finalizó.');
+                        return false;
+                    }
+
+                    // Verificar que sea admin_fotografo
+                    if (data.tipo !== 'admin') {
+                        mostrarBloqueo('🚫', 'Acceso denegado', 'Este panel es solo para administradores.');
+                        return false;
+                    }
+
+                    estado.tipo = data.tipo;
+
+                    localStorage.setItem('ovj_token', TOKEN);
+                    localStorage.setItem('ovj_tipo', data.tipo);
+                    localStorage.setItem('ovj_rol_nombre', data.nombre || '');
+
+                    return true;
+
+                } catch (error) {
+                    console.error('Error validando acceso:', error);
+                    mostrarBloqueo('❌', 'Error de conexión', 'No pudimos conectar con el servidor.');
+                    return false;
+                }
+            }
+
+            // ==========================================
+            // 📡 API
+            // ==========================================
+            async function apiCall(endpoint, opciones = {}) {
+                const url = `${URL_CLOUDFLARE}${endpoint}`;
+
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(opciones.headers || {})
+                };
+
+                const respuesta = await fetch(url, {
+                    ...opciones,
+                    headers
+                });
+
+                if (!respuesta.ok) {
+                    const data = await respuesta.json().catch(() => ({}));
+                    throw new Error(data.error || data.mensaje || `HTTP ${respuesta.status}`);
+                }
+
+                return await respuesta.json();
+            }
+
+            // ==========================================
+            // 🔄 REFRESCAR ESTADO
+            // ==========================================
+            async function refrescarEstado() {
+                try {
+                    const url = `${URL_CLOUDFLARE}/api/fotografo/estado?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
+
+                    const respuesta = await fetch(url);
+
+                    if (!respuesta.ok) {
+                        throw new Error(`HTTP ${respuesta.status}`);
+                    }
+
+                    const data = await respuesta.json();
+
+                    estado.eventoActivo = data.eventoActivo || null;
+                    estado.eventoAgendado = data.eventoAgendado || null;
+                    estado.eventos = data.eventos || [];
+                    estado.generalesConectados = data.generalesConectados || 0;
+                    estado.vipActuales = data.vipActuales || 0;
+                    estado.vipMax = data.vipMax || 3;
+
+                    renderizarPanel();
+                    renderizarListaEventos();
+
+                } catch (error) {
+                    console.error('Error refrescando estado:', error);
+                    mostrarToast('Error al refrescar el estado', 'error');
+                }
+            }
+
+            // ==========================================
+            // 🎨 RENDERIZADO
+            // ==========================================
+            function renderizarPanel() {
+                const panelActivo = document.getElementById('panelActivo');
+                const panelAgendado = document.getElementById('panelAgendado');
+                const panelVacio = document.getElementById('panelVacio');
+
+                panelActivo.style.display = 'none';
+                panelAgendado.style.display = 'none';
+                panelVacio.style.display = 'none';
+
+                if (estado.eventoActivo) {
+                    panelActivo.style.display = 'block';
+                    renderizarActivo();
+                } else if (estado.eventoAgendado) {
+                    panelAgendado.style.display = 'block';
+                    renderizarAgendado();
+                } else {
+                    panelVacio.style.display = 'block';
+                }
+            }
+
+            function renderizarActivo() {
+                const evt = estado.eventoActivo;
+
+                document.getElementById('activoNombre').textContent = evt.evento;
+                document.getElementById('activoInicio').textContent = new Date(evt.inicioReal).toLocaleString('es-BO');
+
+                const duracionTotal = evt.duracionTotalProgramada || evt.duracionProgramada;
+                document.getElementById('activoDuracion').textContent = `${duracionTotal}h`;
+
+                const inicio = new Date(evt.inicioReal);
+                const fin = new Date(inicio.getTime() + duracionTotal * 60 * 60 * 1000);
+                document.getElementById('activoFin').textContent = fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+
+                document.getElementById('activoFotos').textContent = evt.fotosSubidas || 0;
+                document.getElementById('activoPendientes').textContent = evt.fotosPendientes || 0;
+                document.getElementById('activoVisibles').textContent = evt.fotosVisibles || 0;
+                document.getElementById('activoGenerales').textContent = estado.generalesConectados;
+                document.getElementById('activoVips').textContent = `${estado.vipActuales} / ${estado.vipMax}`;
+            }
+
+            function renderizarAgendado() {
+                const evt = estado.eventoAgendado;
+
+                document.getElementById('agendadoNombre').textContent = evt.evento;
+
+                const [year, month, day] = evt.fechaProgramada.split('-');
+                document.getElementById('agendadoFecha').textContent = `${day}/${month}/${year}`;
+                document.getElementById('agendadoHora').textContent = evt.horaInicio;
+
+                const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
+                document.getElementById('agendadoDuracion').textContent = `${duracion}h`;
+            }
+
+            function renderizarListaEventos() {
+                const lista = document.getElementById('listaEventos');
+
+                if (!estado.eventos || estado.eventos.length === 0) {
+                    lista.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">Sin eventos</div>';
+                    return;
+                }
+
+                let html = '';
+
+                estado.eventos.forEach(evt => {
+                    const esLibre = evt.modo === 'libre';
+                    const estadoClase = evt.estado === 'activo' ? 'activo' : 'agendado';
+                    const estadoTexto = evt.estado === 'activo' ? '🟢 ACTIVO' : '⏳ AGENDADO';
+
+                    let detalle = '';
+                    if (esLibre) {
+                        detalle = `🆘 Modo libre`;
+                    } else {
+                        const totalHoras = evt.duracionTotalProgramada || evt.duracionProgramada;
+                        const [year, month, day] = evt.fechaProgramada.split('-');
+                        detalle = `🗓️ ${day}/${month}/${year} · ${evt.horaInicio} (${totalHoras}h)`;
+                    }
+
+                    html += `
+                        <div class="evento-item">
+                            <div class="nombre">${esLibre ? '🆘' : '📸'} ${evt.evento}</div>
+                            <div class="detalle">${detalle}</div>
+                            <span class="estado ${estadoClase}">${estadoTexto}</span>
+                        </div>
+                    `;
+                });
+
+                lista.innerHTML = html;
+            }
+
+            // ==========================================
+            // ▶️ ACTIVAR EVENTO
+            // ==========================================
+            async function activarEvento() {
+                const btn = document.getElementById('btnActivar');
+                btn.disabled = true;
+                btn.textContent = 'Activando...';
+
+                try {
+                    await apiCall('/api/fotografo/activar', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            f: FOTOGRAFO_ID,
+                            e: EVENTO_ID,
+                            t: TOKEN
+                        })
+                    });
+
+                    mostrarToast('✅ Evento activado', 'ok');
+                    await refrescarEstado();
+
+                } catch (error) {
+                    console.error('Error activando evento:', error);
+                    mostrarToast('❌ ' + error.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.textContent = '▶️ Activar evento';
+            }
+
+            // ==========================================
+            // 🆘 MODO LIBRE
+            // ==========================================
+            function abrirModoLibre() {
+                document.getElementById('modalModoLibre').classList.add('activo');
+                document.getElementById('inputNombreLibre').value = '';
+            }
+
+            function cerrarModoLibre() {
+                document.getElementById('modalModoLibre').classList.remove('activo');
+            }
+
+            async function confirmarModoLibre() {
+                const nombre = document.getElementById('inputNombreLibre').value.trim();
+
+                if (nombre.length < 2) {
+                    mostrarToast('❌ Nombre muy corto', 'error');
+                    return;
+                }
+
+                try {
+                    await apiCall('/api/fotografo/modo_libre', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            f: FOTOGRAFO_ID,
+                            t: TOKEN,
+                            nombre: nombre.toUpperCase()
+                        })
+                    });
+
+                    cerrarModoLibre();
+                    mostrarToast('✅ Modo libre activado', 'ok');
+                    await refrescarEstado();
+
+                } catch (error) {
+                    console.error('Error activando modo libre:', error);
+                    mostrarToast('❌ ' + error.message, 'error');
+                }
+            }
+
+            // ==========================================
+            // ➕ AMPLIAR
+            // ==========================================
+            function abrirAmpliar() {
+                document.getElementById('modalAmpliar').classList.add('activo');
+            }
+
+            function cerrarAmpliar() {
+                document.getElementById('modalAmpliar').classList.remove('activo');
+            }
+
+            async function ampliar(tipo) {
+                try {
+                    const data = await apiCall('/api/fotografo/ampliar', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            f: FOTOGRAFO_ID,
+                            e: EVENTO_ID,
+                            t: TOKEN,
+                            tipo: tipo
+                        })
+                    });
+
+                    cerrarAmpliar();
+                    mostrarToast(`✅ Ampliación aplicada: ${data.paquete.nombre}`, 'ok');
+                    await refrescarEstado();
+
+                } catch (error) {
+                    console.error('Error ampliando:', error);
+                    mostrarToast('❌ ' + error.message, 'error');
+                }
+            }
+
+            // ==========================================
+            // 🏁 FINALIZAR
+            // ==========================================
+            function abrirFinalizar() {
+                document.getElementById('modalFinalizar').classList.add('activo');
+            }
+
+            function cerrarFinalizar() {
+                document.getElementById('modalFinalizar').classList.remove('activo');
+            }
+
+            async function confirmarFinalizar() {
+                const btn = document.getElementById('btnConfirmarFinalizar');
+                btn.disabled = true;
+                btn.textContent = 'Finalizando...';
+
+                try {
+                    await apiCall('/api/fotografo/finalizar', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            f: FOTOGRAFO_ID,
+                            e: EVENTO_ID,
+                            t: TOKEN
+                        })
+                    });
+
+                    cerrarFinalizar();
+                    mostrarToast('✅ Evento finalizado', 'ok');
+
+                    // Refrescar varias veces para ver los cambios
+                    setTimeout(() => refrescarEstado(), 1000);
+                    setTimeout(() => refrescarEstado(), 3000);
+
+                } catch (error) {
+                    console.error('Error finalizando:', error);
+                    mostrarToast('❌ ' + error.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Sí, finalizar';
+            }
+
+            // ==========================================
+            // 📤 SUBIR FOTOS
+            // ==========================================
+            function abrirSubir() {
+                document.getElementById('modalSubir').classList.add('activo');
+            }
+
+            function cerrarSubir() {
+                if (subidaEnProceso) {
+                    mostrarToast('Espera a que terminen las subidas...', 'error');
+                    return;
+                }
+                document.getElementById('modalSubir').classList.remove('activo');
+                colaSubidas = [];
+                renderizarListaSubidas();
+            }
+
+            function manejarSeleccionFotos(event) {
+                const archivos = Array.from(event.target.files || []);
+                if (archivos.length === 0) return;
+
+                for (const archivo of archivos) {
+                    if (!archivo.type.startsWith('image/jpeg')) {
+                        mostrarToast(`❌ Solo JPG: ${archivo.name}`, 'error');
+                        continue;
+                    }
+                    if (archivo.size > TAMANO_MAX_FOTO) {
+                        mostrarToast(`❌ Muy grande: ${archivo.name}`, 'error');
+                        continue;
+                    }
+
+                    colaSubidas.push({
+                        archivo,
+                        estado: 'pendiente',
+                        error: null
+                    });
+                }
+
+                event.target.value = '';
+                renderizarListaSubidas();
+                procesarColaSubidas();
+            }
+
+            function renderizarListaSubidas() {
+                const contenedor = document.getElementById('listaSubidas');
+
+                if (colaSubidas.length === 0) {
+                    contenedor.innerHTML = '';
+                    return;
+                }
+
+                const total = colaSubidas.length;
+                const ok = colaSubidas.filter(s => s.estado === 'ok').length;
+
+                let html = '';
+
+                colaSubidas.forEach(sub => {
+                    let texto = '';
+                    let clase = '';
+
+                    switch (sub.estado) {
+                        case 'pendiente': texto = 'En espera'; clase = 'color: #888;'; break;
+                        case 'subiendo': texto = 'Subiendo...'; clase = 'color: #f39c12;'; break;
+                        case 'ok': texto = '✓ Subida'; clase = 'color: #2ecc71;'; break;
+                        case 'error': texto = '✗ Error'; clase = 'color: #e74c3c;'; break;
+                    }
+
+                    html += `
+                        <div style="display:flex; justify-content:space-between; padding:8px 10px; background:rgba(255,255,255,0.03); border-radius:8px; margin-bottom:6px; font-size:0.75rem;">
+                            <div style="color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">${sub.archivo.name}</div>
+                            <div style="${clase} font-weight:600;">${texto}</div>
+                        </div>
+                    `;
+                });
+
+                if (subidaEnProceso) {
+                    html += `<div style="text-align:center; color:#f39c12; font-size:0.75rem; padding:8px;">${ok} de ${total} subidas</div>`;
+                } else if (ok === total && total > 0) {
+                    html += `<div style="text-align:center; color:#2ecc71; font-size:0.75rem; padding:8px;">✅ Todas subidas</div>`;
+                }
+
+                contenedor.innerHTML = html;
+            }
+
+            async function procesarColaSubidas() {
+                if (subidaEnProceso) return;
+
+                subidaEnProceso = true;
+
+                try {
+                    for (const sub of colaSubidas) {
+                        if (sub.estado === 'ok') continue;
+
+                        sub.estado = 'subiendo';
+                        renderizarListaSubidas();
+
+                        try {
+                            await subirUnaFoto(sub.archivo);
+                            sub.estado = 'ok';
+                        } catch (error) {
+                            sub.estado = 'error';
+                            sub.error = error.message;
+                        }
+
+                        renderizarListaSubidas();
+                    }
+
+                    setTimeout(() => refrescarEstado(), 2000);
+
+                } finally {
+                    subidaEnProceso = false;
+                    renderizarListaSubidas();
+                }
+            }
+
+            async function subirUnaFoto(archivo) {
+                const respPedido = await fetch(`${URL_CLOUDFLARE}/subir_url`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        f: FOTOGRAFO_ID,
+                        e: EVENTO_ID,
+                        t: TOKEN,
+                        nombreOriginal: archivo.name
+                    })
+                });
+
+                if (!respPedido.ok) throw new Error('No se pudo obtener URL');
+
+                const dataPedido = await respPedido.json();
+                if (!dataPedido.ok || !dataPedido.url) throw new Error('URL inválida');
+
+                let ultimoError = null;
+
+                for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
+                    try {
+                        const respSubida = await fetch(dataPedido.url, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'image/jpeg' },
+                            body: archivo
+                        });
+
+                        if (!respSubida.ok) {
+                            throw new Error(`HTTP ${respSubida.status}`);
+                        }
+
+                        try {
+                            await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    f: FOTOGRAFO_ID,
+                                    e: EVENTO_ID,
+                                    t: TOKEN,
+                                    key: dataPedido.key
+                                })
+                            });
+                        } catch (e) {}
+
+                        return;
+
+                    } catch (error) {
+                        ultimoError = error;
+                        if (intento < REINTENTOS_SUBIDA) {
+                            await new Promise(r => setTimeout(r, 1000 * intento));
+                        }
+                    }
+                }
+
+                throw ultimoError || new Error('Error subiendo');
+            }
+
+            // ==========================================
+            // ✨ INVITAR
+            // ==========================================
+            function abrirInvitar() {
+                document.getElementById('modalInvitar').classList.add('activo');
+                document.getElementById('inputNombreInv').value = '';
+                document.getElementById('resultadoInv').style.display = 'none';
+                seleccionarTipoInv('vip');
+            }
+
+            function cerrarInvitar() {
+                document.getElementById('modalInvitar').classList.remove('activo');
+            }
+
+            function seleccionarTipoInv(tipo) {
+                invitacionTipo = tipo;
+                document.getElementById('tipoVipBtn').style.background = tipo === 'vip' ? 'rgba(243,156,18,0.12)' : '';
+                document.getElementById('tipoVipBtn').style.borderColor = tipo === 'vip' ? 'rgba(243,156,18,0.4)' : '';
+                document.getElementById('tipoVipBtn').style.color = tipo === 'vip' ? '#f39c12' : '';
+
+                document.getElementById('tipoAdminBtn').style.background = tipo === 'admin' ? 'rgba(243,156,18,0.12)' : '';
+                document.getElementById('tipoAdminBtn').style.borderColor = tipo === 'admin' ? 'rgba(243,156,18,0.4)' : '';
+                document.getElementById('tipoAdminBtn').style.color = tipo === 'admin' ? '#f39c12' : '';
+            }
+
+            async function generarInvitacion() {
+                const btn = document.getElementById('btnGenerarInv');
+                btn.disabled = true;
+                btn.textContent = 'Generando...';
+
+                const nombre = document.getElementById('inputNombreInv').value.trim();
+
+                try {
+                    const data = await apiCall(`/invitar?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            tipo: invitacionTipo,
+                            nombre: nombre || (invitacionTipo === 'vip' ? 'VIP' : 'Admin')
+                        })
+                    });
+
+                    linkInvitacionActual = data.url;
+                    document.getElementById('resultadoInvUrl').textContent = data.url;
+                    document.getElementById('resultadoInv').style.display = 'block';
+
+                    mostrarToast('✅ Invitación generada', 'ok');
+
+                } catch (error) {
+                    console.error('Error generando:', error);
+                    mostrarToast('❌ ' + error.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Generar invitación';
+            }
+
+            function copiarLinkInv() {
+                if (!linkInvitacionActual) return;
+
+                navigator.clipboard.writeText(linkInvitacionActual).then(() => {
+                    mostrarToast('📋 Link copiado', 'ok');
+                }).catch(() => {
+                    mostrarToast('❌ No se pudo copiar', 'error');
+                });
+            }
+
+            // ==========================================
+            // 🍞 TOAST
+            // ==========================================
+            let toastTimeout = null;
+            function mostrarToast(mensaje, tipo = 'ok') {
+                const toast = document.getElementById('toast');
+                toast.textContent = mensaje;
+                toast.className = `toast activo ${tipo}`;
+
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('activo');
+                }, 3000);
+            }
+
+            // ==========================================
+            // 🚀 INICIALIZACIÓN
+            // ==========================================
+            async function inicializar() {
+                const accesoValido = await validarAcceso();
+
+                if (!accesoValido) return;
+
+                document.getElementById('bloqueo').classList.remove('activo');
+                document.getElementById('app').classList.add('activo');
+
+                await refrescarEstado();
+
+                // Refrescar cada 30 segundos
+                intervaloRefresh = setInterval(refrescarEstado, 30000);
+            }
+
+            inicializar();
+        </script>
+    </body>
+</html>
