@@ -1295,9 +1295,9 @@
             creditosActuales = estado.creditos;
 
             renderActivo(eventoActivo, creditosActuales, estado);
-            renderAgendados(eventos.agendados || []);
+            const info = renderAgendados(eventos.agendados || []);
             renderFinalizados(eventos.finalizadosHoy || []);
-            renderVacio(eventos.agendados?.length, eventoActivo);
+            renderVacio(info.activables, eventoActivo);
 
             marcarServidor('ok');
 
@@ -1388,7 +1388,7 @@
 
         if (!agendados || agendados.length === 0) {
             cont.innerHTML = '';
-            return;
+            return { activables: 0, huerfanos: 0 };
         }
 
         // Ordenar por fecha
@@ -1398,47 +1398,89 @@
             return fa - fb;
         });
 
-        let html = `<div class="seccion"><div class="seccion-titulo">Eventos agendados (${agendados.length})</div>`;
+        const ahora = new Date();
+
+        // Clasificar
+        const activables = [];
+        const huerfanos = [];
 
         agendados.forEach(evt => {
-            const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
             const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
-            const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-            const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
-
-            // Calcular si puede activar
-            const ahora = new Date();
-            const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
             const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
-            const puedeActivar = ahora >= inicioVentana && ahora <= finVentana;
 
-            let avisoVentana = '';
-            let btnDisabled = '';
-
-            if (!puedeActivar) {
-                if (ahora < inicioVentana) {
-                    avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
-                } else {
-                    avisoVentana = 'La ventana de activación ya pasó';
-                }
-                btnDisabled = 'disabled';
+            if (ahora > finVentana) {
+                huerfanos.push(evt);
+            } else {
+                activables.push(evt);
             }
-
-            html += `
-                <div class="card-agendado">
-                    <div class="titulo">${escapeHtml(evt.evento)}</div>
-                    <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
-                    ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
-                    <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
-                        ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
-                    </button>
-                    ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
-                </div>
-            `;
         });
 
-        html += `</div>`;
+        let html = '';
+
+        // ─── SECCIÓN: ACTIVABLES ───
+        if (activables.length > 0) {
+            html += `<div class="seccion-titulo">Eventos agendados (${activables.length})</div>`;
+
+            activables.forEach(evt => {
+                const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
+                const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
+                const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
+                const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+
+                const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
+                const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
+                const puedeActivar = ahora >= inicioVentana && ahora <= finVentana;
+
+                let avisoVentana = '';
+                let btnDisabled = '';
+
+                if (!puedeActivar) {
+                    if (ahora < inicioVentana) {
+                        avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                    }
+                    btnDisabled = 'disabled';
+                }
+
+                html += `
+                    <div class="card-agendado">
+                        <div class="titulo">${escapeHtml(evt.evento)}</div>
+                        <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
+                        ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
+                        <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
+                            ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
+                        </button>
+                        ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        // ─── SECCIÓN: HUÉRFANOS (vencidos sin activar) ───
+        if (huerfanos.length > 0) {
+            html += `<div class="seccion-titulo" style="color:#e74c3c; margin-top:24px;">⚠️ Eventos vencidos sin activar (${huerfanos.length})</div>`;
+
+            huerfanos.forEach(evt => {
+                const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
+                const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
+                const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
+                const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+
+                html += `
+                    <div class="card-agendado" style="opacity:0.5; border-color:rgba(231,76,60,0.2);">
+                        <div class="titulo">${escapeHtml(evt.evento)}</div>
+                        <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
+                        <div class="aviso-ventana no-puede">La ventana de activación ya pasó. Contacta al administrador.</div>
+                    </div>
+                `;
+            });
+        }
+
         cont.innerHTML = html;
+
+        return {
+            activables: activables.length,
+            huerfanos: huerfanos.length
+        };
     }
 
     function renderFinalizados(finalizados) {
@@ -1464,10 +1506,13 @@
         cont.innerHTML = html;
     }
 
-    function renderVacio(cantidadAgendados, activo) {
+    function renderVacio(cantidadAgendadosActivos, activo) {
         const cont = $('seccionVacio');
 
-        if (activo || (cantidadAgendados && cantidadAgendados > 0)) {
+        // Mostrar la tarjeta de modo libre solo si:
+        // - No hay evento activo
+        // - No hay eventos agendados que TODAVÍA se puedan activar
+        if (activo || cantidadAgendadosActivos > 0) {
             cont.innerHTML = '';
             return;
         }
@@ -1476,7 +1521,7 @@
             <div class="seccion">
                 <div class="card-vacio">
                     <span class="emoji">📅</span>
-                    <div class="titulo">No tienes eventos</div>
+                    <div class="titulo">No tienes eventos activos</div>
                     <div class="subtitulo">
                         Si tienes un evento de urgencia,<br>activa el modo libre.
                     </div>
