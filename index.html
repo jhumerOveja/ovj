@@ -296,7 +296,8 @@
             }
             .barra-rol .btn-invitar,
             .barra-rol .btn-butacas,
-            .barra-rol .btn-subir {
+            .barra-rol .btn-subir,
+            .barra-rol .btn-qr-general {
                 display: inline-flex;
                 align-items: center;
                 gap: 6px;
@@ -337,6 +338,16 @@
                 background: rgba(46, 204, 113, 0.25);
                 transform: scale(1.04);
                 box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
+            }
+            .barra-rol .btn-qr-general {
+                background: rgba(52, 152, 219, 0.15);
+                border: 1px solid rgba(52, 152, 219, 0.4);
+                color: #5dade2;
+            }
+            .barra-rol .btn-qr-general:hover {
+                background: rgba(52, 152, 219, 0.25);
+                transform: scale(1.04);
+                box-shadow: 0 4px 20px rgba(52, 152, 219, 0.2);
             }
 
             /* ===== ESTADO MINI ===== */
@@ -1036,7 +1047,7 @@
             }
             .tipo-selector {
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-columns: 1fr 1fr;
                 gap: 8px;
                 margin-bottom: 18px;
             }
@@ -1290,6 +1301,133 @@
                 color: #aaa;
             }
 
+            /* ===== MODAL QR GENERAL ===== */
+            .modal-qr-general {
+                display: none;
+                position: fixed;
+                z-index: 1400;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(12px);
+            }
+            .modal-qr-general.activo { display: flex; }
+            .modal-qr-general-contenido {
+                background: #141414;
+                border: 1px solid rgba(52, 152, 219, 0.3);
+                border-radius: 20px;
+                padding: 28px 24px 24px;
+                max-width: 420px;
+                width: 100%;
+                text-align: center;
+                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+                position: relative;
+            }
+            .modal-qr-general-contenido .emoji-grande {
+                font-size: 2.5rem;
+                display: block;
+                margin-bottom: 12px;
+            }
+            .modal-qr-general-contenido .titulo {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #5dade2;
+                margin-bottom: 6px;
+            }
+            .modal-qr-general-contenido .subtitulo {
+                font-size: 0.8rem;
+                color: #aaa;
+                margin-bottom: 18px;
+                line-height: 1.5;
+            }
+            .modal-qr-general-contenido .qr-wrapper {
+                background: #fff;
+                border-radius: 12px;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+                width: 240px;
+                height: 240px;
+            }
+            .modal-qr-general-contenido .qr-wrapper img {
+                display: block;
+                width: 216px;
+                height: 216px;
+                border-radius: 4px;
+            }
+            .modal-qr-general-contenido .url-box {
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 10px;
+                padding: 10px 12px;
+                font-size: 0.7rem;
+                color: #888;
+                word-break: break-all;
+                margin-bottom: 14px;
+                max-height: 80px;
+                overflow-y: auto;
+                text-align: left;
+                font-family: monospace;
+                line-height: 1.4;
+            }
+            .modal-qr-general-contenido .acciones {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .modal-qr-general-contenido .btn-accion {
+                width: 100%;
+                padding: 12px 18px;
+                border-radius: 12px;
+                border: none;
+                font-size: 0.85rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                font-family: inherit;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .modal-qr-general-contenido .btn-primario {
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: #fff;
+            }
+            .modal-qr-general-contenido .btn-primario:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(52, 152, 219, 0.3);
+            }
+            .modal-qr-general-contenido .btn-secundario {
+                background: rgba(255, 255, 255, 0.06);
+                color: #ccc;
+            }
+            .modal-qr-general-contenido .btn-secundario:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+            .modal-qr-general-contenido .btn-cerrar-res {
+                margin-top: 8px;
+                background: transparent;
+                color: #666;
+                font-size: 0.75rem;
+                padding: 10px;
+            }
+            .modal-qr-general-contenido .btn-cerrar-res:hover {
+                color: #aaa;
+            }
+            .modal-qr-general-contenido .cargando-qr {
+                color: #666;
+                font-size: 0.85rem;
+                padding: 80px 20px;
+            }
+
             /* ===== MODAL SUBIR FOTOS ===== */
             .modal-subir {
                 display: none;
@@ -1499,7 +1637,8 @@
                 .barra-rol .rol-info { justify-content: center; }
                 .barra-rol .btn-invitar,
                 .barra-rol .btn-butacas,
-                .barra-rol .btn-subir { justify-content: center; }
+                .barra-rol .btn-subir,
+                .barra-rol .btn-qr-general { justify-content: center; }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -1584,6 +1723,9 @@
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn-butacas" onclick="abrirButacas()">
                         💺 <span id="textoButacas">Butacas</span>
+                    </button>
+                    <button class="btn-qr-general" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
+                        🎫 <span id="textoQrGeneral">QR General</span>
                     </button>
                     <button class="btn-invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
                         ✨ <span id="textoInvitar">Invitar</span>
@@ -1699,11 +1841,7 @@
                 <div class="subtitulo">Genera un pase único para compartir</div>
 
                 <div class="tipo-selector">
-                    <button class="tipo-btn activo" id="tipoGeneral" onclick="seleccionarTipo('general')">
-                        <span class="emoji">🎟️</span>
-                        General
-                    </button>
-                    <button class="tipo-btn" id="tipoVip" onclick="seleccionarTipo('vip')">
+                    <button class="tipo-btn activo" id="tipoVip" onclick="seleccionarTipo('vip')">
                         <span class="emoji">⭐</span>
                         VIP
                     </button>
@@ -1714,7 +1852,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Nombre (opcional para general, obligatorio para VIP/Admin)</label>
+                    <label>Nombre (obligatorio)</label>
                     <input
                         type="text"
                         id="inputNombreInvitacion"
@@ -1770,6 +1908,37 @@
                         📋 Copiar link
                     </button>
                     <button class="btn-accion btn-cerrar-res" onclick="cerrarResultado()">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MODAL QR GENERAL ===== -->
+        <div class="modal-qr-general" id="modalQrGeneral">
+            <div class="modal-qr-general-contenido">
+                <button class="btn-cerrar-instr" onclick="cerrarQrGeneral()">✕</button>
+                <span class="emoji-grande">🎫</span>
+                <div class="titulo" id="qrGeneralTitulo">QR General del Evento</div>
+                <div class="subtitulo">
+                    Este es el QR que tus invitados generales escanean.<br>
+                    Compartilo o mostralo desde tu celular.
+                </div>
+
+                <div class="qr-wrapper" id="qrGeneralWrapper">
+                    <div class="cargando-qr">Cargando QR...</div>
+                </div>
+
+                <div class="url-box" id="urlQrGeneral">Cargando...</div>
+
+                <div class="acciones">
+                    <button class="btn-accion btn-primario" onclick="copiarUrlQrGeneral()">
+                        📋 Copiar URL
+                    </button>
+                    <button class="btn-accion btn-secundario" onclick="abrirQrGeneralGrande()">
+                        💾 Abrir QR en pestaña nueva
+                    </button>
+                    <button class="btn-accion btn-cerrar-res" onclick="cerrarQrGeneral()">
                         Cerrar
                     </button>
                 </div>
@@ -1860,7 +2029,7 @@
             // 🌍 VARIABLES GLOBALES
             // ==========================================
             let sesion = null;
-            let sesionGeneral = null;  // info de sesión si es general
+            let sesionGeneral = null;
             let fotosCache = [];
             let fotosVisibles = FOTOS_POR_CARGA;
             let fotoSeleccionadaIndex = -1;
@@ -1877,13 +2046,16 @@
             let avisoOcultoTimeoutId = null;
             let indiceAviso = 0;
 
-            let invitacionTipo = 'general';
+            let invitacionTipo = 'vip';
             let invitacionGenerada = null;
 
             let colaSubidas = [];
             let subidaEnProceso = false;
 
             let countdownInterval = null;
+
+            // 🔥 QR General
+            let urlQrGeneralActual = null;
 
             // ==========================================
             // 🌍 IDIOMA
@@ -1949,7 +2121,7 @@
                     rolInvitado: "Invitado",
                     textoButacas: "Butacas",
                     textoInvitar: "Invitar",
-                    tipoGeneral: "General",
+                    textoQrGeneral: "QR General",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
                     textoSubir: "Subir fotos",
@@ -2027,7 +2199,7 @@
                     rolInvitado: "Guest",
                     textoButacas: "Seats",
                     textoInvitar: "Invite",
-                    tipoGeneral: "General",
+                    textoQrGeneral: "General QR",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
                     textoSubir: "Upload photos",
@@ -2105,7 +2277,7 @@
                     rolInvitado: "嘉宾",
                     textoButacas: "座位",
                     textoInvitar: "邀请",
-                    tipoGeneral: "嘉宾",
+                    textoQrGeneral: "现场二维码",
                     tipoVip: "VIP",
                     tipoAdmin: "管理员",
                     textoSubir: "上传照片",
@@ -2189,7 +2361,9 @@
                 document.getElementById('textoInvitar').textContent = t('textoInvitar');
                 document.getElementById('textoSubir').textContent = t('textoSubir');
 
-                document.getElementById('tipoGeneral').innerHTML = `<span class="emoji">🎟️</span>${t('tipoGeneral')}`;
+                const elQr = document.getElementById('textoQrGeneral');
+                if (elQr) elQr.textContent = t('textoQrGeneral');
+
                 document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}`;
                 document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
 
@@ -2238,7 +2412,6 @@
             // 🔒 BLOQUEO / ACCESO
             // ==========================================
             function mostrarBloqueo(tipo, mensajeCustom) {
-                // Limpiar countdown si existe
                 if (countdownInterval) {
                     clearInterval(countdownInterval);
                     countdownInterval = null;
@@ -2268,7 +2441,6 @@
             function mostrarReceso(minutos) {
                 mostrarBloqueo('receso', t('bloqueoReceso'));
 
-                // Countdown
                 const el = document.getElementById('bloqueoCountdown');
                 el.style.display = 'block';
 
@@ -2313,7 +2485,6 @@
                     const respuesta = await fetch(url);
                     const data = await respuesta.json();
 
-                    // ─── Receso ───
                     if (data.receso) {
                         if (data.motivo === 'saturacion') {
                             mostrarSaturacion();
@@ -2323,13 +2494,11 @@
                         return false;
                     }
 
-                    // ─── Bloqueado (max sesiones) ───
                     if (data.bloqueado) {
                         mostrarDespedida();
                         return false;
                     }
 
-                    // ─── No autorizado ───
                     if (!respuesta.ok || !data.valido) {
                         if (data.reclamada) {
                             const tokenGuardado = localStorage.getItem('ovj_token');
@@ -2348,9 +2517,6 @@
                         return false;
                     }
 
-                    // ─── Acceso OK ───
-
-                    // Si es token general, guardar el token personal
                     if (data.tokenPersonal) {
                         TOKEN = data.tokenPersonal;
                         localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
@@ -2362,7 +2528,6 @@
                         id: data.id
                     };
 
-                    // Si es general, guardar info de sesión
                     if (data.tipo === 'general' && data.sesion) {
                         sesionGeneral = data.sesion;
                     }
@@ -2390,6 +2555,7 @@
                 const rolNombre = document.getElementById('rolNombre');
                 const btnInvitar = document.getElementById('btnInvitar');
                 const btnSubir = document.getElementById('btnSubir');
+                const btnQrGeneral = document.getElementById('btnQrGeneral');
 
                 barraRol.style.display = 'flex';
 
@@ -2398,16 +2564,19 @@
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
                     btnSubir.style.display = 'inline-flex';
+                    btnQrGeneral.style.display = 'inline-flex';
                 } else if (sesion.tipo === 'vip') {
                     rolEmoji.textContent = '⭐';
                     rolNombre.textContent = sesion.nombre || t('rolVip');
                     btnInvitar.style.display = 'none';
                     btnSubir.style.display = 'none';
+                    btnQrGeneral.style.display = 'none';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
                     btnInvitar.style.display = 'none';
                     btnSubir.style.display = 'none';
+                    btnQrGeneral.style.display = 'none';
                 }
 
                 actualizarContadorSesion();
@@ -2564,7 +2733,6 @@
                 const icono = document.getElementById('btnIcono');
                 const texto = document.getElementById('btnPedirTexto');
 
-                // VIP: siempre puede descargar
                 if (sesion && sesion.tipo === 'vip') {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
@@ -2572,7 +2740,6 @@
                     return;
                 }
 
-                // General: depende de sesión
                 if (sesion && sesion.tipo === 'general' && sesionGeneral) {
                     const usadas = sesionGeneral.descargasSesion || 0;
                     const total = sesionGeneral.descargasPorSesion || 5;
@@ -2590,7 +2757,6 @@
                     return;
                 }
 
-                // Admin
                 btn.classList.remove('agotado');
                 icono.textContent = "⬇️";
                 texto.textContent = t('descargarFoto');
@@ -2766,7 +2932,6 @@
                     return;
                 }
 
-                // General sin descargas restantes: no hacer nada
                 if (sesion && sesion.tipo === 'general' && sesionGeneral) {
                     const usadas = sesionGeneral.descargasSesion || 0;
                     const total = sesionGeneral.descargasPorSesion || 5;
@@ -2836,7 +3001,6 @@
 
                     urlExterna = data.url;
 
-                    // Actualizar contador de sesión si es general
                     if (data.tipo === 'general' && sesionGeneral) {
                         sesionGeneral.descargasSesion = data.descargasSesion || sesionGeneral.descargasSesion;
                         sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
@@ -2951,7 +3115,6 @@
 
                     const { admins, invitados } = data.butacas;
 
-                    // Separar invitados en VIPs y generales
                     const vips = invitados.filter(i => i.tipo === 'vip');
                     const generales = invitados.filter(i => i.tipo !== 'vip');
 
@@ -3032,14 +3195,14 @@
             }
 
             // ==========================================
-            // ✨ INVITAR
+            // ✨ INVITAR (solo VIP y Admin)
             // ==========================================
             function abrirInvitar() {
                 document.getElementById('modalInvitar').classList.add('activo');
                 document.getElementById('inputNombreInvitacion').value = '';
                 document.getElementById('inputWhatsAppInvitacion').value = '';
                 document.getElementById('avisoLimiteVips').style.display = 'none';
-                seleccionarTipo('general');
+                seleccionarTipo('vip');
             }
 
             function cerrarInvitar() {
@@ -3048,18 +3211,13 @@
 
             function seleccionarTipo(tipo) {
                 invitacionTipo = tipo;
-                document.getElementById('tipoGeneral').classList.toggle('activo', tipo === 'general');
                 document.getElementById('tipoVip').classList.toggle('activo', tipo === 'vip');
                 document.getElementById('tipoAdmin').classList.toggle('activo', tipo === 'admin');
 
-                // WhatsApp solo se muestra para VIP y Admin
                 const grupoWa = document.getElementById('grupoWhatsapp');
-                grupoWa.style.display = (tipo === 'vip' || tipo === 'admin') ? 'block' : 'none';
+                grupoWa.style.display = 'block';
 
-                // Aviso si intenta crear VIP y no hay cupo
                 if (tipo === 'vip') {
-                    // No podemos saber el límite desde el frontend sin consultar
-                    // Lo validamos al generar
                     document.getElementById('avisoLimiteVips').style.display = 'none';
                 }
             }
@@ -3083,8 +3241,7 @@
                     }
                 }
 
-                // Validar nombre para VIP/Admin
-                if ((invitacionTipo === 'vip' || invitacionTipo === 'admin') && !nombre) {
+                if (!nombre) {
                     alert('El nombre es obligatorio para VIP y Admin');
                     btn.disabled = false;
                     btn.textContent = 'Generar Invitación';
@@ -3101,14 +3258,13 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             tipo: invitacionTipo,
-                            nombre: nombre || (invitacionTipo === 'general' ? 'Invitado' : 'Usuario')
+                            nombre: nombre
                         })
                     });
 
                     const data = await respuesta.json();
 
                     if (!respuesta.ok || !data.ok) {
-                        // Si es límite de VIPs, mostrar aviso
                         if (respuesta.status === 409 && data.limiteVips) {
                             document.getElementById('avisoLimiteVips').textContent =
                                 `Límite de VIPs alcanzado (${data.vipsActuales}/${data.limiteVips}). Contacta al admin para ampliar.`;
@@ -3171,16 +3327,14 @@
             function mostrarResultado() {
                 const modal = document.getElementById('modalResultado');
 
-                const emojis = { vip: '⭐', admin: '👑', general: '🎟️' };
+                const emojis = { vip: '⭐', admin: '👑' };
                 const titulos = {
                     vip: '¡VIP generado!',
-                    admin: '¡Admin generado!',
-                    general: '¡Invitación generada!'
+                    admin: '¡Admin generado!'
                 };
                 const subtitulos = {
                     vip: 'Este usuario tendrá descargas ilimitadas',
-                    admin: 'Este usuario tendrá control total del evento',
-                    general: 'Comparte el QR o el link con tu invitado'
+                    admin: 'Este usuario tendrá control total del evento'
                 };
 
                 document.getElementById('resultadoEmoji').textContent = emojis[invitacionGenerada.tipo] || '🎉';
@@ -3230,6 +3384,80 @@
                     document.body.removeChild(textarea);
                     alert('✅ Link copiado');
                 });
+            }
+
+            // ==========================================
+            // 🎫 QR GENERAL
+            // ==========================================
+            async function abrirQrGeneral() {
+                const modal = document.getElementById('modalQrGeneral');
+                const wrapper = document.getElementById('qrGeneralWrapper');
+                const urlBox = document.getElementById('urlQrGeneral');
+
+                wrapper.innerHTML = '<div class="cargando-qr">Cargando QR...</div>';
+                urlBox.textContent = 'Cargando...';
+                modal.classList.add('activo');
+
+                // Intentar desde localStorage primero
+                const claveLS = 'ovj_token_general_' + EVENTO_ID;
+                let tokenGeneral = localStorage.getItem(claveLS);
+
+                if (!tokenGeneral) {
+                    try {
+                        const url = `${URL_CLOUDFLARE}/evento/token-general?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}`;
+                        const resp = await fetch(url);
+                        const data = await resp.json();
+
+                        if (!resp.ok || !data.ok || !data.tokenGeneral) {
+                            wrapper.innerHTML = '<div class="cargando-qr" style="color:#e74c3c;">No se pudo cargar el QR.<br>Contacta al fotógrafo.</div>';
+                            urlBox.textContent = '(no disponible)';
+                            return;
+                        }
+
+                        tokenGeneral = data.tokenGeneral;
+                        localStorage.setItem(claveLS, tokenGeneral);
+
+                    } catch (e) {
+                        console.error('Error cargando token general:', e);
+                        wrapper.innerHTML = '<div class="cargando-qr" style="color:#e74c3c;">Error de conexión.</div>';
+                        urlBox.textContent = '(no disponible)';
+                        return;
+                    }
+                }
+
+                // Construir URL del QR general
+                const urlQr = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(tokenGeneral)}`;
+                urlQrGeneralActual = urlQr;
+
+                urlBox.textContent = urlQr;
+
+                const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=216x216&data=' + encodeURIComponent(urlQr);
+                wrapper.innerHTML = `<img src="${qrImg}" alt="QR General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+            }
+
+            function cerrarQrGeneral() {
+                document.getElementById('modalQrGeneral').classList.remove('activo');
+            }
+
+            function copiarUrlQrGeneral() {
+                if (!urlQrGeneralActual) return;
+                navigator.clipboard.writeText(urlQrGeneralActual).then(() => {
+                    alert('✅ URL copiada al portapapeles');
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = urlQrGeneralActual;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    alert('✅ URL copiada');
+                });
+            }
+
+            function abrirQrGeneralGrande() {
+                if (!urlQrGeneralActual) return;
+                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlQrGeneralActual);
+                window.open(qrUrl, '_blank');
             }
 
             // ==========================================
@@ -3496,9 +3724,11 @@
                 const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
                 const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
                 const modalSubirActivo = document.getElementById('modalSubir').classList.contains('activo');
+                const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
 
                 if (e.key === "Escape") {
                     if (modalSubirActivo) cerrarSubir();
+                    else if (modalQrGeneralActivo) cerrarQrGeneral();
                     else if (modalResultadoActivo) cerrarResultado();
                     else if (modalInvitarActivo) cerrarInvitar();
                     else if (modalButacasActivo) cerrarButacas();
@@ -3507,7 +3737,7 @@
                     else cerrarLangMenu();
                 }
 
-                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo || modalSubirActivo) return;
+                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo || modalSubirActivo || modalQrGeneralActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -3531,6 +3761,10 @@
 
             document.getElementById('modalResultado').addEventListener('click', (e) => {
                 if (e.target.id === 'modalResultado') cerrarResultado();
+            });
+
+            document.getElementById('modalQrGeneral').addEventListener('click', (e) => {
+                if (e.target.id === 'modalQrGeneral') cerrarQrGeneral();
             });
 
             document.getElementById('modalSubir').addEventListener('click', (e) => {
