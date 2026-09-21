@@ -580,6 +580,79 @@
             gap: 10px;
         }
 
+        .seccion-titulo-form {
+            font-size: 0.7rem;
+            color: var(--texto-tenue);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 20px 0 10px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+        }
+        .config-sugerida {
+            background: rgba(243, 156, 18, 0.06);
+            border: 1px dashed rgba(243, 156, 18, 0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .config-sugerida strong {
+            color: var(--oro);
+            font-weight: 600;
+        }
+        .btn-sugerir {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 152, 219, 0.35);
+            background: rgba(52, 152, 219, 0.1);
+            color: #5dade2;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        .btn-sugerir:hover {
+            background: rgba(52, 152, 219, 0.2);
+            transform: scale(1.01);
+        }
+        .qr-token-wrapper {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 16px auto;
+            width: 260px;
+            height: 260px;
+        }
+        .qr-token-wrapper img {
+            display: block;
+            width: 240px;
+            height: 240px;
+            border-radius: 4px;
+        }
+        .token-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.7rem;
+            color: #888;
+            word-break: break-all;
+            margin-bottom: 14px;
+            font-family: monospace;
+            line-height: 1.4;
+            text-align: left;
+        }
+
         .modal-contenido .btn-primario,
         .modal-contenido .btn-secundario,
         .modal-contenido .btn-peligro {
@@ -589,35 +662,6 @@
             font-size: 0.9rem;
             font-weight: 700;
             margin-top: 8px;
-        }
-
-        /* QR */
-        .qr-wrapper {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 16px auto;
-            width: 220px;
-            height: 220px;
-        }
-        .qr-wrapper img { display: block; width: 200px; height: 200px; border-radius: 4px; }
-
-        .url-box {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-size: 0.7rem;
-            color: #888;
-            word-break: break-all;
-            margin-bottom: 14px;
-            max-height: 80px;
-            overflow-y: auto;
-            font-family: monospace;
-            line-height: 1.4;
         }
 
         /* LOGS */
@@ -635,8 +679,6 @@
             white-space: pre-wrap;
             word-break: break-all;
         }
-        .logs-box .error { color: #e74c3c; }
-        .logs-box .ok { color: #2ecc71; }
 
         /* TOAST */
         .toast {
@@ -814,948 +856,1157 @@
     <div class="loader-overlay" id="loader">
         <div class="loader-spinner"></div>
     </div>
-<script src="config.js"></script>
-<script>
-    // ==========================================
-    // ⚙️ CONFIGURACIÓN
-    // ==========================================
-    // Lee la URL del túnel desde config.js (window.OVJ_CONFIG)
-    // Si estamos en localhost, usa localhost:3000 automáticamente
-    const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    const URL_API = _esLocalhost
-        ? 'http://localhost:3000'
-        : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
-    const INTERVALO_REFRESH_MS = 30000;
+    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
+    <script src="config.js"></script>
 
-    // ==========================================
-    // 🔑 ESTADO GLOBAL
-    // ==========================================
-    let adminToken = null;
-    let tabActual = 'dashboard';
-    let intervalRefresh = null;
-    let cacheFotografos = [];
-    let cacheEventos = [];
-    let cacheModosLibres = [];
+    <script>
+        // ==========================================
+        // ⚙️ CONFIGURACIÓN
+        // ==========================================
+        const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const URL_API = _esLocalhost
+            ? 'http://localhost:3000'
+            : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
-    // ==========================================
-    // 🛠️ UTILIDADES
-    // ==========================================
-    function $(id) { return document.getElementById(id); }
+        const INTERVALO_REFRESH_MS = 30000;
 
-    function toast(mensaje, tipo = '') {
-        const el = $('toast');
-        el.textContent = mensaje;
-        el.className = 'toast activo ' + tipo;
-        setTimeout(() => el.classList.remove('activo'), 3500);
-    }
+        // ==========================================
+        // 🔑 ESTADO GLOBAL
+        // ==========================================
+        let adminToken = null;
+        let tabActual = 'dashboard';
+        let intervalRefresh = null;
+        let cacheFotografos = [];
+        let cacheEventos = [];
+        let cacheModosLibres = [];
 
-    function loader(activo) {
-        $('loader').classList.toggle('activo', activo);
-    }
+        // ==========================================
+        // 🛠️ UTILIDADES
+        // ==========================================
+        function $(id) { return document.getElementById(id); }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function formatearFecha(fechaStr) {
-        if (!fechaStr) return '';
-        const [y, m, d] = fechaStr.split('-');
-        return `${d}/${m}/${y}`;
-    }
-
-    function formatearHora(fechaISO) {
-        if (!fechaISO) return '';
-        const d = new Date(fechaISO);
-        return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    async function apiFetch(ruta, opciones = {}) {
-        const headers = opciones.headers || {};
-        headers['Content-Type'] = 'application/json';
-        if (adminToken) headers['Authorization'] = 'Bearer ' + adminToken;
-
-        const resp = await fetch(URL_API + ruta, { ...opciones, headers });
-
-        if (resp.status === 401) {
-            cerrarSesionLocal();
-            toast('Token inválido. Volvé a entrar.', 'error');
-            throw new Error('No autorizado');
+        function toast(mensaje, tipo = '') {
+            const el = $('toast');
+            el.textContent = mensaje;
+            el.className = 'toast activo ' + tipo;
+            setTimeout(() => el.classList.remove('activo'), 3500);
         }
 
-        const data = await resp.json().catch(() => ({}));
-        if (!resp.ok) throw new Error(data.error || `Error ${resp.status}`);
-        return data;
-    }
-
-    // ==========================================
-    // 🔐 SESIÓN
-    // ==========================================
-    function cargarSesionLocal() {
-        const t = localStorage.getItem('ovj_admin_token');
-        if (!t) return false;
-        adminToken = t;
-        return true;
-    }
-
-    function guardarSesionLocal(t) {
-        localStorage.setItem('ovj_admin_token', t);
-        adminToken = t;
-    }
-
-    function cerrarSesionLocal() {
-        localStorage.removeItem('ovj_admin_token');
-        adminToken = null;
-        if (intervalRefresh) { clearInterval(intervalRefresh); intervalRefresh = null; }
-    }
-
-    async function hacerLogin() {
-        const token = $('inputToken').value.trim();
-        const btn = $('btnLogin');
-        const err = $('errorLogin');
-
-        err.classList.remove('activo');
-
-        if (!token) {
-            err.textContent = 'Pega el token';
-            err.classList.add('activo');
-            return;
+        function loader(activo) {
+            $('loader').classList.toggle('activo', activo);
         }
 
-        btn.disabled = true;
-        btn.textContent = 'Verificando...';
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
-        try {
-            // Test con un endpoint admin
-            const resp = await fetch(URL_API + '/admin/status', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
+        function formatearFecha(fechaStr) {
+            if (!fechaStr) return '';
+            const [y, m, d] = fechaStr.split('-');
+            return `${d}/${m}/${y}`;
+        }
 
-            if (!resp.ok) {
-                err.textContent = 'Token inválido';
+        function formatearHora(fechaISO) {
+            if (!fechaISO) return '';
+            const d = new Date(fechaISO);
+            return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function apiFetch(ruta, opciones = {}) {
+            const headers = opciones.headers || {};
+            headers['Content-Type'] = 'application/json';
+            if (adminToken) headers['Authorization'] = 'Bearer ' + adminToken;
+
+            const resp = await fetch(URL_API + ruta, { ...opciones, headers });
+
+            if (resp.status === 401) {
+                cerrarSesionLocal();
+                toast('Token inválido. Volvé a entrar.', 'error');
+                throw new Error('No autorizado');
+            }
+
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok) throw new Error(data.error || `Error ${resp.status}`);
+            return data;
+        }
+
+        // ==========================================
+        // 🔐 SESIÓN
+        // ==========================================
+        function cargarSesionLocal() {
+            const t = localStorage.getItem('ovj_admin_token');
+            if (!t) return false;
+            adminToken = t;
+            return true;
+        }
+
+        function guardarSesionLocal(t) {
+            localStorage.setItem('ovj_admin_token', t);
+            adminToken = t;
+        }
+
+        function cerrarSesionLocal() {
+            localStorage.removeItem('ovj_admin_token');
+            adminToken = null;
+            if (intervalRefresh) { clearInterval(intervalRefresh); intervalRefresh = null; }
+        }
+
+        async function hacerLogin() {
+            const token = $('inputToken').value.trim();
+            const btn = $('btnLogin');
+            const err = $('errorLogin');
+
+            err.classList.remove('activo');
+
+            if (!token) {
+                err.textContent = 'Pega el token';
                 err.classList.add('activo');
-                btn.disabled = false;
-                btn.textContent = 'Entrar';
                 return;
             }
 
-            guardarSesionLocal(token);
-            mostrarApp();
-            cambiarTab('dashboard');
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
 
-        } catch (e) {
-            err.textContent = 'Error de conexión. Intenta de nuevo.';
-            err.classList.add('activo');
-            btn.disabled = false;
-            btn.textContent = 'Entrar';
+            try {
+                const resp = await fetch(URL_API + '/admin/status', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (!resp.ok) {
+                    err.textContent = 'Token inválido';
+                    err.classList.add('activo');
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                    return;
+                }
+
+                guardarSesionLocal(token);
+                mostrarApp();
+                cambiarTab('dashboard');
+
+            } catch (e) {
+                err.textContent = 'Error de conexión. Intenta de nuevo.';
+                err.classList.add('activo');
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
+            }
         }
-    }
 
-    function hacerLogout() {
-        if (!confirm('¿Cerrar sesión?')) return;
-        cerrarSesionLocal();
-        mostrarLogin();
-    }
-
-    // ==========================================
-    // 🖥️ PANTALLAS
-    // ==========================================
-    function mostrarLogin() {
-        $('pantallaLogin').classList.add('activo');
-        $('app').classList.remove('activo');
-        $('inputToken').value = '';
-        $('errorLogin').classList.remove('activo');
-        $('btnLogin').disabled = false;
-        $('btnLogin').textContent = 'Entrar';
-    }
-
-    function mostrarApp() {
-        $('pantallaLogin').classList.remove('activo');
-        $('app').classList.add('activo');
-    }
-
-    // ==========================================
-    // 🗂️ TABS
-    // ==========================================
-    function cambiarTab(tab) {
-        tabActual = tab;
-
-        document.querySelectorAll('.nav-item').forEach(el => {
-            el.classList.toggle('activo', el.dataset.tab === tab);
-        });
-
-        if (intervalRefresh) { clearInterval(intervalRefresh); intervalRefresh = null; }
-
-        switch (tab) {
-            case 'dashboard':  renderDashboard(); intervalRefresh = setInterval(renderDashboard, INTERVALO_REFRESH_MS); break;
-            case 'fotografos': renderFotografos(); break;
-            case 'eventos':    renderEventos(); break;
-            case 'modos':      renderModosLibres(); break;
-            case 'sistema':    renderSistema(); break;
+        function hacerLogout() {
+            if (!confirm('¿Cerrar sesión?')) return;
+            cerrarSesionLocal();
+            mostrarLogin();
         }
-    }
 
-    // ==========================================
-    // 📊 DASHBOARD
-    // ==========================================
-    async function renderDashboard() {
-        $('contenidoPrincipal').innerHTML = `
-            <div class="page-header">
-                <div>
-                    <h1>📊 Dashboard</h1>
-                    <div class="subtitulo">Estado general del sistema</div>
-                </div>
-                <div class="acciones">
-                    <button class="btn btn-secundario" onclick="renderDashboard()">🔄 Refrescar</button>
-                </div>
-            </div>
-            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-        `;
+        // ==========================================
+        // 🖥️ PANTALLAS
+        // ==========================================
+        function mostrarLogin() {
+            $('pantallaLogin').classList.add('activo');
+            $('app').classList.remove('activo');
+            $('inputToken').value = '';
+            $('errorLogin').classList.remove('activo');
+            $('btnLogin').disabled = false;
+            $('btnLogin').textContent = 'Entrar';
+        }
 
-        try {
-            const [status, fotografos] = await Promise.all([
-                apiFetch('/admin/status'),
-                apiFetch('/admin/fotografos')
-            ]);
+        function mostrarApp() {
+            $('pantallaLogin').classList.remove('activo');
+            $('app').classList.add('activo');
+        }
 
-            cacheFotografos = fotografos.fotografos || [];
+        // ==========================================
+        // 🗂️ TABS
+        // ==========================================
+        function cambiarTab(tab) {
+            tabActual = tab;
 
-            const totalFotografos = cacheFotografos.length;
-            const conEventoActivo = status.fotografos.filter(f => f.eventoActivo).length;
-            const totalFotosWeb = status.fotografos.reduce((a, f) => a + (f.fotosWeb || 0), 0);
-            const totalPendientes = status.fotografos.reduce((a, f) => a + (f.fotosPendientes || 0), 0);
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.toggle('activo', el.dataset.tab === tab);
+            });
 
-            let html = `
+            if (intervalRefresh) { clearInterval(intervalRefresh); intervalRefresh = null; }
+
+            switch (tab) {
+                case 'dashboard':  renderDashboard(); intervalRefresh = setInterval(renderDashboard, INTERVALO_REFRESH_MS); break;
+                case 'fotografos': renderFotografos(); break;
+                case 'eventos':    renderEventos(); break;
+                case 'modos':      renderModosLibres(); break;
+                case 'sistema':    renderSistema(); break;
+            }
+        }
+
+        // ==========================================
+        // 📊 DASHBOARD
+        // ==========================================
+        async function renderDashboard() {
+            $('contenidoPrincipal').innerHTML = `
                 <div class="page-header">
                     <div>
                         <h1>📊 Dashboard</h1>
-                        <div class="subtitulo">Estado general · Actualizado ${new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}</div>
+                        <div class="subtitulo">Estado general del sistema</div>
                     </div>
                     <div class="acciones">
                         <button class="btn btn-secundario" onclick="renderDashboard()">🔄 Refrescar</button>
                     </div>
                 </div>
-
-                <div class="grid" style="margin-bottom:20px;">
-                    <div class="card card-stat">
-                        <span class="emoji">👥</span>
-                        <div class="info">
-                            <div class="valor">${totalFotografos}</div>
-                            <div class="etiqueta">Fotógrafos</div>
-                        </div>
-                    </div>
-                    <div class="card card-stat">
-                        <span class="emoji">🟢</span>
-                        <div class="info">
-                            <div class="valor">${conEventoActivo}</div>
-                            <div class="etiqueta">Eventos activos</div>
-                        </div>
-                    </div>
-                    <div class="card card-stat">
-                        <span class="emoji">🌐</span>
-                        <div class="info">
-                            <div class="valor">${totalFotosWeb}</div>
-                            <div class="etiqueta">Fotos en web</div>
-                        </div>
-                    </div>
-                    <div class="card card-stat">
-                        <span class="emoji">⏳</span>
-                        <div class="info">
-                            <div class="valor">${totalPendientes}</div>
-                            <div class="etiqueta">En cola de goteo</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
             `;
 
-            if (status.fotografos.length === 0) {
-                html += `<div class="vacio"><span class="emoji">👥</span><div class="titulo">No hay fotógrafos registrados</div><div class="subtitulo">Ve a la pestaña "Fotógrafos" para agregar uno.</div></div>`;
-            } else {
-                html += `<div class="grid grid-2">`;
-                status.fotografos.forEach(f => {
-                    const activo = f.eventoActivo;
-                    const creditos = f.creditos;
+            try {
+                const [status, fotografos] = await Promise.all([
+                    apiFetch('/admin/status'),
+                    apiFetch('/admin/fotografos')
+                ]);
 
-                    html += `
-                        <div class="card">
-                            <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
-                                <div>
-                                    <div style="font-size:1.05rem; font-weight:700; color:#fff;">${escapeHtml(f.nombre)}</div>
-                                    ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${activo.modo === 'libre' ? ' (libre)' : ''}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
-                                </div>
-                                ${activo ? `<span class="badge activo">${activo.modo === 'libre' ? '🆘 Libre' : '● Activo'}</span>` : `<span class="badge finalizado">Inactivo</span>`}
-                            </div>
-                            <div style="display:flex; gap:14px; font-size:0.75rem; color:#aaa; margin-bottom:6px;">
-                                <span>🌐 Web: <strong style="color:#fff;">${f.fotosWeb || 0}</strong></span>
-                                <span>⏳ Cola: <strong style="color:#fff;">${f.fotosPendientes || 0}</strong></span>
-                                ${creditos ? `<span>💳 Créditos: <strong style="color:${creditos.restantes <= 5 ? '#e74c3c' : '#2ecc71'};">${creditos.restantes}/${creditos.total}</strong></span>` : ''}
-                            </div>
-                            ${activo ? `<div style="font-size:0.7rem; color:#666;">▶️ ${formatearHora(activo.inicioReal)}</div>` : ''}
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-            }
+                cacheFotografos = fotografos.fotografos || [];
 
-            $('contenidoPrincipal').innerHTML = html;
+                const totalFotografos = cacheFotografos.length;
+                const conEventoActivo = status.fotografos.filter(f => f.eventoActivo).length;
+                const totalFotosWeb = status.fotografos.reduce((a, f) => a + (f.fotosWeb || 0), 0);
+                const totalPendientes = status.fotografos.reduce((a, f) => a + (f.fotosPendientes || 0), 0);
 
-        } catch (e) {
-            $('contenidoPrincipal').innerHTML = `
-                <div class="page-header"><div><h1>📊 Dashboard</h1></div></div>
-                <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error al cargar</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-            `;
-        }
-    }
-
-    // ==========================================
-    // 👥 FOTÓGRAFOS
-    // ==========================================
-    async function renderFotografos() {
-        $('contenidoPrincipal').innerHTML = `
-            <div class="page-header">
-                <div>
-                    <h1>👥 Fotógrafos</h1>
-                    <div class="subtitulo">Gestión de fotógrafos registrados</div>
-                </div>
-                <div class="acciones">
-                    <button class="btn btn-primario" onclick="abrirNuevoFotografo()">➕ Nuevo fotógrafo</button>
-                    <button class="btn btn-secundario" onclick="renderFotografos()">🔄 Refrescar</button>
-                </div>
-            </div>
-            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-        `;
-
-        try {
-            const data = await apiFetch('/admin/fotografos');
-            cacheFotografos = data.fotografos || [];
-
-            if (cacheFotografos.length === 0) {
-                $('contenidoPrincipal').innerHTML = `
+                let html = `
                     <div class="page-header">
-                        <div><h1>👥 Fotógrafos</h1><div class="subtitulo">Gestión de fotógrafos registrados</div></div>
+                        <div>
+                            <h1>📊 Dashboard</h1>
+                            <div class="subtitulo">Estado general · Actualizado ${new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
                         <div class="acciones">
-                            <button class="btn btn-primario" onclick="abrirNuevoFotografo()">➕ Nuevo fotógrafo</button>
+                            <button class="btn btn-secundario" onclick="renderDashboard()">🔄 Refrescar</button>
                         </div>
                     </div>
-                    <div class="vacio"><span class="emoji">👥</span><div class="titulo">No hay fotógrafos</div><div class="subtitulo">Agrega el primero con el botón de arriba.</div></div>
-                `;
-                return;
-            }
 
-            let html = `
+                    <div class="grid" style="margin-bottom:20px;">
+                        <div class="card card-stat">
+                            <span class="emoji">👥</span>
+                            <div class="info">
+                                <div class="valor">${totalFotografos}</div>
+                                <div class="etiqueta">Fotógrafos</div>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <span class="emoji">🟢</span>
+                            <div class="info">
+                                <div class="valor">${conEventoActivo}</div>
+                                <div class="etiqueta">Eventos activos</div>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <span class="emoji">🌐</span>
+                            <div class="info">
+                                <div class="valor">${totalFotosWeb}</div>
+                                <div class="etiqueta">Fotos en web</div>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <span class="emoji">⏳</span>
+                            <div class="info">
+                                <div class="valor">${totalPendientes}</div>
+                                <div class="etiqueta">En cola de goteo</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if (status.fotografos.length === 0) {
+                    html += `<div class="vacio"><span class="emoji">👥</span><div class="titulo">No hay fotógrafos registrados</div><div class="subtitulo">Ve a la pestaña "Fotógrafos" para agregar uno.</div></div>`;
+                } else {
+                    html += `<div class="grid grid-2">`;
+                    status.fotografos.forEach(f => {
+                        const activo = f.eventoActivo;
+                        const creditos = f.creditos;
+
+                        html += `
+                            <div class="card">
+                                <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
+                                    <div>
+                                        <div style="font-size:1.05rem; font-weight:700; color:#fff;">${escapeHtml(f.nombre)}</div>
+                                        ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${activo.modo === 'libre' ? ' (libre)' : ''}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
+                                    </div>
+                                    ${activo ? `<span class="badge activo">${activo.modo === 'libre' ? '🆘 Libre' : '● Activo'}</span>` : `<span class="badge finalizado">Inactivo</span>`}
+                                </div>
+                                <div style="display:flex; gap:14px; font-size:0.75rem; color:#aaa; margin-bottom:6px;">
+                                    <span>🌐 Web: <strong style="color:#fff;">${f.fotosWeb || 0}</strong></span>
+                                    <span>⏳ Cola: <strong style="color:#fff;">${f.fotosPendientes || 0}</strong></span>
+                                    ${creditos ? `<span>💳 Créditos: <strong style="color:${creditos.restantes <= 5 ? '#e74c3c' : '#2ecc71'};">${creditos.restantes}/${creditos.total}</strong></span>` : ''}
+                                </div>
+                                ${activo ? `<div style="font-size:0.7rem; color:#666;">▶️ ${formatearHora(activo.inicioReal)}</div>` : ''}
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                $('contenidoPrincipal').innerHTML = html;
+
+            } catch (e) {
+                $('contenidoPrincipal').innerHTML = `
+                    <div class="page-header"><div><h1>📊 Dashboard</h1></div></div>
+                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error al cargar</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+                `;
+            }
+        }
+
+        // ==========================================
+        // 👥 FOTÓGRAFOS
+        // ==========================================
+        async function renderFotografos() {
+            $('contenidoPrincipal').innerHTML = `
                 <div class="page-header">
-                    <div><h1>👥 Fotógrafos</h1><div class="subtitulo">${cacheFotografos.length} registrado${cacheFotografos.length === 1 ? '' : 's'}</div></div>
+                    <div>
+                        <h1>👥 Fotógrafos</h1>
+                        <div class="subtitulo">Gestión de fotógrafos registrados</div>
+                    </div>
                     <div class="acciones">
                         <button class="btn btn-primario" onclick="abrirNuevoFotografo()">➕ Nuevo fotógrafo</button>
                         <button class="btn btn-secundario" onclick="renderFotografos()">🔄 Refrescar</button>
                     </div>
                 </div>
-                <div class="grid grid-2">
+                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
             `;
 
-            cacheFotografos.forEach(f => {
-                html += `
-                    <div class="card card-fotografo">
-                        <div class="cabecera">
-                            <div>
-                                <div class="nombre">${escapeHtml(f.nombre)}</div>
-                                <div class="chatid">chat_id: ${escapeHtml(f.chatId || '—')}</div>
+            try {
+                const data = await apiFetch('/admin/fotografos');
+                cacheFotografos = data.fotografos || [];
+
+                if (cacheFotografos.length === 0) {
+                    $('contenidoPrincipal').innerHTML = `
+                        <div class="page-header">
+                            <div><h1>👥 Fotógrafos</h1><div class="subtitulo">Gestión de fotógrafos registrados</div></div>
+                            <div class="acciones">
+                                <button class="btn btn-primario" onclick="abrirNuevoFotografo()">➕ Nuevo fotógrafo</button>
                             </div>
                         </div>
+                        <div class="vacio"><span class="emoji">👥</span><div class="titulo">No hay fotógrafos</div><div class="subtitulo">Agrega el primero con el botón de arriba.</div></div>
+                    `;
+                    return;
+                }
 
-                        <div class="pin-box">
-                            <span class="label">PIN de acceso web</span>
-                            <span class="pin">${f.pin || '—'}</span>
-                        </div>
-
-                        <div class="stats">
-                            <span>🟢 Activos: <strong>${f.activos}</strong></span>
-                            <span>📅 Agendados: <strong>${f.agendados}</strong></span>
-                        </div>
-
+                let html = `
+                    <div class="page-header">
+                        <div><h1>👥 Fotógrafos</h1><div class="subtitulo">${cacheFotografos.length} registrado${cacheFotografos.length === 1 ? '' : 's'}</div></div>
                         <div class="acciones">
-                            <button class="btn btn-chico btn-secundario" onclick="copiarPin('${f.pin}','${escapeHtml(f.nombre)}')">📋 Copiar PIN</button>
-                            <button class="btn btn-chico btn-secundario" onclick="verLinkAcceso('${escapeHtml(f.nombre)}')">🔗 Link</button>
-                            <button class="btn btn-chico btn-peligro" onclick="confirmarEliminarFotografo('${escapeHtml(f.nombre)}')">🗑️ Eliminar</button>
+                            <button class="btn btn-primario" onclick="abrirNuevoFotografo()">➕ Nuevo fotógrafo</button>
+                            <button class="btn btn-secundario" onclick="renderFotografos()">🔄 Refrescar</button>
                         </div>
                     </div>
+                    <div class="grid grid-2">
                 `;
-            });
 
-            html += `</div>`;
-            $('contenidoPrincipal').innerHTML = html;
+                cacheFotografos.forEach(f => {
+                    html += `
+                        <div class="card card-fotografo">
+                            <div class="cabecera">
+                                <div>
+                                    <div class="nombre">${escapeHtml(f.nombre)}</div>
+                                    <div class="chatid">chat_id: ${escapeHtml(f.chatId || '—')}</div>
+                                </div>
+                            </div>
 
-        } catch (e) {
-            $('contenidoPrincipal').innerHTML = `
-                <div class="page-header"><div><h1>👥 Fotógrafos</h1></div></div>
-                <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-            `;
+                            <div class="pin-box">
+                                <span class="label">PIN de acceso web</span>
+                                <span class="pin">${f.pin || '—'}</span>
+                            </div>
+
+                            <div class="stats">
+                                <span>🟢 Activos: <strong>${f.activos}</strong></span>
+                                <span>📅 Agendados: <strong>${f.agendados}</strong></span>
+                            </div>
+
+                            <div class="acciones">
+                                <button class="btn btn-chico btn-secundario" onclick="copiarPin('${f.pin}','${escapeHtml(f.nombre)}')">📋 Copiar PIN</button>
+                                <button class="btn btn-chico btn-secundario" onclick="verLinkAcceso('${escapeHtml(f.nombre)}')">🔗 Link</button>
+                                <button class="btn btn-chico btn-peligro" onclick="confirmarEliminarFotografo('${escapeHtml(f.nombre)}')">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+                $('contenidoPrincipal').innerHTML = html;
+
+            } catch (e) {
+                $('contenidoPrincipal').innerHTML = `
+                    <div class="page-header"><div><h1>👥 Fotógrafos</h1></div></div>
+                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+                `;
+            }
         }
-    }
 
-    function abrirNuevoFotografo() {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">➕ Nuevo Fotógrafo</div>
-            <div class="subtitulo">Se generará un PIN de 4 dígitos automáticamente.</div>
+        function abrirNuevoFotografo() {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">➕ Nuevo Fotógrafo</div>
+                <div class="subtitulo">Se generará un PIN de 4 dígitos automáticamente.</div>
 
-            <div class="campo">
-                <label>Nombre de usuario</label>
-                <input type="text" id="inputNombreFotografo" placeholder="ej: jhumer" autocomplete="off" style="text-transform:lowercase" />
-                <div class="ayuda">3-30 caracteres. Solo minúsculas, números, guion y guion bajo.</div>
-            </div>
-
-            <button class="btn-primario" id="btnCrearFotografo" onclick="crearFotografo()">Crear fotógrafo</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
-        `);
-    }
-
-    async function crearFotografo() {
-        const nombre = $('inputNombreFotografo').value.trim().toLowerCase();
-        if (!/^[a-z0-9_-]{3,30}$/.test(nombre)) {
-            toast('Nombre inválido (3-30, minúsculas/números/-/_)', 'error');
-            return;
-        }
-
-        $('btnCrearFotografo').disabled = true;
-        $('btnCrearFotografo').textContent = 'Creando...';
-
-        try {
-            const data = await apiFetch('/admin/fotografos', {
-                method: 'POST',
-                body: JSON.stringify({ nombre })
-            });
-
-            mostrarPinGenerado(data.nombre, data.pin);
-
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-            $('btnCrearFotografo').disabled = false;
-            $('btnCrearFotografo').textContent = 'Crear fotógrafo';
-        }
-    }
-
-    function mostrarPinGenerado(nombre, pin) {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal(); renderFotografos();">✕</button>
-            <div class="titulo">✅ Fotógrafo creado</div>
-            <div class="subtitulo">Pasale estos datos al fotógrafo por WhatsApp.</div>
-
-            <div style="background:rgba(243,156,18,0.08); border:1px solid rgba(243,156,18,0.3); border-radius:12px; padding:18px; text-align:center; margin-bottom:18px;">
-                <div style="font-size:0.75rem; color:#aaa; margin-bottom:6px;">Usuario</div>
-                <div style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:14px;">${escapeHtml(nombre)}</div>
-                <div style="font-size:0.75rem; color:#aaa; margin-bottom:6px;">PIN</div>
-                <div style="font-size:2rem; font-weight:700; color:#f39c12; letter-spacing:6px;">${escapeHtml(pin)}</div>
-            </div>
-
-            <div class="url-box">${URL_API.replace(/\/$/, '')}\n\nIngresar en: https://jhumeroveja.github.io/ovj/fotografo.html</div>
-
-            <button class="btn-primario" onclick="copiarDatosFotografo('${escapeHtml(nombre)}','${escapeHtml(pin)}')">📋 Copiar datos</button>
-            <button class="btn-secundario" onclick="cerrarModal(); renderFotografos();">Listo</button>
-        `);
-    }
-
-    function copiarDatosFotografo(nombre, pin) {
-        const texto = `OVJ Studio - Acceso Fotógrafo\n\nUsuario: ${nombre}\nPIN: ${pin}\n\nIngresá en:\nhttps://jhumeroveja.github.io/ovj/fotografo.html`;
-        navigator.clipboard.writeText(texto).then(() => {
-            toast('✅ Datos copiados', 'ok');
-        }).catch(() => {
-            toast('No se pudo copiar', 'error');
-        });
-    }
-
-    function copiarPin(pin, nombre) {
-        if (!pin) return;
-        navigator.clipboard.writeText(pin).then(() => {
-            toast('✅ PIN copiado', 'ok');
-        }).catch(() => {
-            toast('No se pudo copiar', 'error');
-        });
-    }
-
-    function verLinkAcceso(nombre) {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">🔗 Link de acceso</div>
-            <div class="subtitulo">Comparte este link con el fotógrafo.</div>
-            <div class="url-box">https://jhumeroveja.github.io/ovj/fotografo.html</div>
-            <button class="btn-secundario" onclick="cerrarModal()">Cerrar</button>
-        `);
-    }
-
-    function confirmarEliminarFotografo(nombre) {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">🗑️ Eliminar fotógrafo</div>
-            <div class="subtitulo">
-                ¿Eliminar a <strong>${escapeHtml(nombre)}</strong>?<br>
-                Se borrarán sus fotos locales y su carpeta.
-            </div>
-            <button class="btn-peligro" onclick="eliminarFotografo('${escapeHtml(nombre)}')">Sí, eliminar</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
-        `);
-    }
-
-    async function eliminarFotografo(nombre) {
-        loader(true);
-        cerrarModal();
-        try {
-            await apiFetch('/admin/fotografos/' + encodeURIComponent(nombre), { method: 'DELETE' });
-            toast('✅ Fotógrafo eliminado', 'ok');
-            renderFotografos();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    // ==========================================
-    // 📅 EVENTOS
-    // ==========================================
-    async function renderEventos() {
-        $('contenidoPrincipal').innerHTML = `
-            <div class="page-header">
-                <div><h1>📅 Eventos</h1><div class="subtitulo">Gestión de eventos agendados y activos</div></div>
-                <div class="acciones">
-                    <button class="btn btn-primario" onclick="abrirNuevoEvento()">➕ Agendar evento</button>
-                    <button class="btn btn-secundario" onclick="renderEventos()">🔄 Refrescar</button>
+                <div class="campo">
+                    <label>Nombre de usuario</label>
+                    <input type="text" id="inputNombreFotografo" placeholder="ej: jhumer" autocomplete="off" style="text-transform:lowercase" />
+                    <div class="ayuda">3-30 caracteres. Solo minúsculas, números, guion y guion bajo.</div>
                 </div>
-            </div>
-            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-        `;
 
-        try {
-            const [eventos, fotografos] = await Promise.all([
-                apiFetch('/admin/eventos'),
-                apiFetch('/admin/fotografos')
-            ]);
+                <button class="btn-primario" id="btnCrearFotografo" onclick="crearFotografo()">Crear fotógrafo</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+            `);
+        }
 
-            cacheEventos = eventos.eventos || [];
-            cacheFotografos = fotografos.fotografos || [];
+        async function crearFotografo() {
+            const nombre = $('inputNombreFotografo').value.trim().toLowerCase();
+            if (!/^[a-z0-9_-]{3,30}$/.test(nombre)) {
+                toast('Nombre inválido (3-30, minúsculas/números/-/_)', 'error');
+                return;
+            }
 
-            const activos = cacheEventos.filter(e => e.estado === 'activo');
-            const agendados = cacheEventos.filter(e => e.estado === 'agendado');
-            const otros = cacheEventos.filter(e => e.estado !== 'activo' && e.estado !== 'agendado');
+            $('btnCrearFotografo').disabled = true;
+            $('btnCrearFotografo').textContent = 'Creando...';
 
-            let html = `
+            try {
+                const data = await apiFetch('/admin/fotografos', {
+                    method: 'POST',
+                    body: JSON.stringify({ nombre })
+                });
+
+                mostrarPinGenerado(data.nombre, data.pin);
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+                $('btnCrearFotografo').disabled = false;
+                $('btnCrearFotografo').textContent = 'Crear fotógrafo';
+            }
+        }
+
+        function mostrarPinGenerado(nombre, pin) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal(); renderFotografos();">✕</button>
+                <div class="titulo">✅ Fotógrafo creado</div>
+                <div class="subtitulo">Pasale estos datos al fotógrafo por WhatsApp.</div>
+
+                <div style="background:rgba(243,156,18,0.08); border:1px solid rgba(243,156,18,0.3); border-radius:12px; padding:18px; text-align:center; margin-bottom:18px;">
+                    <div style="font-size:0.75rem; color:#aaa; margin-bottom:6px;">Usuario</div>
+                    <div style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:14px;">${escapeHtml(nombre)}</div>
+                    <div style="font-size:0.75rem; color:#aaa; margin-bottom:6px;">PIN</div>
+                    <div style="font-size:2rem; font-weight:700; color:#f39c12; letter-spacing:6px;">${escapeHtml(pin)}</div>
+                </div>
+
+                <div class="token-box">${URL_API.replace(/\/$/, '')}\n\nIngresar en: https://jhumeroveja.github.io/ovj/fotografo.html</div>
+
+                <button class="btn-primario" onclick="copiarDatosFotografo('${escapeHtml(nombre)}','${escapeHtml(pin)}')">📋 Copiar datos</button>
+                <button class="btn-secundario" onclick="cerrarModal(); renderFotografos();">Listo</button>
+            `);
+        }
+
+        function copiarDatosFotografo(nombre, pin) {
+            const texto = `OVJ Studio - Acceso Fotógrafo\n\nUsuario: ${nombre}\nPIN: ${pin}\n\nIngresá en:\nhttps://jhumeroveja.github.io/ovj/fotografo.html`;
+            navigator.clipboard.writeText(texto).then(() => {
+                toast('✅ Datos copiados', 'ok');
+            }).catch(() => {
+                toast('No se pudo copiar', 'error');
+            });
+        }
+
+        function copiarPin(pin, nombre) {
+            if (!pin) return;
+            navigator.clipboard.writeText(pin).then(() => {
+                toast('✅ PIN copiado', 'ok');
+            }).catch(() => {
+                toast('No se pudo copiar', 'error');
+            });
+        }
+
+        function verLinkAcceso(nombre) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🔗 Link de acceso</div>
+                <div class="subtitulo">Comparte este link con el fotógrafo.</div>
+                <div class="token-box">https://jhumeroveja.github.io/ovj/fotografo.html</div>
+                <button class="btn-secundario" onclick="cerrarModal()">Cerrar</button>
+            `);
+        }
+
+        function confirmarEliminarFotografo(nombre) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🗑️ Eliminar fotógrafo</div>
+                <div class="subtitulo">
+                    ¿Eliminar a <strong>${escapeHtml(nombre)}</strong>?<br>
+                    Se borrarán sus fotos locales y su carpeta.
+                </div>
+                <button class="btn-peligro" onclick="eliminarFotografo('${escapeHtml(nombre)}')">Sí, eliminar</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+            `);
+        }
+
+        async function eliminarFotografo(nombre) {
+            loader(true);
+            cerrarModal();
+            try {
+                await apiFetch('/admin/fotografos/' + encodeURIComponent(nombre), { method: 'DELETE' });
+                toast('✅ Fotógrafo eliminado', 'ok');
+                renderFotografos();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 📅 EVENTOS
+        // ==========================================
+        async function renderEventos() {
+            $('contenidoPrincipal').innerHTML = `
                 <div class="page-header">
-                    <div><h1>📅 Eventos</h1><div class="subtitulo">${cacheEventos.length} en total</div></div>
+                    <div><h1>📅 Eventos</h1><div class="subtitulo">Gestión de eventos agendados y activos</div></div>
                     <div class="acciones">
                         <button class="btn btn-primario" onclick="abrirNuevoEvento()">➕ Agendar evento</button>
                         <button class="btn btn-secundario" onclick="renderEventos()">🔄 Refrescar</button>
                     </div>
                 </div>
+                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
             `;
 
-            if (cacheEventos.length === 0) {
-                html += `<div class="vacio"><span class="emoji">📅</span><div class="titulo">No hay eventos</div><div class="subtitulo">Agrega el primero con el botón de arriba.</div></div>`;
-            } else {
-                if (activos.length > 0) {
-                    html += `<div class="seccion-titulo" style="font-size:0.72rem; color:#666; letter-spacing:2px; text-transform:uppercase; margin:0 0 10px 4px;">🟢 Activos (${activos.length})</div>`;
-                    html += `<div class="grid grid-2" style="margin-bottom:24px;">`;
-                    activos.forEach(e => html += renderCardEvento(e, true));
-                    html += `</div>`;
-                }
+            try {
+                const [eventos, fotografos] = await Promise.all([
+                    apiFetch('/admin/eventos'),
+                    apiFetch('/admin/fotografos')
+                ]);
 
-                if (agendados.length > 0) {
-                    html += `<div class="seccion-titulo" style="font-size:0.72rem; color:#666; letter-spacing:2px; text-transform:uppercase; margin:0 0 10px 4px;">⏳ Agendados (${agendados.length})</div>`;
-                    html += `<div class="grid grid-2" style="margin-bottom:24px;">`;
-                    agendados.forEach(e => html += renderCardEvento(e, false));
-                    html += `</div>`;
-                }
+                cacheEventos = eventos.eventos || [];
+                cacheFotografos = fotografos.fotografos || [];
 
-                if (otros.length > 0) {
-                    html += `<div class="seccion-titulo" style="font-size:0.72rem; color:#666; letter-spacing:2px; text-transform:uppercase; margin:0 0 10px 4px;">📋 Historial (${otros.length})</div>`;
-                    html += `<div class="grid grid-2">`;
-                    otros.slice(0, 12).forEach(e => html += renderCardEvento(e, false));
-                    html += `</div>`;
-                }
-            }
+                const activos = cacheEventos.filter(e => e.estado === 'activo');
+                const agendados = cacheEventos.filter(e => e.estado === 'agendado');
+                const otros = cacheEventos.filter(e => e.estado !== 'activo' && e.estado !== 'agendado');
 
-            $('contenidoPrincipal').innerHTML = html;
-
-        } catch (e) {
-            $('contenidoPrincipal').innerHTML = `
-                <div class="page-header"><div><h1>📅 Eventos</h1></div></div>
-                <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-            `;
-        }
-    }
-
-    function renderCardEvento(e, esActivo) {
-        const badgeClase = e.modo === 'libre' ? 'libre' : (e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado');
-        const badgeTexto = e.modo === 'libre' ? '🆘 Libre' : (e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado');
-
-        let meta = '';
-        if (e.modo === 'libre') {
-            meta += `<div class="fila">🆘 Modo libre</div>`;
-            if (e.inicioReal) meta += `<div class="fila">▶️ Inicio: <strong>${formatearHora(e.inicioReal)}</strong></div>`;
-        } else {
-            meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
-            meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
-        }
-        if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
-        if (e.creditos) meta += `<div class="fila">💳 Créditos: <strong>${e.creditos.usados || 0}/${e.creditos.total || 0}</strong></div>`;
-
-        let acciones = '';
-        if (e.estado === 'agendado') {
-            acciones = `<button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>`;
-        }
-
-        return `
-            <div class="card card-evento">
-                <div class="cabecera">
-                    <div>
-                        <div class="titulo">${escapeHtml(e.evento)}</div>
-                        <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
-                    </div>
-                    <span class="badge ${badgeClase}">${badgeTexto}</span>
-                </div>
-                <div class="meta">${meta}</div>
-                ${acciones ? `<div class="acciones">${acciones}</div>` : ''}
-            </div>
-        `;
-    }
-
-    function abrirNuevoEvento() {
-        if (cacheFotografos.length === 0) {
-            toast('Primero crea un fotógrafo', 'error');
-            return;
-        }
-
-        const opcionesFotografos = cacheFotografos.map(f =>
-            `<option value="${escapeHtml(f.nombre)}">${escapeHtml(f.nombre)}</option>`
-        ).join('');
-
-        // Fecha mínima: hoy
-        const hoy = new Date().toISOString().slice(0, 10);
-
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">➕ Agendar Evento</div>
-            <div class="subtitulo">Completa los datos del evento.</div>
-
-            <div class="campo">
-                <label>Fotógrafo</label>
-                <select id="inputFotografo">${opcionesFotografos}</select>
-            </div>
-
-            <div class="campo">
-                <label>Nombre del evento</label>
-                <input type="text" id="inputEventoNombre" placeholder="ej: BODA RAMIREZ" style="text-transform:uppercase" />
-            </div>
-
-            <div class="campo-fila">
-                <div class="campo">
-                    <label>Fecha</label>
-                    <input type="date" id="inputEventoFecha" value="${hoy}" min="${hoy}" />
-                </div>
-                <div class="campo">
-                    <label>Hora inicio</label>
-                    <input type="time" id="inputEventoHora" value="19:00" />
-                </div>
-            </div>
-
-            <div class="campo">
-                <label>Duración (horas)</label>
-                <input type="number" id="inputEventoDuracion" value="3" min="1" max="24" />
-                <div class="ayuda">Entre 1 y 24 horas.</div>
-            </div>
-
-            <div class="campo">
-                <label>WhatsApp del cliente (opcional)</label>
-                <input type="tel" id="inputEventoWhatsapp" placeholder="ej: 59160004962" />
-                <div class="ayuda">Solo dígitos, con código de país.</div>
-            </div>
-
-            <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
-        `);
-    }
-
-    async function crearEvento() {
-        const fotografo = $('inputFotografo').value;
-        const evento = $('inputEventoNombre').value.trim();
-        const fecha = $('inputEventoFecha').value;
-        const hora = $('inputEventoHora').value;
-        const duracion = parseInt($('inputEventoDuracion').value, 10);
-        const whatsapp = $('inputEventoWhatsapp').value.replace(/[^0-9]/g, '');
-
-        if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
-        if (!fecha || !hora) { toast('Fecha y hora obligatorias', 'error'); return; }
-        if (!duracion || duracion < 1 || duracion > 24) { toast('Duración inválida', 'error'); return; }
-
-        $('btnCrearEvento').disabled = true;
-        $('btnCrearEvento').textContent = 'Agendando...';
-
-        try {
-            await apiFetch('/admin/eventos', {
-                method: 'POST',
-                body: JSON.stringify({
-                    fotografo,
-                    evento,
-                    fecha,
-                    hora,
-                    duracion,
-                    whatsappCliente: whatsapp || null
-                })
-            });
-
-            toast('✅ Evento agendado', 'ok');
-            cerrarModal();
-            renderEventos();
-
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-            $('btnCrearEvento').disabled = false;
-            $('btnCrearEvento').textContent = 'Agendar evento';
-        }
-    }
-
-    function confirmarCancelarEvento(id, nombre) {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">🗑️ Cancelar evento</div>
-            <div class="subtitulo">¿Cancelar <strong>${escapeHtml(nombre)}</strong>?<br>El fotógrafo será notificado.</div>
-            <button class="btn-peligro" onclick="cancelarEvento('${escapeHtml(id)}')">Sí, cancelar</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
-        `);
-    }
-
-    async function cancelarEvento(id) {
-        loader(true);
-        cerrarModal();
-        try {
-            await apiFetch('/admin/eventos/' + encodeURIComponent(id), { method: 'DELETE' });
-            toast('✅ Evento cancelado', 'ok');
-            renderEventos();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    // ==========================================
-    // 🆘 MODOS LIBRES
-    // ==========================================
-    async function renderModosLibres() {
-        $('contenidoPrincipal').innerHTML = `
-            <div class="page-header">
-                <div><h1>🆘 Modos libres</h1><div class="subtitulo">Eventos de urgencia activos</div></div>
-                <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
-            </div>
-            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-        `;
-
-        try {
-            const data = await apiFetch('/admin/modos-libres');
-            cacheModosLibres = data.modosLibres || [];
-
-            let html = `
-                <div class="page-header">
-                    <div><h1>🆘 Modos libres</h1><div class="subtitulo">${cacheModosLibres.length} activo${cacheModosLibres.length === 1 ? '' : 's'}</div></div>
-                    <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
-                </div>
-            `;
-
-            if (cacheModosLibres.length === 0) {
-                html += `<div class="vacio"><span class="emoji">✅</span><div class="titulo">Sin modos libres activos</div><div class="subtitulo">Todo bajo control.</div></div>`;
-            } else {
-                html += `<div class="grid grid-2">`;
-                cacheModosLibres.forEach(m => {
-                    const inicio = new Date(m.inicioReal);
-                    const ahora = new Date();
-                    const minutos = Math.floor((ahora - inicio) / 60000);
-                    const horas = Math.floor(minutos / 60);
-                    const mins = minutos % 60;
-
-                    html += `
-                        <div class="card card-evento">
-                            <div class="cabecera">
-                                <div>
-                                    <div class="titulo">${escapeHtml(m.evento)}</div>
-                                    <div class="fotografo">👤 ${escapeHtml(m.fotografo)}</div>
-                                </div>
-                                <span class="badge libre">🆘 Libre</span>
-                            </div>
-                            <div class="meta">
-                                <div class="fila">▶️ Inicio: <strong>${formatearHora(m.inicioReal)}</strong></div>
-                                <div class="fila">⏱️ Transcurrido: <strong>${horas}h ${mins}min</strong></div>
-                                ${m.whatsappCliente ? `<div class="fila">📱 +${m.whatsappCliente}</div>` : ''}
-                                ${m.creditos ? `<div class="fila">💳 Créditos: <strong>${m.creditos.usados || 0}/${m.creditos.total || 0}</strong></div>` : ''}
-                            </div>
-                            <div class="acciones">
-                                <button class="btn btn-chico btn-peligro" onclick="confirmarCerrarModoLibre('${escapeHtml(m.id)}','${escapeHtml(m.evento)}','${escapeHtml(m.fotografo)}')">🏁 Forzar cierre</button>
-                            </div>
+                let html = `
+                    <div class="page-header">
+                        <div><h1>📅 Eventos</h1><div class="subtitulo">${cacheEventos.length} en total</div></div>
+                        <div class="acciones">
+                            <button class="btn btn-primario" onclick="abrirNuevoEvento()">➕ Agendar evento</button>
+                            <button class="btn btn-secundario" onclick="renderEventos()">🔄 Refrescar</button>
                         </div>
-                    `;
-                });
-                html += `</div>`;
+                    </div>
+                `;
+
+                if (cacheEventos.length === 0) {
+                    html += `<div class="vacio"><span class="emoji">📅</span><div class="titulo">No hay eventos</div><div class="subtitulo">Agrega el primero con el botón de arriba.</div></div>`;
+                } else {
+                    if (activos.length > 0) {
+                        html += `<div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">🟢 Activos (${activos.length})</div>`;
+                        html += `<div class="grid grid-2" style="margin-bottom:24px;">`;
+                        activos.forEach(e => html += renderCardEvento(e, true));
+                        html += `</div>`;
+                    }
+
+                    if (agendados.length > 0) {
+                        html += `<div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">⏳ Agendados (${agendados.length})</div>`;
+                        html += `<div class="grid grid-2" style="margin-bottom:24px;">`;
+                        agendados.forEach(e => html += renderCardEvento(e, false));
+                        html += `</div>`;
+                    }
+
+                    if (otros.length > 0) {
+                        html += `<div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">📋 Historial (${otros.length})</div>`;
+                        html += `<div class="grid grid-2">`;
+                        otros.slice(0, 12).forEach(e => html += renderCardEvento(e, false));
+                        html += `</div>`;
+                    }
+                }
+
+                $('contenidoPrincipal').innerHTML = html;
+
+            } catch (e) {
+                $('contenidoPrincipal').innerHTML = `
+                    <div class="page-header"><div><h1>📅 Eventos</h1></div></div>
+                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+                `;
+            }
+        }
+
+        function renderCardEvento(e, esActivo) {
+            const badgeClase = e.modo === 'libre' ? 'libre' : (e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado');
+            const badgeTexto = e.modo === 'libre' ? '🆘 Libre' : (e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado');
+
+            let meta = '';
+            if (e.modo === 'libre') {
+                meta += `<div class="fila">🆘 Modo libre</div>`;
+                if (e.inicioReal) meta += `<div class="fila">▶️ Inicio: <strong>${formatearHora(e.inicioReal)}</strong></div>`;
+            } else {
+                meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
+                meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
+            }
+            if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
+            if (e.creditos) meta += `<div class="fila">💳 Créditos: <strong>${e.creditos.usados || 0}/${e.creditos.total || 0}</strong></div>`;
+
+            let acciones = '';
+            if (e.estado === 'agendado') {
+                acciones = `
+                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                    <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
+                `;
+            } else if (e.estado === 'activo') {
+                acciones = `
+                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                `;
             }
 
-            $('contenidoPrincipal').innerHTML = html;
-
-        } catch (e) {
-            $('contenidoPrincipal').innerHTML = `
-                <div class="page-header"><div><h1>🆘 Modos libres</h1></div></div>
-                <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+            return `
+                <div class="card card-evento">
+                    <div class="cabecera">
+                        <div>
+                            <div class="titulo">${escapeHtml(e.evento)}</div>
+                            <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
+                        </div>
+                        <span class="badge ${badgeClase}">${badgeTexto}</span>
+                    </div>
+                    <div class="meta">${meta}</div>
+                    ${acciones ? `<div class="acciones">${acciones}</div>` : ''}
+                </div>
             `;
         }
-    }
 
-    function confirmarCerrarModoLibre(id, evento, fotografo) {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo">🏁 Cerrar modo libre</div>
-            <div class="subtitulo">
-                ¿Forzar cierre de <strong>${escapeHtml(evento)}</strong> (${escapeHtml(fotografo)})?<br><br>
-                Se borrarán las fotos locales y de B2. El fotógrafo será notificado.
-            </div>
-            <button class="btn-peligro" onclick="cerrarModoLibre('${escapeHtml(id)}')">Sí, cerrar</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
-        `);
-    }
+        function abrirNuevoEvento() {
+            if (cacheFotografos.length === 0) {
+                toast('Primero crea un fotógrafo', 'error');
+                return;
+            }
 
-    async function cerrarModoLibre(id) {
-        loader(true);
-        cerrarModal();
-        try {
-            const data = await apiFetch('/admin/modos-libres/' + encodeURIComponent(id) + '/cerrar', { method: 'POST' });
-            toast(`✅ Cerrado · ${data.eliminados} archivos · B2: ${data.b2.eliminadas}`, 'ok');
-            renderModosLibres();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
+            const opcionesFotografos = cacheFotografos.map(f =>
+                `<option value="${escapeHtml(f.nombre)}">${escapeHtml(f.nombre)}</option>`
+            ).join('');
 
-    // ==========================================
-    // ⚙️ SISTEMA
-    // ==========================================
-    function renderSistema() {
-        $('contenidoPrincipal').innerHTML = `
-            <div class="page-header">
-                <div><h1>⚙️ Sistema</h1><div class="subtitulo">Diagnóstico y mantenimiento</div></div>
-            </div>
+            const hoy = new Date().toISOString().slice(0, 10);
 
-            <div class="grid grid-2" style="margin-bottom:20px;">
-                <div class="card">
-                    <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:10px;">📄 Logs del servidor</div>
-                    <div style="font-size:0.75rem; color:#888; margin-bottom:14px;">Últimas líneas de logs (server + túnel).</div>
-                    <button class="btn btn-secundario" onclick="verLogs('server')">Ver logs del server</button>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:0.95rem; font-weight:700; color:#e74c3c; margin-bottom:10px;">🗑️ Limpiar B2</div>
-                    <div style="font-size:0.75rem; color:#888; margin-bottom:14px;">Borra TODAS las fotos de B2 de TODOS los eventos.</div>
-                    <button class="btn btn-peligro" onclick="confirmarLimpiarB2()">Limpiar Backblaze B2</button>
-                </div>
-            </div>
-
-            <div class="card" style="margin-bottom:20px;">
-                <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:10px;">ℹ️ Info del sistema</div>
-                <div style="font-size:0.78rem; color:#aaa; line-height:1.8;">
-                    <div>🌐 API: <code style="color:#f39c12;">${URL_API}</code></div>
-                    <div>📄 Frontend invitados: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/</code></div>
-                    <div>📄 Panel fotógrafo: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/fotografo.html</code></div>
-                    <div>📄 Panel admin: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/administracion.html</code></div>
-                </div>
-            </div>
-        `;
-    }
-
-    async function verLogs(tipo) {
-        loader(true);
-        try {
-            const data = await apiFetch('/admin/logs?tipo=' + encodeURIComponent(tipo));
-            const lineas = (data.lineas || []).join('\n');
             abrirModal(`
                 <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-                <div class="titulo">📄 Logs: ${escapeHtml(tipo)}</div>
-                <div class="subtitulo">Últimas ${data.lineas?.length || 0} líneas</div>
-                <div class="logs-box">${escapeHtml(lineas || '(vacío)')}</div>
-                <button class="btn-secundario" onclick="cerrarModal()">Cerrar</button>
+                <div class="titulo">➕ Agendar Evento</div>
+                <div class="subtitulo">Completa los datos del evento.</div>
+
+                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">Datos básicos</div>
+
+                <div class="campo">
+                    <label>Fotógrafo</label>
+                    <select id="inputFotografo">${opcionesFotografos}</select>
+                </div>
+
+                <div class="campo">
+                    <label>Nombre del evento</label>
+                    <input type="text" id="inputEventoNombre" placeholder="ej: BODA RAMIREZ" style="text-transform:uppercase" />
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Fecha</label>
+                        <input type="date" id="inputEventoFecha" value="${hoy}" min="${hoy}" />
+                    </div>
+                    <div class="campo">
+                        <label>Hora inicio</label>
+                        <input type="time" id="inputEventoHora" value="19:00" />
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Duración (horas)</label>
+                    <input type="number" id="inputEventoDuracion" value="3" min="1" max="24" oninput="actualizarSugerencia()" />
+                    <div class="ayuda">Entre 1 y 24 horas.</div>
+                </div>
+
+                <div class="campo">
+                    <label>WhatsApp del cliente (opcional)</label>
+                    <input type="tel" id="inputEventoWhatsapp" placeholder="ej: 59160004962" />
+                    <div class="ayuda">Solo dígitos, con código de país.</div>
+                </div>
+
+                <div class="seccion-titulo-form">Configuración del pool general</div>
+
+                <div class="config-sugerida" id="textoSugerencia">
+                    💡 Según la duración del evento, te sugiero:
+                    <strong id="sugerenciaTexto">5 descargas/sesión · 60 min sesión · 60 min descanso · 3 sesiones</strong>
+                </div>
+
+                <button class="btn-sugerir" onclick="aplicarSugerencia()">
+                    💡 Aplicar valores sugeridos
+                </button>
+
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Descargas por sesión</label>
+                        <input type="number" id="inputDescargasPorSesion" value="5" min="1" max="50" />
+                    </div>
+                    <div class="campo">
+                        <label>Duración sesión (min)</label>
+                        <input type="number" id="inputDuracionSesion" value="60" min="10" max="240" />
+                    </div>
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Descanso (min)</label>
+                        <input type="number" id="inputDescanso" value="60" min="10" max="240" />
+                    </div>
+                    <div class="campo">
+                        <label>Máximo de sesiones</label>
+                        <input type="number" id="inputSesionesMaximas" value="3" min="1" max="20" />
+                        <div class="ayuda">1-20 sesiones.</div>
+                    </div>
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Generales simultáneos</label>
+                        <input type="number" id="inputMaxGenerales" value="20" min="1" max="200" />
+                    </div>
+                    <div class="campo">
+                        <label>Máximo de VIPs</label>
+                        <input type="number" id="inputLimiteVips" value="5" min="1" max="50" />
+                    </div>
+                </div>
+
+                <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
+
+            // Sugerencia inicial
+            actualizarSugerencia();
         }
-    }
 
-    function confirmarLimpiarB2() {
-        abrirModal(`
-            <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            <div class="titulo" style="color:#e74c3c;">⚠️ Limpiar Backblaze B2</div>
-            <div class="subtitulo">
-                Esto borrará <strong>TODAS</strong> las fotos de B2 de todos los fotógrafos y eventos.<br><br>
-                <strong>Esta acción no se puede deshacer.</strong>
-            </div>
-            <button class="btn-peligro" onclick="ejecutarLimpiarB2()">Sí, limpiar TODO</button>
-            <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
-        `);
-    }
+        async function crearEvento() {
+            const fotografo = $('inputFotografo').value;
+            const evento = $('inputEventoNombre').value.trim();
+            const fecha = $('inputEventoFecha').value;
+            const hora = $('inputEventoHora').value;
+            const duracion = parseInt($('inputEventoDuracion').value, 10);
+            const whatsapp = $('inputEventoWhatsapp').value.replace(/[^0-9]/g, '');
 
-    async function ejecutarLimpiarB2() {
-        loader(true);
-        cerrarModal();
-        try {
-            const data = await apiFetch('/admin/limpiar-b2', { method: 'POST' });
-            toast(`✅ ${data.totalEliminadas}/${data.totalFotos} eliminadas · ${data.totalFallidas} fallidas`, 'ok');
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
+            // Pool config
+            const poolGeneral = {
+                descargasPorSesion: parseInt($('inputDescargasPorSesion').value, 10),
+                duracionSesionMin: parseInt($('inputDuracionSesion').value, 10),
+                descansoMin: parseInt($('inputDescanso').value, 10),
+                sesionesMaximas: parseInt($('inputSesionesMaximas').value, 10),
+                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales').value, 10),
+                limiteVips: parseInt($('inputLimiteVips').value, 10)
+            };
+
+            if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
+            if (!fecha || !hora) { toast('Fecha y hora obligatorias', 'error'); return; }
+            if (!duracion || duracion < 1 || duracion > 24) { toast('Duración inválida', 'error'); return; }
+
+            $('btnCrearEvento').disabled = true;
+            $('btnCrearEvento').textContent = 'Agendando...';
+
+            try {
+                const data = await apiFetch('/admin/eventos', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        fotografo,
+                        evento,
+                        fecha,
+                        hora,
+                        duracion,
+                        whatsappCliente: whatsapp || null,
+                        poolGeneral
+                    })
+                });
+
+                cerrarModal();
+
+                if (data.tokenGeneral) {
+                    setTimeout(() => mostrarTokenGeneral(
+                        data.evento.evento,
+                        data.tokenGeneral,
+                        fotografo,
+                        data.evento.id
+                    ), 300);
+                } else {
+                    toast('✅ Evento agendado', 'ok');
+                    renderEventos();
+                }
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+                $('btnCrearEvento').disabled = false;
+                $('btnCrearEvento').textContent = 'Agendar evento';
+            }
         }
-    }
 
-    // ==========================================
-    // 🪟 MODAL
-    // ==========================================
-    function abrirModal(html) {
-        $('modalContenido').innerHTML = html;
-        $('modal').classList.add('activo');
-    }
-
-    function cerrarModal() {
-        $('modal').classList.remove('activo');
-        $('modalContenido').innerHTML = '';
-    }
-
-    $('modal').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) cerrarModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') cerrarModal();
-    });
-
-    // ==========================================
-    // 🚀 INICIALIZACIÓN
-    // ==========================================
-    function inicializar() {
-        if (cargarSesionLocal()) {
-            mostrarApp();
-            cambiarTab('dashboard');
-        } else {
-            mostrarLogin();
+        // ==========================================
+        // 💡 SUGERENCIA AUTOMÁTICA
+        // ==========================================
+        function getSugerencia(duracion) {
+            if (duracion <= 3) {
+                return {
+                    descargasPorSesion: 3,
+                    duracionSesionMin: 45,
+                    descansoMin: 45,
+                    sesionesMaximas: 2,
+                    texto: '3 descargas/sesión · 45 min sesión · 45 min descanso · 2 sesiones'
+                };
+            } else if (duracion <= 5) {
+                return {
+                    descargasPorSesion: 5,
+                    duracionSesionMin: 60,
+                    descansoMin: 60,
+                    sesionesMaximas: 3,
+                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso · 3 sesiones'
+                };
+            } else if (duracion <= 8) {
+                return {
+                    descargasPorSesion: 5,
+                    duracionSesionMin: 60,
+                    descansoMin: 60,
+                    sesionesMaximas: 5,
+                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso · 5 sesiones'
+                };
+            } else {
+                return {
+                    descargasPorSesion: 5,
+                    duracionSesionMin: 60,
+                    descansoMin: 60,
+                    sesionesMaximas: 10,
+                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso · 10 sesiones'
+                };
+            }
         }
-    }
 
-    $('inputToken').addEventListener('keydown', e => {
-        if (e.key === 'Enter') hacerLogin();
-    });
+        function actualizarSugerencia() {
+            const duracion = parseInt($('inputEventoDuracion')?.value, 10) || 3;
+            const sug = getSugerencia(duracion);
+            const el = $('sugerenciaTexto');
+            if (el) el.textContent = sug.texto;
+        }
 
-    inicializar();
-</script>
+        function aplicarSugerencia() {
+            const duracion = parseInt($('inputEventoDuracion').value, 10) || 3;
+            const sug = getSugerencia(duracion);
+
+            $('inputDescargasPorSesion').value = sug.descargasPorSesion;
+            $('inputDuracionSesion').value = sug.duracionSesionMin;
+            $('inputDescanso').value = sug.descansoMin;
+            $('inputSesionesMaximas').value = sug.sesionesMaximas;
+
+            toast('💡 Valores sugeridos aplicados', 'ok');
+        }
+
+        // ==========================================
+        // 🎫 TOKEN GENERAL: MODAL CON QR
+        // ==========================================
+        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId) {
+            const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
+
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
+                <div class="titulo">🎫 Token General</div>
+                <div class="subtitulo">
+                    <strong>${escapeHtml(nombreEvento)}</strong><br><br>
+                    Este es el QR que tus invitados generales van a escanear.<br>
+                    Imprimilo y pegalo en el evento.
+                </div>
+
+                <div class="qr-token-wrapper" id="qrTokenWrapper"></div>
+
+                <div class="token-box" id="tokenBox"></div>
+
+                <button class="btn-primario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
+                    📋 Copiar URL del QR
+                </button>
+                <button class="btn-secundario" onclick="descargarQR('${escapeHtml(urlGeneral)}')">
+                    💾 Abrir QR en pestaña nueva
+                </button>
+                <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
+                    Listo
+                </button>
+            `);
+
+            // Dibujar QR
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(urlGeneral);
+            const wrapper = $('qrTokenWrapper');
+            wrapper.innerHTML = `<img src="${qrUrl}" alt="QR Token General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+
+            $('tokenBox').innerHTML = `<strong style="color:#f39c12;">Token general:</strong><br>${escapeHtml(token)}`;
+        }
+
+        function copiarUrlGeneral(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                toast('✅ URL copiada', 'ok');
+            }).catch(() => {
+                toast('No se pudo copiar', 'error');
+            });
+        }
+
+        function descargarQR(url) {
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=' + encodeURIComponent(url);
+            window.open(qrUrl, '_blank');
+        }
+
+        // ==========================================
+        // 🔍 VER TOKEN DE UN EVENTO EXISTENTE
+        // ==========================================
+        async function verTokenGeneral(idEvento, nombreEvento, fotografo) {
+            loader(true);
+            try {
+                const data = await apiFetch('/admin/token-general?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(idEvento));
+                if (data.ok && data.tokenGeneral) {
+                    mostrarTokenGeneral(nombreEvento, data.tokenGeneral, fotografo, idEvento);
+                } else {
+                    toast('Token no encontrado', 'error');
+                }
+            } catch (e) {
+                if (e.message.includes('no tiene token general') || e.message.includes('404')) {
+                    toast('Este evento no tiene token general (es anterior al cambio)', 'error');
+                } else {
+                    toast('Error: ' + e.message, 'error');
+                }
+            } finally {
+                loader(false);
+            }
+        }
+
+        function confirmarCancelarEvento(id, nombre) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🗑️ Cancelar evento</div>
+                <div class="subtitulo">¿Cancelar <strong>${escapeHtml(nombre)}</strong>?<br>El fotógrafo será notificado.</div>
+                <button class="btn-peligro" onclick="cancelarEvento('${escapeHtml(id)}')">Sí, cancelar</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
+            `);
+        }
+
+        async function cancelarEvento(id) {
+            loader(true);
+            cerrarModal();
+            try {
+                await apiFetch('/admin/eventos/' + encodeURIComponent(id), { method: 'DELETE' });
+                toast('✅ Evento cancelado', 'ok');
+                renderEventos();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 🆘 MODOS LIBRES
+        // ==========================================
+        async function renderModosLibres() {
+            $('contenidoPrincipal').innerHTML = `
+                <div class="page-header">
+                    <div><h1>🆘 Modos libres</h1><div class="subtitulo">Eventos de urgencia activos</div></div>
+                    <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
+                </div>
+                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
+            `;
+
+            try {
+                const data = await apiFetch('/admin/modos-libres');
+                cacheModosLibres = data.modosLibres || [];
+
+                let html = `
+                    <div class="page-header">
+                        <div><h1>🆘 Modos libres</h1><div class="subtitulo">${cacheModosLibres.length} activo${cacheModosLibres.length === 1 ? '' : 's'}</div></div>
+                        <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
+                    </div>
+                `;
+
+                if (cacheModosLibres.length === 0) {
+                    html += `<div class="vacio"><span class="emoji">✅</span><div class="titulo">Sin modos libres activos</div><div class="subtitulo">Todo bajo control.</div></div>`;
+                } else {
+                    html += `<div class="grid grid-2">`;
+                    cacheModosLibres.forEach(m => {
+                        const inicio = new Date(m.inicioReal);
+                        const ahora = new Date();
+                        const minutos = Math.floor((ahora - inicio) / 60000);
+                        const horas = Math.floor(minutos / 60);
+                        const mins = minutos % 60;
+
+                        html += `
+                            <div class="card card-evento">
+                                <div class="cabecera">
+                                    <div>
+                                        <div class="titulo">${escapeHtml(m.evento)}</div>
+                                        <div class="fotografo">👤 ${escapeHtml(m.fotografo)}</div>
+                                    </div>
+                                    <span class="badge libre">🆘 Libre</span>
+                                </div>
+                                <div class="meta">
+                                    <div class="fila">▶️ Inicio: <strong>${formatearHora(m.inicioReal)}</strong></div>
+                                    <div class="fila">⏱️ Transcurrido: <strong>${horas}h ${mins}min</strong></div>
+                                    ${m.whatsappCliente ? `<div class="fila">📱 +${m.whatsappCliente}</div>` : ''}
+                                    ${m.creditos ? `<div class="fila">💳 Créditos: <strong>${m.creditos.usados || 0}/${m.creditos.total || 0}</strong></div>` : ''}
+                                </div>
+                                <div class="acciones">
+                                    <button class="btn btn-chico btn-peligro" onclick="confirmarCerrarModoLibre('${escapeHtml(m.id)}','${escapeHtml(m.evento)}','${escapeHtml(m.fotografo)}')">🏁 Forzar cierre</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                $('contenidoPrincipal').innerHTML = html;
+
+            } catch (e) {
+                $('contenidoPrincipal').innerHTML = `
+                    <div class="page-header"><div><h1>🆘 Modos libres</h1></div></div>
+                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+                `;
+            }
+        }
+
+        function confirmarCerrarModoLibre(id, evento, fotografo) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🏁 Cerrar modo libre</div>
+                <div class="subtitulo">
+                    ¿Forzar cierre de <strong>${escapeHtml(evento)}</strong> (${escapeHtml(fotografo)})?<br><br>
+                    Se borrarán las fotos locales y de B2.
+                </div>
+                <button class="btn-peligro" onclick="cerrarModoLibre('${escapeHtml(id)}')">Sí, cerrar</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
+            `);
+        }
+
+        async function cerrarModoLibre(id) {
+            loader(true);
+            cerrarModal();
+            try {
+                const data = await apiFetch('/admin/modos-libres/' + encodeURIComponent(id) + '/cerrar', { method: 'POST' });
+                toast(`✅ Cerrado · ${data.eliminados} archivos · B2: ${data.b2.eliminadas}`, 'ok');
+                renderModosLibres();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // ⚙️ SISTEMA
+        // ==========================================
+        function renderSistema() {
+            $('contenidoPrincipal').innerHTML = `
+                <div class="page-header">
+                    <div><h1>⚙️ Sistema</h1><div class="subtitulo">Diagnóstico y mantenimiento</div></div>
+                </div>
+
+                <div class="grid grid-2" style="margin-bottom:20px;">
+                    <div class="card">
+                        <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:10px;">📄 Logs del servidor</div>
+                        <div style="font-size:0.75rem; color:#888; margin-bottom:14px;">Últimas líneas de logs (server + túnel).</div>
+                        <button class="btn btn-secundario" onclick="verLogs('server')">Ver logs del server</button>
+                    </div>
+
+                    <div class="card">
+                        <div style="font-size:0.95rem; font-weight:700; color:#e74c3c; margin-bottom:10px;">🗑️ Limpiar B2</div>
+                        <div style="font-size:0.75rem; color:#888; margin-bottom:14px;">Borra TODAS las fotos de B2 de TODOS los eventos.</div>
+                        <button class="btn btn-peligro" onclick="confirmarLimpiarB2()">Limpiar Backblaze B2</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:20px;">
+                    <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:10px;">ℹ️ Info del sistema</div>
+                    <div style="font-size:0.78rem; color:#aaa; line-height:1.8;">
+                        <div>🌐 API: <code style="color:#f39c12;">${URL_API}</code></div>
+                        <div>📄 Frontend invitados: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/</code></div>
+                        <div>📄 Panel fotógrafo: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/fotografo.html</code></div>
+                        <div>📄 Panel admin: <code style="color:#f39c12;">https://jhumeroveja.github.io/ovj/administracion.html</code></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function verLogs(tipo) {
+            loader(true);
+            try {
+                const data = await apiFetch('/admin/logs?tipo=' + encodeURIComponent(tipo));
+                const lineas = (data.lineas || []).join('\n');
+                abrirModal(`
+                    <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                    <div class="titulo">📄 Logs: ${escapeHtml(tipo)}</div>
+                    <div class="subtitulo">Últimas ${data.lineas?.length || 0} líneas</div>
+                    <div class="logs-box">${escapeHtml(lineas || '(vacío)')}</div>
+                    <button class="btn-secundario" onclick="cerrarModal()">Cerrar</button>
+                `);
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        function confirmarLimpiarB2() {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo" style="color:#e74c3c;">⚠️ Limpiar Backblaze B2</div>
+                <div class="subtitulo">
+                    Esto borrará <strong>TODAS</strong> las fotos de B2 de todos los fotógrafos y eventos.<br><br>
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </div>
+                <button class="btn-peligro" onclick="ejecutarLimpiarB2()">Sí, limpiar TODO</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+            `);
+        }
+
+        async function ejecutarLimpiarB2() {
+            loader(true);
+            cerrarModal();
+            try {
+                const data = await apiFetch('/admin/limpiar-b2', { method: 'POST' });
+                toast(`✅ ${data.totalEliminadas}/${data.totalFotos} eliminadas · ${data.totalFallidas} fallidas`, 'ok');
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 🪟 MODAL
+        // ==========================================
+        function abrirModal(html) {
+            $('modalContenido').innerHTML = html;
+            $('modal').classList.add('activo');
+        }
+
+        function cerrarModal() {
+            $('modal').classList.remove('activo');
+            $('modalContenido').innerHTML = '';
+        }
+
+        $('modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) cerrarModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarModal();
+        });
+
+        // ==========================================
+        // 🚀 INICIALIZACIÓN
+        // ==========================================
+        function inicializar() {
+            if (cargarSesionLocal()) {
+                mostrarApp();
+                cambiarTab('dashboard');
+            } else {
+                mostrarLogin();
+            }
+        }
+
+        $('inputToken').addEventListener('keydown', e => {
+            if (e.key === 'Enter') hacerLogin();
+        });
+
+        inicializar();
+    </script>
 </body>
 </html>
