@@ -337,7 +337,6 @@
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
             }
-            /* 🔥 NUEVO: botón subir fotos (solo admin) */
             .barra-rol .btn-subir {
                 display: inline-flex;
                 align-items: center;
@@ -1357,7 +1356,7 @@
                 color: #aaa;
             }
 
-            /* ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== */
+            /* ===== MODAL SUBIR FOTOS ===== */
             .modal-subir {
                 display: none;
                 position: fixed;
@@ -1864,14 +1863,14 @@
             </div>
         </div>
 
-        <!-- ===== 🔥 NUEVO: MODAL SUBIR FOTOS ===== -->
+        <!-- ===== MODAL SUBIR FOTOS ===== -->
         <div class="modal-subir" id="modalSubir">
             <div class="modal-subir-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
                 <div class="titulo">📤 Subir Fotos</div>
                 <div class="subtitulo">
                     Selecciona las fotos que quieres publicar.<br>
-                    Se subirán directo a la nube, sin pasar por tu conexión.
+                    Se subirán directo a la nube, sin pasar por el servidor del túnel.
                 </div>
 
                 <div class="zona-drop" id="zonaDrop" onclick="document.getElementById('inputFotos').click()">
@@ -1894,13 +1893,22 @@
             </div>
         </div>
 
+        <!-- 🔥 CONFIGURACIÓN EXTERNA (editar config.js, NO este archivo) -->
+        <script src="config.js"></script>
+
         <script>
             // ==========================================
             // ⚙️ CONFIGURACIÓN RÁPIDA
             // ==========================================
-            const URL_CLOUDFLARE = "https://surround-import-checks-campaigns.trycloudflare.com";
-            const WHATSAPP_PUBLICIDAD = "59160004962";
-            const WHATSAPP_CLIENTE_FALLBACK = "59160004962";
+            // Lee la URL del túnel desde config.js (window.OVJ_CONFIG)
+            // Si estamos en localhost, usa localhost:3000 automáticamente
+            const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+            const URL_CLOUDFLARE = _esLocalhost
+                ? 'http://localhost:3000'
+                : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+
+            const WHATSAPP_PUBLICIDAD = window.OVJ_CONFIG?.whatsappPublicidad || '59160004962';
+            const WHATSAPP_CLIENTE_FALLBACK = window.OVJ_CONFIG?.whatsappClienteFallback || '59160004962';
             const CODIGO_PAIS_DEFECTO = "591";
 
             const FOTOS_POR_CARGA = 6;
@@ -1908,8 +1916,8 @@
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
 
-            // 🔥 NUEVO: límites de subida
-            const TAMANO_MAX_FOTO = 15 * 1024 * 1024; // 15 MB
+            // 🔥 Límites de subida
+            const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
             const REINTENTOS_SUBIDA = 3;
 
             // ==========================================
@@ -1957,7 +1965,6 @@
             let invitacionTipo = 'invitado';
             let invitacionGenerada = null;
 
-            // 🔥 NUEVO: subidas
             let colaSubidas = [];
             let subidaEnProceso = false;
 
@@ -2025,10 +2032,9 @@
                     textoInvitar: "Invitar",
                     tipoInvitado: "Invitado",
                     tipoAdmin: "Admin",
-                    // 🔥 NUEVO: subida
                     textoSubir: "Subir fotos",
                     subirTitulo: "Subir Fotos",
-                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por tu conexión.",
+                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por el servidor del túnel.",
                     subirZonaTexto: "Toca aquí para elegir fotos",
                     subirZonaSubtexto: "Máximo 15 MB por foto · JPG",
                     subirEstadoPendiente: "En espera",
@@ -2101,7 +2107,7 @@
                     tipoAdmin: "Admin",
                     textoSubir: "Upload photos",
                     subirTitulo: "Upload Photos",
-                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing your connection.",
+                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing the tunnel server.",
                     subirZonaTexto: "Tap here to choose photos",
                     subirZonaSubtexto: "Max 15 MB per photo · JPG",
                     subirEstadoPendiente: "Waiting",
@@ -2174,7 +2180,7 @@
                     tipoAdmin: "管理员",
                     textoSubir: "上传照片",
                     subirTitulo: "上传照片",
-                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过你的连接。",
+                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过隧道服务器。",
                     subirZonaTexto: "点击此处选择照片",
                     subirZonaSubtexto: "每张最多 15 MB · JPG",
                     subirEstadoPendiente: "等待中",
@@ -2254,7 +2260,6 @@
                 document.getElementById('tipoInvitado').innerHTML = `<span class="emoji">🎟️</span>${t('tipoInvitado')}`;
                 document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
 
-                // 🔥 NUEVO: modal subir
                 const tituloSubir = document.querySelector('.modal-subir-contenido .titulo');
                 const subSubir = document.querySelector('.modal-subir-contenido .subtitulo');
                 if (tituloSubir) tituloSubir.textContent = '📤 ' + t('subirTitulo');
@@ -3085,7 +3090,7 @@
             }
 
             // ==========================================
-            // 🔥 NUEVO: SUBIR FOTOS
+            // 🔥 SUBIR FOTOS
             // ==========================================
             function abrirSubir() {
                 document.getElementById('modalSubir').classList.add('activo');
@@ -3103,7 +3108,6 @@
                 const archivos = Array.from(event.target.files || []);
                 if (archivos.length === 0) return;
 
-                // Validar y encolar
                 for (const archivo of archivos) {
                     if (!archivo.type.startsWith('image/jpeg')) {
                         alert(t('subirTipoInvalido') + ': ' + archivo.name);
@@ -3122,7 +3126,6 @@
                     });
                 }
 
-                // Limpiar input para permitir seleccionar el mismo archivo después
                 event.target.value = '';
 
                 renderizarListaSubidas();
@@ -3209,7 +3212,6 @@
                         renderizarListaSubidas();
                     }
 
-                    // Esperar un momento y luego recargar fotos
                     setTimeout(() => {
                         cargarFotos();
                     }, 2000);
@@ -3235,7 +3237,6 @@
             async function subirUnaFoto(subida) {
                 const { archivo } = subida;
 
-                // 1. Pedir URL firmada al server
                 const urlPedido = `${URL_CLOUDFLARE}/subir_url`;
 
                 const respPedido = await fetch(urlPedido, {
@@ -3259,7 +3260,6 @@
                     throw new Error(dataPedido.error || 'URL de subida inválida');
                 }
 
-                // 2. Subir directo a B2
                 let ultimoError = null;
                 for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
                     try {
@@ -3276,8 +3276,6 @@
                             throw new Error(`HTTP ${respSubida.status}${texto ? ' - ' + texto.slice(0, 80) : ''}`);
                         }
 
-                        // Éxito
-                        // 3. Confirmar al server
                         try {
                             await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
                                 method: 'POST',
@@ -3290,7 +3288,6 @@
                                 })
                             });
                         } catch (e) {
-                            // No importa si falla la confirmación, el recolector lo encontrará
                             console.warn('No se pudo confirmar subida (no crítico):', e.message);
                         }
 
