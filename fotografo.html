@@ -12,6 +12,7 @@
             --oro-claro: #f1c40f;
             --verde: #2ecc71;
             --rojo: #e74c3c;
+            --azul: #3498db;
             --bg: #0a0a0a;
             --card: #141414;
             --card-borde: rgba(255, 215, 0, 0.15);
@@ -229,9 +230,7 @@
         .barra-sistema .separador { color: #333; }
 
         /* ===== SECCIONES ===== */
-        .seccion {
-            margin-bottom: 16px;
-        }
+        .seccion { margin-bottom: 16px; }
         .seccion-titulo {
             font-size: 0.68rem;
             color: var(--texto-tenue);
@@ -302,12 +301,65 @@
             color: #fff;
             font-weight: 600;
         }
-        .card-activo .meta-item .creditos-bajo {
-            color: var(--rojo);
+        .card-activo .meta-item .creditos-bajo { color: var(--rojo); }
+        .card-activo .meta-item .creditos-ok { color: var(--verde); }
+
+        /* ===== CONTADORES ===== */
+        .contadores-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
         }
-        .card-activo .meta-item .creditos-ok {
-            color: var(--verde);
+        .contador-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.78rem;
+            color: var(--texto-suave);
         }
+        .contador-item .emoji {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .contador-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .contador-item .valor {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+        .contador-item .etiqueta {
+            font-size: 0.65rem;
+            color: var(--texto-tenue);
+            margin-top: 2px;
+            letter-spacing: 0.3px;
+        }
+        .contador-item .valor.alerta { color: var(--rojo); }
+        .contador-item .valor.ok { color: var(--verde); }
+
+        /* Aviso de receso */
+        .aviso-receso {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            color: #e74c3c;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .aviso-receso .emoji { font-size: 1.4rem; flex-shrink: 0; }
 
         /* Botones de acciones */
         .acciones-grid {
@@ -338,9 +390,7 @@
             cursor: not-allowed;
             pointer-events: none;
         }
-        .btn-accion:hover:not(:disabled) {
-            transform: scale(1.02);
-        }
+        .btn-accion:hover:not(:disabled) { transform: scale(1.02); }
 
         .btn-subir {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
@@ -350,42 +400,36 @@
         .btn-subir:hover:not(:disabled) {
             box-shadow: 0 8px 30px rgba(46, 204, 113, 0.35);
         }
-
         .btn-admin {
             background: rgba(243, 156, 18, 0.12);
             border: 1px solid rgba(243, 156, 18, 0.35);
             color: var(--oro);
         }
-        .btn-admin:hover:not(:disabled) {
-            background: rgba(243, 156, 18, 0.2);
+        .btn-admin:hover:not(:disabled) { background: rgba(243, 156, 18, 0.2); }
+        .btn-qr {
+            background: rgba(52, 152, 219, 0.12);
+            border: 1px solid rgba(52, 152, 219, 0.35);
+            color: #5dade2;
         }
-
+        .btn-qr:hover:not(:disabled) { background: rgba(52, 152, 219, 0.2); }
         .btn-ampliar {
             background: rgba(155, 89, 182, 0.12);
             border: 1px solid rgba(155, 89, 182, 0.35);
             color: #bb8fce;
         }
-        .btn-ampliar:hover:not(:disabled) {
-            background: rgba(155, 89, 182, 0.2);
-        }
-
+        .btn-ampliar:hover:not(:disabled) { background: rgba(155, 89, 182, 0.2); }
         .btn-creditos {
             background: rgba(241, 196, 15, 0.12);
             border: 1px solid rgba(241, 196, 15, 0.35);
             color: var(--oro-claro);
         }
-        .btn-creditos:hover:not(:disabled) {
-            background: rgba(241, 196, 15, 0.2);
-        }
-
+        .btn-creditos:hover:not(:disabled) { background: rgba(241, 196, 15, 0.2); }
         .btn-finalizar {
             background: rgba(231, 76, 60, 0.12);
             border: 1px solid rgba(231, 76, 60, 0.35);
             color: var(--rojo);
         }
-        .btn-finalizar:hover:not(:disabled) {
-            background: rgba(231, 76, 60, 0.2);
-        }
+        .btn-finalizar:hover:not(:disabled) { background: rgba(231, 76, 60, 0.2); }
 
         /* ===== CARD EVENTO AGENDADO ===== */
         .card-agendado {
@@ -396,8 +440,10 @@
             margin-bottom: 12px;
             transition: all 0.2s;
         }
-        .card-agendado:hover {
-            border-color: rgba(243, 156, 18, 0.25);
+        .card-agendado:hover { border-color: rgba(243, 156, 18, 0.25); }
+        .card-agendado.vencido {
+            opacity: 0.5;
+            border-color: rgba(231, 76, 60, 0.2);
         }
         .card-agendado .titulo {
             font-size: 1.1rem;
@@ -449,9 +495,7 @@
             margin-top: 8px;
             text-align: center;
         }
-        .card-agendado .aviso-ventana.no-puede {
-            color: var(--rojo);
-        }
+        .card-agendado .aviso-ventana.no-puede { color: var(--rojo); }
 
         /* ===== CARD VACÍO ===== */
         .card-vacio {
@@ -478,7 +522,6 @@
             line-height: 1.5;
             margin-bottom: 16px;
         }
-
         .btn-modo-libre {
             width: 100%;
             padding: 14px 20px;
@@ -595,9 +638,7 @@
             font-family: inherit;
             transition: all 0.2s;
         }
-        .modal-contenido .btn-primario:hover {
-            transform: scale(1.02);
-        }
+        .modal-contenido .btn-primario:hover { transform: scale(1.02); }
         .modal-contenido .btn-primario:disabled {
             opacity: 0.5;
             cursor: wait;
@@ -619,6 +660,40 @@
         .modal-contenido .btn-secundario:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+        }
+
+        /* QR */
+        .qr-wrapper {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 16px auto;
+            width: 240px;
+            height: 240px;
+        }
+        .qr-wrapper img {
+            display: block;
+            width: 220px;
+            height: 220px;
+            border-radius: 4px;
+        }
+        .url-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.7rem;
+            color: #888;
+            word-break: break-all;
+            margin-bottom: 14px;
+            max-height: 80px;
+            overflow-y: auto;
+            text-align: left;
+            font-family: monospace;
+            line-height: 1.4;
         }
 
         /* Paquetes ampliación */
@@ -695,40 +770,6 @@
             font-size: 1.05rem;
         }
 
-        /* QR / Resultado */
-        .qr-wrapper {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 16px auto;
-            width: 220px;
-            height: 220px;
-        }
-        .qr-wrapper img {
-            display: block;
-            width: 200px;
-            height: 200px;
-            border-radius: 4px;
-        }
-        .url-box {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-size: 0.7rem;
-            color: #888;
-            word-break: break-all;
-            margin-bottom: 14px;
-            max-height: 80px;
-            overflow-y: auto;
-            text-align: left;
-            font-family: monospace;
-            line-height: 1.4;
-        }
-
         /* Subir fotos */
         .zona-drop {
             border: 2px dashed rgba(46, 204, 113, 0.3);
@@ -795,7 +836,7 @@
         .item-subida .estado.ok { background: rgba(46, 204, 113, 0.15); color: var(--verde); }
         .item-subida .estado.error { background: rgba(231, 76, 60, 0.15); color: var(--rojo); }
 
-        /* Loader global */
+        /* Loader */
         .loader-overlay {
             display: none;
             position: fixed;
@@ -848,6 +889,7 @@
             .card-activo .meta { grid-template-columns: 1fr; }
             .card-activo .titulo { font-size: 1.25rem; }
             .acciones-grid { grid-template-columns: 1fr; }
+            .contadores-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -968,6 +1010,25 @@
         </div>
     </div>
 
+    <!-- ===== MODAL TOKEN GENERAL (QR) ===== -->
+    <div class="modal" id="modalTokenGeneral">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarTokenGeneral()">✕</button>
+            <div class="titulo">🎫 Token General</div>
+            <div class="subtitulo">
+                Este es el QR que tus invitados generales van a escanear.<br>
+                Imprimilo y pegalo en el evento.
+            </div>
+
+            <div class="qr-wrapper" id="qrTokenGeneral"></div>
+            <div class="url-box" id="urlTokenGeneral"></div>
+
+            <button class="btn-primario" onclick="copiarUrlTokenGeneral()">📋 Copiar URL</button>
+            <button class="btn-secundario" onclick="abrirQRGrande()">💾 Abrir QR en pestaña nueva</button>
+            <button class="btn-secundario" onclick="cerrarTokenGeneral()">Cerrar</button>
+        </div>
+    </div>
+
     <!-- ===== MODAL AMPLIAR ===== -->
     <div class="modal" id="modalAmpliar">
         <div class="modal-contenido">
@@ -1075,869 +1136,969 @@
     <!-- Loader y toast -->
     <div class="loader-overlay" id="loader"><div class="loader-spinner"></div></div>
     <div class="toast" id="toast"></div>
-<script src="config.js"></script>
-<script>
-    // ==========================================
-    // ⚙️ CONFIGURACIÓN
-    // ==========================================
+
+    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
+    <script src="config.js"></script>
+
+    <script>
         // ==========================================
-    // ⚙️ CONFIGURACIÓN
-    // ==========================================
-    // Lee la URL del túnel desde config.js (window.OVJ_CONFIG)
-    // Si estamos en localhost, usa localhost:3000 automáticamente
-    const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    const URL_API = _esLocalhost
-        ? 'http://localhost:3000'
-        : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+        // ⚙️ CONFIGURACIÓN
+        // ==========================================
+        const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const URL_API = _esLocalhost
+            ? 'http://localhost:3000'
+            : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
-    const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
-    const REINTENTOS_SUBIDA = 3;
-    const INTERVALO_REFRESH_MS = 30000;
+        const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
+        const REINTENTOS_SUBIDA = 3;
+        const INTERVALO_REFRESH_MS = 30000;
 
-    // ==========================================
-    // 🔑 ESTADO GLOBAL
-    // ==========================================
-    let tokenSesion = null;
-    let nombreFotografoActual = null;
-    let eventoActivo = null;
-    let creditosActuales = null;
+        // ==========================================
+        // 🔑 ESTADO GLOBAL
+        // ==========================================
+        let tokenSesion = null;
+        let nombreFotografoActual = null;
+        let eventoActivo = null;
+        let creditosActuales = null;
+        let contadores = null;
+        let tokenGeneralActual = null;
 
-    let colaSubidas = [];
-    let subidaEnProceso = false;
+        let colaSubidas = [];
+        let subidaEnProceso = false;
 
-    let intervalRefresh = null;
+        let intervalRefresh = null;
 
-    // ==========================================
-    // 🛠️ UTILIDADES
-    // ==========================================
-    function $(id) { return document.getElementById(id); }
+        // ==========================================
+        // 🛠️ UTILIDADES
+        // ==========================================
+        function $(id) { return document.getElementById(id); }
 
-    function toast(mensaje, tipo = '') {
-        const el = $('toast');
-        el.textContent = mensaje;
-        el.className = 'toast activo ' + tipo;
-        setTimeout(() => el.classList.remove('activo'), 3200);
-    }
-
-    function loader(activo) {
-        $('loader').classList.toggle('activo', activo);
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function formatearFecha(fechaStr) {
-        if (!fechaStr) return '';
-        const [y, m, d] = fechaStr.split('-');
-        return `${d}/${m}/${y}`;
-    }
-
-    function formatearHora(fechaISO) {
-        if (!fechaISO) return '';
-        const d = new Date(fechaISO);
-        return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    async function apiFetch(ruta, opciones = {}) {
-        const headers = opciones.headers || {};
-        headers['Content-Type'] = 'application/json';
-        if (tokenSesion) headers['Authorization'] = 'Bearer ' + tokenSesion;
-
-        const resp = await fetch(URL_API + ruta, { ...opciones, headers });
-
-        if (resp.status === 401) {
-            // Sesión expirada
-            cerrarSesionLocal();
-            toast('Tu sesión expiró. Vuelve a entrar.', 'error');
-            throw new Error('Sesión expirada');
+        function toast(mensaje, tipo = '') {
+            const el = $('toast');
+            el.textContent = mensaje;
+            el.className = 'toast activo ' + tipo;
+            setTimeout(() => el.classList.remove('activo'), 3200);
         }
 
-        const data = await resp.json().catch(() => ({}));
-        if (!resp.ok) {
-            throw new Error(data.error || `Error ${resp.status}`);
-        }
-        return data;
-    }
-
-    // ==========================================
-    // 🔐 SESIÓN
-    // ==========================================
-    function guardarSesion(token, nombre, expiraEn) {
-        localStorage.setItem('ovj_fotografo_token', token);
-        localStorage.setItem('ovj_fotografo_nombre', nombre);
-        localStorage.setItem('ovj_fotografo_expira', String(expiraEn));
-    }
-
-    function cargarSesionLocal() {
-        const token = localStorage.getItem('ovj_fotografo_token');
-        const nombre = localStorage.getItem('ovj_fotografo_nombre');
-        const expira = parseInt(localStorage.getItem('ovj_fotografo_expira') || '0', 10);
-
-        if (!token || !nombre) return false;
-        if (expira && expira < Date.now()) {
-            cerrarSesionLocal();
-            return false;
+        function loader(activo) {
+            $('loader').classList.toggle('activo', activo);
         }
 
-        tokenSesion = token;
-        nombreFotografoActual = nombre;
-        return true;
-    }
-
-    function cerrarSesionLocal() {
-        localStorage.removeItem('ovj_fotografo_token');
-        localStorage.removeItem('ovj_fotografo_nombre');
-        localStorage.removeItem('ovj_fotografo_expira');
-        tokenSesion = null;
-        nombreFotografoActual = null;
-        if (intervalRefresh) {
-            clearInterval(intervalRefresh);
-            intervalRefresh = null;
-        }
-    }
-
-    async function hacerLogin() {
-        const nombre = $('inputNombre').value.trim().toLowerCase();
-        const pin = $('inputPin').value.trim();
-        const btn = $('btnLogin');
-        const err = $('errorLogin');
-
-        err.classList.remove('activo');
-
-        if (!nombre || !pin) {
-            err.textContent = 'Completa ambos campos';
-            err.classList.add('activo');
-            return;
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
-        btn.disabled = true;
-        btn.textContent = 'Entrando...';
+        function formatearFecha(fechaStr) {
+            if (!fechaStr) return '';
+            const [y, m, d] = fechaStr.split('-');
+            return `${d}/${m}/${y}`;
+        }
 
-        try {
-            const resp = await fetch(URL_API + '/fotografo/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, pin })
-            });
+        function formatearHora(fechaISO) {
+            if (!fechaISO) return '';
+            const d = new Date(fechaISO);
+            return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+        }
 
-            const data = await resp.json();
+        async function apiFetch(ruta, opciones = {}) {
+            const headers = opciones.headers || {};
+            headers['Content-Type'] = 'application/json';
+            if (tokenSesion) headers['Authorization'] = 'Bearer ' + tokenSesion;
 
-            if (!resp.ok || !data.ok) {
-                err.textContent = data.error || 'Error al iniciar sesión';
+            const resp = await fetch(URL_API + ruta, { ...opciones, headers });
+
+            if (resp.status === 401) {
+                cerrarSesionLocal();
+                toast('Tu sesión expiró. Vuelve a entrar.', 'error');
+                throw new Error('Sesión expirada');
+            }
+
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok) {
+                throw new Error(data.error || `Error ${resp.status}`);
+            }
+            return data;
+        }
+
+        // ==========================================
+        // 🔐 SESIÓN
+        // ==========================================
+        function guardarSesion(token, nombre, expiraEn) {
+            localStorage.setItem('ovj_fotografo_token', token);
+            localStorage.setItem('ovj_fotografo_nombre', nombre);
+            localStorage.setItem('ovj_fotografo_expira', String(expiraEn));
+        }
+
+        function cargarSesionLocal() {
+            const token = localStorage.getItem('ovj_fotografo_token');
+            const nombre = localStorage.getItem('ovj_fotografo_nombre');
+            const expira = parseInt(localStorage.getItem('ovj_fotografo_expira') || '0', 10);
+
+            if (!token || !nombre) return false;
+            if (expira && expira < Date.now()) {
+                cerrarSesionLocal();
+                return false;
+            }
+
+            tokenSesion = token;
+            nombreFotografoActual = nombre;
+            return true;
+        }
+
+        function cerrarSesionLocal() {
+            localStorage.removeItem('ovj_fotografo_token');
+            localStorage.removeItem('ovj_fotografo_nombre');
+            localStorage.removeItem('ovj_fotografo_expira');
+            tokenSesion = null;
+            nombreFotografoActual = null;
+            if (intervalRefresh) {
+                clearInterval(intervalRefresh);
+                intervalRefresh = null;
+            }
+        }
+
+        async function hacerLogin() {
+            const nombre = $('inputNombre').value.trim().toLowerCase();
+            const pin = $('inputPin').value.trim();
+            const btn = $('btnLogin');
+            const err = $('errorLogin');
+
+            err.classList.remove('activo');
+
+            if (!nombre || !pin) {
+                err.textContent = 'Completa ambos campos';
+                err.classList.add('activo');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Entrando...';
+
+            try {
+                const resp = await fetch(URL_API + '/fotografo/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, pin })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    err.textContent = data.error || 'Error al iniciar sesión';
+                    err.classList.add('activo');
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                    return;
+                }
+
+                guardarSesion(data.token, data.fotografo, data.expiraEn);
+                tokenSesion = data.token;
+                nombreFotografoActual = data.fotografo;
+
+                mostrarPanel();
+                cargarTodo();
+
+            } catch (e) {
+                err.textContent = 'Error de conexión. Intenta de nuevo.';
                 err.classList.add('activo');
                 btn.disabled = false;
                 btn.textContent = 'Entrar';
-                return;
             }
-
-            guardarSesion(data.token, data.fotografo, data.expiraEn);
-            tokenSesion = data.token;
-            nombreFotografoActual = data.fotografo;
-
-            mostrarPanel();
-            cargarTodo();
-
-        } catch (e) {
-            err.textContent = 'Error de conexión. Intenta de nuevo.';
-            err.classList.add('activo');
-            btn.disabled = false;
-            btn.textContent = 'Entrar';
-        }
-    }
-
-    async function hacerLogout() {
-        try {
-            await apiFetch('/fotografo/logout', { method: 'POST' });
-        } catch (e) {}
-        cerrarSesionLocal();
-        mostrarLogin();
-    }
-
-    // ==========================================
-    // 🖥️ PANTALLAS
-    // ==========================================
-    function mostrarLogin() {
-        $('pantallaLogin').classList.add('activo');
-        $('pantallaPanel').classList.remove('activo');
-        $('inputNombre').value = '';
-        $('inputPin').value = '';
-        $('errorLogin').classList.remove('activo');
-        $('btnLogin').disabled = false;
-        $('btnLogin').textContent = 'Entrar';
-    }
-
-    function mostrarPanel() {
-        $('pantallaLogin').classList.remove('activo');
-        $('pantallaPanel').classList.add('activo');
-        $('nombreFotografo').textContent = nombreFotografoActual || '—';
-    }
-
-    // ==========================================
-    // 📊 CARGA DE DATOS
-    // ==========================================
-    async function cargarTodo() {
-        try {
-            marcarServidor('cargando');
-
-            const [eventos, estado] = await Promise.all([
-                apiFetch('/fotografo/eventos'),
-                apiFetch('/fotografo/estado')
-            ]);
-
-            eventoActivo = estado.activo;
-            creditosActuales = estado.creditos;
-
-            renderActivo(eventoActivo, creditosActuales, estado);
-            const info = renderAgendados(eventos.agendados || []);
-            renderFinalizados(eventos.finalizadosHoy || []);
-            renderVacio(info.activables, eventoActivo);
-
-            marcarServidor('ok');
-
-        } catch (e) {
-            console.error('Error cargando:', e.message);
-            marcarServidor('error');
-        }
-    }
-
-    function marcarServidor(estado) {
-        const punto = $('puntoServer');
-        const texto = $('textoUltimaAct');
-
-        punto.className = 'punto ' + estado;
-
-        if (estado === 'ok') {
-            const hora = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
-            texto.textContent = 'Actualizado ' + hora;
-        } else if (estado === 'error') {
-            texto.textContent = 'Sin conexión';
-        } else {
-            texto.textContent = 'Actualizando...';
-        }
-    }
-
-    // ==========================================
-    // 🎨 RENDER
-    // ==========================================
-    function renderActivo(activo, creditos, estado) {
-        const cont = $('seccionActivo');
-
-        if (!activo) {
-            cont.innerHTML = '';
-            return;
         }
 
-        const esLibre = activo.modo === 'libre';
-        const creditosRestantes = creditos ? creditos.restantes : 0;
-        const creditosTotal = creditos ? creditos.total : 0;
-        const claseCreditos = creditosRestantes <= 5 ? 'creditos-bajo' : 'creditos-ok';
-
-        let metaHtml = '';
-        metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
-
-        if (!esLibre && activo.horaFin) {
-            metaHtml += `<div class="meta-item"><span class="emoji">⏹️</span>Fin aprox: <strong>${activo.horaFin}</strong></div>`;
-        }
-
-        metaHtml += `<div class="meta-item"><span class="emoji">💳</span>Créditos: <strong class="${claseCreditos}">${creditosRestantes} / ${creditosTotal}</strong></div>`;
-        metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong> · ⏳ Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
-
-        cont.innerHTML = `
-            <div class="seccion">
-                <div class="seccion-titulo">Evento activo</div>
-                <div class="card-activo ${esLibre ? 'modo-libre' : ''}">
-                    <div class="badge">
-                        ${esLibre ? '🆘 Modo Libre' : '● En vivo'}
-                    </div>
-                    <div class="titulo">${escapeHtml(activo.evento)}</div>
-                    <div class="meta">${metaHtml}</div>
-
-                    <div class="acciones-grid">
-                        <button class="btn-accion btn-subir full" onclick="abrirSubir()">
-                            📤 Subir fotos
-                        </button>
-                        <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                            🔗 Link Admin
-                        </button>
-                        ${!esLibre ? `
-                        <button class="btn-accion btn-ampliar" onclick="abrirAmpliar()">
-                            ➕ Ampliar
-                        </button>
-                        ` : ''}
-                        <button class="btn-accion btn-creditos" onclick="abrirCreditos()">
-                            💰 Créditos
-                        </button>
-                        <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
-                            🏁 Finalizar evento
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAgendados(agendados) {
-        const cont = $('seccionAgendados');
-
-        if (!agendados || agendados.length === 0) {
-            cont.innerHTML = '';
-            return { activables: 0, huerfanos: 0 };
-        }
-
-        // Ordenar por fecha
-        agendados.sort((a, b) => {
-            const fa = new Date(`${a.fechaProgramada}T${a.horaInicio}:00`);
-            const fb = new Date(`${b.fechaProgramada}T${b.horaInicio}:00`);
-            return fa - fb;
-        });
-
-        const ahora = new Date();
-
-        // Clasificar
-        const activables = [];
-        const huerfanos = [];
-
-        agendados.forEach(evt => {
-            const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
-            const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
-
-            if (ahora > finVentana) {
-                huerfanos.push(evt);
-            } else {
-                activables.push(evt);
-            }
-        });
-
-        let html = '';
-
-        // ─── SECCIÓN: ACTIVABLES ───
-        if (activables.length > 0) {
-            html += `<div class="seccion-titulo">Eventos agendados (${activables.length})</div>`;
-
-            activables.forEach(evt => {
-                const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
-                const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
-                const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
-
-                const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
-                const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
-                const puedeActivar = ahora >= inicioVentana && ahora <= finVentana;
-
-                let avisoVentana = '';
-                let btnDisabled = '';
-
-                if (!puedeActivar) {
-                    if (ahora < inicioVentana) {
-                        avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
-                    }
-                    btnDisabled = 'disabled';
-                }
-
-                html += `
-                    <div class="card-agendado">
-                        <div class="titulo">${escapeHtml(evt.evento)}</div>
-                        <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
-                        ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
-                        <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
-                            ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
-                        </button>
-                        ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        // ─── SECCIÓN: HUÉRFANOS (vencidos sin activar) ───
-        if (huerfanos.length > 0) {
-            html += `<div class="seccion-titulo" style="color:#e74c3c; margin-top:24px;">⚠️ Eventos vencidos sin activar (${huerfanos.length})</div>`;
-
-            huerfanos.forEach(evt => {
-                const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
-                const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
-                const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
-
-                html += `
-                    <div class="card-agendado" style="opacity:0.5; border-color:rgba(231,76,60,0.2);">
-                        <div class="titulo">${escapeHtml(evt.evento)}</div>
-                        <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
-                        <div class="aviso-ventana no-puede">La ventana de activación ya pasó. Contacta al administrador.</div>
-                    </div>
-                `;
-            });
-        }
-
-        cont.innerHTML = html;
-
-        return {
-            activables: activables.length,
-            huerfanos: huerfanos.length
-        };
-    }
-
-    function renderFinalizados(finalizados) {
-        const cont = $('seccionFinalizados');
-
-        if (!finalizados || finalizados.length === 0) {
-            cont.innerHTML = '';
-            return;
-        }
-
-        let html = `<div class="seccion"><div class="seccion-titulo">Finalizados hoy</div>`;
-
-        finalizados.forEach(evt => {
-            html += `
-                <div class="card-agendado" style="opacity:0.6;">
-                    <div class="titulo">${escapeHtml(evt.evento)}</div>
-                    <div class="fecha">✔️ Finalizado</div>
-                </div>
-            `;
-        });
-
-        html += `</div>`;
-        cont.innerHTML = html;
-    }
-
-    function renderVacio(cantidadAgendadosActivos, activo) {
-        const cont = $('seccionVacio');
-
-        // Mostrar la tarjeta de modo libre solo si:
-        // - No hay evento activo
-        // - No hay eventos agendados que TODAVÍA se puedan activar
-        if (activo || cantidadAgendadosActivos > 0) {
-            cont.innerHTML = '';
-            return;
-        }
-
-        cont.innerHTML = `
-            <div class="seccion">
-                <div class="card-vacio">
-                    <span class="emoji">📅</span>
-                    <div class="titulo">No tienes eventos activos</div>
-                    <div class="subtitulo">
-                        Si tienes un evento de urgencia,<br>activa el modo libre.
-                    </div>
-                    <button class="btn-modo-libre" onclick="abrirModoLibre()">
-                        🆘 Activar Modo Libre
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    // ==========================================
-    // ✅ ACTIVAR EVENTO
-    // ==========================================
-    async function activarEvento(eventoId) {
-        loader(true);
-        try {
-            const data = await apiFetch('/fotografo/activar', {
-                method: 'POST',
-                body: JSON.stringify({ eventoId })
-            });
-
-            toast('✅ Evento activado', 'ok');
-            await cargarTodo();
-
-            // Mostrar link admin automáticamente
-            setTimeout(() => abrirLinkAdmin(), 400);
-
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    // ==========================================
-    // 🆘 MODO LIBRE
-    // ==========================================
-    function abrirModoLibre() {
-        $('inputNombreModoLibre').value = '';
-        $('modalModoLibre').classList.add('activo');
-    }
-    function cerrarModoLibre() {
-        $('modalModoLibre').classList.remove('activo');
-    }
-
-    async function activarModoLibre() {
-        const nombre = $('inputNombreModoLibre').value.trim();
-        if (nombre.length < 2) {
-            toast('Escribe el nombre del evento', 'error');
-            return;
-        }
-
-        loader(true);
-        $('btnConfirmarModoLibre').disabled = true;
-
-        try {
-            const data = await apiFetch('/fotografo/modo-libre', {
-                method: 'POST',
-                body: JSON.stringify({ evento: nombre })
-            });
-
-            cerrarModoLibre();
-            toast('🆘 Modo libre activado', 'ok');
-            await cargarTodo();
-            setTimeout(() => abrirLinkAdmin(), 400);
-
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-            $('btnConfirmarModoLibre').disabled = false;
-        }
-    }
-
-    // ==========================================
-    // 🔗 LINK ADMIN
-    // ==========================================
-    let urlAdminActual = null;
-
-    async function abrirLinkAdmin() {
-        loader(true);
-        try {
-            const data = await apiFetch('/fotografo/link-admin');
-            urlAdminActual = data.urlAdmin;
-
-            $('urlLinkAdmin').textContent = data.urlAdmin;
-
-            // QR vía servicio externo
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
-            $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
-
-            $('linkAdminSubtitulo').textContent = data.reclamada
-                ? '⚠️ Este link ya fue usado en otro dispositivo. Si necesitas acceso desde otro, contacta al admin.'
-                : 'Abre este link en tu celular para gestionar el evento (invitar, ver butacas, etc.).';
-
-            $('modalLinkAdmin').classList.add('activo');
-
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    function cerrarLinkAdmin() {
-        $('modalLinkAdmin').classList.remove('activo');
-    }
-
-    function copiarLinkAdmin() {
-        if (!urlAdminActual) return;
-        navigator.clipboard.writeText(urlAdminActual).then(() => {
-            toast('✅ Link copiado', 'ok');
-        }).catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = urlAdminActual;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            toast('✅ Link copiado', 'ok');
-        });
-    }
-
-    // ==========================================
-    // ➕ AMPLIAR
-    // ==========================================
-    function abrirAmpliar() {
-        $('modalAmpliar').classList.add('activo');
-    }
-    function cerrarAmpliar() {
-        $('modalAmpliar').classList.remove('activo');
-    }
-
-    async function aplicarAmpliacion(paquete) {
-        loader(true);
-        cerrarAmpliar();
-        try {
-            const data = await apiFetch('/fotografo/ampliar', {
-                method: 'POST',
-                body: JSON.stringify({ paquete })
-            });
-            toast('✅ Ampliación aplicada · Bs.' + data.paquete.precio, 'ok');
-            await cargarTodo();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    // ==========================================
-    // 💰 CRÉDITOS
-    // ==========================================
-    function abrirCreditos() {
-        $('modalCreditos').classList.add('activo');
-    }
-    function cerrarCreditos() {
-        $('modalCreditos').classList.remove('activo');
-    }
-
-    async function agregarCreditos(monto) {
-        loader(true);
-        cerrarCreditos();
-        try {
-            const data = await apiFetch('/fotografo/creditos', {
-                method: 'POST',
-                body: JSON.stringify({ monto })
-            });
-            toast(`💰 +${monto} créditos agregados`, 'ok');
-            await cargarTodo();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    // ==========================================
-    // 🏁 FINALIZAR
-    // ==========================================
-    let confirmarCallback = null;
-
-    function confirmarFinalizar() {
-        $('confirmarTitulo').textContent = '🏁 Finalizar evento';
-        $('confirmarMensaje').innerHTML =
-            'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>' +
-            '<strong>Esta acción no se puede deshacer.</strong>';
-        confirmarCallback = ejecutarFinalizar;
-        $('modalConfirmar').classList.add('activo');
-    }
-
-    async function ejecutarFinalizar() {
-        cerrarConfirmar();
-        loader(true);
-        try {
-            const data = await apiFetch('/fotografo/finalizar', { method: 'POST' });
-
-            const horas = Math.floor(data.duracionHoras);
-            const mins = Math.round((data.duracionHoras - horas) * 60);
-
-            toast(`✅ Evento finalizado · ${horas}h ${mins}min`, 'ok');
-            await cargarTodo();
-        } catch (e) {
-            toast('Error: ' + e.message, 'error');
-        } finally {
-            loader(false);
-        }
-    }
-
-    function cerrarConfirmar() {
-        $('modalConfirmar').classList.remove('activo');
-        confirmarCallback = null;
-    }
-
-    // Conectar botón Sí
-    document.addEventListener('DOMContentLoaded', () => {
-        const btn = $('btnConfirmarSi');
-        if (btn) {
-            btn.addEventListener('click', () => {
-                if (confirmarCallback) confirmarCallback();
-            });
-        }
-    });
-
-    // ==========================================
-    // 📤 SUBIR FOTOS
-    // ==========================================
-    function abrirSubir() {
-        colaSubidas = [];
-        renderizarListaSubidas();
-        $('modalSubir').classList.add('activo');
-    }
-
-    function cerrarSubir() {
-        if (subidaEnProceso) {
-            toast('Espera a que terminen las subidas...', 'error');
-            return;
-        }
-        $('modalSubir').classList.remove('activo');
-    }
-
-    function manejarSeleccionFotos(event) {
-        const archivos = Array.from(event.target.files || []);
-        if (archivos.length === 0) return;
-
-        for (const archivo of archivos) {
-            if (!archivo.type.startsWith('image/jpeg')) {
-                toast('Solo JPG: ' + archivo.name, 'error');
-                continue;
-            }
-            if (archivo.size > TAMANO_MAX_FOTO) {
-                toast('Supera 15 MB: ' + archivo.name, 'error');
-                continue;
-            }
-            colaSubidas.push({ archivo, estado: 'pendiente' });
-        }
-
-        event.target.value = '';
-        renderizarListaSubidas();
-        procesarColaSubidas();
-    }
-
-    function renderizarListaSubidas() {
-        const cont = $('listaSubidas');
-        if (colaSubidas.length === 0) {
-            cont.innerHTML = '';
-            return;
-        }
-
-        const total = colaSubidas.length;
-        const ok = colaSubidas.filter(s => s.estado === 'ok').length;
-
-        let html = '';
-        colaSubidas.forEach(s => {
-            const estados = {
-                pendiente: ['En espera', 'pendiente'],
-                subiendo: ['Subiendo...', 'subiendo'],
-                ok: ['✓ Subida', 'ok'],
-                error: ['✗ Error', 'error']
-            };
-            const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
-            html += `
-                <div class="item-subida">
-                    <div class="nombre">${escapeHtml(s.archivo.name)}</div>
-                    <div class="estado ${clase}">${texto}</div>
-                </div>
-            `;
-        });
-
-        if (subidaEnProceso) {
-            html += `<div style="text-align:center; color:#f39c12; font-size:0.75rem; padding:8px 0;">${ok} de ${total} subidas</div>`;
-        } else if (ok === total && total > 0) {
-            html += `<div style="text-align:center; color:#2ecc71; font-size:0.75rem; padding:8px 0;">✅ Todas las fotos subidas</div>`;
-        } else if (colaSubidas.some(s => s.estado === 'error')) {
-            html += `<div style="text-align:center; color:#e67e22; font-size:0.75rem; padding:8px 0;">⚠️ Algunas fallaron</div>`;
-        }
-
-        cont.innerHTML = html;
-    }
-
-    async function procesarColaSubidas() {
-        if (subidaEnProceso) return;
-
-        subidaEnProceso = true;
-        $('btnCerrarSubir').disabled = true;
-        $('btnCerrarSubir').textContent = 'Subiendo...';
-
-        try {
-            for (const subida of colaSubidas) {
-                if (subida.estado === 'ok') continue;
-                subida.estado = 'subiendo';
-                renderizarListaSubidas();
-
-                try {
-                    await subirUnaFoto(subida);
-                    subida.estado = 'ok';
-                } catch (e) {
-                    console.error('Error subiendo:', e);
-                    subida.estado = 'error';
-                }
-                renderizarListaSubidas();
-            }
-
-            // Recargar fotos tras un momento
-            setTimeout(() => cargarTodo(), 2000);
-
-        } finally {
-            subidaEnProceso = false;
-            $('btnCerrarSubir').disabled = false;
-            $('btnCerrarSubir').textContent = 'Cerrar';
-            renderizarListaSubidas();
-        }
-    }
-
-    async function subirUnaFoto(subida) {
-        const { archivo } = subida;
-
-        // 1. Pedir URL firmada (el backend nos autoriza por el session token)
-        const dataPedido = await apiFetch('/subir_url', {
-            method: 'POST',
-            body: JSON.stringify({
-                f: nombreFotografoActual,
-                e: eventoActivo.id,
-                nombreOriginal: archivo.name
-            })
-        });
-
-        if (!dataPedido.ok || !dataPedido.url) {
-            throw new Error(dataPedido.error || 'URL inválida');
-        }
-
-        // 2. Subir directo a B2
-        let ultimoError = null;
-        for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
+        async function hacerLogout() {
             try {
-                const resp = await fetch(dataPedido.url, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'image/jpeg' },
-                    body: archivo
-                });
-
-                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-                // 3. Confirmar (también autorizado por session token)
-                try {
-                    await apiFetch('/confirmar_subida', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            f: nombreFotografoActual,
-                            e: eventoActivo.id,
-                            key: dataPedido.key
-                        })
-                    });
-                } catch (e) {
-                    console.warn('Confirmación fallida (no crítico):', e.message);
-                }
-
-                return;
-
-            } catch (e) {
-                ultimoError = e;
-                if (intento < REINTENTOS_SUBIDA) {
-                    await new Promise(r => setTimeout(r, 1000 * intento));
-                }
-            }
-        }
-
-        throw new Error(ultimoError ? ultimoError.message : 'Error desconocido');
-    }
-
-    // ==========================================
-    // 🚀 INICIALIZACIÓN
-    // ==========================================
-    async function inicializar() {
-        if (cargarSesionLocal()) {
-            mostrarPanel();
-            await cargarTodo();
-            intervalRefresh = setInterval(cargarTodo, INTERVALO_REFRESH_MS);
-        } else {
+                await apiFetch('/fotografo/logout', { method: 'POST' });
+            } catch (e) {}
+            cerrarSesionLocal();
             mostrarLogin();
         }
-    }
 
-    // Atajos de teclado
-    $('inputNombre').addEventListener('keydown', e => {
-        if (e.key === 'Enter') $('inputPin').focus();
-    });
-    $('inputPin').addEventListener('keydown', e => {
-        if (e.key === 'Enter') hacerLogin();
-    });
-    $('inputPin').addEventListener('input', e => {
-        e.target.value = e.target.value.replace(/[^0-9]/g, '');
-    });
+        // ==========================================
+        // 🖥️ PANTALLAS
+        // ==========================================
+        function mostrarLogin() {
+            $('pantallaLogin').classList.add('activo');
+            $('pantallaPanel').classList.remove('activo');
+            $('inputNombre').value = '';
+            $('inputPin').value = '';
+            $('errorLogin').classList.remove('activo');
+            $('btnLogin').disabled = false;
+            $('btnLogin').textContent = 'Entrar';
+        }
 
-    inicializar();
-</script>
+        function mostrarPanel() {
+            $('pantallaLogin').classList.remove('activo');
+            $('pantallaPanel').classList.add('activo');
+            $('nombreFotografo').textContent = nombreFotografoActual || '—';
+        }
+
+        // ==========================================
+        // 📊 CARGA DE DATOS
+        // ==========================================
+        async function cargarTodo() {
+            try {
+                marcarServidor('cargando');
+
+                const [eventos, estado] = await Promise.all([
+                    apiFetch('/fotografo/eventos'),
+                    apiFetch('/fotografo/estado')
+                ]);
+
+                eventoActivo = estado.activo;
+                creditosActuales = estado.creditos;
+                contadores = estado.contadores || null;
+
+                renderActivo(eventoActivo, creditosActuales, estado);
+                const info = renderAgendados(eventos.agendados || []);
+                renderFinalizados(eventos.finalizadosHoy || []);
+                renderVacio(info.activables, eventoActivo);
+
+                marcarServidor('ok');
+
+            } catch (e) {
+                console.error('Error cargando:', e.message);
+                marcarServidor('error');
+            }
+        }
+
+        function marcarServidor(estado) {
+            const punto = $('puntoServer');
+            const texto = $('textoUltimaAct');
+
+            punto.className = 'punto ' + estado;
+
+            if (estado === 'ok') {
+                const hora = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+                texto.textContent = 'Actualizado ' + hora;
+            } else if (estado === 'error') {
+                texto.textContent = 'Sin conexión';
+            } else {
+                texto.textContent = 'Actualizando...';
+            }
+        }
+
+        // ==========================================
+        // 🎨 RENDER
+        // ==========================================
+        function renderActivo(activo, creditos, estado) {
+            const cont = $('seccionActivo');
+
+            if (!activo) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            const esLibre = activo.modo === 'libre';
+            const creditosRestantes = creditos ? creditos.restantes : 0;
+            const creditosTotal = creditos ? creditos.total : 0;
+            const claseCreditos = creditosRestantes <= 5 ? 'creditos-bajo' : 'creditos-ok';
+
+            let metaHtml = '';
+            metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
+
+            if (!esLibre && activo.horaFin) {
+                metaHtml += `<div class="meta-item"><span class="emoji">⏹️</span>Fin aprox: <strong>${activo.horaFin}</strong></div>`;
+            }
+
+            metaHtml += `<div class="meta-item"><span class="emoji">💳</span>Créditos: <strong class="${claseCreditos}">${creditosRestantes} / ${creditosTotal}</strong></div>`;
+            metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong> · ⏳ Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
+
+            // Contadores del pool
+            let contadoresHtml = '';
+            if (contadores) {
+                const generalesActivos = contadores.generalesActivos || 0;
+                const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
+                const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
+
+                contadoresHtml = `
+                    <div class="contadores-grid">
+                        <div class="contador-item">
+                            <span class="emoji">⭐</span>
+                            <div class="info">
+                                <div class="valor">${contadores.vips} / ${contadores.limiteVips}</div>
+                                <div class="etiqueta">VIPs (${contadores.limiteVips} máx)</div>
+                            </div>
+                        </div>
+                        <div class="contador-item">
+                            <span class="emoji">🎟️</span>
+                            <div class="info">
+                                <div class="valor">${contadores.generalesTotal}</div>
+                                <div class="etiqueta">Generales totales</div>
+                            </div>
+                        </div>
+                        <div class="contador-item">
+                            <span class="emoji">🟢</span>
+                            <div class="info">
+                                <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
+                                <div class="etiqueta">Generales activos ahora</div>
+                            </div>
+                        </div>
+                        <div class="contador-item">
+                            <span class="emoji">⏸️</span>
+                            <div class="info">
+                                <div class="valor" style="font-size:0.85rem;">${generalesActivos >= maxGenerales ? 'WEB EN RECESO' : 'WEB ACTIVA'}</div>
+                                <div class="etiqueta">Estado</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            cont.innerHTML = `
+                <div class="seccion">
+                    <div class="seccion-titulo">Evento activo</div>
+                    <div class="card-activo ${esLibre ? 'modo-libre' : ''}">
+                        <div class="badge">
+                            ${esLibre ? '🆘 Modo Libre' : '● En vivo'}
+                        </div>
+                        <div class="titulo">${escapeHtml(activo.evento)}</div>
+                        <div class="meta">${metaHtml}</div>
+
+                        ${contadoresHtml}
+
+                        <div class="acciones-grid">
+                            <button class="btn-accion btn-subir full" onclick="abrirSubir()">
+                                📤 Subir fotos
+                            </button>
+                            <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
+                                🔗 Link Admin
+                            </button>
+                            <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
+                                🎫 QR General
+                            </button>
+                            ${!esLibre ? `
+                            <button class="btn-accion btn-ampliar" onclick="abrirAmpliar()">
+                                ➕ Ampliar
+                            </button>
+                            ` : ''}
+                            <button class="btn-accion btn-creditos" onclick="abrirCreditos()">
+                                💰 Créditos
+                            </button>
+                            <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
+                                🏁 Finalizar evento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAgendados(agendados) {
+            const cont = $('seccionAgendados');
+
+            if (!agendados || agendados.length === 0) {
+                cont.innerHTML = '';
+                return { activables: 0, huerfanos: 0 };
+            }
+
+            agendados.sort((a, b) => {
+                const fa = new Date(`${a.fechaProgramada}T${a.horaInicio}:00`);
+                const fb = new Date(`${b.fechaProgramada}T${b.horaInicio}:00`);
+                return fa - fb;
+            });
+
+            const ahora = new Date();
+            const activables = [];
+            const huerfanos = [];
+
+            agendados.forEach(evt => {
+                const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
+                const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
+
+                if (ahora > finVentana) {
+                    huerfanos.push(evt);
+                } else {
+                    activables.push(evt);
+                }
+            });
+
+            let html = '';
+
+            if (activables.length > 0) {
+                html += `<div class="seccion-titulo">Eventos agendados (${activables.length})</div>`;
+
+                activables.forEach(evt => {
+                    const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
+                    const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
+                    const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+
+                    const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
+                    const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
+                    const puedeActivar = ahora >= inicioVentana && ahora <= finVentana;
+
+                    let avisoVentana = '';
+                    let btnDisabled = '';
+
+                    if (!puedeActivar) {
+                        if (ahora < inicioVentana) {
+                            avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                        }
+                        btnDisabled = 'disabled';
+                    }
+
+                    html += `
+                        <div class="card-agendado">
+                            <div class="titulo">${escapeHtml(evt.evento)}</div>
+                            <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
+                            ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
+                            <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
+                                ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
+                            </button>
+                            ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            if (huerfanos.length > 0) {
+                html += `<div class="seccion-titulo" style="color:#e74c3c; margin-top:24px;">⚠️ Eventos vencidos sin activar (${huerfanos.length})</div>`;
+
+                huerfanos.forEach(evt => {
+                    const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
+                    const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
+                    const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+
+                    html += `
+                        <div class="card-agendado vencido">
+                            <div class="titulo">${escapeHtml(evt.evento)}</div>
+                            <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
+                            <div class="aviso-ventana no-puede">La ventana de activación ya pasó. Contacta al administrador.</div>
+                        </div>
+                    `;
+                });
+            }
+
+            cont.innerHTML = html;
+
+            return {
+                activables: activables.length,
+                huerfanos: huerfanos.length
+            };
+        }
+
+        function renderFinalizados(finalizados) {
+            const cont = $('seccionFinalizados');
+
+            if (!finalizados || finalizados.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            let html = `<div class="seccion"><div class="seccion-titulo">Finalizados hoy</div>`;
+
+            finalizados.forEach(evt => {
+                html += `
+                    <div class="card-agendado" style="opacity:0.6;">
+                        <div class="titulo">${escapeHtml(evt.evento)}</div>
+                        <div class="fecha">✔️ Finalizado</div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            cont.innerHTML = html;
+        }
+
+        function renderVacio(cantidadAgendadosActivos, activo) {
+            const cont = $('seccionVacio');
+
+            if (activo || cantidadAgendadosActivos > 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            cont.innerHTML = `
+                <div class="seccion">
+                    <div class="card-vacio">
+                        <span class="emoji">📅</span>
+                        <div class="titulo">No tienes eventos activos</div>
+                        <div class="subtitulo">
+                            Si tienes un evento de urgencia,<br>activa el modo libre.
+                        </div>
+                        <button class="btn-modo-libre" onclick="abrirModoLibre()">
+                            🆘 Activar Modo Libre
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // ✅ ACTIVAR EVENTO
+        // ==========================================
+        async function activarEvento(eventoId) {
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/activar', {
+                    method: 'POST',
+                    body: JSON.stringify({ eventoId })
+                });
+
+                toast('✅ Evento activado', 'ok');
+                await cargarTodo();
+
+                // Guardar token general si vino
+                if (data.tokenGeneral) {
+                    tokenGeneralActual = data.tokenGeneral;
+                }
+
+                setTimeout(() => abrirLinkAdmin(), 400);
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 🆘 MODO LIBRE
+        // ==========================================
+        function abrirModoLibre() {
+            $('inputNombreModoLibre').value = '';
+            $('modalModoLibre').classList.add('activo');
+        }
+        function cerrarModoLibre() {
+            $('modalModoLibre').classList.remove('activo');
+        }
+
+        async function activarModoLibre() {
+            const nombre = $('inputNombreModoLibre').value.trim();
+            if (nombre.length < 2) {
+                toast('Escribe el nombre del evento', 'error');
+                return;
+            }
+
+            loader(true);
+            $('btnConfirmarModoLibre').disabled = true;
+
+            try {
+                const data = await apiFetch('/fotografo/modo-libre', {
+                    method: 'POST',
+                    body: JSON.stringify({ evento: nombre })
+                });
+
+                cerrarModoLibre();
+                toast('🆘 Modo libre activado', 'ok');
+                await cargarTodo();
+
+                if (data.tokenGeneral) {
+                    tokenGeneralActual = data.tokenGeneral;
+                }
+
+                setTimeout(() => abrirLinkAdmin(), 400);
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+                $('btnConfirmarModoLibre').disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 🔗 LINK ADMIN
+        // ==========================================
+        let urlAdminActual = null;
+
+        async function abrirLinkAdmin() {
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/link-admin');
+                urlAdminActual = data.urlAdmin;
+
+                $('urlLinkAdmin').textContent = data.urlAdmin;
+
+                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
+                $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+
+                $('linkAdminSubtitulo').textContent = data.reclamada
+                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si necesitas acceso desde otro, contacta al admin.'
+                    : 'Abre este link en tu celular para gestionar el evento (invitar, ver butacas, etc.).';
+
+                $('modalLinkAdmin').classList.add('activo');
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        function cerrarLinkAdmin() {
+            $('modalLinkAdmin').classList.remove('activo');
+        }
+
+        function copiarLinkAdmin() {
+            if (!urlAdminActual) return;
+            navigator.clipboard.writeText(urlAdminActual).then(() => {
+                toast('✅ Link copiado', 'ok');
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = urlAdminActual;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                toast('✅ Link copiado', 'ok');
+            });
+        }
+
+        // ==========================================
+        // 🎫 TOKEN GENERAL (QR)
+        // ==========================================
+        let urlTokenGeneralActual = null;
+
+        async function abrirTokenGeneral() {
+            loader(true);
+            try {
+                // Pedir al backend
+                const data = await apiFetch('/fotografo/token-general');
+
+                if (!data.ok || !data.tokenGeneral) {
+                    toast('Token general no disponible', 'error');
+                    loader(false);
+                    return;
+                }
+
+                // Construir URL general
+                const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(data.eventoId)}&t=${encodeURIComponent(data.tokenGeneral)}`;
+                urlTokenGeneralActual = urlGeneral;
+
+                $('urlTokenGeneral').textContent = urlGeneral;
+
+                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(urlGeneral);
+                $('qrTokenGeneral').innerHTML = `<img src="${qrUrl}" alt="QR Token General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+
+                $('modalTokenGeneral').classList.add('activo');
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        function cerrarTokenGeneral() {
+            $('modalTokenGeneral').classList.remove('activo');
+        }
+
+        function copiarUrlTokenGeneral() {
+            if (!urlTokenGeneralActual) return;
+            navigator.clipboard.writeText(urlTokenGeneralActual).then(() => {
+                toast('✅ URL copiada', 'ok');
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = urlTokenGeneralActual;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                toast('✅ URL copiada', 'ok');
+            });
+        }
+
+        function abrirQRGrande() {
+            if (!urlTokenGeneralActual) return;
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlTokenGeneralActual);
+            window.open(qrUrl, '_blank');
+        }
+
+        // ==========================================
+        // ➕ AMPLIAR
+        // ==========================================
+        function abrirAmpliar() {
+            $('modalAmpliar').classList.add('activo');
+        }
+        function cerrarAmpliar() {
+            $('modalAmpliar').classList.remove('activo');
+        }
+
+        async function aplicarAmpliacion(paquete) {
+            loader(true);
+            cerrarAmpliar();
+            try {
+                const data = await apiFetch('/fotografo/ampliar', {
+                    method: 'POST',
+                    body: JSON.stringify({ paquete })
+                });
+                toast('✅ Ampliación aplicada · Bs.' + data.paquete.precio, 'ok');
+                await cargarTodo();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 💰 CRÉDITOS
+        // ==========================================
+        function abrirCreditos() {
+            $('modalCreditos').classList.add('activo');
+        }
+        function cerrarCreditos() {
+            $('modalCreditos').classList.remove('activo');
+        }
+
+        async function agregarCreditos(monto) {
+            loader(true);
+            cerrarCreditos();
+            try {
+                const data = await apiFetch('/fotografo/creditos', {
+                    method: 'POST',
+                    body: JSON.stringify({ monto })
+                });
+                toast(`💰 +${monto} créditos agregados`, 'ok');
+                await cargarTodo();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // 🏁 FINALIZAR
+        // ==========================================
+        let confirmarCallback = null;
+
+        function confirmarFinalizar() {
+            $('confirmarTitulo').textContent = '🏁 Finalizar evento';
+            $('confirmarMensaje').innerHTML =
+                'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>' +
+                '<strong>Esta acción no se puede deshacer.</strong>';
+            confirmarCallback = ejecutarFinalizar;
+            $('modalConfirmar').classList.add('activo');
+        }
+
+        async function ejecutarFinalizar() {
+            cerrarConfirmar();
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/finalizar', { method: 'POST' });
+
+                const horas = Math.floor(data.duracionHoras);
+                const mins = Math.round((data.duracionHoras - horas) * 60);
+
+                toast(`✅ Evento finalizado · ${horas}h ${mins}min`, 'ok');
+                await cargarTodo();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        function cerrarConfirmar() {
+            $('modalConfirmar').classList.remove('activo');
+            confirmarCallback = null;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = $('btnConfirmarSi');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    if (confirmarCallback) confirmarCallback();
+                });
+            }
+        });
+
+        // ==========================================
+        // 📤 SUBIR FOTOS
+        // ==========================================
+        function abrirSubir() {
+            colaSubidas = [];
+            renderizarListaSubidas();
+            $('modalSubir').classList.add('activo');
+        }
+
+        function cerrarSubir() {
+            if (subidaEnProceso) {
+                toast('Espera a que terminen las subidas...', 'error');
+                return;
+            }
+            $('modalSubir').classList.remove('activo');
+        }
+
+        function manejarSeleccionFotos(event) {
+            const archivos = Array.from(event.target.files || []);
+            if (archivos.length === 0) return;
+
+            for (const archivo of archivos) {
+                if (!archivo.type.startsWith('image/jpeg')) {
+                    toast('Solo JPG: ' + archivo.name, 'error');
+                    continue;
+                }
+                if (archivo.size > TAMANO_MAX_FOTO) {
+                    toast('Supera 15 MB: ' + archivo.name, 'error');
+                    continue;
+                }
+                colaSubidas.push({ archivo, estado: 'pendiente' });
+            }
+
+            event.target.value = '';
+            renderizarListaSubidas();
+            procesarColaSubidas();
+        }
+
+        function renderizarListaSubidas() {
+            const cont = $('listaSubidas');
+            if (colaSubidas.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            const total = colaSubidas.length;
+            const ok = colaSubidas.filter(s => s.estado === 'ok').length;
+
+            let html = '';
+            colaSubidas.forEach(s => {
+                const estados = {
+                    pendiente: ['En espera', 'pendiente'],
+                    subiendo: ['Subiendo...', 'subiendo'],
+                    ok: ['✓ Subida', 'ok'],
+                    error: ['✗ Error', 'error']
+                };
+                const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
+                html += `
+                    <div class="item-subida">
+                        <div class="nombre">${escapeHtml(s.archivo.name)}</div>
+                        <div class="estado ${clase}">${texto}</div>
+                    </div>
+                `;
+            });
+
+            if (subidaEnProceso) {
+                html += `<div style="text-align:center; color:#f39c12; font-size:0.75rem; padding:8px 0;">${ok} de ${total} subidas</div>`;
+            } else if (ok === total && total > 0) {
+                html += `<div style="text-align:center; color:#2ecc71; font-size:0.75rem; padding:8px 0;">✅ Todas las fotos subidas</div>`;
+            } else if (colaSubidas.some(s => s.estado === 'error')) {
+                html += `<div style="text-align:center; color:#e67e22; font-size:0.75rem; padding:8px 0;">⚠️ Algunas fallaron</div>`;
+            }
+
+            cont.innerHTML = html;
+        }
+
+        async function procesarColaSubidas() {
+            if (subidaEnProceso) return;
+
+            subidaEnProceso = true;
+            $('btnCerrarSubir').disabled = true;
+            $('btnCerrarSubir').textContent = 'Subiendo...';
+
+            try {
+                for (const subida of colaSubidas) {
+                    if (subida.estado === 'ok') continue;
+                    subida.estado = 'subiendo';
+                    renderizarListaSubidas();
+
+                    try {
+                        await subirUnaFoto(subida);
+                        subida.estado = 'ok';
+                    } catch (e) {
+                        console.error('Error subiendo:', e);
+                        subida.estado = 'error';
+                    }
+                    renderizarListaSubidas();
+                }
+
+                setTimeout(() => cargarTodo(), 2000);
+
+            } finally {
+                subidaEnProceso = false;
+                $('btnCerrarSubir').disabled = false;
+                $('btnCerrarSubir').textContent = 'Cerrar';
+                renderizarListaSubidas();
+            }
+        }
+
+        async function subirUnaFoto(subida) {
+            const { archivo } = subida;
+
+            const dataPedido = await apiFetch('/subir_url', {
+                method: 'POST',
+                body: JSON.stringify({
+                    f: nombreFotografoActual,
+                    e: eventoActivo.id,
+                    nombreOriginal: archivo.name
+                })
+            });
+
+            if (!dataPedido.ok || !dataPedido.url) {
+                throw new Error(dataPedido.error || 'URL inválida');
+            }
+
+            let ultimoError = null;
+            for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
+                try {
+                    const resp = await fetch(dataPedido.url, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'image/jpeg' },
+                        body: archivo
+                    });
+
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+                    try {
+                        await apiFetch('/confirmar_subida', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                f: nombreFotografoActual,
+                                e: eventoActivo.id,
+                                key: dataPedido.key
+                            })
+                        });
+                    } catch (e) {
+                        console.warn('Confirmación fallida (no crítico):', e.message);
+                    }
+
+                    return;
+
+                } catch (e) {
+                    ultimoError = e;
+                    if (intento < REINTENTOS_SUBIDA) {
+                        await new Promise(r => setTimeout(r, 1000 * intento));
+                    }
+                }
+            }
+
+            throw new Error(ultimoError ? ultimoError.message : 'Error desconocido');
+        }
+
+        // ==========================================
+        // 🚀 INICIALIZACIÓN
+        // ==========================================
+        async function inicializar() {
+            if (cargarSesionLocal()) {
+                mostrarPanel();
+                await cargarTodo();
+                intervalRefresh = setInterval(cargarTodo, INTERVALO_REFRESH_MS);
+            } else {
+                mostrarLogin();
+            }
+        }
+
+        $('inputNombre').addEventListener('keydown', e => {
+            if (e.key === 'Enter') $('inputPin').focus();
+        });
+        $('inputPin').addEventListener('keydown', e => {
+            if (e.key === 'Enter') hacerLogin();
+        });
+        $('inputPin').addEventListener('input', e => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        inicializar();
+    </script>
 </body>
 </html>
