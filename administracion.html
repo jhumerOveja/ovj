@@ -819,7 +819,13 @@
     // ==========================================
     // ⚙️ CONFIGURACIÓN
     // ==========================================
-    const URL_API = "https://surround-import-checks-campaigns.trycloudflare.com";
+    // Lee la URL del túnel desde config.js (window.OVJ_CONFIG)
+    // Si estamos en localhost, usa localhost:3000 automáticamente
+    const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const URL_API = _esLocalhost
+        ? 'http://localhost:3000'
+        : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+
     const INTERVALO_REFRESH_MS = 30000;
 
     // ==========================================
