@@ -1945,33 +1945,16 @@
             </div>
         </div>
 
-        <!-- ===== MODAL SUBIR FOTOS ===== -->
+        <!-- ===== MODAL SUBIR FOTOS (mantener oculto: ahora solo el fotógrafo sube desde su panel) ===== -->
         <div class="modal-subir" id="modalSubir">
             <div class="modal-subir-contenido">
                 <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
                 <div class="titulo">📤 Subir Fotos</div>
                 <div class="subtitulo">
-                    Selecciona las fotos que quieres publicar.<br>
-                    Se subirán directo a la nube, sin pasar por el servidor del túnel.
+                    Esta acción ya no está disponible desde la galería.<br>
+                    El fotógrafo sube las fotos desde su panel.
                 </div>
-
-                <div class="zona-drop" id="zonaDrop" onclick="document.getElementById('inputFotos').click()">
-                    <span class="icono">📸</span>
-                    <div class="texto">Toca aquí para elegir fotos</div>
-                    <div class="subtexto">Máximo 15 MB por foto · JPG</div>
-                </div>
-                <input
-                    type="file"
-                    id="inputFotos"
-                    accept="image/jpeg,image/jpg"
-                    multiple
-                    style="display:none"
-                    onchange="manejarSeleccionFotos(event)"
-                />
-
-                <div class="lista-subidas" id="listaSubidas"></div>
-
-                <button class="btn-cerrar-subir" id="btnCerrarSubir" onclick="cerrarSubir()">Cerrar</button>
+                <button class="btn-cerrar-subir" onclick="cerrarSubir()">Cerrar</button>
             </div>
         </div>
 
@@ -1994,9 +1977,6 @@
             const MODO_DESCARGAS = true;
             const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
-
-            const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
-            const REINTENTOS_SUBIDA = 3;
 
             // ==========================================
             // 🔑 PARÁMETROS DEL URL
@@ -2048,9 +2028,6 @@
 
             let invitacionTipo = 'vip';
             let invitacionGenerada = null;
-
-            let colaSubidas = [];
-            let subidaEnProceso = false;
 
             let countdownInterval = null;
 
@@ -2126,23 +2103,9 @@
                     tipoAdmin: "Admin",
                     textoSubir: "Subir fotos",
                     contadorVip: "⭐ VIP · Descargas ilimitadas",
+                    contadorAdmin: "👑 Admin · Descargas ilimitadas",
                     contadorSesion: (usadas, total) => `Te quedan ${total - usadas} de ${total} descargas`,
-                    contadorAgotado: "Descargas agotadas · Vuelve en el receso",
-                    subirTitulo: "Subir Fotos",
-                    subirSubtitulo: "Selecciona las fotos que quieres publicar.<br>Se subirán directo a la nube, sin pasar por el servidor del túnel.",
-                    subirZonaTexto: "Toca aquí para elegir fotos",
-                    subirZonaSubtexto: "Máximo 15 MB por foto · JPG",
-                    subirEstadoPendiente: "En espera",
-                    subirEstadoSubiendo: "Subiendo...",
-                    subirEstadoOk: "✓ Subida",
-                    subirEstadoError: "✗ Error",
-                    subirFotoMuyGrande: "La foto supera 15 MB. Elige una más pequeña.",
-                    subirTipoInvalido: "Solo se aceptan JPG.",
-                    subirErrorGenerico: "No se pudo subir. Reintenta.",
-                    subirProgreso: (ok, total) => `${ok} de ${total} subidas`,
-                    subirTodoOk: "✅ Todas las fotos subidas",
-                    subirAlgunasFallaron: "⚠️ Algunas fotos no se pudieron subir",
-                    subirCerrando: "Espera a que terminen las subidas..."
+                    contadorAgotado: "Descargas agotadas · Vuelve en el receso"
                 },
                 en: {
                     tituloVentana: "OVJ Studio - Live Gallery",
@@ -2204,23 +2167,9 @@
                     tipoAdmin: "Admin",
                     textoSubir: "Upload photos",
                     contadorVip: "⭐ VIP · Unlimited downloads",
+                    contadorAdmin: "👑 Admin · Unlimited downloads",
                     contadorSesion: (usadas, total) => `${total - usadas} of ${total} downloads left`,
-                    contadorAgotado: "Downloads exhausted · Come back after break",
-                    subirTitulo: "Upload Photos",
-                    subirSubtitulo: "Select the photos you want to publish.<br>They'll go straight to the cloud, bypassing the tunnel server.",
-                    subirZonaTexto: "Tap here to choose photos",
-                    subirZonaSubtexto: "Max 15 MB per photo · JPG",
-                    subirEstadoPendiente: "Waiting",
-                    subirEstadoSubiendo: "Uploading...",
-                    subirEstadoOk: "✓ Uploaded",
-                    subirEstadoError: "✗ Error",
-                    subirFotoMuyGrande: "Photo exceeds 15 MB. Choose a smaller one.",
-                    subirTipoInvalido: "Only JPG files allowed.",
-                    subirErrorGenerico: "Upload failed. Try again.",
-                    subirProgreso: (ok, total) => `${ok} of ${total} uploaded`,
-                    subirTodoOk: "✅ All photos uploaded",
-                    subirAlgunasFallaron: "⚠️ Some photos failed to upload",
-                    subirCerrando: "Wait for uploads to finish..."
+                    contadorAgotado: "Downloads exhausted · Come back after break"
                 },
                 zh: {
                     tituloVentana: "OVJ Studio - 现场画廊",
@@ -2282,23 +2231,9 @@
                     tipoAdmin: "管理员",
                     textoSubir: "上传照片",
                     contadorVip: "⭐ VIP · 无限下载",
+                    contadorAdmin: "👑 管理员 · 无限下载",
                     contadorSesion: (usadas, total) => `剩余 ${total - usadas}/${total} 次下载`,
-                    contadorAgotado: "下载次数已用完 · 休息后再来",
-                    subirTitulo: "上传照片",
-                    subirSubtitulo: "选择要发布的照片。<br>它们将直接上传到云端，不经过隧道服务器。",
-                    subirZonaTexto: "点击此处选择照片",
-                    subirZonaSubtexto: "每张最多 15 MB · JPG",
-                    subirEstadoPendiente: "等待中",
-                    subirEstadoSubiendo: "上传中...",
-                    subirEstadoOk: "✓ 已上传",
-                    subirEstadoError: "✗ 错误",
-                    subirFotoMuyGrande: "照片超过 15 MB，请选择更小的。",
-                    subirTipoInvalido: "仅支持 JPG。",
-                    subirErrorGenerico: "上传失败，请重试。",
-                    subirProgreso: (ok, total) => `${ok} / ${total} 已上传`,
-                    subirTodoOk: "✅ 全部照片已上传",
-                    subirAlgunasFallaron: "⚠️ 部分照片上传失败",
-                    subirCerrando: "请等待上传完成..."
+                    contadorAgotado: "下载次数已用完 · 休息后再来"
                 }
             };
 
@@ -2366,15 +2301,6 @@
 
                 document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}`;
                 document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
-
-                const tituloSubir = document.querySelector('.modal-subir-contenido .titulo');
-                const subSubir = document.querySelector('.modal-subir-contenido .subtitulo');
-                if (tituloSubir) tituloSubir.textContent = '📤 ' + t('subirTitulo');
-                if (subSubir) subSubir.innerHTML = t('subirSubtitulo');
-                const zonaTexto = document.querySelector('.zona-drop .texto');
-                const zonaSub = document.querySelector('.zona-drop .subtexto');
-                if (zonaTexto) zonaTexto.textContent = t('subirZonaTexto');
-                if (zonaSub) zonaSub.textContent = t('subirZonaSubtexto');
 
                 if (tituloEsDefault) {
                     document.getElementById('eventoTitulo').textContent = t('tituloDefault');
@@ -2468,6 +2394,27 @@
                 mostrarBloqueo('saturacion', 'La web está en receso.<br>Vuelve en unos minutos.');
             }
 
+            // 🔥 Cierra sesión, limpia localStorage y muestra bloqueo.
+            // Se llama cuando el server devuelve 403 en /fotos o /descargar.
+            function cerrarSesionYBloquear() {
+                localStorage.removeItem('ovj_token');
+                localStorage.removeItem('ovj_tipo');
+                localStorage.removeItem('ovj_rol_nombre');
+                localStorage.removeItem('ovj_rol_id');
+
+                if (EVENTO_ID) {
+                    localStorage.removeItem('ovj_token_personal_' + EVENTO_ID);
+                    localStorage.removeItem('ovj_token_general_' + EVENTO_ID);
+                }
+
+                sesion = null;
+                sesionGeneral = null;
+                fotosCache = [];
+                fotoSeleccionadaIndex = -1;
+
+                mostrarBloqueo('invalido', 'Tu acceso expiró.<br>Vuelve a entrar con tu link o QR.');
+            }
+
             async function validarAcceso() {
                 if (!EVENTO_ID || !TOKEN) {
                     mostrarBloqueo('sinToken');
@@ -2503,11 +2450,19 @@
                         if (data.reclamada) {
                             const tokenGuardado = localStorage.getItem('ovj_token');
                             if (tokenGuardado === TOKEN) {
+                                // 🔥 El server SÍ reconoce este token (por eso devolvió tipo/nombre)
                                 sesion = {
-                                    tipo: data.tipo || localStorage.getItem('ovj_tipo') || 'invitado',
-                                    nombre: data.nombre || localStorage.getItem('ovj_rol_nombre') || '',
-                                    id: data.id || localStorage.getItem('ovj_rol_id') || ''
+                                    tipo: data.tipo || 'invitado',
+                                    nombre: data.nombre || '',
+                                    id: data.id || ''
                                 };
+
+                                // 🔥 Sincronizar localStorage con la sesión actual
+                                localStorage.setItem('ovj_token', TOKEN);
+                                localStorage.setItem('ovj_tipo', sesion.tipo);
+                                localStorage.setItem('ovj_rol_nombre', sesion.nombre);
+                                localStorage.setItem('ovj_rol_id', sesion.id);
+
                                 return true;
                             }
                             mostrarBloqueo('reclamada', t('bloqueoInvalido'));
@@ -2554,7 +2509,6 @@
                 const rolEmoji = document.getElementById('rolEmoji');
                 const rolNombre = document.getElementById('rolNombre');
                 const btnInvitar = document.getElementById('btnInvitar');
-                const btnSubir = document.getElementById('btnSubir');
                 const btnQrGeneral = document.getElementById('btnQrGeneral');
 
                 barraRol.style.display = 'flex';
@@ -2563,19 +2517,16 @@
                     rolEmoji.textContent = '👑';
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
-                    btnSubir.style.display = 'inline-flex';
                     btnQrGeneral.style.display = 'inline-flex';
                 } else if (sesion.tipo === 'vip') {
                     rolEmoji.textContent = '⭐';
                     rolNombre.textContent = sesion.nombre || t('rolVip');
                     btnInvitar.style.display = 'none';
-                    btnSubir.style.display = 'none';
                     btnQrGeneral.style.display = 'none';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
                     btnInvitar.style.display = 'none';
-                    btnSubir.style.display = 'none';
                     btnQrGeneral.style.display = 'none';
                 }
 
@@ -2590,7 +2541,11 @@
                     return;
                 }
 
-                if (sesion.tipo === 'vip') {
+                if (sesion.tipo === 'admin') {
+                    el.textContent = t('contadorAdmin');
+                    el.className = 'contador-sesion';
+                    el.style.display = 'inline-block';
+                } else if (sesion.tipo === 'vip') {
                     el.textContent = t('contadorVip');
                     el.className = 'contador-sesion';
                     el.style.display = 'inline-block';
@@ -2632,7 +2587,7 @@
                     const respuesta = await fetch(url);
 
                     if (respuesta.status === 403) {
-                        mostrarBloqueo('invalido', t('bloqueoInvalido'));
+                        cerrarSesionYBloquear();
                         cargando = false;
                         return;
                     }
@@ -2681,6 +2636,11 @@
 
                     if (huboCambio) {
                         fotosCache = nuevasFotos;
+
+                        if (fotoSeleccionadaIndex >= fotosCache.length) {
+                            fotoSeleccionadaIndex = -1;
+                        }
+
                         renderizarGaleria();
                     }
 
@@ -2733,7 +2693,7 @@
                 const icono = document.getElementById('btnIcono');
                 const texto = document.getElementById('btnPedirTexto');
 
-                if (sesion && sesion.tipo === 'vip') {
+                if (sesion && (sesion.tipo === 'vip' || sesion.tipo === 'admin')) {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
                     texto.textContent = t('descargarFoto');
@@ -2877,10 +2837,18 @@
             // ==========================================
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
-                if (index < 0) return;
+                if (index < 0) {
+                    console.warn('[abrirModal] foto no encontrada:', nombreFoto);
+                    return;
+                }
+
+                const foto = fotosCache[index];
+                if (!foto || !foto.nombre || !foto.url) {
+                    console.warn('[abrirModal] foto inválida:', foto);
+                    return;
+                }
 
                 fotoSeleccionadaIndex = index;
-                const foto = fotosCache[index];
 
                 const modal = document.getElementById("modal");
                 const fondo = document.getElementById("modalFondo");
@@ -2927,8 +2895,19 @@
             // 📥 DESCARGA
             // ==========================================
             function accionBotonPrincipal() {
+                if (!fotosCache || fotosCache.length === 0) {
+                    alert('Aún no hay fotos disponibles para descargar.');
+                    return;
+                }
+
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) {
                     alert("No hay foto seleccionada");
+                    return;
+                }
+
+                const foto = fotosCache[fotoSeleccionadaIndex];
+                if (!foto || !foto.nombre) {
+                    alert('La foto seleccionada no es válida.');
                     return;
                 }
 
@@ -2949,9 +2928,17 @@
             }
 
             async function descargarFotoActual() {
+                if (!fotosCache || fotosCache.length === 0) return;
                 if (fotoSeleccionadaIndex < 0 || fotoSeleccionadaIndex >= fotosCache.length) return;
 
                 const foto = fotosCache[fotoSeleccionadaIndex];
+                if (!foto || !foto.nombre) return;
+
+                if (!FOTOGRAFO_ID || !EVENTO_ID || !TOKEN) {
+                    alert('Faltan datos de acceso. Recargá la página.');
+                    return;
+                }
+
                 const btn = document.getElementById('btnPedir');
                 const texto = document.getElementById('btnPedirTexto');
                 const textoOriginal = texto.textContent;
@@ -2964,14 +2951,39 @@
                 try {
                     const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                                 `&foto=${encodeURIComponent(foto.nombre)}` +
-                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                                `&t=${encodeURIComponent(TOKEN || '')}`;
+                                `&e=${encodeURIComponent(EVENTO_ID)}` +
+                                `&t=${encodeURIComponent(TOKEN)}`;
 
                     const respuesta = await fetch(url);
 
-                    if (respuesta.status === 429 || respuesta.status === 403) {
-                        const data = await respuesta.json();
+                    if (respuesta.status === 429 || respuesta.status === 403 || respuesta.status === 410) {
+                        const data = await respuesta.json().catch(() => ({}));
 
+                        // 🔥 Token inválido o expirado → cerrar sesión y bloquear
+                        if (data.error === 'Token inválido' || data.valido === false) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+                            cerrarSesionYBloquear();
+                            return;
+                        }
+
+                        // 🔥 Evento ya no activo (410)
+                        if (respuesta.status === 410) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+                            mostrarBloqueo('error', 'Este evento ya no está activo.<br>Vuelve a escanear el QR del evento actual.');
+                            return;
+                        }
+
+                        // 🔥 Tipo de pase no manejado
+                        if (data.error && data.error.startsWith('Tipo de pase')) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+                            alert('Tu pase tiene un problema. Contacta al fotógrafo.');
+                            return;
+                        }
+
+                        // 🔥 Receso / despedida
                         if (data.receso) {
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
@@ -3267,7 +3279,11 @@
                     if (!respuesta.ok || !data.ok) {
                         if (respuesta.status === 409 && data.limiteVips) {
                             document.getElementById('avisoLimiteVips').textContent =
-                                `Límite de VIPs alcanzado (${data.vipsActuales}/${data.limiteVips}). Contacta al admin para ampliar.`;
+                                `Límite de VIPs alcanzado (${data.vipsActuales}/${data.limiteVips}).`;
+                            document.getElementById('avisoLimiteVips').style.display = 'block';
+                        } else if (respuesta.status === 409 && data.limiteAdmins) {
+                            document.getElementById('avisoLimiteVips').textContent =
+                                `Límite de administradores alcanzado (${data.adminsActuales}/${data.limiteAdmins}).`;
                             document.getElementById('avisoLimiteVips').style.display = 'block';
                         } else {
                             alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
@@ -3398,7 +3414,6 @@
                 urlBox.textContent = 'Cargando...';
                 modal.classList.add('activo');
 
-                // Intentar desde localStorage primero
                 const claveLS = 'ovj_token_general_' + EVENTO_ID;
                 let tokenGeneral = localStorage.getItem(claveLS);
 
@@ -3425,7 +3440,6 @@
                     }
                 }
 
-                // Construir URL del QR general
                 const urlQr = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(tokenGeneral)}`;
                 urlQrGeneralActual = urlQr;
 
@@ -3458,220 +3472,6 @@
                 if (!urlQrGeneralActual) return;
                 const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlQrGeneralActual);
                 window.open(qrUrl, '_blank');
-            }
-
-            // ==========================================
-            // 📤 SUBIR FOTOS
-            // ==========================================
-            function abrirSubir() {
-                document.getElementById('modalSubir').classList.add('activo');
-            }
-
-            function cerrarSubir() {
-                if (subidaEnProceso) {
-                    alert(t('subirCerrando'));
-                    return;
-                }
-                document.getElementById('modalSubir').classList.remove('activo');
-            }
-
-            function manejarSeleccionFotos(event) {
-                const archivos = Array.from(event.target.files || []);
-                if (archivos.length === 0) return;
-
-                for (const archivo of archivos) {
-                    if (!archivo.type.startsWith('image/jpeg')) {
-                        alert(t('subirTipoInvalido') + ': ' + archivo.name);
-                        continue;
-                    }
-                    if (archivo.size > TAMANO_MAX_FOTO) {
-                        alert(t('subirFotoMuyGrande') + ': ' + archivo.name);
-                        continue;
-                    }
-
-                    colaSubidas.push({
-                        archivo,
-                        estado: 'pendiente',
-                        progreso: 0,
-                        error: null
-                    });
-                }
-
-                event.target.value = '';
-
-                renderizarListaSubidas();
-                procesarColaSubidas();
-            }
-
-            function renderizarListaSubidas() {
-                const contenedor = document.getElementById('listaSubidas');
-
-                if (colaSubidas.length === 0) {
-                    contenedor.innerHTML = '';
-                    return;
-                }
-
-                const total = colaSubidas.length;
-                const ok = colaSubidas.filter(s => s.estado === 'ok').length;
-
-                let html = '';
-
-                colaSubidas.forEach((subida, idx) => {
-                    let estadoTexto = '';
-                    let estadoClase = '';
-
-                    switch (subida.estado) {
-                        case 'pendiente':
-                            estadoTexto = t('subirEstadoPendiente');
-                            estadoClase = 'pendiente';
-                            break;
-                        case 'subiendo':
-                            estadoTexto = t('subirEstadoSubiendo');
-                            estadoClase = 'subiendo';
-                            break;
-                        case 'ok':
-                            estadoTexto = t('subirEstadoOk');
-                            estadoClase = 'ok';
-                            break;
-                        case 'error':
-                            estadoTexto = t('subirEstadoError');
-                            estadoClase = 'error';
-                            break;
-                    }
-
-                    html += `
-                        <div class="item-subida">
-                            <div class="nombre">${escapeHtml(subida.archivo.name)}</div>
-                            <div class="estado ${estadoClase}">${estadoTexto}</div>
-                        </div>
-                    `;
-                });
-
-                if (subidaEnProceso) {
-                    html += `<div style="text-align:center; color:#f39c12; font-size:0.75rem; padding:8px 0;">${t('subirProgreso', ok, total)}</div>`;
-                } else if (ok === total && total > 0) {
-                    html += `<div style="text-align:center; color:#2ecc71; font-size:0.75rem; padding:8px 0;">${t('subirTodoOk')}</div>`;
-                } else if (ok < total && colaSubidas.some(s => s.estado === 'error')) {
-                    html += `<div style="text-align:center; color:#e67e22; font-size:0.75rem; padding:8px 0;">${t('subirAlgunasFallaron')}</div>`;
-                }
-
-                contenedor.innerHTML = html;
-            }
-
-            async function procesarColaSubidas() {
-                if (subidaEnProceso) return;
-
-                subidaEnProceso = true;
-                actualizarBotonCerrarSubir();
-
-                try {
-                    for (const subida of colaSubidas) {
-                        if (subida.estado === 'ok') continue;
-
-                        subida.estado = 'subiendo';
-                        renderizarListaSubidas();
-
-                        try {
-                            await subirUnaFoto(subida);
-                            subida.estado = 'ok';
-                        } catch (error) {
-                            console.error('Error subiendo foto:', error);
-                            subida.estado = 'error';
-                            subida.error = error.message;
-                        }
-
-                        renderizarListaSubidas();
-                    }
-
-                    setTimeout(() => {
-                        cargarFotos();
-                    }, 2000);
-
-                } finally {
-                    subidaEnProceso = false;
-                    actualizarBotonCerrarSubir();
-                    renderizarListaSubidas();
-                }
-            }
-
-            function actualizarBotonCerrarSubir() {
-                const btn = document.getElementById('btnCerrarSubir');
-                if (subidaEnProceso) {
-                    btn.disabled = true;
-                    btn.textContent = t('subirEstadoSubiendo');
-                } else {
-                    btn.disabled = false;
-                    btn.textContent = 'Cerrar';
-                }
-            }
-
-            async function subirUnaFoto(subida) {
-                const { archivo } = subida;
-
-                const urlPedido = `${URL_CLOUDFLARE}/subir_url`;
-
-                const respPedido = await fetch(urlPedido, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        f: FOTOGRAFO_ID,
-                        e: EVENTO_ID,
-                        t: TOKEN,
-                        nombreOriginal: archivo.name
-                    })
-                });
-
-                if (!respPedido.ok) {
-                    throw new Error('No se pudo obtener URL de subida');
-                }
-
-                const dataPedido = await respPedido.json();
-
-                if (!dataPedido.ok || !dataPedido.url) {
-                    throw new Error(dataPedido.error || 'URL de subida inválida');
-                }
-
-                let ultimoError = null;
-                for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
-                    try {
-                        const respSubida = await fetch(dataPedido.url, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'image/jpeg' },
-                            body: archivo
-                        });
-
-                        if (!respSubida.ok) {
-                            const texto = await respSubida.text().catch(() => '');
-                            throw new Error(`HTTP ${respSubida.status}${texto ? ' - ' + texto.slice(0, 80) : ''}`);
-                        }
-
-                        try {
-                            await fetch(`${URL_CLOUDFLARE}/confirmar_subida`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    f: FOTOGRAFO_ID,
-                                    e: EVENTO_ID,
-                                    t: TOKEN,
-                                    key: dataPedido.key
-                                })
-                            });
-                        } catch (e) {
-                            console.warn('No se pudo confirmar subida (no crítico):', e.message);
-                        }
-
-                        return;
-
-                    } catch (error) {
-                        ultimoError = error;
-                        console.warn(`Intento ${intento}/${REINTENTOS_SUBIDA} falló:`, error.message);
-                        if (intento < REINTENTOS_SUBIDA) {
-                            await new Promise(r => setTimeout(r, 1000 * intento));
-                        }
-                    }
-                }
-
-                throw new Error(ultimoError ? ultimoError.message : t('subirErrorGenerico'));
             }
 
             // ==========================================
@@ -3723,12 +3523,10 @@
                 const modalButacasActivo = document.getElementById('modalButacas').classList.contains('activo');
                 const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
                 const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
-                const modalSubirActivo = document.getElementById('modalSubir').classList.contains('activo');
                 const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
 
                 if (e.key === "Escape") {
-                    if (modalSubirActivo) cerrarSubir();
-                    else if (modalQrGeneralActivo) cerrarQrGeneral();
+                    if (modalQrGeneralActivo) cerrarQrGeneral();
                     else if (modalResultadoActivo) cerrarResultado();
                     else if (modalInvitarActivo) cerrarInvitar();
                     else if (modalButacasActivo) cerrarButacas();
@@ -3737,7 +3535,7 @@
                     else cerrarLangMenu();
                 }
 
-                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo || modalSubirActivo || modalQrGeneralActivo) return;
+                if (modalInstrActivo || modalButacasActivo || modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -3765,10 +3563,6 @@
 
             document.getElementById('modalQrGeneral').addEventListener('click', (e) => {
                 if (e.target.id === 'modalQrGeneral') cerrarQrGeneral();
-            });
-
-            document.getElementById('modalSubir').addEventListener('click', (e) => {
-                if (e.target.id === 'modalSubir') cerrarSubir();
             });
 
             // ==========================================
