@@ -17,7 +17,7 @@
 
 window.OVJ_CONFIG = {
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://blogging-cove-integrated-chuck.trycloudflare.com',
+    urlTunel: 'https://clearance-adaptation-asin-pig.trycloudflare.com',
 
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
