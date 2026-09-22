@@ -1428,142 +1428,6 @@
                 padding: 80px 20px;
             }
 
-            /* ===== MODAL SUBIR FOTOS ===== */
-            .modal-subir {
-                display: none;
-                position: fixed;
-                z-index: 1500;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                background: rgba(0, 0, 0, 0.92);
-                backdrop-filter: blur(12px);
-            }
-            .modal-subir.activo { display: flex; }
-            .modal-subir-contenido {
-                background: #141414;
-                border: 1px solid rgba(46, 204, 113, 0.3);
-                border-radius: 20px;
-                padding: 28px 24px 24px;
-                max-width: 480px;
-                width: 100%;
-                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-                position: relative;
-            }
-            .modal-subir-contenido .titulo {
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: #2ecc71;
-                margin-bottom: 6px;
-                text-align: center;
-            }
-            .modal-subir-contenido .subtitulo {
-                font-size: 0.78rem;
-                color: #888;
-                text-align: center;
-                margin-bottom: 20px;
-                line-height: 1.5;
-            }
-            .zona-drop {
-                border: 2px dashed rgba(46, 204, 113, 0.3);
-                border-radius: 14px;
-                padding: 28px 20px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.25s ease;
-                background: rgba(46, 204, 113, 0.03);
-                margin-bottom: 16px;
-            }
-            .zona-drop:hover, .zona-drop.arrastrando {
-                border-color: rgba(46, 204, 113, 0.6);
-                background: rgba(46, 204, 113, 0.08);
-            }
-            .zona-drop .icono {
-                font-size: 2.2rem;
-                display: block;
-                margin-bottom: 8px;
-            }
-            .zona-drop .texto {
-                font-size: 0.85rem;
-                color: #ccc;
-                font-weight: 500;
-            }
-            .zona-drop .subtexto {
-                font-size: 0.7rem;
-                color: #666;
-                margin-top: 6px;
-            }
-            .lista-subidas {
-                max-height: 240px;
-                overflow-y: auto;
-                margin-bottom: 14px;
-            }
-            .item-subida {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 10px 12px;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                border-radius: 10px;
-                margin-bottom: 8px;
-                font-size: 0.75rem;
-            }
-            .item-subida .nombre {
-                flex: 1;
-                min-width: 0;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                color: #ccc;
-            }
-            .item-subida .estado {
-                flex-shrink: 0;
-                font-size: 0.7rem;
-                font-weight: 600;
-                padding: 3px 8px;
-                border-radius: 50px;
-            }
-            .item-subida .estado.pendiente {
-                background: rgba(255, 255, 255, 0.06);
-                color: #888;
-            }
-            .item-subida .estado.subiendo {
-                background: rgba(243, 156, 18, 0.15);
-                color: #f39c12;
-            }
-            .item-subida .estado.ok {
-                background: rgba(46, 204, 113, 0.15);
-                color: #2ecc71;
-            }
-            .item-subida .estado.error {
-                background: rgba(231, 76, 60, 0.15);
-                color: #e74c3c;
-            }
-            .modal-subir-contenido .btn-cerrar-subir {
-                width: 100%;
-                padding: 12px 20px;
-                border-radius: 12px;
-                border: none;
-                background: rgba(255, 255, 255, 0.06);
-                color: #ccc;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                font-family: inherit;
-            }
-            .modal-subir-contenido .btn-cerrar-subir:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #fff;
-            }
-            .modal-subir-contenido .btn-cerrar-subir:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-
             .footer {
                 text-align: center;
                 padding: 24px 10px 6px;
@@ -1637,7 +1501,6 @@
                 .barra-rol .rol-info { justify-content: center; }
                 .barra-rol .btn-invitar,
                 .barra-rol .btn-butacas,
-                .barra-rol .btn-subir,
                 .barra-rol .btn-qr-general { justify-content: center; }
             }
             @media (max-width: 400px) {
@@ -1729,9 +1592,6 @@
                     </button>
                     <button class="btn-invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
                         ✨ <span id="textoInvitar">Invitar</span>
-                    </button>
-                    <button class="btn-subir" id="btnSubir" onclick="abrirSubir()" style="display: none;">
-                        📤 <span id="textoSubir">Subir fotos</span>
                     </button>
                 </div>
             </div>
@@ -1945,19 +1805,6 @@
             </div>
         </div>
 
-        <!-- ===== MODAL SUBIR FOTOS (mantener oculto: ahora solo el fotógrafo sube desde su panel) ===== -->
-        <div class="modal-subir" id="modalSubir">
-            <div class="modal-subir-contenido">
-                <button class="btn-cerrar-instr" onclick="cerrarSubir()">✕</button>
-                <div class="titulo">📤 Subir Fotos</div>
-                <div class="subtitulo">
-                    Esta acción ya no está disponible desde la galería.<br>
-                    El fotógrafo sube las fotos desde su panel.
-                </div>
-                <button class="btn-cerrar-subir" onclick="cerrarSubir()">Cerrar</button>
-            </div>
-        </div>
-
         <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
         <script src="config.js"></script>
 
@@ -2101,7 +1948,6 @@
                     textoQrGeneral: "QR General",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
-                    textoSubir: "Subir fotos",
                     contadorVip: "⭐ VIP · Descargas ilimitadas",
                     contadorAdmin: "👑 Admin · Descargas ilimitadas",
                     contadorSesion: (usadas, total) => `Te quedan ${total - usadas} de ${total} descargas`,
@@ -2165,7 +2011,6 @@
                     textoQrGeneral: "General QR",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
-                    textoSubir: "Upload photos",
                     contadorVip: "⭐ VIP · Unlimited downloads",
                     contadorAdmin: "👑 Admin · Unlimited downloads",
                     contadorSesion: (usadas, total) => `${total - usadas} of ${total} downloads left`,
@@ -2229,7 +2074,6 @@
                     textoQrGeneral: "现场二维码",
                     tipoVip: "VIP",
                     tipoAdmin: "管理员",
-                    textoSubir: "上传照片",
                     contadorVip: "⭐ VIP · 无限下载",
                     contadorAdmin: "👑 管理员 · 无限下载",
                     contadorSesion: (usadas, total) => `剩余 ${total - usadas}/${total} 次下载`,
@@ -2294,7 +2138,6 @@
 
                 document.getElementById('textoButacas').textContent = t('textoButacas');
                 document.getElementById('textoInvitar').textContent = t('textoInvitar');
-                document.getElementById('textoSubir').textContent = t('textoSubir');
 
                 const elQr = document.getElementById('textoQrGeneral');
                 if (elQr) elQr.textContent = t('textoQrGeneral');
@@ -2395,7 +2238,6 @@
             }
 
             // 🔥 Cierra sesión, limpia localStorage y muestra bloqueo.
-            // Se llama cuando el server devuelve 403 en /fotos o /descargar.
             function cerrarSesionYBloquear() {
                 localStorage.removeItem('ovj_token');
                 localStorage.removeItem('ovj_tipo');
@@ -2419,6 +2261,17 @@
                 if (!EVENTO_ID || !TOKEN) {
                     mostrarBloqueo('sinToken');
                     return false;
+                }
+
+                // 🔥 FIX: si el localStorage tiene un token de otro evento, limpiarlo
+                // antes de validar. Evita que un token viejo interfiera con el nuevo.
+                const tokenGuardado = localStorage.getItem('ovj_token');
+                if (tokenGuardado && tokenGuardado !== TOKEN) {
+                    console.warn('[OVJ] Token viejo en localStorage. Limpiando.');
+                    localStorage.removeItem('ovj_token');
+                    localStorage.removeItem('ovj_tipo');
+                    localStorage.removeItem('ovj_rol_nombre');
+                    localStorage.removeItem('ovj_rol_id');
                 }
 
                 const dispositivoId = getDispositivoId();
@@ -2448,21 +2301,17 @@
 
                     if (!respuesta.ok || !data.valido) {
                         if (data.reclamada) {
-                            const tokenGuardado = localStorage.getItem('ovj_token');
-                            if (tokenGuardado === TOKEN) {
-                                // 🔥 El server SÍ reconoce este token (por eso devolvió tipo/nombre)
+                            const tokenGuardado2 = localStorage.getItem('ovj_token');
+                            if (tokenGuardado2 === TOKEN) {
                                 sesion = {
                                     tipo: data.tipo || 'invitado',
                                     nombre: data.nombre || '',
                                     id: data.id || ''
                                 };
-
-                                // 🔥 Sincronizar localStorage con la sesión actual
                                 localStorage.setItem('ovj_token', TOKEN);
                                 localStorage.setItem('ovj_tipo', sesion.tipo);
                                 localStorage.setItem('ovj_rol_nombre', sesion.nombre);
                                 localStorage.setItem('ovj_rol_id', sesion.id);
-
                                 return true;
                             }
                             mostrarBloqueo('reclamada', t('bloqueoInvalido'));
@@ -2959,7 +2808,6 @@
                     if (respuesta.status === 429 || respuesta.status === 403 || respuesta.status === 410) {
                         const data = await respuesta.json().catch(() => ({}));
 
-                        // 🔥 Token inválido o expirado → cerrar sesión y bloquear
                         if (data.error === 'Token inválido' || data.valido === false) {
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
@@ -2967,7 +2815,6 @@
                             return;
                         }
 
-                        // 🔥 Evento ya no activo (410)
                         if (respuesta.status === 410) {
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
@@ -2975,7 +2822,6 @@
                             return;
                         }
 
-                        // 🔥 Tipo de pase no manejado
                         if (data.error && data.error.startsWith('Tipo de pase')) {
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
@@ -2983,7 +2829,6 @@
                             return;
                         }
 
-                        // 🔥 Receso / despedida
                         if (data.receso) {
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
@@ -3564,6 +3409,32 @@
             document.getElementById('modalQrGeneral').addEventListener('click', (e) => {
                 if (e.target.id === 'modalQrGeneral') cerrarQrGeneral();
             });
+
+            // ==========================================
+            // 🔥 DETECCIÓN DE CAMBIO DE URL
+            // ==========================================
+            // Los navegadores móviles a veces NO recargan la página cuando solo
+            // cambia el query string (?e=...&t=...). Esto hace que el JS siga
+            // corriendo con el EVENTO_ID y TOKEN viejos. Detectamos el cambio y
+            // forzamos una recarga para arrancar de cero con los valores nuevos.
+            (function() {
+                const eventoIdOriginal = EVENTO_ID;
+                const tokenOriginal = TOKEN;
+
+                function chequearCambioURL() {
+                    const params = getParametrosURL();
+                    const eventoIdNuevo = params.eventoId;
+                    const tokenNuevo = params.token;
+
+                    if (eventoIdNuevo !== eventoIdOriginal || tokenNuevo !== tokenOriginal) {
+                        console.warn('[OVJ] Cambió el evento o token en la URL. Recargando...');
+                        window.location.reload();
+                    }
+                }
+
+                setInterval(chequearCambioURL, 500);
+                window.addEventListener('popstate', chequearCambioURL);
+            })();
 
             // ==========================================
             // 🚀 INICIALIZACIÓN
