@@ -1446,6 +1446,18 @@
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
             if (e.creditos) meta += `<div class="fila">💳 Créditos: <strong>${e.creditos.usados || 0}/${e.creditos.total || 0}</strong></div>`;
 
+            // 🔥 Razón de cierre (para eventos finalizados o cancelados)
+            if (e.estado === 'cancelado') {
+                const cuando = e.canceladoEn ? ` · ${formatearHora(e.canceladoEn)}` : '';
+                meta += `<div class="fila" style="color:#e74c3c;">✗ Cancelado por admin${cuando}</div>`;
+            } else if (e.estado === 'finalizado') {
+                const quien = e.finalizadoPor === 'admin_web' ? 'admin'
+                            : e.finalizadoPor === 'fotografo_web' ? 'fotógrafo'
+                            : 'sistema';
+                const cuando = e.finReal ? ` · ${formatearHora(e.finReal)}` : '';
+                meta += `<div class="fila" style="color:#888;">✔ Finalizado por ${quien}${cuando}</div>`;
+            }
+
             let acciones = '';
             if (e.estado === 'agendado') {
                 acciones = `
@@ -1774,7 +1786,7 @@
             abrirModal(`
                 <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
                 <div class="titulo">🗑️ Cancelar evento</div>
-                <div class="subtitulo">¿Cancelar <strong>${escapeHtml(nombre)}</strong>?<br>El fotógrafo será notificado.</div>
+                <div class="subtitulo">¿Cancelar <strong>${escapeHtml(nombre)}</strong>?<br>El evento se archivará en el historial.</div>
                 <button class="btn-peligro" onclick="cancelarEvento('${escapeHtml(id)}')">Sí, cancelar</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
             `);
@@ -1784,8 +1796,8 @@
             loader(true);
             cerrarModal();
             try {
-                await apiFetch('/admin/eventos/' + encodeURIComponent(id), { method: 'DELETE' });
-                toast('✅ Evento cancelado', 'ok');
+                const data = await apiFetch('/admin/eventos/' + encodeURIComponent(id), { method: 'DELETE' });
+                toast(data.archivado ? '✅ Evento cancelado y archivado' : '✅ Evento cancelado', 'ok');
                 renderEventos();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -1868,7 +1880,7 @@
                 <div class="titulo">🏁 Cerrar modo libre</div>
                 <div class="subtitulo">
                     ¿Forzar cierre de <strong>${escapeHtml(evento)}</strong> (${escapeHtml(fotografo)})?<br><br>
-                    Se borrarán las fotos locales y de B2.
+                    Se borrarán las fotos locales y de B2, y se archivará en el historial.
                 </div>
                 <button class="btn-peligro" onclick="cerrarModoLibre('${escapeHtml(id)}')">Sí, cerrar</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
