@@ -497,7 +497,7 @@
         }
         .card-agendado .aviso-ventana.no-puede { color: var(--rojo); }
 
-        /* ===== CARD VACÍO ===== */
+        /* ===== CARD VACÍO / MODO LIBRE ===== */
         .card-vacio {
             background: var(--card);
             border: 1px dashed rgba(255, 255, 255, 0.08);
@@ -538,6 +538,23 @@
         .btn-modo-libre:hover {
             background: rgba(243, 156, 18, 0.2);
             transform: scale(1.02);
+        }
+
+        /* 🔥 NUEVO: aviso de modo libre cuando hay evento activo */
+        .aviso-modo-libre {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 0.75rem;
+            color: #e74c3c;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .aviso-modo-libre strong {
+            color: #fff;
+            font-weight: 600;
         }
 
         /* ===== MODALES ===== */
@@ -660,6 +677,23 @@
         .modal-contenido .btn-secundario:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+        }
+        .modal-contenido .btn-peligro {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            background: rgba(231, 76, 60, 0.12);
+            color: var(--rojo);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .modal-contenido .btn-peligro:hover {
+            background: rgba(231, 76, 60, 0.2);
         }
 
         /* QR */
@@ -955,7 +989,7 @@
             <!-- Sección: Agendados -->
             <div id="seccionAgendados"></div>
 
-            <!-- Sección: Sin eventos -->
+            <!-- Sección: Modo Libre (siempre visible) -->
             <div id="seccionVacio"></div>
 
             <!-- Sección: Finalizados hoy -->
@@ -993,19 +1027,20 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LINK ADMIN ===== -->
+    <!-- ===== MODAL LINK DEL CLIENTE ===== -->
     <div class="modal" id="modalLinkAdmin">
         <div class="modal-contenido">
             <button class="btn-cerrar" onclick="cerrarLinkAdmin()">✕</button>
-            <div class="titulo">🔗 Tu Link Admin</div>
+            <div class="titulo">🔗 Link del Cliente</div>
             <div class="subtitulo" id="linkAdminSubtitulo">
-                Abre este link en tu celular para gestionar el evento.
+                Compartile este link al cliente del evento. Él lo abrirá desde su celular.
             </div>
 
             <div class="qr-wrapper" id="qrLinkAdmin"></div>
             <div class="url-box" id="urlLinkAdmin"></div>
 
             <button class="btn-primario" onclick="copiarLinkAdmin()">📋 Copiar link</button>
+            <button class="btn-peligro" onclick="regenerarLinkCliente()">♻️ Regenerar link del cliente</button>
             <button class="btn-secundario" onclick="cerrarLinkAdmin()">Cerrar</button>
         </div>
     </div>
@@ -1356,9 +1391,9 @@
                 contadores = estado.contadores || null;
 
                 renderActivo(eventoActivo, creditosActuales, estado);
-                const info = renderAgendados(eventos.agendados || []);
+                renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
-                renderVacio(info.activables, eventoActivo);
+                renderModoLibre(eventoActivo);
 
                 marcarServidor('ok');
 
@@ -1468,7 +1503,7 @@
                                 📤 Subir fotos
                             </button>
                             <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                                🔗 Link Admin
+                                🔗 Link del Cliente
                             </button>
                             <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
                                 🎫 QR General
@@ -1596,10 +1631,11 @@
             let html = `<div class="seccion"><div class="seccion-titulo">Finalizados hoy</div>`;
 
             finalizados.forEach(evt => {
+                const horaFin = evt.finReal ? formatearHora(evt.finReal) : '';
                 html += `
                     <div class="card-agendado" style="opacity:0.6;">
                         <div class="titulo">${escapeHtml(evt.evento)}</div>
-                        <div class="fecha">✔️ Finalizado</div>
+                        <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''}</div>
                     </div>
                 `;
             });
@@ -1608,23 +1644,34 @@
             cont.innerHTML = html;
         }
 
-        function renderVacio(cantidadAgendadosActivos, activo) {
+        // 🔥 MODO LIBRE: siempre visible, con aviso si hay evento activo
+        function renderModoLibre(activo) {
             const cont = $('seccionVacio');
 
-            if (activo || cantidadAgendadosActivos > 0) {
-                cont.innerHTML = '';
-                return;
+            const hayActivo = !!activo;
+            const nombreActivo = hayActivo ? activo.evento : '';
+
+            let aviso = '';
+            if (hayActivo) {
+                aviso = `
+                    <div class="aviso-modo-libre">
+                        ⚠️ Ya tenés un evento activo: <strong>${escapeHtml(nombreActivo)}</strong>.<br>
+                        Si necesitás activar Modo Libre, primero finalizá el evento actual.
+                    </div>
+                `;
             }
 
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="card-vacio">
-                        <span class="emoji">📅</span>
-                        <div class="titulo">No tienes eventos activos</div>
+                        <span class="emoji">🆘</span>
+                        <div class="titulo">Modo Libre</div>
                         <div class="subtitulo">
-                            Si tienes un evento de urgencia,<br>activa el modo libre.
+                            Para eventos de urgencia fuera de agenda.<br>
+                            ${hayActivo ? 'No disponible mientras haya un evento activo.' : 'El admin será notificado y se cobrará después.'}
                         </div>
-                        <button class="btn-modo-libre" onclick="abrirModoLibre()">
+                        ${aviso}
+                        <button class="btn-modo-libre" onclick="abrirModoLibre(${hayActivo})">
                             🆘 Activar Modo Libre
                         </button>
                     </div>
@@ -1663,7 +1710,11 @@
         // ==========================================
         // 🆘 MODO LIBRE
         // ==========================================
-        function abrirModoLibre() {
+        function abrirModoLibre(hayActivo = false) {
+            if (hayActivo) {
+                toast('⚠️ Ya tenés un evento activo. Finalizalo primero.', 'error');
+                return;
+            }
             $('inputNombreModoLibre').value = '';
             $('modalModoLibre').classList.add('activo');
         }
@@ -1706,7 +1757,7 @@
         }
 
         // ==========================================
-        // 🔗 LINK ADMIN
+        // 🔗 LINK DEL CLIENTE
         // ==========================================
         let urlAdminActual = null;
 
@@ -1721,9 +1772,9 @@
                 const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
                 $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
 
-                $('linkAdminSubtitulo').textContent = data.reclamada
-                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si necesitas acceso desde otro, contacta al admin.'
-                    : 'Abre este link en tu celular para gestionar el evento (invitar, ver butacas, etc.).';
+                $('linkAdminSubtitulo').innerHTML = data.reclamada
+                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si el cliente necesita acceso desde otro, usá "Regenerar link del cliente".'
+                    : 'Compartile este link al cliente. Él podrá invitar VIPs y administrar la galería.';
 
                 $('modalLinkAdmin').classList.add('activo');
 
@@ -1751,6 +1802,28 @@
                 document.body.removeChild(ta);
                 toast('✅ Link copiado', 'ok');
             });
+        }
+
+        // 🔥 Regenerar link del cliente (por si el cliente pierde el acceso)
+        async function regenerarLinkCliente() {
+            if (!confirm('¿Regenerar el link del cliente? El link viejo quedará inválido.')) return;
+
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/regenerar-admin', { method: 'POST' });
+                urlAdminActual = data.urlAdmin;
+
+                $('urlLinkAdmin').textContent = data.urlAdmin;
+
+                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
+                $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+
+                toast('✅ Link del cliente regenerado', 'ok');
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
         }
 
         // ==========================================
@@ -2049,17 +2122,23 @@
 
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                    try {
-                        await apiFetch('/confirmar_subida', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                f: nombreFotografoActual,
-                                e: eventoActivo.id,
-                                key: dataPedido.key
-                            })
-                        });
-                    } catch (e) {
-                        console.warn('Confirmación fallida (no crítico):', e.message);
+                    // 🔥 Reintento de confirmación (por si falla la primera vez)
+                    let confirmado = false;
+                    for (let c = 0; c < 2 && !confirmado; c++) {
+                        try {
+                            await apiFetch('/confirmar_subida', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    f: nombreFotografoActual,
+                                    e: eventoActivo.id,
+                                    key: dataPedido.key
+                                })
+                            });
+                            confirmado = true;
+                        } catch (e) {
+                            console.warn(`Confirmación intento ${c + 1} falló:`, e.message);
+                            if (c < 1) await new Promise(r => setTimeout(r, 1000));
+                        }
                     }
 
                     return;
