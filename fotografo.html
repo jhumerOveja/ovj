@@ -13,6 +13,7 @@
             --verde: #2ecc71;
             --rojo: #e74c3c;
             --azul: #3498db;
+            --violeta: #9b59b6;
             --bg: #0a0a0a;
             --card: #141414;
             --card-borde: rgba(255, 215, 0, 0.15);
@@ -301,10 +302,84 @@
             color: #fff;
             font-weight: 600;
         }
-        .card-activo .meta-item .creditos-bajo { color: var(--rojo); }
-        .card-activo .meta-item .creditos-ok { color: var(--verde); }
 
-        /* ===== CONTADORES ===== */
+        /* 🔥 Tiempo restante */
+        .aviso-tiempo {
+            background: rgba(52, 152, 219, 0.08);
+            border: 1px solid rgba(52, 152, 219, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            font-size: 0.78rem;
+            color: #5dade2;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .aviso-tiempo .emoji { font-size: 1.3rem; flex-shrink: 0; }
+        .aviso-tiempo strong { color: #fff; font-weight: 700; }
+
+        .aviso-tiempo.urgente {
+            background: rgba(243, 156, 18, 0.08);
+            border-color: rgba(243, 156, 18, 0.3);
+            color: var(--oro);
+        }
+
+        .aviso-tiempo.terminado {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: var(--rojo);
+        }
+
+        /* 🔥 Extensiones aplicadas */
+        .extensiones-box {
+            background: rgba(155, 89, 182, 0.06);
+            border: 1px solid rgba(155, 89, 182, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .extensiones-box .cabecera-ext {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            color: #bb8fce;
+            font-weight: 600;
+        }
+        .extensiones-box .cabecera-ext strong {
+            color: #fff;
+        }
+        .extensiones-box .detalle-ext {
+            font-size: 0.7rem;
+            color: var(--texto-suave);
+            line-height: 1.6;
+        }
+        .extensiones-box .detalle-ext .fila-ext {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+
+        /* Aviso de receso */
+        .aviso-receso {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            color: #e74c3c;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .aviso-receso .emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+        /* Contadores */
         .contadores-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -344,22 +419,6 @@
         }
         .contador-item .valor.alerta { color: var(--rojo); }
         .contador-item .valor.ok { color: var(--verde); }
-
-        /* Aviso de receso */
-        .aviso-receso {
-            background: rgba(231, 76, 60, 0.08);
-            border: 1px solid rgba(231, 76, 60, 0.25);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-            font-size: 0.8rem;
-            color: #e74c3c;
-            line-height: 1.5;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .aviso-receso .emoji { font-size: 1.4rem; flex-shrink: 0; }
 
         /* Botones de acciones */
         .acciones-grid {
@@ -412,18 +471,6 @@
             color: #5dade2;
         }
         .btn-qr:hover:not(:disabled) { background: rgba(52, 152, 219, 0.2); }
-        .btn-ampliar {
-            background: rgba(155, 89, 182, 0.12);
-            border: 1px solid rgba(155, 89, 182, 0.35);
-            color: #bb8fce;
-        }
-        .btn-ampliar:hover:not(:disabled) { background: rgba(155, 89, 182, 0.2); }
-        .btn-creditos {
-            background: rgba(241, 196, 15, 0.12);
-            border: 1px solid rgba(241, 196, 15, 0.35);
-            color: var(--oro-claro);
-        }
-        .btn-creditos:hover:not(:disabled) { background: rgba(241, 196, 15, 0.2); }
         .btn-finalizar {
             background: rgba(231, 76, 60, 0.12);
             border: 1px solid rgba(231, 76, 60, 0.35);
@@ -497,7 +544,7 @@
         }
         .card-agendado .aviso-ventana.no-puede { color: var(--rojo); }
 
-        /* ===== CARD VACÍO / MODO LIBRE ===== */
+        /* ===== CARD MODO LIBRE ===== */
         .card-vacio {
             background: var(--card);
             border: 1px dashed rgba(255, 255, 255, 0.08);
@@ -540,7 +587,6 @@
             transform: scale(1.02);
         }
 
-        /* 🔥 NUEVO: aviso de modo libre cuando hay evento activo */
         .aviso-modo-libre {
             background: rgba(231, 76, 60, 0.08);
             border: 1px solid rgba(231, 76, 60, 0.25);
@@ -728,80 +774,6 @@
             text-align: left;
             font-family: monospace;
             line-height: 1.4;
-        }
-
-        /* Paquetes ampliación */
-        .paquete {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            width: 100%;
-            text-align: left;
-            color: inherit;
-        }
-        .paquete:hover {
-            background: rgba(155, 89, 182, 0.1);
-            border-color: rgba(155, 89, 182, 0.35);
-        }
-        .paquete .emoji {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        .paquete .info {
-            flex: 1;
-            min-width: 0;
-        }
-        .paquete .nombre {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 3px;
-        }
-        .paquete .detalle {
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-            line-height: 1.4;
-        }
-        .paquete .precio {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--oro);
-            flex-shrink: 0;
-        }
-
-        /* Créditos */
-        .credito-opcion {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 18px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            width: 100%;
-            color: inherit;
-            font-size: 0.9rem;
-        }
-        .credito-opcion:hover {
-            background: rgba(241, 196, 15, 0.1);
-            border-color: rgba(241, 196, 15, 0.35);
-        }
-        .credito-opcion .monto {
-            font-weight: 700;
-            color: var(--oro-claro);
-            font-size: 1.05rem;
         }
 
         /* Subir fotos */
@@ -1064,74 +1036,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL AMPLIAR ===== -->
-    <div class="modal" id="modalAmpliar">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarAmpliar()">✕</button>
-            <div class="titulo">➕ Ampliar Evento</div>
-            <div class="subtitulo">
-                Suma tiempo y créditos al evento activo.<br>
-                Avisá al cliente del costo adicional.
-            </div>
-
-            <button class="paquete" onclick="aplicarAmpliacion('basico')">
-                <span class="emoji">⚡</span>
-                <div class="info">
-                    <div class="nombre">Básico</div>
-                    <div class="detalle">+30 min · +50 créditos</div>
-                </div>
-                <div class="precio">Bs. 80</div>
-            </button>
-
-            <button class="paquete" onclick="aplicarAmpliacion('estandar')">
-                <span class="emoji">🎯</span>
-                <div class="info">
-                    <div class="nombre">Estándar</div>
-                    <div class="detalle">+1 hora · +100 créditos</div>
-                </div>
-                <div class="precio">Bs. 150</div>
-            </button>
-
-            <button class="paquete" onclick="aplicarAmpliacion('premium')">
-                <span class="emoji">👑</span>
-                <div class="info">
-                    <div class="nombre">Premium</div>
-                    <div class="detalle">+2 horas · +500 créditos</div>
-                </div>
-                <div class="precio">Bs. 350</div>
-            </button>
-
-            <button class="btn-secundario" onclick="cerrarAmpliar()">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- ===== MODAL CRÉDITOS ===== -->
-    <div class="modal" id="modalCreditos">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarCreditos()">✕</button>
-            <div class="titulo">💰 Agregar Créditos</div>
-            <div class="subtitulo">
-                Suma créditos al pozo del evento.<br>
-                El cliente podrá descargar más fotos.
-            </div>
-
-            <button class="credito-opcion" onclick="agregarCreditos(25)">
-                <span>Agregar créditos</span>
-                <span class="monto">+25</span>
-            </button>
-            <button class="credito-opcion" onclick="agregarCreditos(80)">
-                <span>Agregar créditos</span>
-                <span class="monto">+80</span>
-            </button>
-            <button class="credito-opcion" onclick="agregarCreditos(200)">
-                <span>Agregar créditos</span>
-                <span class="monto">+200</span>
-            </button>
-
-            <button class="btn-secundario" onclick="cerrarCreditos()">Cancelar</button>
-        </div>
-    </div>
-
     <!-- ===== MODAL MODO LIBRE ===== -->
     <div class="modal" id="modalModoLibre">
         <div class="modal-contenido">
@@ -1188,20 +1092,25 @@
         const REINTENTOS_SUBIDA = 3;
         const INTERVALO_REFRESH_MS = 30000;
 
+        // 🔥 Umbral para avisar que el tiempo se está agotando
+        const UMBRAL_AVISO_MIN = 15;
+
         // ==========================================
         // 🔑 ESTADO GLOBAL
         // ==========================================
         let tokenSesion = null;
         let nombreFotografoActual = null;
         let eventoActivo = null;
-        let creditosActuales = null;
         let contadores = null;
-        let tokenGeneralActual = null;
+        let tiempoEvento = null;
 
         let colaSubidas = [];
         let subidaEnProceso = false;
 
         let intervalRefresh = null;
+
+        // 🔥 Última cantidad de extensiones vistas (para detectar nuevas)
+        let ultimaCantidadExtensiones = 0;
 
         // ==========================================
         // 🛠️ UTILIDADES
@@ -1387,10 +1296,18 @@
                 ]);
 
                 eventoActivo = estado.activo;
-                creditosActuales = estado.creditos;
                 contadores = estado.contadores || null;
+                tiempoEvento = estado.tiempo || null;
 
-                renderActivo(eventoActivo, creditosActuales, estado);
+                // 🔥 Detectar nuevas extensiones
+                const extActuales = eventoActivo ? (eventoActivo.extensiones || 0) : 0;
+                if (extActuales > ultimaCantidadExtensiones && ultimaCantidadExtensiones > 0) {
+                    const nuevas = extActuales - ultimaCantidadExtensiones;
+                    toast(`➕ El cliente activó ${nuevas} ampliación(es)`, 'ok');
+                }
+                ultimaCantidadExtensiones = extActuales;
+
+                renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
                 renderModoLibre(eventoActivo);
@@ -1422,7 +1339,7 @@
         // ==========================================
         // 🎨 RENDER
         // ==========================================
-        function renderActivo(activo, creditos, estado) {
+        function renderActivo(activo, estado) {
             const cont = $('seccionActivo');
 
             if (!activo) {
@@ -1431,9 +1348,6 @@
             }
 
             const esLibre = activo.modo === 'libre';
-            const creditosRestantes = creditos ? creditos.restantes : 0;
-            const creditosTotal = creditos ? creditos.total : 0;
-            const claseCreditos = creditosRestantes <= 5 ? 'creditos-bajo' : 'creditos-ok';
 
             let metaHtml = '';
             metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
@@ -1442,23 +1356,87 @@
                 metaHtml += `<div class="meta-item"><span class="emoji">⏹️</span>Fin aprox: <strong>${activo.horaFin}</strong></div>`;
             }
 
-            metaHtml += `<div class="meta-item"><span class="emoji">💳</span>Créditos: <strong class="${claseCreditos}">${creditosRestantes} / ${creditosTotal}</strong></div>`;
-            metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong> · ⏳ Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
+            metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
+            metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
-            // Contadores del pool
+            // 🔥 Aviso de tiempo
+            let avisoTiempoHtml = '';
+            if (tiempoEvento) {
+                if (tiempoEvento.yaTermino) {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo terminado">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>El tiempo programado ya se agotó.</strong><br>
+                                Si el cliente pagó una ampliación, seguí. Si no, finalizá el evento.
+                            </div>
+                        </div>
+                    `;
+                } else if (tiempoEvento.tiempoRestanteMin <= UMBRAL_AVISO_MIN) {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo urgente">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).<br>
+                                Si el cliente no pagó una ampliación, finalizá el evento.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo">
+                            <span class="emoji">⏱️</span>
+                            <div>
+                                Tiempo restante: <strong>${tiempoEvento.tiempoRestanteMin} min</strong>
+                                · Fin aprox: <strong>${tiempoEvento.horaFinFormateada}</strong>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // 🔥 Extensiones aplicadas
+            let extensionesHtml = '';
+            const extAplicadas = activo.extensiones || 0;
+            const extTotalBs = activo.extensionesTotalBs || 0;
+
+            if (extAplicadas > 0) {
+                extensionesHtml = `
+                    <div class="extensiones-box">
+                        <div class="cabecera-ext">
+                            <span>➕ Extensiones aplicadas</span>
+                            <strong>${extAplicadas} · Bs. ${extTotalBs}</strong>
+                        </div>
+                        <div class="detalle-ext">
+                            El cliente pagó Bs. ${extTotalBs} en ampliaciones.<br>
+                            Cobrar al cliente antes de enviar el paquete digital.
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 🔥 Contadores del pool
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
                 const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
                 const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
+                const descSesion = contadores.descargasPorSesion || 5;
 
                 contadoresHtml = `
                     <div class="contadores-grid">
                         <div class="contador-item">
+                            <span class="emoji">📥</span>
+                            <div class="info">
+                                <div class="valor">${descSesion}</div>
+                                <div class="etiqueta">Descargas / sesión</div>
+                            </div>
+                        </div>
+                        <div class="contador-item">
                             <span class="emoji">⭐</span>
                             <div class="info">
                                 <div class="valor">${contadores.vips} / ${contadores.limiteVips}</div>
-                                <div class="etiqueta">VIPs (${contadores.limiteVips} máx)</div>
+                                <div class="etiqueta">VIPs</div>
                             </div>
                         </div>
                         <div class="contador-item">
@@ -1472,14 +1450,7 @@
                             <span class="emoji">🟢</span>
                             <div class="info">
                                 <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
-                                <div class="etiqueta">Generales activos ahora</div>
-                            </div>
-                        </div>
-                        <div class="contador-item">
-                            <span class="emoji">⏸️</span>
-                            <div class="info">
-                                <div class="valor" style="font-size:0.85rem;">${generalesActivos >= maxGenerales ? 'WEB EN RECESO' : 'WEB ACTIVA'}</div>
-                                <div class="etiqueta">Estado</div>
+                                <div class="etiqueta">Generales activos</div>
                             </div>
                         </div>
                     </div>
@@ -1496,6 +1467,8 @@
                         <div class="titulo">${escapeHtml(activo.evento)}</div>
                         <div class="meta">${metaHtml}</div>
 
+                        ${avisoTiempoHtml}
+                        ${extensionesHtml}
                         ${contadoresHtml}
 
                         <div class="acciones-grid">
@@ -1507,14 +1480,6 @@
                             </button>
                             <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
                                 🎫 QR General
-                            </button>
-                            ${!esLibre ? `
-                            <button class="btn-accion btn-ampliar" onclick="abrirAmpliar()">
-                                ➕ Ampliar
-                            </button>
-                            ` : ''}
-                            <button class="btn-accion btn-creditos" onclick="abrirCreditos()">
-                                💰 Créditos
                             </button>
                             <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
                                 🏁 Finalizar evento
@@ -1691,12 +1656,8 @@
                 });
 
                 toast('✅ Evento activado', 'ok');
+                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
-
-                // Guardar token general si vino
-                if (data.tokenGeneral) {
-                    tokenGeneralActual = data.tokenGeneral;
-                }
 
                 setTimeout(() => abrirLinkAdmin(), 400);
 
@@ -1740,11 +1701,8 @@
 
                 cerrarModoLibre();
                 toast('🆘 Modo libre activado', 'ok');
+                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
-
-                if (data.tokenGeneral) {
-                    tokenGeneralActual = data.tokenGeneral;
-                }
 
                 setTimeout(() => abrirLinkAdmin(), 400);
 
@@ -1804,7 +1762,6 @@
             });
         }
 
-        // 🔥 Regenerar link del cliente (por si el cliente pierde el acceso)
         async function regenerarLinkCliente() {
             if (!confirm('¿Regenerar el link del cliente? El link viejo quedará inválido.')) return;
 
@@ -1834,7 +1791,6 @@
         async function abrirTokenGeneral() {
             loader(true);
             try {
-                // Pedir al backend
                 const data = await apiFetch('/fotografo/token-general');
 
                 if (!data.ok || !data.tokenGeneral) {
@@ -1843,7 +1799,6 @@
                     return;
                 }
 
-                // Construir URL general
                 const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(data.eventoId)}&t=${encodeURIComponent(data.tokenGeneral)}`;
                 urlTokenGeneralActual = urlGeneral;
 
@@ -1887,69 +1842,22 @@
         }
 
         // ==========================================
-        // ➕ AMPLIAR
-        // ==========================================
-        function abrirAmpliar() {
-            $('modalAmpliar').classList.add('activo');
-        }
-        function cerrarAmpliar() {
-            $('modalAmpliar').classList.remove('activo');
-        }
-
-        async function aplicarAmpliacion(paquete) {
-            loader(true);
-            cerrarAmpliar();
-            try {
-                const data = await apiFetch('/fotografo/ampliar', {
-                    method: 'POST',
-                    body: JSON.stringify({ paquete })
-                });
-                toast('✅ Ampliación aplicada · Bs.' + data.paquete.precio, 'ok');
-                await cargarTodo();
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-            }
-        }
-
-        // ==========================================
-        // 💰 CRÉDITOS
-        // ==========================================
-        function abrirCreditos() {
-            $('modalCreditos').classList.add('activo');
-        }
-        function cerrarCreditos() {
-            $('modalCreditos').classList.remove('activo');
-        }
-
-        async function agregarCreditos(monto) {
-            loader(true);
-            cerrarCreditos();
-            try {
-                const data = await apiFetch('/fotografo/creditos', {
-                    method: 'POST',
-                    body: JSON.stringify({ monto })
-                });
-                toast(`💰 +${monto} créditos agregados`, 'ok');
-                await cargarTodo();
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-            }
-        }
-
-        // ==========================================
         // 🏁 FINALIZAR
         // ==========================================
         let confirmarCallback = null;
 
         function confirmarFinalizar() {
+            let mensaje = 'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>';
+
+            const extAplicadas = eventoActivo ? (eventoActivo.extensiones || 0) : 0;
+            if (extAplicadas > 0) {
+                mensaje += `<strong style="color:#bb8fce;">⚠️ Este evento tuvo ${extAplicadas} extensión(es). Cobrar al cliente antes de enviar el paquete digital.</strong><br><br>`;
+            }
+
+            mensaje += '<strong>Esta acción no se puede deshacer.</strong>';
+
             $('confirmarTitulo').textContent = '🏁 Finalizar evento';
-            $('confirmarMensaje').innerHTML =
-                'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>' +
-                '<strong>Esta acción no se puede deshacer.</strong>';
+            $('confirmarMensaje').innerHTML = mensaje;
             confirmarCallback = ejecutarFinalizar;
             $('modalConfirmar').classList.add('activo');
         }
@@ -1963,7 +1871,13 @@
                 const horas = Math.floor(data.duracionHoras);
                 const mins = Math.round((data.duracionHoras - horas) * 60);
 
-                toast(`✅ Evento finalizado · ${horas}h ${mins}min`, 'ok');
+                let msg = `✅ Evento finalizado · ${horas}h ${mins}min`;
+                if (data.extensionesAplicadas > 0) {
+                    msg += ` · ${data.extensionesAplicadas} ext (Bs. ${data.extensionesTotalBs})`;
+                }
+
+                toast(msg, 'ok');
+                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -2122,7 +2036,7 @@
 
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                    // 🔥 Reintento de confirmación (por si falla la primera vez)
+                    // Reintento de confirmación
                     let confirmado = false;
                     for (let c = 0; c < 2 && !confirmado; c++) {
                         try {
