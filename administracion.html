@@ -495,7 +495,7 @@
             border: 1px solid var(--card-borde);
             border-radius: 20px;
             padding: 28px 24px 22px;
-            max-width: 520px;
+            max-width: 500px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -622,23 +622,6 @@
             background: rgba(52, 152, 219, 0.2);
             transform: scale(1.01);
         }
-
-        /* 🔥 NUEVO: caja de paquete de ampliación */
-        .paquete-config {
-            background: rgba(155, 89, 182, 0.06);
-            border: 1px solid rgba(155, 89, 182, 0.25);
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 12px;
-        }
-        .paquete-config .titulo-paquete {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #bb8fce;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
         .qr-token-wrapper {
             background: #fff;
             border-radius: 12px;
@@ -931,10 +914,15 @@
             return `${d}/${m}/${y}`;
         }
 
+        // 🔥 FIX: forzar formato 24h
         function formatearHora(fechaISO) {
             if (!fechaISO) return '';
             const d = new Date(fechaISO);
-            return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleTimeString('es-BO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
         }
 
         async function apiFetch(ruta, opciones = {}) {
@@ -1095,7 +1083,7 @@
                     <div class="page-header">
                         <div>
                             <h1>📊 Dashboard</h1>
-                            <div class="subtitulo">Estado general · Actualizado ${new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}</div>
+                            <div class="subtitulo">Estado general · Actualizado ${new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
                         </div>
                         <div class="acciones">
                             <button class="btn btn-secundario" onclick="renderDashboard()">🔄 Refrescar</button>
@@ -1153,7 +1141,6 @@
                                 <div style="display:flex; gap:14px; font-size:0.75rem; color:#aaa; margin-bottom:6px; flex-wrap:wrap;">
                                     <span>🌐 Web: <strong style="color:#fff;">${f.fotosWeb || 0}</strong></span>
                                     <span>⏳ Cola: <strong style="color:#fff;">${f.fotosPendientes || 0}</strong></span>
-                                    ${activo && activo.extensionesAplicadas > 0 ? `<span>➕ Ext: <strong style="color:#bb8fce;">${activo.extensionesAplicadas} · Bs. ${activo.extensionesTotalBs}</strong></span>` : ''}
                                 </div>
                                 ${activo ? `<div style="font-size:0.7rem; color:#666;">▶️ ${formatearHora(activo.inicioReal)} · ${activo.duracionTotal}h</div>` : ''}
                             </div>
@@ -1462,16 +1449,9 @@
             }
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
 
-            // 🔥 Pool general
+            // Pool general
             if (e.poolGeneral) {
                 meta += `<div class="fila" style="color:#5dade2;">📥 ${e.poolGeneral.descargasPorSesion} desc/sesión · ${e.poolGeneral.sesionesMaximas ?? '∞'} sesiones</div>`;
-            }
-
-            // 🔥 Extensiones aplicadas
-            const extAplicadas = (e.extensiones || []).length;
-            if (extAplicadas > 0) {
-                const totalBs = (e.extensiones || []).reduce((acc, ext) => acc + (ext.precio || 0), 0);
-                meta += `<div class="fila" style="color:#bb8fce;">➕ ${extAplicadas} extensión(es) · Bs. ${totalBs}</div>`;
             }
 
             // Razón de cierre
@@ -1610,61 +1590,6 @@
                     </div>
                 </div>
 
-                <div class="seccion-titulo-form">💰 Paquetes de ampliación</div>
-
-                <div class="config-sugerida">
-                    💡 El <strong>Admin Cliente</strong> podrá ampliar el evento desde su panel.
-                    Vos definís los precios y las condiciones.
-                </div>
-
-                <div class="campo-fila">
-                    <div class="campo">
-                        <label>Máximo de ampliaciones</label>
-                        <input type="number" id="inputMaxAmpliaciones" value="3" min="1" max="10" />
-                    </div>
-                    <div class="campo">
-                        <label>Ventana de cierre (min antes)</label>
-                        <input type="number" id="inputVentanaCierre" value="15" min="5" max="60" />
-                        <div class="ayuda">Las ampliaciones se cierran X min antes del final.</div>
-                    </div>
-                </div>
-
-                <div class="paquete-config">
-                    <div class="titulo-paquete">⚡ Paquete Estándar</div>
-                    <div class="campo-fila">
-                        <div class="campo">
-                            <label>Minutos extra</label>
-                            <input type="number" id="inputEstandarMin" value="60" min="15" max="240" />
-                        </div>
-                        <div class="campo">
-                            <label>Descargas extra/sesión</label>
-                            <input type="number" id="inputEstandarDesc" value="5" min="1" max="50" />
-                        </div>
-                    </div>
-                    <div class="campo">
-                        <label>Precio (Bs.)</label>
-                        <input type="number" id="inputEstandarPrecio" value="200" min="0" max="10000" />
-                    </div>
-                </div>
-
-                <div class="paquete-config">
-                    <div class="titulo-paquete">👑 Paquete Premium</div>
-                    <div class="campo-fila">
-                        <div class="campo">
-                            <label>Minutos extra</label>
-                            <input type="number" id="inputPremiumMin" value="120" min="15" max="480" />
-                        </div>
-                        <div class="campo">
-                            <label>Descargas extra/sesión</label>
-                            <input type="number" id="inputPremiumDesc" value="10" min="1" max="100" />
-                        </div>
-                    </div>
-                    <div class="campo">
-                        <label>Precio (Bs.)</label>
-                        <input type="number" id="inputPremiumPrecio" value="350" min="0" max="10000" />
-                    </div>
-                </div>
-
                 <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
@@ -1689,22 +1614,6 @@
                 limiteVips: parseInt($('inputLimiteVips').value, 10)
             };
 
-            // 🔥 Paquetes de ampliación
-            const paquetesAmpliacion = {
-                maxPorEvento: parseInt($('inputMaxAmpliaciones').value, 10) || 3,
-                ventanaCierreMin: parseInt($('inputVentanaCierre').value, 10) || 15,
-                estandar: {
-                    minutosExtra: parseInt($('inputEstandarMin').value, 10) || 60,
-                    descargasExtra: parseInt($('inputEstandarDesc').value, 10) || 5,
-                    precio: parseInt($('inputEstandarPrecio').value, 10) || 200
-                },
-                premium: {
-                    minutosExtra: parseInt($('inputPremiumMin').value, 10) || 120,
-                    descargasExtra: parseInt($('inputPremiumDesc').value, 10) || 10,
-                    precio: parseInt($('inputPremiumPrecio').value, 10) || 350
-                }
-            };
-
             if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
             if (!fecha || !hora) { toast('Fecha y hora obligatorias', 'error'); return; }
             if (!duracion || duracion < 1 || duracion > 24) { toast('Duración inválida', 'error'); return; }
@@ -1722,8 +1631,7 @@
                         hora,
                         duracion,
                         whatsappCliente: whatsapp || null,
-                        poolGeneral,
-                        paquetesAmpliacion
+                        poolGeneral
                     })
                 });
 
@@ -1936,8 +1844,6 @@
                         const minutos = Math.floor((ahora - inicio) / 60000);
                         const horas = Math.floor(minutos / 60);
                         const mins = minutos % 60;
-                        const extAplicadas = (m.extensiones || []).length;
-                        const totalExt = (m.extensiones || []).reduce((acc, ext) => acc + (ext.precio || 0), 0);
 
                         html += `
                             <div class="card card-evento">
@@ -1953,7 +1859,6 @@
                                     <div class="fila">⏱️ Transcurrido: <strong>${horas}h ${mins}min</strong></div>
                                     ${m.whatsappCliente ? `<div class="fila">📱 +${m.whatsappCliente}</div>` : ''}
                                     ${m.poolGeneral ? `<div class="fila" style="color:#5dade2;">📥 ${m.poolGeneral.descargasPorSesion} desc/sesión</div>` : ''}
-                                    ${extAplicadas > 0 ? `<div class="fila" style="color:#bb8fce;">➕ ${extAplicadas} ext · Bs. ${totalExt}</div>` : ''}
                                 </div>
                                 <div class="acciones">
                                     <button class="btn btn-chico btn-peligro" onclick="confirmarCerrarModoLibre('${escapeHtml(m.id)}','${escapeHtml(m.evento)}','${escapeHtml(m.fotografo)}')">🏁 Forzar cierre</button>
