@@ -332,37 +332,6 @@
             color: var(--rojo);
         }
 
-        /* 🔥 Extensiones aplicadas */
-        .extensiones-box {
-            background: rgba(155, 89, 182, 0.06);
-            border: 1px solid rgba(155, 89, 182, 0.25);
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 14px;
-        }
-        .extensiones-box .cabecera-ext {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.78rem;
-            color: #bb8fce;
-            font-weight: 600;
-        }
-        .extensiones-box .cabecera-ext strong {
-            color: #fff;
-        }
-        .extensiones-box .detalle-ext {
-            font-size: 0.7rem;
-            color: var(--texto-suave);
-            line-height: 1.6;
-        }
-        .extensiones-box .detalle-ext .fila-ext {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-        }
-
         /* Aviso de receso */
         .aviso-receso {
             background: rgba(231, 76, 60, 0.08);
@@ -1109,9 +1078,6 @@
 
         let intervalRefresh = null;
 
-        // 🔥 Última cantidad de extensiones vistas (para detectar nuevas)
-        let ultimaCantidadExtensiones = 0;
-
         // ==========================================
         // 🛠️ UTILIDADES
         // ==========================================
@@ -1144,10 +1110,15 @@
             return `${d}/${m}/${y}`;
         }
 
+        // 🔥 FIX: forzar formato 24h
         function formatearHora(fechaISO) {
             if (!fechaISO) return '';
             const d = new Date(fechaISO);
-            return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleTimeString('es-BO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
         }
 
         async function apiFetch(ruta, opciones = {}) {
@@ -1299,14 +1270,6 @@
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
 
-                // 🔥 Detectar nuevas extensiones
-                const extActuales = eventoActivo ? (eventoActivo.extensiones || 0) : 0;
-                if (extActuales > ultimaCantidadExtensiones && ultimaCantidadExtensiones > 0) {
-                    const nuevas = extActuales - ultimaCantidadExtensiones;
-                    toast(`➕ El cliente activó ${nuevas} ampliación(es)`, 'ok');
-                }
-                ultimaCantidadExtensiones = extActuales;
-
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
@@ -1327,7 +1290,11 @@
             punto.className = 'punto ' + estado;
 
             if (estado === 'ok') {
-                const hora = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+                const hora = new Date().toLocaleTimeString('es-BO', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
                 texto.textContent = 'Actualizado ' + hora;
             } else if (estado === 'error') {
                 texto.textContent = 'Sin conexión';
@@ -1368,7 +1335,7 @@
                             <span class="emoji">⏰</span>
                             <div>
                                 <strong>El tiempo programado ya se agotó.</strong><br>
-                                Si el cliente pagó una ampliación, seguí. Si no, finalizá el evento.
+                                Finalizá el evento cuando corresponda.
                             </div>
                         </div>
                     `;
@@ -1377,8 +1344,7 @@
                         <div class="aviso-tiempo urgente">
                             <span class="emoji">⏰</span>
                             <div>
-                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).<br>
-                                Si el cliente no pagó una ampliación, finalizá el evento.
+                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
                             </div>
                         </div>
                     `;
@@ -1393,26 +1359,6 @@
                         </div>
                     `;
                 }
-            }
-
-            // 🔥 Extensiones aplicadas
-            let extensionesHtml = '';
-            const extAplicadas = activo.extensiones || 0;
-            const extTotalBs = activo.extensionesTotalBs || 0;
-
-            if (extAplicadas > 0) {
-                extensionesHtml = `
-                    <div class="extensiones-box">
-                        <div class="cabecera-ext">
-                            <span>➕ Extensiones aplicadas</span>
-                            <strong>${extAplicadas} · Bs. ${extTotalBs}</strong>
-                        </div>
-                        <div class="detalle-ext">
-                            El cliente pagó Bs. ${extTotalBs} en ampliaciones.<br>
-                            Cobrar al cliente antes de enviar el paquete digital.
-                        </div>
-                    </div>
-                `;
             }
 
             // 🔥 Contadores del pool
@@ -1468,7 +1414,6 @@
                         <div class="meta">${metaHtml}</div>
 
                         ${avisoTiempoHtml}
-                        ${extensionesHtml}
                         ${contadoresHtml}
 
                         <div class="acciones-grid">
@@ -1528,7 +1473,7 @@
                     const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
                     const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
                     const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
                     const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
                     const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
@@ -1539,7 +1484,7 @@
 
                     if (!puedeActivar) {
                         if (ahora < inicioVentana) {
-                            avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                            avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
                         }
                         btnDisabled = 'disabled';
                     }
@@ -1565,7 +1510,7 @@
                     const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
                     const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
                     const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
                     html += `
                         <div class="card-agendado vencido">
@@ -1656,7 +1601,6 @@
                 });
 
                 toast('✅ Evento activado', 'ok');
-                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
 
                 setTimeout(() => abrirLinkAdmin(), 400);
@@ -1701,7 +1645,6 @@
 
                 cerrarModoLibre();
                 toast('🆘 Modo libre activado', 'ok');
-                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
 
                 setTimeout(() => abrirLinkAdmin(), 400);
@@ -1847,17 +1790,10 @@
         let confirmarCallback = null;
 
         function confirmarFinalizar() {
-            let mensaje = 'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>';
-
-            const extAplicadas = eventoActivo ? (eventoActivo.extensiones || 0) : 0;
-            if (extAplicadas > 0) {
-                mensaje += `<strong style="color:#bb8fce;">⚠️ Este evento tuvo ${extAplicadas} extensión(es). Cobrar al cliente antes de enviar el paquete digital.</strong><br><br>`;
-            }
-
-            mensaje += '<strong>Esta acción no se puede deshacer.</strong>';
-
             $('confirmarTitulo').textContent = '🏁 Finalizar evento';
-            $('confirmarMensaje').innerHTML = mensaje;
+            $('confirmarMensaje').innerHTML =
+                'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>' +
+                '<strong>Esta acción no se puede deshacer.</strong>';
             confirmarCallback = ejecutarFinalizar;
             $('modalConfirmar').classList.add('activo');
         }
@@ -1872,12 +1808,8 @@
                 const mins = Math.round((data.duracionHoras - horas) * 60);
 
                 let msg = `✅ Evento finalizado · ${horas}h ${mins}min`;
-                if (data.extensionesAplicadas > 0) {
-                    msg += ` · ${data.extensionesAplicadas} ext (Bs. ${data.extensionesTotalBs})`;
-                }
 
                 toast(msg, 'ok');
-                ultimaCantidadExtensiones = 0;
                 await cargarTodo();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -2036,7 +1968,6 @@
 
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                    // Reintento de confirmación
                     let confirmado = false;
                     for (let c = 0; c < 2 && !confirmado; c++) {
                         try {
