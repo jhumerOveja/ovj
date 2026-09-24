@@ -17,7 +17,7 @@
 
 window.OVJ_CONFIG = {
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://harbour-transactions-drew-americas.trycloudflare.com',
+    urlTunel: 'https://sense-vice-names-acceptance.trycloudflare.com',
 
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
