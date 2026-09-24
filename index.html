@@ -295,8 +295,7 @@
                 border-color: rgba(231, 76, 60, 0.3);
             }
             .barra-rol .btn-invitar,
-            .barra-rol .btn-qr-general,
-            .barra-rol .btn-ampliar {
+            .barra-rol .btn-qr-general {
                 display: inline-flex;
                 align-items: center;
                 gap: 6px;
@@ -328,17 +327,6 @@
                 background: rgba(52, 152, 219, 0.25);
                 transform: scale(1.04);
                 box-shadow: 0 4px 20px rgba(52, 152, 219, 0.2);
-            }
-            /* 🔥 NUEVO: botón Ampliar */
-            .barra-rol .btn-ampliar {
-                background: rgba(155, 89, 182, 0.15);
-                border: 1px solid rgba(155, 89, 182, 0.4);
-                color: #bb8fce;
-            }
-            .barra-rol .btn-ampliar:hover {
-                background: rgba(155, 89, 182, 0.25);
-                transform: scale(1.04);
-                box-shadow: 0 4px 20px rgba(155, 89, 182, 0.2);
             }
 
             /* ===== ESTADO MINI ===== */
@@ -1299,159 +1287,6 @@
                 padding: 80px 20px;
             }
 
-            /* ===== 🔥 MODAL AMPLIAR ===== */
-            .modal-ampliar {
-                display: none;
-                position: fixed;
-                z-index: 1400;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                background: rgba(0, 0, 0, 0.92);
-                backdrop-filter: blur(12px);
-            }
-            .modal-ampliar.activo { display: flex; }
-            .modal-ampliar-contenido {
-                background: #141414;
-                border: 1px solid rgba(155, 89, 182, 0.3);
-                border-radius: 20px;
-                padding: 28px 24px 24px;
-                max-width: 460px;
-                width: 100%;
-                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-                position: relative;
-                max-height: 90vh;
-                overflow-y: auto;
-            }
-            .modal-ampliar-contenido .titulo {
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: #bb8fce;
-                margin-bottom: 4px;
-                text-align: center;
-            }
-            .modal-ampliar-contenido .subtitulo {
-                font-size: 0.78rem;
-                color: #888;
-                text-align: center;
-                margin-bottom: 18px;
-                line-height: 1.5;
-            }
-            .info-extensiones {
-                background: rgba(155, 89, 182, 0.08);
-                border: 1px solid rgba(155, 89, 182, 0.25);
-                border-radius: 10px;
-                padding: 10px 12px;
-                margin-bottom: 16px;
-                font-size: 0.75rem;
-                color: #bb8fce;
-                text-align: center;
-                line-height: 1.5;
-            }
-            .info-extensiones strong { color: #fff; }
-            .info-extensiones .limite {
-                color: #e74c3c;
-                font-weight: 700;
-            }
-            .aviso-tiempo-modal {
-                background: rgba(52, 152, 219, 0.08);
-                border: 1px solid rgba(52, 152, 219, 0.25);
-                border-radius: 10px;
-                padding: 10px 12px;
-                margin-bottom: 16px;
-                font-size: 0.75rem;
-                color: #5dade2;
-                text-align: center;
-                line-height: 1.5;
-            }
-            .aviso-tiempo-modal.urgente {
-                background: rgba(243, 156, 18, 0.08);
-                border-color: rgba(243, 156, 18, 0.3);
-                color: #f39c12;
-            }
-            .aviso-tiempo-modal.cerrado {
-                background: rgba(231, 76, 60, 0.08);
-                border-color: rgba(231, 76, 60, 0.3);
-                color: #e74c3c;
-            }
-            .aviso-tiempo-modal strong { color: #fff; }
-            .paquete-btn {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 14px 16px;
-                background: rgba(155, 89, 182, 0.06);
-                border: 1px solid rgba(155, 89, 182, 0.3);
-                border-radius: 12px;
-                margin-bottom: 12px;
-                cursor: pointer;
-                transition: all 0.25s ease;
-                font-family: inherit;
-                width: 100%;
-                text-align: left;
-                color: inherit;
-            }
-            .paquete-btn:hover:not(:disabled) {
-                background: rgba(155, 89, 182, 0.15);
-                border-color: rgba(155, 89, 182, 0.5);
-                transform: scale(1.01);
-            }
-            .paquete-btn:disabled {
-                opacity: 0.4;
-                cursor: not-allowed;
-            }
-            .paquete-btn .emoji {
-                font-size: 1.8rem;
-                flex-shrink: 0;
-            }
-            .paquete-btn .info-paq {
-                flex: 1;
-                min-width: 0;
-            }
-            .paquete-btn .nombre-paq {
-                font-size: 0.95rem;
-                font-weight: 700;
-                color: #fff;
-                margin-bottom: 4px;
-            }
-            .paquete-btn .detalle-paq {
-                font-size: 0.72rem;
-                color: #aaa;
-                line-height: 1.4;
-            }
-            .paquete-btn .precio-paq {
-                font-size: 1.05rem;
-                font-weight: 700;
-                color: #bb8fce;
-                flex-shrink: 0;
-            }
-            .modal-ampliar-contenido .btn-cancelar {
-                margin-top: 8px;
-                width: 100%;
-                padding: 12px 20px;
-                border-radius: 12px;
-                border: none;
-                background: rgba(255, 255, 255, 0.06);
-                color: #ccc;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                font-family: inherit;
-            }
-            .modal-ampliar-contenido .btn-cancelar:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #fff;
-            }
-            .modal-ampliar-contenido .cargando-paq {
-                text-align: center;
-                color: #666;
-                font-size: 0.85rem;
-                padding: 40px 20px;
-            }
-
             .footer {
                 text-align: center;
                 padding: 24px 10px 6px;
@@ -1524,8 +1359,7 @@
                 }
                 .barra-rol .rol-info { justify-content: center; }
                 .barra-rol .btn-invitar,
-                .barra-rol .btn-qr-general,
-                .barra-rol .btn-ampliar { justify-content: center; }
+                .barra-rol .btn-qr-general { justify-content: center; }
             }
             @media (max-width: 400px) {
                 .galeria {
@@ -1608,9 +1442,6 @@
                     <div class="contador-sesion" id="contadorSesion" style="display:none;"></div>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn-ampliar" id="btnAmpliar" onclick="abrirAmpliar()" style="display: none;">
-                        ➕ <span id="textoAmpliar">Ampliar</span>
-                    </button>
                     <button class="btn-qr-general" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
                         🎫 <span id="textoQrGeneral">QR General</span>
                     </button>
@@ -1818,24 +1649,6 @@
             </div>
         </div>
 
-        <!-- ===== 🔥 MODAL AMPLIAR ===== -->
-        <div class="modal-ampliar" id="modalAmpliar">
-            <div class="modal-ampliar-contenido">
-                <button class="btn-cerrar-instr" onclick="cerrarAmpliar()">✕</button>
-                <div class="titulo">➕ Ampliar Evento</div>
-                <div class="subtitulo">
-                    Sumá tiempo y descargas para tus invitados.<br>
-                    El costo se cobra al final del evento.
-                </div>
-
-                <div id="ampliarContenido">
-                    <div class="cargando-paq">Cargando paquetes...</div>
-                </div>
-
-                <button class="btn-cancelar" onclick="cerrarAmpliar()">Cerrar</button>
-            </div>
-        </div>
-
         <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
         <script src="config.js"></script>
 
@@ -1910,10 +1723,6 @@
 
             let urlQrGeneralActual = null;
 
-            // 🔥 Ampliar
-            let ampliarIntervalId = null;
-            let ampliarDatosCache = null;
-
             // ==========================================
             // 🌍 IDIOMA
             // ==========================================
@@ -1972,13 +1781,12 @@
                     bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
                     bloqueoReceso: "Estamos atendiendo a otros invitados.<br>Vuelve en un momento.",
                     bloqueoDespedida: "Has completado tus sesiones.<br>Gracias por ser parte.",
-                    bloqueoCountdown: (m, s) => `Vuelve en ${m}:${String(s).padStart(2,'0')}`,
+                    bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                     rolAdmin: "Administrador",
                     rolVip: "VIP",
                     rolInvitado: "Invitado",
                     textoInvitar: "Invitar",
                     textoQrGeneral: "QR General",
-                    textoAmpliar: "Ampliar",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
                     contadorVip: "⭐ VIP · Descargas ilimitadas",
@@ -2035,13 +1843,12 @@
                     bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
                     bloqueoReceso: "We're attending other guests.<br>Come back in a moment.",
                     bloqueoDespedida: "You've completed your sessions.<br>Thanks for being part of it.",
-                    bloqueoCountdown: (m, s) => `Come back in ${m}:${String(s).padStart(2,'0')}`,
+                    bloqueoCountdown: (m) => `Come back in ${m} min`,
                     rolAdmin: "Administrator",
                     rolVip: "VIP",
                     rolInvitado: "Guest",
                     textoInvitar: "Invite",
                     textoQrGeneral: "General QR",
-                    textoAmpliar: "Extend",
                     tipoVip: "VIP",
                     tipoAdmin: "Admin",
                     contadorVip: "⭐ VIP · Unlimited downloads",
@@ -2098,13 +1905,12 @@
                     bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
                     bloqueoReceso: "我们正在接待其他嘉宾。<br>请稍后再来。",
                     bloqueoDespedida: "你已完成所有会话。<br>感谢参与。",
-                    bloqueoCountdown: (m, s) => `${m}:${String(s).padStart(2,'0')} 后回来`,
+                    bloqueoCountdown: (m) => `${m} 分钟后回来`,
                     rolAdmin: "管理员",
                     rolVip: "VIP",
                     rolInvitado: "嘉宾",
                     textoInvitar: "邀请",
                     textoQrGeneral: "现场二维码",
-                    textoAmpliar: "延长",
                     tipoVip: "VIP",
                     tipoAdmin: "管理员",
                     contadorVip: "⭐ VIP · 无限下载",
@@ -2174,9 +1980,6 @@
                 const elQr = document.getElementById('textoQrGeneral');
                 if (elQr) elQr.textContent = t('textoQrGeneral');
 
-                const elAmp = document.getElementById('textoAmpliar');
-                if (elAmp) elAmp.textContent = t('textoAmpliar');
-
                 document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}`;
                 document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
 
@@ -2242,26 +2045,31 @@
                 }
             }
 
+            // 🔥 FIX: mostrar minutos, sin segundos. Se actualiza cada 60s.
             function mostrarReceso(minutos) {
                 mostrarBloqueo('receso', t('bloqueoReceso'));
 
                 const el = document.getElementById('bloqueoCountdown');
                 el.style.display = 'block';
 
-                let restante = minutos * 60;
+                // 🔥 Calcular el timestamp real de fin
+                const finMs = Date.now() + minutos * 60 * 1000;
+
                 const actualizar = () => {
-                    if (restante <= 0) {
-                        el.textContent = '00:00';
+                    const restanteMs = finMs - Date.now();
+                    if (restanteMs <= 0) {
+                        el.textContent = '0 min';
                         if (countdownInterval) clearInterval(countdownInterval);
+                        countdownInterval = null;
                         return;
                     }
-                    const m = Math.floor(restante / 60);
-                    const s = restante % 60;
-                    el.textContent = t('bloqueoCountdown', m, s);
-                    restante--;
+                    const m = Math.ceil(restanteMs / 60000);
+                    el.textContent = t('bloqueoCountdown', m);
                 };
+
                 actualizar();
-                countdownInterval = setInterval(actualizar, 1000);
+                // 🔥 Actualizar cada 60 segundos (no cada segundo)
+                countdownInterval = setInterval(actualizar, 60000);
             }
 
             function mostrarDespedida() {
@@ -2391,7 +2199,6 @@
                 const rolNombre = document.getElementById('rolNombre');
                 const btnInvitar = document.getElementById('btnInvitar');
                 const btnQrGeneral = document.getElementById('btnQrGeneral');
-                const btnAmpliar = document.getElementById('btnAmpliar');
 
                 barraRol.style.display = 'flex';
 
@@ -2400,19 +2207,16 @@
                     rolNombre.textContent = sesion.nombre || t('rolAdmin');
                     btnInvitar.style.display = 'inline-flex';
                     btnQrGeneral.style.display = 'inline-flex';
-                    btnAmpliar.style.display = 'inline-flex';
                 } else if (sesion.tipo === 'vip') {
                     rolEmoji.textContent = '⭐';
                     rolNombre.textContent = sesion.nombre || t('rolVip');
                     btnInvitar.style.display = 'none';
                     btnQrGeneral.style.display = 'none';
-                    btnAmpliar.style.display = 'none';
                 } else {
                     rolEmoji.textContent = '🎟️';
                     rolNombre.textContent = sesion.nombre || t('rolInvitado');
                     btnInvitar.style.display = 'none';
                     btnQrGeneral.style.display = 'none';
-                    btnAmpliar.style.display = 'none';
                 }
 
                 actualizarContadorSesion();
@@ -3252,201 +3056,6 @@
             }
 
             // ==========================================
-            // 🔥 AMPLIAR (solo Admin)
-            // ==========================================
-            async function abrirAmpliar() {
-                const modal = document.getElementById('modalAmpliar');
-                const cont = document.getElementById('ampliarContenido');
-
-                cont.innerHTML = '<div class="cargando-paq">Cargando paquetes...</div>';
-                modal.classList.add('activo');
-
-                if (ampliarIntervalId) {
-                    clearInterval(ampliarIntervalId);
-                    ampliarIntervalId = null;
-                }
-
-                await refrescarContenidoAmpliar();
-
-                // 🔥 Refrescar el tiempo cada 30s mientras el modal esté abierto
-                ampliarIntervalId = setInterval(async () => {
-                    if (!modal.classList.contains('activo')) {
-                        clearInterval(ampliarIntervalId);
-                        ampliarIntervalId = null;
-                        return;
-                    }
-                    await refrescarContenidoAmpliar();
-                }, 30000);
-            }
-
-            async function refrescarContenidoAmpliar() {
-                const cont = document.getElementById('ampliarContenido');
-
-                try {
-                    const url = `${URL_CLOUDFLARE}/evento/paquetes?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}`;
-                    const resp = await fetch(url);
-                    const data = await resp.json();
-
-                    if (!resp.ok || !data.ok) {
-                        cont.innerHTML = '<div class="cargando-paq" style="color:#e74c3c;">No se pudieron cargar los paquetes.</div>';
-                        return;
-                    }
-
-                    ampliarDatosCache = data;
-                    renderizarContenidoAmpliar(data);
-
-                } catch (e) {
-                    console.error('Error cargando paquetes:', e);
-                    cont.innerHTML = '<div class="cargando-paq" style="color:#e74c3c;">Error de conexión.</div>';
-                }
-            }
-
-            function renderizarContenidoAmpliar(data) {
-                const cont = document.getElementById('ampliarContenido');
-                const paquetes = data.paquetes || {};
-                const extAplicadas = data.extensionesAplicadas || 0;
-                const maxExt = paquetes.maxPorEvento || 3;
-                const totalAcum = data.totalAcumulado || 0;
-                const tiempo = data.tiempo || null;
-
-                // Info de extensiones
-                let html = `
-                    <div class="info-extensiones">
-                        Extensiones aplicadas: <strong>${extAplicadas} / ${maxExt}</strong>
-                        ${totalAcum > 0 ? `<br>Total acumulado: <strong>Bs. ${totalAcum}</strong>` : ''}
-                        ${extAplicadas >= maxExt ? `<br><span class="limite">Límite alcanzado</span>` : ''}
-                    </div>
-                `;
-
-                // Aviso de tiempo
-                if (tiempo) {
-                    if (tiempo.yaTermino) {
-                        html += `
-                            <div class="aviso-tiempo-modal cerrado">
-                                ⏰ El tiempo programado ya se agotó.<br>
-                                Contactá al fotógrafo para coordinar.
-                            </div>
-                        `;
-                    } else if (!tiempo.puedeAmpliar) {
-                        html += `
-                            <div class="aviso-tiempo-modal cerrado">
-                                ⚠️ Las ampliaciones se cierran <strong>${paquetes.ventanaCierreMin || 15} min antes</strong> del final.<br>
-                                Faltan <strong>${tiempo.tiempoRestanteMin} min</strong> · Contactá al fotógrafo.
-                            </div>
-                        `;
-                    } else if (tiempo.tiempoRestanteMin <= 30) {
-                        html += `
-                            <div class="aviso-tiempo-modal urgente">
-                                ⏰ Faltan <strong>${tiempo.tiempoRestanteMin} min</strong> para el final.<br>
-                                Ampliá ahora para asegurar más tiempo.
-                            </div>
-                        `;
-                    } else {
-                        html += `
-                            <div class="aviso-tiempo-modal">
-                                ⏱️ Tiempo restante: <strong>${tiempo.tiempoRestanteMin} min</strong>
-                                · Fin aprox: <strong>${tiempo.horaFinFormateada}</strong>
-                            </div>
-                        `;
-                    }
-                }
-
-                // Botones de paquetes
-                const deshabilitado = extAplicadas >= maxExt || (tiempo && !tiempo.puedeAmpliar);
-
-                if (paquetes.estandar) {
-                    const p = paquetes.estandar;
-                    html += `
-                        <button class="paquete-btn" onclick="aplicarAmpliacion('estandar')" ${deshabilitado ? 'disabled' : ''}>
-                            <span class="emoji">⚡</span>
-                            <div class="info-paq">
-                                <div class="nombre-paq">${escapeHtml(p.nombre || 'Estándar')}</div>
-                                <div class="detalle-paq">
-                                    +${p.minutosExtra} min · +${p.descargasExtra} descargas por invitado
-                                </div>
-                            </div>
-                            <div class="precio-paq">Bs. ${p.precio}</div>
-                        </button>
-                    `;
-                }
-
-                if (paquetes.premium) {
-                    const p = paquetes.premium;
-                    html += `
-                        <button class="paquete-btn" onclick="aplicarAmpliacion('premium')" ${deshabilitado ? 'disabled' : ''}>
-                            <span class="emoji">👑</span>
-                            <div class="info-paq">
-                                <div class="nombre-paq">${escapeHtml(p.nombre || 'Premium')}</div>
-                                <div class="detalle-paq">
-                                    +${p.minutosExtra} min · +${p.descargasExtra} descargas por invitado
-                                </div>
-                            </div>
-                            <div class="precio-paq">Bs. ${p.precio}</div>
-                        </button>
-                    `;
-                }
-
-                if (deshabilitado) {
-                    html += `
-                        <div style="text-align:center; font-size:0.7rem; color:#888; margin-top:8px;">
-                            ${extAplicadas >= maxExt ? 'Se alcanzó el límite de ampliaciones.' : 'Contactá al fotógrafo para coordinar.'}
-                        </div>
-                    `;
-                }
-
-                cont.innerHTML = html;
-            }
-
-            async function aplicarAmpliacion(tipoPaquete) {
-                const datos = ampliarDatosCache;
-                if (!datos || !datos.paquetes || !datos.paquetes[tipoPaquete]) return;
-
-                const paquete = datos.paquetes[tipoPaquete];
-                const mensaje = `¿Activar el paquete ${paquete.nombre}?\n\n` +
-                    `+${paquete.minutosExtra} min · +${paquete.descargasExtra} descargas por invitado\n\n` +
-                    `Costo: Bs. ${paquete.precio}\n\n` +
-                    `Aceptás pagar este monto al fotógrafo al final del evento.`;
-
-                if (!confirm(mensaje)) return;
-
-                try {
-                    const url = `${URL_CLOUDFLARE}/ampliar?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`;
-                    const resp = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paquete: tipoPaquete })
-                    });
-
-                    const data = await resp.json();
-
-                    if (!resp.ok || !data.ok) {
-                        alert('Error: ' + (data.error || 'No se pudo aplicar la ampliación'));
-                        return;
-                    }
-
-                    alert(`✅ Ampliación aplicada\n\n` +
-                        `Se resetearon ${data.reseteados} invitados generales.\n` +
-                        `Ahora tienen ${data.pool.descargasPorSesion} descargas por sesión.`);
-
-                    // Refrescar modal
-                    await refrescarContenidoAmpliar();
-
-                } catch (e) {
-                    console.error('Error ampliando:', e);
-                    alert('Error de conexión al aplicar la ampliación.');
-                }
-            }
-
-            function cerrarAmpliar() {
-                document.getElementById('modalAmpliar').classList.remove('activo');
-
-                if (ampliarIntervalId) {
-                    clearInterval(ampliarIntervalId);
-                    ampliarIntervalId = null;
-                }
-            }
-
-            // ==========================================
             // 🛡️ UTILIDADES
             // ==========================================
             function escapeHtml(str) {
@@ -3495,11 +3104,9 @@
                 const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
                 const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
                 const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
-                const modalAmpliarActivo = document.getElementById('modalAmpliar').classList.contains('activo');
 
                 if (e.key === "Escape") {
-                    if (modalAmpliarActivo) cerrarAmpliar();
-                    else if (modalQrGeneralActivo) cerrarQrGeneral();
+                    if (modalQrGeneralActivo) cerrarQrGeneral();
                     else if (modalResultadoActivo) cerrarResultado();
                     else if (modalInvitarActivo) cerrarInvitar();
                     else if (modalInstrActivo) cerrarInstrucciones();
@@ -3507,7 +3114,7 @@
                     else cerrarLangMenu();
                 }
 
-                if (modalInstrActivo || modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalAmpliarActivo) return;
+                if (modalInstrActivo || modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -3531,10 +3138,6 @@
 
             document.getElementById('modalQrGeneral').addEventListener('click', (e) => {
                 if (e.target.id === 'modalQrGeneral') cerrarQrGeneral();
-            });
-
-            document.getElementById('modalAmpliar').addEventListener('click', (e) => {
-                if (e.target.id === 'modalAmpliar') cerrarAmpliar();
             });
 
             // ==========================================
