@@ -807,6 +807,7 @@
             border-radius: 50px;
         }
         .item-subida .estado.pendiente { background: rgba(255, 255, 255, 0.06); color: #888; }
+        .item-subida .estado.preparando { background: rgba(52, 152, 219, 0.15); color: #5dade2; }
         .item-subida .estado.subiendo { background: rgba(243, 156, 18, 0.15); color: var(--oro); }
         .item-subida .estado.ok { background: rgba(46, 204, 113, 0.15); color: var(--verde); }
         .item-subida .estado.error { background: rgba(231, 76, 60, 0.15); color: var(--rojo); }
@@ -1061,6 +1062,10 @@
         const REINTENTOS_SUBIDA = 3;
         const INTERVALO_REFRESH_MS = 30000;
 
+        // 🔥 Configuración de la preview
+        const PREVIEW_MAX_ANCHO = 900;
+        const PREVIEW_CALIDAD = 0.8;
+
         // 🔥 Umbral para avisar que el tiempo se está agotando
         const UMBRAL_AVISO_MIN = 15;
 
@@ -1110,7 +1115,6 @@
             return `${d}/${m}/${y}`;
         }
 
-        // 🔥 FIX: forzar formato 24h
         function formatearHora(fechaISO) {
             if (!fechaISO) return '';
             const d = new Date(fechaISO);
@@ -1326,7 +1330,7 @@
             metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
             metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
-            // 🔥 Aviso de tiempo
+            // Aviso de tiempo
             let avisoTiempoHtml = '';
             if (tiempoEvento) {
                 if (tiempoEvento.yaTermino) {
@@ -1361,7 +1365,7 @@
                 }
             }
 
-            // 🔥 Contadores del pool
+            // Contadores del pool
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
@@ -1554,7 +1558,6 @@
             cont.innerHTML = html;
         }
 
-        // 🔥 MODO LIBRE: siempre visible, con aviso si hay evento activo
         function renderModoLibre(activo) {
             const cont = $('seccionVacio');
 
@@ -1884,6 +1887,7 @@
             colaSubidas.forEach(s => {
                 const estados = {
                     pendiente: ['En espera', 'pendiente'],
+                    preparando: ['Preparando preview...', 'preparando'],
                     subiendo: ['Subiendo...', 'subiendo'],
                     ok: ['✓ Subida', 'ok'],
                     error: ['✗ Error', 'error']
@@ -1941,15 +1945,63 @@
             }
         }
 
-        async function subirUnaFoto(subida) {
-            const { archivo } = subida;
+        // 🔥 NUEVO: genera la preview 900px con canvas
+        async function generarPreview(archivo) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            let ancho = img.width;
+                            let alto = img.height;
 
+                            // Si es más ancha que el máximo, escalar
+                            if (ancho > PREVIEW_MAX_ANCHO) {
+                                alto = Math.round(alto * (PREVIEW_MAX_ANCHO / ancho));
+                                ancho = PREVIEW_MAX_ANCHO;
+                            }
+
+                            canvas.width = ancho;
+                            canvas.height = alto;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, ancho, alto);
+
+                            canvas.toBlob(
+                                (blob) => {
+                                    if (!blob) {
+                                        reject(new Error('No se pudo generar el preview'));
+                                        return;
+                                    }
+                                    resolve(blob);
+                                },
+                                'image/jpeg',
+                                PREVIEW_CALIDAD
+                            );
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
+                    img.onerror = () => reject(new Error('Error cargando la imagen'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('Error leyendo el archivo'));
+                reader.readAsDataURL(archivo);
+            });
+        }
+
+        // 🔥 Sube un archivo a B2 con URL firmada
+        async function subirArchivoAB2(archivo, nombreOriginal, tipo) {
+            // 1) Pedir URL firmada al server
             const dataPedido = await apiFetch('/subir_url', {
                 method: 'POST',
                 body: JSON.stringify({
                     f: nombreFotografoActual,
                     e: eventoActivo.id,
-                    nombreOriginal: archivo.name
+                    nombreOriginal: nombreOriginal,
+                    tipo: tipo   // 'original' | 'preview'
                 })
             });
 
@@ -1957,46 +2009,56 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            let ultimoError = null;
-            for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
-                try {
-                    const resp = await fetch(dataPedido.url, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'image/jpeg' },
-                        body: archivo
-                    });
+            // 2) Subir el archivo directo a B2
+            const resp = await fetch(dataPedido.url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'image/jpeg' },
+                body: archivo
+            });
 
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                    let confirmado = false;
-                    for (let c = 0; c < 2 && !confirmado; c++) {
-                        try {
-                            await apiFetch('/confirmar_subida', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                    f: nombreFotografoActual,
-                                    e: eventoActivo.id,
-                                    key: dataPedido.key
-                                })
-                            });
-                            confirmado = true;
-                        } catch (e) {
-                            console.warn(`Confirmación intento ${c + 1} falló:`, e.message);
-                            if (c < 1) await new Promise(r => setTimeout(r, 1000));
-                        }
-                    }
+            return dataPedido.key;
+        }
 
-                    return;
+        // 🔥 Sube una foto completa: original + preview + confirmación
+        async function subirUnaFoto(subida) {
+            const { archivo } = subida;
 
-                } catch (e) {
-                    ultimoError = e;
-                    if (intento < REINTENTOS_SUBIDA) {
-                        await new Promise(r => setTimeout(r, 1000 * intento));
-                    }
-                }
-            }
+            // 1) Preparar el preview
+            subida.estado = 'preparando';
+            renderizarListaSubidas();
 
-            throw new Error(ultimoError ? ultimoError.message : 'Error desconocido');
+            const previewBlob = await generarPreview(archivo);
+
+            // 2) Construir nombres
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8);
+            const baseNombre = `foto-${timestamp}-${random}`;
+            const nombreOriginal = `${baseNombre}.jpg`;
+            const nombrePreview = `${baseNombre}_web.jpg`;
+
+            // 3) Subir original con disposition: attachment
+            subida.estado = 'subiendo';
+            renderizarListaSubidas();
+
+            const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
+
+            // 4) Subir preview con disposition: inline
+            const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
+
+            // 5) Confirmar al server que ambas subieron
+            await apiFetch('/confirmar_subida', {
+                method: 'POST',
+                body: JSON.stringify({
+                    f: nombreFotografoActual,
+                    e: eventoActivo.id,
+                    keyOriginal: keyOriginal,
+                    keyPreview: keyPreview
+                })
+            });
+
+            return true;
         }
 
         // ==========================================
