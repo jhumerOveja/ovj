@@ -692,6 +692,10 @@
                 background: linear-gradient(135deg, #e67e22, #d35400);
                 box-shadow: 0 4px 25px rgba(230, 126, 34, 0.2);
             }
+            .btn-pedir.cargando-btn {
+                opacity: 0.6;
+                pointer-events: none;
+            }
             .btn-pedir .icono-whatsapp { font-size: 1.3rem; }
             .btn-cerrar-modal {
                 position: absolute;
@@ -712,156 +716,6 @@
                 z-index: 10;
             }
             .btn-cerrar-modal:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #fff;
-            }
-
-            /* ===== MODAL INSTRUCCIONES ===== */
-            .modal-instrucciones {
-                display: none;
-                position: fixed;
-                z-index: 1200;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                background: rgba(0, 0, 0, 0.9);
-                backdrop-filter: blur(12px);
-            }
-            .modal-instrucciones.activo { display: flex; }
-            .modal-instrucciones-contenido {
-                background: #141414;
-                border: 1px solid rgba(255, 215, 0, 0.2);
-                border-radius: 20px;
-                padding: 30px 24px 24px;
-                max-width: 420px;
-                width: 100%;
-                text-align: center;
-                animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-                position: relative;
-            }
-            .modal-instrucciones-contenido .emoji-grande {
-                font-size: 2rem;
-                margin-bottom: 10px;
-                display: block;
-            }
-            .modal-instrucciones-contenido .titulo {
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: #f1c40f;
-                margin-bottom: 6px;
-            }
-            .modal-instrucciones-contenido .subtitulo {
-                font-size: 0.8rem;
-                color: #aaa;
-                margin-bottom: 22px;
-                line-height: 1.5;
-                font-weight: 300;
-            }
-            .modal-instrucciones-contenido .paso {
-                display: flex;
-                align-items: center;
-                gap: 14px;
-                padding: 12px 14px;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                border-radius: 12px;
-                margin-bottom: 10px;
-                text-align: left;
-            }
-            .modal-instrucciones-contenido .paso-num {
-                flex-shrink: 0;
-                width: 26px;
-                height: 26px;
-                border-radius: 50%;
-                background: rgba(243, 156, 18, 0.15);
-                border: 1px solid rgba(243, 156, 18, 0.3);
-                color: #f39c12;
-                font-size: 0.75rem;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .modal-instrucciones-contenido .paso-texto {
-                font-size: 0.8rem;
-                color: #ccc;
-                line-height: 1.45;
-            }
-            .modal-instrucciones-contenido .paso-texto strong {
-                color: #f1c40f;
-                font-weight: 600;
-            }
-            .anim-mano {
-                display: inline-block;
-                font-size: 1.4rem;
-                animation: tapGesture 1.6s ease-in-out infinite;
-                vertical-align: middle;
-                margin-left: 2px;
-            }
-            @keyframes tapGesture {
-                0%, 100% { transform: translateY(0) scale(1); }
-                40% { transform: translateY(-4px) scale(1.05); }
-                60% { transform: translateY(0) scale(0.95); }
-            }
-            .modal-instrucciones-contenido .aviso-tiempo {
-                font-size: 0.7rem;
-                color: #666;
-                margin-top: 16px;
-                line-height: 1.5;
-                font-style: italic;
-                padding-top: 14px;
-                border-top: 1px solid rgba(255, 255, 255, 0.04);
-            }
-            .barra-progreso-wrapper {
-                margin-top: 18px;
-                width: 100%;
-            }
-            .barra-progreso-fondo {
-                width: 100%;
-                height: 6px;
-                background: rgba(255, 255, 255, 0.06);
-                border-radius: 50px;
-                overflow: hidden;
-                margin-bottom: 8px;
-            }
-            .barra-progreso-relleno {
-                height: 100%;
-                background: linear-gradient(90deg, #f39c12, #f1c40f);
-                width: 0%;
-                transition: width 0.3s linear;
-                border-radius: 50px;
-                box-shadow: 0 0 12px rgba(243, 156, 18, 0.4);
-            }
-            .barra-progreso-texto {
-                font-size: 0.7rem;
-                color: #888;
-                font-weight: 400;
-            }
-            .barra-progreso-texto strong {
-                color: #f39c12;
-                font-weight: 600;
-            }
-            .btn-cerrar-instr {
-                position: absolute;
-                top: 12px;
-                right: 14px;
-                background: rgba(255, 255, 255, 0.04);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                color: #888;
-                font-size: 1.2rem;
-                cursor: pointer;
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10;
-            }
-            .btn-cerrar-instr:hover {
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
             }
@@ -1489,54 +1343,6 @@
             </div>
         </div>
 
-        <!-- ===== MODAL INSTRUCCIONES ===== -->
-        <div class="modal-instrucciones" id="modalInstrucciones">
-            <div class="modal-instrucciones-contenido">
-                <button class="btn-cerrar-instr" onclick="cerrarInstrucciones()">✕</button>
-
-                <span class="emoji-grande" id="instrEmoji">📥</span>
-                <div class="titulo" id="instrTitulo">Tu foto se está abriendo</div>
-                <div class="subtitulo" id="instrSubtitulo">
-                    Para guardarla en tu dispositivo, sigue estos pasos:
-                </div>
-
-                <div class="paso">
-                    <div class="paso-num">1</div>
-                    <div class="paso-texto" id="instrPaso1">
-                        Ve a la pestaña nueva donde se abrió tu foto.
-                    </div>
-                </div>
-
-                <div class="paso">
-                    <div class="paso-num">2</div>
-                    <div class="paso-texto" id="instrPaso2">
-                        <span id="instrPaso2Texto">Mantén presionada la imagen</span>
-                        <span class="anim-mano">👆</span>
-                    </div>
-                </div>
-
-                <div class="paso">
-                    <div class="paso-num">3</div>
-                    <div class="paso-texto" id="instrPaso3">
-                        Elige <strong>Guardar imagen</strong> en el menú.
-                    </div>
-                </div>
-
-                <div class="aviso-tiempo" id="instrAviso">
-                    La foto puede tardar unos segundos en cargar por completo según tu conexión.
-                </div>
-
-                <div class="barra-progreso-wrapper">
-                    <div class="barra-progreso-fondo">
-                        <div class="barra-progreso-relleno" id="barraProgreso"></div>
-                    </div>
-                    <div class="barra-progreso-texto" id="barraTexto">
-                        Abriendo descarga en <strong>12</strong>s...
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- ===== MODAL INVITAR ===== -->
         <div class="modal-invitar" id="modalInvitar">
             <div class="modal-invitar-contenido">
@@ -1665,8 +1471,6 @@
             const CODIGO_PAIS_DEFECTO = "591";
 
             const FOTOS_POR_CARGA = 6;
-            const MODO_DESCARGAS = true;
-            const DURACION_INSTRUCCIONES = 12;
             const INTERVALO_AVISOS = 45;
 
             // ==========================================
@@ -1708,10 +1512,6 @@
             let servidorOnline = true;
             let tituloEsDefault = true;
 
-            let instrIntervalId = null;
-            let instrSegundosRestantes = 0;
-            let instrUrlPendiente = null;
-
             let avisoTimeoutId = null;
             let avisoOcultoTimeoutId = null;
             let indiceAviso = 0;
@@ -1726,11 +1526,6 @@
             // ==========================================
             // 🌍 IDIOMA
             // ==========================================
-            function esDispositivoMovil() {
-                return /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i
-                    .test(navigator.userAgent);
-            }
-
             const TRADUCCIONES = {
                 es: {
                     tituloVentana: "OVJ Studio - Galería en Vivo",
@@ -1759,15 +1554,6 @@
                     pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
                     pubBoton: 'Agenda tu evento',
                     waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
-                    instrTitulo: "Tu foto se está abriendo",
-                    instrSubtitulo: "Para guardarla en tu dispositivo:",
-                    instrPaso1: "Ve a la pestaña nueva donde se abrió tu foto.",
-                    instrPaso2Movil: "Mantén presionada la imagen",
-                    instrPaso2PC: "Haz clic derecho sobre la imagen",
-                    instrPaso3Movil: 'Elige <strong>Guardar imagen</strong> en el menú.',
-                    instrPaso3PC: 'Elige <strong>Guardar imagen como...</strong>',
-                    instrAviso: "La foto puede tardar unos segundos en cargar por completo según tu conexión.",
-                    barraAbriendo: (s) => `Abriendo descarga en <strong>${s}</strong>s...`,
                     avisos: [
                         'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
                         'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -1821,15 +1607,6 @@
                     pubTexto: 'Want your own <strong>live gallery</strong> for your event?',
                     pubBoton: 'Book your event',
                     waPublicidad: "Hi, I'm interested in a live gallery for my event.",
-                    instrTitulo: "Your photo is opening",
-                    instrSubtitulo: "To save it on your device:",
-                    instrPaso1: "Go to the new tab where your photo opened.",
-                    instrPaso2Movil: "Press and hold the image",
-                    instrPaso2PC: "Right-click on the image",
-                    instrPaso3Movil: 'Choose <strong>Save image</strong> in the menu.',
-                    instrPaso3PC: 'Choose <strong>Save image as...</strong>',
-                    instrAviso: "The photo may take a few seconds to fully load depending on your connection.",
-                    barraAbriendo: (s) => `Opening download in <strong>${s}</strong>s...`,
                     avisos: [
                         'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
                         'OVJ Studio · <strong>Photographing with heart</strong>',
@@ -1883,15 +1660,6 @@
                     pubTexto: '想要自己的 <strong>现场画廊</strong> 吗？',
                     pubBoton: '预订活动',
                     waPublicidad: "你好，我对现场画廊感兴趣。",
-                    instrTitulo: "你的照片正在打开",
-                    instrSubtitulo: "要保存到你的设备：",
-                    instrPaso1: "前往打开照片的新标签页。",
-                    instrPaso2Movil: "长按图片",
-                    instrPaso2PC: "在图片上点右键",
-                    instrPaso3Movil: '在菜单中选择 <strong>保存图片</strong>。',
-                    instrPaso3PC: '选择 <strong>图片另存为...</strong>',
-                    instrAviso: "根据你的网络情况，照片可能需要几秒钟才能完全加载。",
-                    barraAbriendo: (s) => `${s} 秒后打开下载...`,
                     avisos: [
                         '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
                         'OVJ Studio · <strong>用心拍摄</strong>',
@@ -1960,17 +1728,6 @@
 
                 document.getElementById('pubTexto').innerHTML = t('pubTexto');
                 document.getElementById('pubBotonTexto').textContent = t('pubBoton');
-
-                document.getElementById('instrTitulo').textContent = t('instrTitulo');
-                document.getElementById('instrSubtitulo').textContent = t('instrSubtitulo');
-                document.getElementById('instrPaso1').textContent = t('instrPaso1');
-                document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
-                    ? t('instrPaso2Movil')
-                    : t('instrPaso2PC');
-                document.getElementById('instrPaso3').innerHTML = esDispositivoMovil()
-                    ? t('instrPaso3Movil')
-                    : t('instrPaso3PC');
-                document.getElementById('instrAviso').textContent = t('instrAviso');
 
                 document.getElementById('bloqueoTitulo').textContent = t('bloqueoTitulo');
                 document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoMensaje');
@@ -2045,14 +1802,13 @@
                 }
             }
 
-            // 🔥 FIX: mostrar minutos, sin segundos. Se actualiza cada 60s.
+            // 🔥 Receso: solo minutos, actualizado cada 60s
             function mostrarReceso(minutos) {
                 mostrarBloqueo('receso', t('bloqueoReceso'));
 
                 const el = document.getElementById('bloqueoCountdown');
                 el.style.display = 'block';
 
-                // 🔥 Calcular el timestamp real de fin
                 const finMs = Date.now() + minutos * 60 * 1000;
 
                 const actualizar = () => {
@@ -2068,7 +1824,6 @@
                 };
 
                 actualizar();
-                // 🔥 Actualizar cada 60 segundos (no cada segundo)
                 countdownInterval = setInterval(actualizar, 60000);
             }
 
@@ -2107,7 +1862,6 @@
 
                 const tokenGuardado = localStorage.getItem('ovj_token');
                 if (tokenGuardado && tokenGuardado !== TOKEN) {
-                    console.warn('[OVJ] Token viejo en localStorage. Limpiando.');
                     localStorage.removeItem('ovj_token');
                     localStorage.removeItem('ovj_tipo');
                     localStorage.removeItem('ovj_rol_nombre');
@@ -2424,7 +2178,8 @@
 
                 for (let i = 0; i < visibles; i++) {
                     const foto = fotosCache[i];
-                    const urlImagen = `${URL_CLOUDFLARE}${foto.url}`;
+                    // 🔥 La URL ya viene completa del Worker
+                    const urlImagen = foto.url;
 
                     html += `
                     <div class="foto" onclick="abrirModal('${foto.nombre}')">
@@ -2527,13 +2282,11 @@
             function abrirModal(nombreFoto) {
                 const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
                 if (index < 0) {
-                    console.warn('[abrirModal] foto no encontrada:', nombreFoto);
                     return;
                 }
 
                 const foto = fotosCache[index];
                 if (!foto || !foto.nombre || !foto.url) {
-                    console.warn('[abrirModal] foto inválida:', foto);
                     return;
                 }
 
@@ -2543,7 +2296,7 @@
                 const fondo = document.getElementById("modalFondo");
                 const modalImagen = document.getElementById("modalImagen");
 
-                modalImagen.src = `${URL_CLOUDFLARE}${foto.url}`;
+                modalImagen.src = foto.url;
                 modalImagen.alt = `Foto ${index + 1}`;
 
                 modal.classList.add("activo");
@@ -2573,7 +2326,7 @@
                 fotoSeleccionadaIndex = nuevoIndex;
                 const foto = fotosCache[nuevoIndex];
 
-                document.getElementById("modalImagen").src = `${URL_CLOUDFLARE}${foto.url}`;
+                document.getElementById("modalImagen").src = foto.url;
                 document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
                 actualizarFlechas();
@@ -2635,8 +2388,6 @@
                 btn.classList.add('cargando-btn');
                 texto.textContent = t('descargando');
 
-                let urlExterna = null;
-
                 try {
                     const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                                 `&foto=${encodeURIComponent(foto.nombre)}` +
@@ -2659,13 +2410,6 @@
                             btn.classList.remove('cargando-btn');
                             texto.textContent = textoOriginal;
                             mostrarBloqueo('error', 'Este evento ya no está activo.<br>Vuelve a escanear el QR del evento actual.');
-                            return;
-                        }
-
-                        if (data.error && data.error.startsWith('Tipo de pase')) {
-                            btn.classList.remove('cargando-btn');
-                            texto.textContent = textoOriginal;
-                            alert('Tu pase tiene un problema. Contacta al fotógrafo.');
                             return;
                         }
 
@@ -2696,8 +2440,17 @@
 
                     if (!data.url) throw new Error('Sin URL');
 
-                    urlExterna = data.url;
+                    // 🔥 Descarga directa con <a download>
+                    // La URL viene del Worker y B2 ya manda el Content-Disposition: attachment
+                    const a = document.createElement('a');
+                    a.href = data.url;
+                    a.download = foto.nombre.replace('_web.jpg', '.jpg');
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
 
+                    // Actualizar contador si es general
                     if (data.tipo === 'general' && sesionGeneral) {
                         sesionGeneral.descargasSesion = data.descargasSesion || sesionGeneral.descargasSesion;
                         sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
@@ -2708,87 +2461,14 @@
                 } catch (error) {
                     console.error('Error al descargar:', error);
                     alert(t('alertErrorDescarga'));
+                } finally {
                     btn.classList.remove('cargando-btn');
                     texto.textContent = textoOriginal;
-                    return;
-                }
-
-                btn.classList.remove('cargando-btn');
-                texto.textContent = textoOriginal;
-
-                abrirInstrucciones(urlExterna);
-            }
-
-            function abrirInstrucciones(urlExterna) {
-                const modal = document.getElementById('modalInstrucciones');
-                const barra = document.getElementById('barraProgreso');
-                const barraTexto = document.getElementById('barraTexto');
-
-                document.getElementById('instrPaso2Texto').textContent = esDispositivoMovil()
-                    ? t('instrPaso2Movil')
-                    : t('instrPaso2PC');
-
-                document.getElementById('instrPaso3').innerHTML = esDispositivoMovil()
-                    ? t('instrPaso3Movil')
-                    : t('instrPaso3PC');
-
-                document.getElementById('instrEmoji').textContent = esDispositivoMovil() ? '📱' : '💻';
-
-                instrUrlPendiente = urlExterna;
-
-                barra.style.width = '0%';
-                instrSegundosRestantes = DURACION_INSTRUCCIONES;
-                barraTexto.innerHTML = t('barraAbriendo', instrSegundosRestantes);
-
-                modal.classList.add('activo');
-
-                if (instrIntervalId) clearInterval(instrIntervalId);
-
-                const inicio = Date.now();
-                const duracionTotalMs = DURACION_INSTRUCCIONES * 1000;
-
-                instrIntervalId = setInterval(() => {
-                    const transcurrido = Date.now() - inicio;
-                    const progreso = Math.min(100, (transcurrido / duracionTotalMs) * 100);
-                    barra.style.width = progreso + '%';
-
-                    const segundosRestantes = Math.max(0, Math.ceil((duracionTotalMs - transcurrido) / 1000));
-
-                    if (segundosRestantes !== instrSegundosRestantes) {
-                        instrSegundosRestantes = segundosRestantes;
-                        barraTexto.innerHTML = t('barraAbriendo', instrSegundosRestantes);
-                    }
-
-                    if (transcurrido >= duracionTotalMs) {
-                        clearInterval(instrIntervalId);
-                        instrIntervalId = null;
-
-                        if (instrUrlPendiente) {
-                            window.open(instrUrlPendiente, "_blank");
-                            instrUrlPendiente = null;
-                        }
-
-                        setTimeout(() => cerrarInstrucciones(), 500);
-                    }
-                }, 100);
-            }
-
-            function cerrarInstrucciones() {
-                document.getElementById('modalInstrucciones').classList.remove('activo');
-
-                if (instrIntervalId) {
-                    clearInterval(instrIntervalId);
-                    instrIntervalId = null;
-                }
-
-                if (instrUrlPendiente) {
-                    window.open(instrUrlPendiente, "_blank");
-                    instrUrlPendiente = null;
                 }
             }
 
             // ==========================================
-            // ✨ INVITAR (solo VIP y Admin)
+            // ✨ INVITAR
             // ==========================================
             function abrirInvitar() {
                 document.getElementById('modalInvitar').classList.add('activo');
@@ -3100,7 +2780,6 @@
             // 🎧 EVENTOS
             // ==========================================
             document.addEventListener("keydown", (e) => {
-                const modalInstrActivo = document.getElementById('modalInstrucciones').classList.contains('activo');
                 const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
                 const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
                 const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
@@ -3109,12 +2788,11 @@
                     if (modalQrGeneralActivo) cerrarQrGeneral();
                     else if (modalResultadoActivo) cerrarResultado();
                     else if (modalInvitarActivo) cerrarInvitar();
-                    else if (modalInstrActivo) cerrarInstrucciones();
                     else if (document.getElementById("modal").classList.contains("activo")) cerrarModal();
                     else cerrarLangMenu();
                 }
 
-                if (modalInstrActivo || modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo) return;
+                if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo) return;
 
                 if (e.key === "ArrowLeft") navegarFoto(-1);
                 if (e.key === "ArrowRight") navegarFoto(1);
@@ -3122,10 +2800,6 @@
 
             document.getElementById("modalFondo").addEventListener("click", (e) => {
                 if (e.target === e.currentTarget) cerrarModal();
-            });
-
-            document.getElementById('modalInstrucciones').addEventListener('click', (e) => {
-                if (e.target.id === 'modalInstrucciones') cerrarInstrucciones();
             });
 
             document.getElementById('modalInvitar').addEventListener('click', (e) => {
@@ -3153,7 +2827,6 @@
                     const tokenNuevo = params.token;
 
                     if (eventoIdNuevo !== eventoIdOriginal || tokenNuevo !== tokenOriginal) {
-                        console.warn('[OVJ] Cambió el evento o token en la URL. Recargando...');
                         window.location.reload();
                     }
                 }
