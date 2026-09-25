@@ -2443,7 +2443,7 @@
                     // 🔥 Descarga directa con <a download>
                     // La URL viene del Worker y B2 ya manda el Content-Disposition: attachment
                     const a = document.createElement('a');
-                    a.href = data.url;
+                    a.href = data.url + '?dl=1';
                     a.download = foto.nombre.replace('_web.jpg', '.jpg');
                     a.style.display = 'none';
                     document.body.appendChild(a);
