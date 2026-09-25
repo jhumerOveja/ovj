@@ -1241,7 +1241,7 @@
         <div class="loader-spinner"></div>
     </div>
     <div class="toast" id="toast"></div>
-
+    <script src="qrcode.min.js"></script>
     <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
     <script src="config.js"></script>
 
@@ -1869,8 +1869,24 @@
 
                 $('urlLinkAdmin').textContent = data.urlAdmin;
 
-                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
-                $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+                try {
+                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    qr.addData(data.urlAdmin);
+                    qr.make();
+
+                    const contenedor = $('qrLinkAdmin');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
 
                 $('linkAdminSubtitulo').innerHTML = data.reclamada
                     ? '⚠️ Este link ya fue usado en otro dispositivo. Si el cliente necesita acceso desde otro, usá "Regenerar link del cliente".'
@@ -1914,8 +1930,24 @@
 
                 $('urlLinkAdmin').textContent = data.urlAdmin;
 
-                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
-                $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+                try {
+                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    qr.addData(data.urlAdmin);
+                    qr.make();
+
+                    const contenedor = $('qrLinkAdmin');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
 
                 toast('✅ Link del cliente regenerado', 'ok');
             } catch (e) {
@@ -1946,8 +1978,24 @@
 
                 $('urlTokenGeneral').textContent = urlGeneral;
 
-                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(urlGeneral);
-                $('qrTokenGeneral').innerHTML = `<img src="${qrUrl}" alt="QR Token General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+                try {
+                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    qr.addData(urlGeneral);
+                    qr.make();
+
+                    const contenedor = $('qrTokenGeneral');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR Token General';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrTokenGeneral').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
 
                 $('modalTokenGeneral').classList.add('activo');
 
@@ -1979,8 +2027,27 @@
 
         function abrirQRGrande() {
             if (!urlTokenGeneralActual) return;
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlTokenGeneralActual);
-            window.open(qrUrl, '_blank');
+
+            try {
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(urlTokenGeneralActual);
+                qr.make();
+
+                const imgTag = qr.createImgTag(10, 20);
+
+                const w = window.open('', '_blank');
+                w.document.write(`<html><head><title>QR</title></head><body style="background:#fff;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;">${imgTag}</body></html>`);
+                w.document.close();
+
+                const img = w.document.querySelector('img');
+                if (img) {
+                    img.style.width = '600px';
+                    img.style.height = '600px';
+                }
+            } catch (error) {
+                console.error('Error generando QR grande:', error);
+                alert('No se pudo generar el QR.');
+            }
         }
 
         // ==========================================
