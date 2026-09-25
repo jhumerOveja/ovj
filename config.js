@@ -17,7 +17,7 @@
 
 window.OVJ_CONFIG = {
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://original-electronics-ted-shared.trycloudflare.com',
+    urlTunel: 'https://subscriber-skirt-casinos-acdbentity.trycloudflare.com',
 
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
