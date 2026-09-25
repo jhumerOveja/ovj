@@ -1870,7 +1870,7 @@
                 $('urlLinkAdmin').textContent = data.urlAdmin;
 
                 try {
-                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    const qr = window.qrcode(0, 'M');
                     qr.addData(data.urlAdmin);
                     qr.make();
 
@@ -1931,7 +1931,7 @@
                 $('urlLinkAdmin').textContent = data.urlAdmin;
 
                 try {
-                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    const qr = window.qrcode(0, 'M');
                     qr.addData(data.urlAdmin);
                     qr.make();
 
@@ -1979,7 +1979,7 @@
                 $('urlTokenGeneral').textContent = urlGeneral;
 
                 try {
-                    const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                    const qr = window.qrcode(0, 'M');
                     qr.addData(urlGeneral);
                     qr.make();
 
@@ -2029,7 +2029,7 @@
             if (!urlTokenGeneralActual) return;
 
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(urlTokenGeneralActual);
                 qr.make();
 
