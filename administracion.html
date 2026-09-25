@@ -1999,7 +1999,7 @@
     `);
 
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(urlGeneral);
                 qr.make();
 
@@ -2030,7 +2030,7 @@
 
         function descargarQR(url) {
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(url);
                 qr.make();
 
