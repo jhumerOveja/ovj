@@ -2466,10 +2466,22 @@
                     segundos = window._ultimoPoll.intervaloBaseSeg;
                 }
 
+                // 🔥 Jitter adicional del cliente (±15%) para desincronizar polls
+                // entre invitados. Se aplica DESPUÉS del primer poll.
+                if (window._primerPollHecho) {
+                    const variacion = segundos * 0.15;
+                    segundos = segundos + (Math.random() * variacion * 2) - variacion;
+                } else {
+                    window._primerPollHecho = true;
+                }
+
                 // Si la pestaña está oculta, multiplicar el intervalo x3 (ahorra peticiones)
                 if (document.hidden) {
                     segundos = segundos * 3;
                 }
+
+                // Piso mínimo: 30 segundos
+                if (segundos < 30) segundos = 30;
 
                 clearTimeout(window._pollTimer);
                 window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
@@ -3328,12 +3340,9 @@
                 }
             })();
 
-            // 🔥 Primer poll con jitter aleatorio (0-30s) para distribuir la carga inicial
-            const jitterInicial = Math.floor(Math.random() * 30000);
-            setTimeout(() => {
-                cargarFotos();
-                iniciarAvisosIntermitentes();
-            }, jitterInicial);
+            // 🔥 Primer poll INMEDIATO (sin jitter) para que el invitado vea fotos al instante
+            cargarFotos();
+            iniciarAvisosIntermitentes();
         }
 
         inicializar();
