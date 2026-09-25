@@ -2574,6 +2574,19 @@
             }, 100);
         }
 
+        function precargarAdyacentes(index) {
+            for (const offset of [-1, 1]) {
+                const i = index + offset;
+                if (i >= 0 && i < fotosCache.length) {
+                    const foto = fotosCache[i];
+                    if (foto && foto.url) {
+                        const img = new Image();
+                        img.src = foto.url;
+                    }
+                }
+            }
+        }
+
         // ==========================================
         // 🖼️ MODAL FOTO
         // ==========================================
@@ -2603,6 +2616,7 @@
 
             actualizarFlechas();
             actualizarBotonPrincipal();
+            precargarAdyacentes(index);   // 🔥 NUEVO
         }
 
         function cerrarModal() {
@@ -2629,6 +2643,7 @@
 
             actualizarFlechas();
             actualizarBotonPrincipal();
+            precargarAdyacentes(nuevoIndex);   // 🔥 NUEVO
         }
 
         // ==========================================
