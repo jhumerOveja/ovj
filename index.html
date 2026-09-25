@@ -1752,7 +1752,7 @@
             </div>
         </div>
     </div>
-
+    <script src="qrcode.min.js"></script>
     <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
     <script src="config.js"></script>
 
@@ -2904,26 +2904,26 @@
         // ==========================================
         function dibujarQR(texto, contenedor, tamaño) {
             try {
-                const url = 'https://api.qrserver.com/v1/create-qr-code/?size=' + tamaño + 'x' + tamaño +
-                    '&data=' + encodeURIComponent(texto);
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(texto);
+                qr.make();
+
+                const dataUrl = qr.createDataURL(4, 8);
 
                 const img = document.createElement('img');
-                img.src = url;
+                img.src = dataUrl;
                 img.alt = 'QR';
                 img.style.width = tamaño + 'px';
                 img.style.height = tamaño + 'px';
                 img.style.display = 'block';
                 img.style.borderRadius = '4px';
 
-                img.onerror = function () {
-                    contenedor.innerHTML = '<div style="font-size:0.75rem; color:#333; padding:60px 20px; text-align:center;">QR no disponible.<br>Usa el link de abajo.</div>';
-                };
-
                 contenedor.innerHTML = '';
                 contenedor.appendChild(img);
                 return true;
             } catch (error) {
                 console.error('Error generando QR:', error);
+                contenedor.innerHTML = '<div style="font-size:0.75rem; color:#333; padding:60px 20px; text-align:center;">QR no disponible.</div>';
                 return false;
             }
         }
@@ -2993,6 +2993,7 @@
             });
         }
 
+
         // ==========================================
         // 🎫 QR GENERAL
         // ==========================================
@@ -3036,8 +3037,48 @@
 
             urlBox.textContent = urlQr;
 
-            const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=216x216&data=' + encodeURIComponent(urlQr);
-            wrapper.innerHTML = `<img src="${qrImg}" alt="QR General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+            try {
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(urlQr);
+                qr.make();
+
+                wrapper.innerHTML = qr.createImgTag(6, 12);
+                const img = wrapper.querySelector('img');
+                if (img) {
+                    img.style.width = '216px';
+                    img.style.height = '216px';
+                    img.style.borderRadius = '4px';
+                    img.alt = 'QR General';
+                }
+            } catch (error) {
+                console.error('Error generando QR local:', error);
+                wrapper.innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+            }
+        }
+
+        function abrirQrGeneralGrande() {
+            if (!urlQrGeneralActual) return;
+
+            try {
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(urlQrGeneralActual);
+                qr.make();
+
+                const imgTag = qr.createImgTag(10, 20);
+
+                const w = window.open('', '_blank');
+                w.document.write(`<html><head><title>QR</title></head><body style="background:#fff;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;">${imgTag}</body></html>`);
+                w.document.close();
+
+                const img = w.document.querySelector('img');
+                if (img) {
+                    img.style.width = '600px';
+                    img.style.height = '600px';
+                }
+            } catch (error) {
+                console.error('Error generando QR grande:', error);
+                alert('No se pudo generar el QR.');
+            }
         }
 
         function cerrarQrGeneral() {
@@ -3059,11 +3100,6 @@
             });
         }
 
-        function abrirQrGeneralGrande() {
-            if (!urlQrGeneralActual) return;
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlQrGeneralActual);
-            window.open(qrUrl, '_blank');
-        }
 
         // ==========================================
         // 🛡️ UTILIDADES
