@@ -1111,7 +1111,7 @@
     <div class="loader-overlay" id="loader">
         <div class="loader-spinner"></div>
     </div>
-
+    <script src="qrcode.min.js"></script>
     <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
     <script src="config.js"></script>
 
@@ -1975,32 +1975,47 @@
             const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
 
             abrirModal(`
-                <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
-                <div class="titulo">🎫 Token General</div>
-                <div class="subtitulo">
-                    <strong>${escapeHtml(nombreEvento)}</strong><br><br>
-                    Este es el QR que tus invitados generales van a escanear.<br>
-                    Imprimilo y pegalo en el evento.
-                </div>
+        <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
+        <div class="titulo">🎫 Token General</div>
+        <div class="subtitulo">
+            <strong>${escapeHtml(nombreEvento)}</strong><br><br>
+            Este es el QR que tus invitados generales van a escanear.<br>
+            Imprimilo y pegalo en el evento.
+        </div>
 
-                <div class="qr-token-wrapper" id="qrTokenWrapper"></div>
+        <div class="qr-token-wrapper" id="qrTokenWrapper"></div>
 
-                <div class="token-box" id="tokenBox"></div>
+        <div class="token-box" id="tokenBox"></div>
 
-                <button class="btn-primario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
-                    📋 Copiar URL del QR
-                </button>
-                <button class="btn-secundario" onclick="descargarQR('${escapeHtml(urlGeneral)}')">
-                    💾 Abrir QR en pestaña nueva
-                </button>
-                <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
-                    Listo
-                </button>
-            `);
+        <button class="btn-primario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
+            📋 Copiar URL del QR
+        </button>
+        <button class="btn-secundario" onclick="descargarQR('${escapeHtml(urlGeneral)}')">
+            💾 Abrir QR en pestaña nueva
+        </button>
+        <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
+            Listo
+        </button>
+    `);
 
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(urlGeneral);
-            const wrapper = $('qrTokenWrapper');
-            wrapper.innerHTML = `<img src="${qrUrl}" alt="QR Token General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+            try {
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(urlGeneral);
+                qr.make();
+
+                const wrapper = $('qrTokenWrapper');
+                wrapper.innerHTML = qr.createImgTag(6, 12);
+                const img = wrapper.querySelector('img');
+                if (img) {
+                    img.style.width = '240px';
+                    img.style.height = '240px';
+                    img.style.borderRadius = '4px';
+                    img.alt = 'QR Token General';
+                }
+            } catch (error) {
+                console.error('Error generando QR local:', error);
+                $('qrTokenWrapper').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+            }
 
             $('tokenBox').innerHTML = `<strong style="color:#f39c12;">Token general:</strong><br>${escapeHtml(token)}`;
         }
@@ -2014,8 +2029,26 @@
         }
 
         function descargarQR(url) {
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=' + encodeURIComponent(url);
-            window.open(qrUrl, '_blank');
+            try {
+                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                qr.addData(url);
+                qr.make();
+
+                const imgTag = qr.createImgTag(10, 20);
+
+                const w = window.open('', '_blank');
+                w.document.write(`<html><head><title>QR</title></head><body style="background:#fff;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;">${imgTag}</body></html>`);
+                w.document.close();
+
+                const img = w.document.querySelector('img');
+                if (img) {
+                    img.style.width = '500px';
+                    img.style.height = '500px';
+                }
+            } catch (error) {
+                console.error('Error generando QR grande:', error);
+                alert('No se pudo generar el QR.');
+            }
         }
 
         // ==========================================
