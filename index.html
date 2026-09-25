@@ -434,6 +434,54 @@
             color: #f1c40f;
         }
 
+        /* ===== AVISO DE RECARGA ===== */
+        .aviso-recarga {
+            max-width: 500px;
+            margin: 0 auto 12px;
+            padding: 10px 18px;
+            background: rgba(52, 152, 219, 0.06);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            border-radius: 12px;
+            font-size: 0.72rem;
+            color: #5dade2;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+            text-align: center;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.4s ease;
+        }
+
+        .aviso-recarga.alerta {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.4);
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .aviso-recarga-icono {
+            font-size: 1rem;
+            animation: pulse-recarga 2.5s infinite;
+        }
+
+        @keyframes pulse-recarga {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: rotate(0deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: rotate(180deg);
+            }
+        }
+
         /* ===== AVISO INTERMITENTE ===== */
         .aviso-intermitente {
             max-width: 500px;
@@ -1491,6 +1539,11 @@
                 padding: 8px 14px;
             }
 
+            .aviso-recarga {
+                font-size: 0.65rem;
+                padding: 8px 12px;
+            }
+
             .header-left .ovj-studio {
                 font-size: 1.1rem;
             }
@@ -1616,6 +1669,11 @@
         <div class="aviso-intermitente" id="avisoIntermitente"></div>
 
         <div id="estado">Cargando...</div>
+
+        <div class="aviso-recarga" id="avisoRecarga">
+            <span class="aviso-recarga-icono">🔄</span>
+            <span id="avisoRecargaTexto">Las fotos aparecen solas. No hace falta recargar.</span>
+        </div>
 
         <div class="galeria" id="galeria"></div>
 
@@ -2369,6 +2427,11 @@
                     }
                 }
 
+                // 🔥 Guardar instrucciones de polling del server
+                if (data.poll) {
+                    window._ultimoPoll = data.poll;
+                }
+
                 const nuevasFotos = data.fotos || [];
 
                 const huboCambio =
@@ -2395,6 +2458,22 @@
             }
 
             cargando = false;
+
+            // 🔥 Programar el próximo poll según lo que dijo el server
+            if (servidorOnline) {
+                let segundos = 60; // fallback
+                if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
+                    segundos = window._ultimoPoll.intervaloBaseSeg;
+                }
+
+                // Si la pestaña está oculta, multiplicar el intervalo x3 (ahorra peticiones)
+                if (document.hidden) {
+                    segundos = segundos * 3;
+                }
+
+                clearTimeout(window._pollTimer);
+                window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
+            }
         }
 
         function mostrarOffline() {
@@ -3143,6 +3222,23 @@
         }
 
         // ==========================================
+        // 🔥 PAUSA DE POLLING POR VISIBILIDAD
+        // ==========================================
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Pestaña oculta: cancelar el próximo poll (se reprograma al volver)
+                clearTimeout(window._pollTimer);
+                window._pollTimer = null;
+            } else {
+                // Pestaña visible: hacer poll inmediato y reprogramar
+                if (!cargando) {
+                    clearTimeout(window._pollTimer);
+                    cargarFotos();
+                }
+            }
+        });
+
+        // ==========================================
         // 🎧 EVENTOS
         // ==========================================
         document.addEventListener("keydown", (e) => {
@@ -3213,9 +3309,31 @@
             if (!accesoValido) return;
 
             activarApp();
-            cargarFotos();
-            setInterval(cargarFotos, 60000);
-            iniciarAvisosIntermitentes();
+
+            // 🔥 Detección de recargas excesivas
+            (function detectarRecargas() {
+                const recargas = JSON.parse(localStorage.getItem('ovj_recargas') || '[]');
+                const ahora = Date.now();
+                const recientes = recargas.filter(t => ahora - t < 60000);
+                recientes.push(ahora);
+                localStorage.setItem('ovj_recargas', JSON.stringify(recientes));
+
+                if (recientes.length > 5) {
+                    const aviso = document.getElementById('avisoRecarga');
+                    const texto = document.getElementById('avisoRecargaTexto');
+                    if (aviso && texto) {
+                        aviso.classList.add('alerta');
+                        texto.textContent = 'Recargar no acelera las fotos. Se actualizan solas cada pocos minutos.';
+                    }
+                }
+            })();
+
+            // 🔥 Primer poll con jitter aleatorio (0-30s) para distribuir la carga inicial
+            const jitterInicial = Math.floor(Math.random() * 30000);
+            setTimeout(() => {
+                cargarFotos();
+                iniciarAvisosIntermitentes();
+            }, jitterInicial);
         }
 
         inicializar();
