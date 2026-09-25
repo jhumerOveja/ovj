@@ -2904,7 +2904,7 @@
         // ==========================================
         function dibujarQR(texto, contenedor, tamaño) {
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(texto);
                 qr.make();
 
@@ -3038,7 +3038,7 @@
             urlBox.textContent = urlQr;
 
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(urlQr);
                 qr.make();
 
@@ -3060,7 +3060,7 @@
             if (!urlQrGeneralActual) return;
 
             try {
-                const qr = window.QRCodeGenerator.qrcode(0, 'M');
+                const qr = window.qrcode(0, 'M');
                 qr.addData(urlQrGeneralActual);
                 qr.make();
 
