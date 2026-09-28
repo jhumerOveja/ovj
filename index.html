@@ -893,148 +893,6 @@
             }
         }
 
-        .foto.secreta {
-            position: relative;
-        }
-
-        .foto.secreta img {
-            filter: blur(20px) brightness(0.6) saturate(0.5);
-            transition: filter 1.2s ease;
-            transform: scale(1.1);
-        }
-
-        .foto.secreta.revelada img {
-            filter: blur(0) brightness(1) saturate(1);
-            transform: scale(1);
-        }
-
-        .foto.secreta::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg,
-                rgba(232, 196, 122, 0.1),
-                rgba(0, 0, 0, 0.4),
-                rgba(232, 196, 122, 0.1));
-            z-index: 3;
-            pointer-events: none;
-            transition: opacity 1.2s ease;
-        }
-
-        .foto.secreta.revelada::after {
-            opacity: 0;
-        }
-
-        .foto.secreta .candado {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            text-align: center;
-            pointer-events: none;
-            transition: all 0.8s ease;
-        }
-
-        .foto.secreta.revelada .candado {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(1.5);
-        }
-
-        .foto.secreta .candado .icono {
-            font-size: 2.5rem;
-            display: block;
-            margin-bottom: 8px;
-            animation: pulsoCandado 2s ease-in-out infinite;
-        }
-
-        @keyframes pulsoCandado {
-            0%, 100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        .foto.secreta .candado .texto {
-            font-size: 0.7rem;
-            color: var(--champagne);
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .foto.secreta .candado .contador {
-            font-size: 0.85rem;
-            color: #fff;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            margin-top: 4px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .foto.secreta .badge-secreta {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
-            color: #0a0a0a;
-            font-size: 0.55rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            padding: 4px 9px;
-            border-radius: 50px;
-            z-index: 6;
-            text-transform: uppercase;
-            box-shadow: 0 4px 16px rgba(232, 196, 122, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            animation: pulsoBadgeNueva 1.8s ease-in-out infinite;
-        }
-
-        .foto.secreta.revelada .badge-secreta {
-            display: none;
-        }
-
-        .btn-minijuego-foto {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            z-index: 6;
-            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
-            color: #0a0a0a;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 8px 14px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(232, 196, 122, 0.6);
-            animation: pulsoMinijuego 1.5s ease-in-out infinite;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .btn-minijuego-foto.tocado {
-            background: linear-gradient(135deg, #666, #444);
-            color: #fff;
-            cursor: wait;
-            animation: none;
-            opacity: 0.8;
-        }
-
-        @keyframes pulsoMinijuego {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 4px 16px rgba(232, 196, 122, 0.6);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 6px 24px rgba(232, 196, 122, 0.9);
-            }
-        }
-
         .foto .skeleton {
             position: absolute;
             top: 0;
@@ -1189,111 +1047,6 @@
         .info-restantes strong {
             color: var(--champagne);
             font-weight: 600;
-        }
-
-        .card-desbloqueo-social {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg,
-                rgba(232, 196, 122, 0.08),
-                rgba(232, 196, 122, 0.02));
-            border: 1px solid rgba(232, 196, 122, 0.25);
-            border-radius: 18px;
-            padding: 22px 24px;
-            text-align: center;
-            animation: entradaDesbloqueo 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        @keyframes entradaDesbloqueo {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .card-desbloqueo-social .emoji {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 10px;
-            animation: pulsoEmojiSocial 2s ease-in-out infinite;
-        }
-
-        @keyframes pulsoEmojiSocial {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .card-desbloqueo-social .titulo {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--champagne);
-            margin-bottom: 6px;
-        }
-
-        .card-desbloqueo-social .subtitulo {
-            font-size: 0.78rem;
-            color: var(--texto-suave);
-            line-height: 1.5;
-            margin-bottom: 16px;
-        }
-
-        .card-desbloqueo-social .subtitulo strong {
-            color: var(--champagne);
-            font-weight: 700;
-        }
-
-        .card-desbloqueo-social .botones {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .card-desbloqueo-social .btn-social {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 18px;
-            border-radius: 12px;
-            border: none;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-family: inherit;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-desbloqueo-social .btn-instagram {
-            background: linear-gradient(135deg, #e1306c, #c13584, #833ab4);
-            color: #fff;
-        }
-
-        .card-desbloqueo-social .btn-instagram:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(225, 48, 108, 0.3);
-        }
-
-        .card-desbloqueo-social .btn-confirmar {
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: #0a0a0a;
-        }
-
-        .card-desbloqueo-social .btn-confirmar:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.3);
-        }
-
-        .card-desbloqueo-social .btn-confirmar:disabled {
-            opacity: 0.5;
-            cursor: wait;
-            pointer-events: none;
         }
 
         .estado-offline {
@@ -1658,6 +1411,160 @@
             color: #fff;
             transform: rotate(90deg) scale(1.1);
             border-color: rgba(232, 196, 122, 0.3);
+        }
+
+        /* ===== MODAL DESBLOQUEO SOCIAL (FULL SCREEN) ===== */
+        .modal-desbloqueo {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-desbloqueo.activo {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .modal-desbloqueo-contenido {
+            background: linear-gradient(135deg, var(--bg-card), #1a1a1e);
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 24px;
+            padding: 40px 28px 32px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: entradaDesbloqueo 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes entradaDesbloqueo {
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-desbloqueo-contenido .btn-cerrar-desbloqueo {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--texto-suave);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .modal-desbloqueo-contenido .btn-cerrar-desbloqueo:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-desbloqueo-contenido .emoji-grande {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 16px;
+            animation: pulsoEmojiGrande 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoEmojiGrande {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .modal-desbloqueo-contenido .titulo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-desbloqueo-contenido .subtitulo {
+            font-size: 0.9rem;
+            color: var(--texto-suave);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-desbloqueo-contenido .subtitulo strong {
+            color: var(--champagne);
+            font-weight: 700;
+        }
+
+        .modal-desbloqueo-contenido .btn-instagram-full {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #e1306c, #c13584, #833ab4);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 25px rgba(225, 48, 108, 0.3);
+        }
+
+        .modal-desbloqueo-contenido .btn-instagram-full:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(225, 48, 108, 0.45);
+        }
+
+        .modal-desbloqueo-contenido .btn-ya-lo-hice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a0a;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+            box-shadow: 0 6px 25px rgba(74, 222, 128, 0.25);
+        }
+
+        .modal-desbloqueo-contenido .btn-ya-lo-hice:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(74, 222, 128, 0.4);
+        }
+
+        .modal-desbloqueo-contenido .btn-ya-lo-hice:disabled {
+            opacity: 0.5;
+            cursor: wait;
+            pointer-events: none;
         }
 
         /* ===== MODAL INVITAR ===== */
@@ -2560,6 +2467,18 @@
             .detras-lista {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .modal-desbloqueo-contenido {
+                padding: 32px 22px 26px;
+            }
+
+            .modal-desbloqueo-contenido .emoji-grande {
+                font-size: 3rem;
+            }
+
+            .modal-desbloqueo-contenido .titulo {
+                font-size: 1.2rem;
+            }
         }
 
         @media (max-width: 400px) {
@@ -2704,6 +2623,24 @@
         </div>
     </div>
 
+    <!-- ===== MODAL DESBLOQUEO SOCIAL (FULL SCREEN) ===== -->
+    <div class="modal-desbloqueo" id="modalDesbloqueo">
+        <div class="modal-desbloqueo-contenido">
+            <button class="btn-cerrar-desbloqueo" onclick="cerrarDesbloqueo()">✕</button>
+            <span class="emoji-grande">🎁</span>
+            <div class="titulo" id="desbloqueoTitulo">¡Desbloquea más descargas!</div>
+            <div class="subtitulo" id="desbloqueoSubtitulo">
+                Sigue a OVJ Studio en Instagram y obtén <strong>3 descargas extra</strong> al instante.
+            </div>
+            <button class="btn-instagram-full" onclick="irAInstagram()">
+                📸 Seguir en Instagram
+            </button>
+            <button class="btn-ya-lo-hice" id="btnYaLoHice" onclick="confirmarDesbloqueoSocial()">
+                ✓ Ya lo hice
+            </button>
+        </div>
+    </div>
+
     <!-- ===== MODAL INVITAR ===== -->
     <div class="modal-invitar" id="modalInvitar">
         <div class="modal-invitar-contenido">
@@ -2838,6 +2775,9 @@
 
         const INSTAGRAM_USUARIO = 'ovjstudio';
 
+        // Umbral: cuando quedan ≤2 descargas, mostrar modal de desbloqueo
+        const UMBRAL_DESBLOQUEO = 2;
+
         // ==========================================
         // PARÁMETROS DEL URL
         // ==========================================
@@ -2890,20 +2830,16 @@
             } catch (e) { }
         }
 
-        function getClaveMinijuegoToques() {
-            return 'ovj_minijuego_toques_' + (EVENTO_ID || 'default');
-        }
-
-        function getClaveMinijuegoPremiado() {
-            return 'ovj_minijuego_premiado_' + (EVENTO_ID || 'default');
-        }
-
         function getClaveMensajeCerrado() {
             return 'ovj_mensaje_cerrado_' + (EVENTO_ID || 'default');
         }
 
         function getClaveDetrasVisto() {
             return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
+        }
+
+        function getClaveMinijuegoNotificado() {
+            return 'ovj_minijuego_notificado_' + (EVENTO_ID || 'default');
         }
 
         // ==========================================
@@ -2924,23 +2860,22 @@
 
         let fotosVistas = new Set();
         let fotosNuevasMap = new Map();
-        let secretasMap = new Map();
 
         let toastsActivos = [];
-
-        let minijuegoActual = null;
-        let toquesPendientes = [];
 
         let mensajeFotografoActual = null;
 
         let detrasCamaraTotal = 0;
         let detrasCamaraUltima = null;
 
+        let minijuegoAnterior = null;
+
+        let desbloqueoCerradoEnEstaSesion = false;
+
         let tipsMostrados = {
             primeraEntrada: false,
             primeraDescarga: false,
-            primerReceso: false,
-            primerMinijuego: false
+            primerReceso: false
         };
 
         // ==========================================
@@ -2982,8 +2917,6 @@
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Receso",
                 fotoNuevaLlegada: "¡Nueva foto disponible!",
-                fotoSecretaRevelada: "🔓 ¡Foto secreta revelada!",
-                fotoSecretaText: "Foto Secreta",
                 desbloqueoSocialTitulo: "¡Desbloquea más descargas!",
                 desbloqueoSocialSubtitulo: (n) => `Sigue a OVJ Studio en Instagram y obtén <strong>${n} descargas extra</strong> al instante.`,
                 desbloqueoSeguirIG: "📸 Seguir en Instagram",
@@ -2996,13 +2929,7 @@
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 tipIG: "💡 Una vez que nos sigas, toca 'Ya lo hice'",
-                tipMinijuego: "🎮 ¡Hay un botón escondido en una foto! Encuéntralo",
-                tipMinijuegoTocado: "⏳ Esperando el final del juego...",
                 tipMinijuegoGanaste: "🎉 ¡Ganaste! Reset de sesión + descargas completas",
-                tipMinijuegoPerdiste: "😅 Otro invitado lo encontró primero",
-                tipMinijuegoAnulado: "😴 El minijuego fue anulado. Otra vez será",
-                minijuegoBoton: "🎮 OVJ · Aquí estoy",
-                minijuegoTocado: "⏳ Esperando...",
                 mensajeTitulo: "📢 Mensaje del fotógrafo",
                 detrasBoton: "Detrás",
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
@@ -3049,8 +2976,6 @@
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Break",
                 fotoNuevaLlegada: "New photo available!",
-                fotoSecretaRevelada: "🔓 Secret photo revealed!",
-                fotoSecretaText: "Secret Photo",
                 desbloqueoSocialTitulo: "Unlock more downloads!",
                 desbloqueoSocialSubtitulo: (n) => `Follow OVJ Studio on Instagram and get <strong>${n} extra downloads</strong> instantly.`,
                 desbloqueoSeguirIG: "📸 Follow on Instagram",
@@ -3063,13 +2988,7 @@
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 tipIG: "💡 Once you follow us, tap 'Done'",
-                tipMinijuego: "🎮 There's a hidden button in a photo! Find it",
-                tipMinijuegoTocado: "⏳ Waiting for the game to end...",
                 tipMinijuegoGanaste: "🎉 You won! Session reset + full downloads",
-                tipMinijuegoPerdiste: "😅 Another guest found it first",
-                tipMinijuegoAnulado: "😴 The minigame was cancelled. Try again next time",
-                minijuegoBoton: "🎮 OVJ · Here I am",
-                minijuegoTocado: "⏳ Waiting...",
                 mensajeTitulo: "📢 Photographer's message",
                 detrasBoton: "Behind",
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
@@ -3116,8 +3035,6 @@
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ 休息",
                 fotoNuevaLlegada: "新照片已上线！",
-                fotoSecretaRevelada: "🔓 秘密照片已揭晓！",
-                fotoSecretaText: "秘密照片",
                 desbloqueoSocialTitulo: "解锁更多下载！",
                 desbloqueoSocialSubtitulo: (n) => `关注 OVJ Studio 的 Instagram，立即获得 <strong>${n} 次额外下载</strong>。`,
                 desbloqueoSeguirIG: "📸 关注 Instagram",
@@ -3130,13 +3047,7 @@
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 tipIG: "💡 关注后，点击 '已完成'",
-                tipMinijuego: "🎮 有隐藏按钮在照片中！找到它",
-                tipMinijuegoTocado: "⏳ 等待游戏结束...",
                 tipMinijuegoGanaste: "🎉 你赢了！重置会话 + 完整下载次数",
-                tipMinijuegoPerdiste: "😅 其他嘉宾先找到了",
-                tipMinijuegoAnulado: "😴 小游戏已取消。下次再试",
-                minijuegoBoton: "🎮 OVJ · 我在这里",
-                minijuegoTocado: "⏳ 等待中...",
                 mensajeTitulo: "📢 摄影师消息",
                 detrasBoton: "幕后",
                 detrasVacio: "摄影师还没有上传幕后照片。",
@@ -3190,6 +3101,8 @@
 
             document.getElementById('bloqueoTitulo').textContent = t('bloqueoTitulo');
             document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoMensaje');
+
+            document.getElementById('desbloqueoTitulo').textContent = t('desbloqueoSocialTitulo');
 
             if (tituloEsDefault) {
                 document.getElementById('eventoTitulo').textContent = t('tituloDefault');
@@ -3578,17 +3491,14 @@
                     window._ultimoPoll = data.poll;
                 }
 
-                // Enviar toques pendientes al server (silencioso)
-                enviarToquesPendientes();
-
-                // Procesar minijuego
-                procesarMinijuego(data.minijuego);
-
                 // Procesar mensaje del fotógrafo
                 procesarMensaje(data.mensajeFotografo);
 
                 // Procesar detrás de cámara
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
+
+                // Procesar minijuego
+                procesarMinijuego(data.minijuego);
 
                 // Procesar fotos
                 const nuevasFotos = data.fotos || [];
@@ -3600,12 +3510,6 @@
                     if (!fotosVistas.has(f.nombre)) {
                         fotosRecienLlegadas.push(f);
                         fotosNuevasMap.set(f.nombre, ahora);
-                    }
-
-                    if (f.esSecreta && !secretasMap.has(f.nombre)) {
-                        secretasMap.set(f.nombre, {
-                            reveladaEn: Date.now() + (5 * 60 * 1000)
-                        });
                     }
                 });
 
@@ -3643,6 +3547,9 @@
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
 
+                // Verificar si hay que mostrar el modal de desbloqueo
+                verificarMostrarDesbloqueo();
+
             } catch (error) {
                 console.error("Error:", error);
                 servidorOnline = false;
@@ -3676,103 +3583,39 @@
         }
 
         // ==========================================
-        // MINIJUEGO
+        // MINIJUEGO — Solo notificación al ganador
         // ==========================================
         function procesarMinijuego(minijuego) {
-            const anterior = minijuegoActual;
-            minijuegoActual = minijuego;
+            if (!minijuego || !minijuego.finalizado) return;
 
-            if (!minijuego) return;
+            const aplicadoEn = minijuego.aplicadoEn;
+            const clave = getClaveMinijuegoNotificado();
+            const yaNotificado = localStorage.getItem(clave);
 
-            // Si hay minijuego activo y no lo habíamos visto, mostrar tip
-            if (minijuego.activo && (!anterior || !anterior.activo)) {
-                if (!tipsMostrados.primerMinijuego) {
-                    tipsMostrados.primerMinijuego = true;
-                    setTimeout(() => mostrarToast(t('tipMinijuego'), 'success', 8000), 1000);
-                } else {
-                    mostrarToast(t('tipMinijuego'), 'success', 6000);
-                }
-            }
+            // Si ya notificamos este sorteo, no hacer nada
+            if (yaNotificado === String(aplicadoEn)) return;
 
-            // Si finalizó y tenemos toques guardados, procesar resultado
-            if (minijuego.finalizado && (!anterior || anterior.activo)) {
-                procesarFinalMinijuego(minijuego);
-            }
-
-            // Re-renderizar si cambió el estado
-            if (anterior && anterior.activo !== minijuego.activo) {
-                renderizarGaleria();
-            }
-        }
-
-        function procesarFinalMinijuego(minijuego) {
-            const toquesGuardados = JSON.parse(localStorage.getItem(getClaveMinijuegoToques()) || '[]');
-            const yaPremiado = localStorage.getItem(getClaveMinijuegoPremiado());
-
-            if (minijuego.anulado) {
-                if (toquesGuardados.length > 0 && !yaPremiado) {
-                    mostrarToast(t('tipMinijuegoAnulado'), 'warning', 6000);
-                }
-                localStorage.removeItem(getClaveMinijuegoToques());
-                return;
-            }
-
-            if (minijuego.ganadorDeviceId === getDispositivoId() && !yaPremiado) {
+            // ¿Soy el ganador?
+            if (minijuego.ganadorDeviceId === getDispositivoId()) {
+                // ¡Ganaste!
                 lanzarConfeti();
                 lanzarConfeti();
                 mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
 
+                // Resetear sesión local
                 if (sesionGeneral) {
                     sesionGeneral.descargasSesion = 0;
                 }
 
-                localStorage.setItem(getClaveMinijuegoPremiado(), '1');
-                localStorage.removeItem(getClaveMinijuegoToques());
+                localStorage.setItem(clave, String(aplicadoEn));
 
                 actualizarBadgeRol();
                 actualizarBotonPrincipal();
                 renderizarGaleria();
-
-            } else if (toquesGuardados.length > 0) {
-                mostrarToast(t('tipMinijuegoPerdiste'), 'warning', 6000);
-                localStorage.removeItem(getClaveMinijuegoToques());
+            } else {
+                // No gané: solo guardo que ya vi este sorteo
+                localStorage.setItem(clave, String(aplicadoEn));
             }
-        }
-
-        function enviarToquesPendientes() {
-            if (toquesPendientes.length === 0) return;
-
-            const urlParticipar = `${URL_CLOUDFLARE}/minijuego/participar?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`;
-
-            fetch(urlParticipar, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ toques: toquesPendientes })
-            }).catch(() => { });
-        }
-
-        function tocarMinijuego(fotoNombre) {
-            if (!minijuegoActual || !minijuegoActual.activo) return;
-
-            const yaToque = toquesPendientes.some(t => t.deviceId === getDispositivoId());
-            if (yaToque) return;
-
-            const toque = {
-                deviceId: getDispositivoId(),
-                invitadoId: sesion?.id || null,
-                nombre: sesion?.nombre || 'Invitado',
-                timestamp: Date.now()
-            };
-
-            toquesPendientes.push(toque);
-
-            try {
-                localStorage.setItem(getClaveMinijuegoToques(), JSON.stringify(toquesPendientes));
-            } catch (e) { }
-
-            mostrarToast(t('tipMinijuegoTocado'), 'success', 6000);
-
-            renderizarGaleria();
         }
 
         // ==========================================
@@ -3782,18 +3625,29 @@
             const anterior = mensajeFotografoActual;
             mensajeFotografoActual = mensaje;
 
-            if (mensaje && mensaje.activo) {
-                const msgGuardado = localStorage.getItem(getClaveMensajeCerrado());
-                const esElMismo = anterior && anterior.activo && anterior.creadoEn === mensaje.creadoEn;
+            const cont = document.getElementById('bannerMensajeContainer');
 
-                if (msgGuardado === String(mensaje.creadoEn)) {
-                    document.getElementById('bannerMensajeContainer').innerHTML = '';
-                } else if (!esElMismo || !anterior || !anterior.activo) {
-                    renderBannerMensaje(mensaje);
-                }
-            } else {
-                document.getElementById('bannerMensajeContainer').innerHTML = '';
+            // Si no hay mensaje, limpiar
+            if (!mensaje || !mensaje.activo) {
+                cont.innerHTML = '';
+                return;
             }
+
+            // ¿El invitado ya cerró este mensaje?
+            const msgGuardado = localStorage.getItem(getClaveMensajeCerrado());
+            if (msgGuardado === String(mensaje.creadoEn)) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            // ¿Es el mismo mensaje que ya se mostró?
+            const esElMismo = anterior && anterior.activo && anterior.creadoEn === mensaje.creadoEn;
+            if (esElMismo && cont.innerHTML.trim() !== '') {
+                return;
+            }
+
+            // Renderizar el banner
+            renderBannerMensaje(mensaje);
         }
 
         function renderBannerMensaje(mensaje) {
@@ -3896,6 +3750,107 @@
         }
 
         // ==========================================
+        // DESBLOQUEO SOCIAL (MODAL FULL SCREEN)
+        // ==========================================
+        function verificarMostrarDesbloqueo() {
+            // Solo aplica a generales
+            if (!sesion || sesion.tipo !== 'general' || !sesionGeneral) return;
+
+            // Si ya lo usó, no mostrar
+            if (sesionGeneral.desbloqueoSocialUsado) return;
+
+            // Si está desactivado en el evento, no mostrar
+            if (sesionGeneral.desbloqueoSocialActivo === false) return;
+
+            // Si ya lo cerró en esta sesión, no mostrar
+            if (desbloqueoCerradoEnEstaSesion) return;
+
+            // Si el modal ya está activo, no hacer nada
+            if (document.getElementById('modalDesbloqueo').classList.contains('activo')) return;
+
+            const usadas = sesionGeneral.descargasSesion || 0;
+            const total = sesionGeneral.descargasPorSesion || 5;
+            const restantes = total - usadas;
+
+            // Mostrar si quedan ≤2 descargas
+            if (restantes <= UMBRAL_DESBLOQUEO) {
+                abrirDesbloqueo();
+            }
+        }
+
+        function abrirDesbloqueo() {
+            const modal = document.getElementById('modalDesbloqueo');
+            const descExtra = sesionGeneral.desbloqueoSocialDescargas || 3;
+
+            document.getElementById('desbloqueoSubtitulo').innerHTML = t('desbloqueoSocialSubtitulo', descExtra);
+
+            modal.classList.add('activo');
+        }
+
+        function cerrarDesbloqueo() {
+            document.getElementById('modalDesbloqueo').classList.remove('activo');
+            desbloqueoCerradoEnEstaSesion = true;
+        }
+
+        function irAInstagram() {
+            window.open(`https://instagram.com/${INSTAGRAM_USUARIO}`, '_blank');
+            mostrarToast(t('tipIG'), 'tip', 6000);
+        }
+
+        async function confirmarDesbloqueoSocial() {
+            const btn = document.getElementById('btnYaLoHice');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = t('desbloqueoVerificando');
+            }
+
+            try {
+                const url = `${URL_CLOUDFLARE}/desbloqueo-social?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url, { method: 'POST' });
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    if (data.yaUsado) {
+                        mostrarToast(t('desbloqueoYaUsado'), 'warning');
+                        sesionGeneral.desbloqueoSocialUsado = true;
+                        cerrarDesbloqueo();
+                    } else {
+                        mostrarToast('Error: ' + (data.error || 'Desconocido'), 'warning');
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = t('desbloqueoConfirmar');
+                        }
+                    }
+                    return;
+                }
+
+                sesionGeneral.descargasSesion = data.descargasSesion;
+                sesionGeneral.descargasPorSesion = data.descargasPorSesion;
+                sesionGeneral.desbloqueoSocialUsado = true;
+
+                cerrarDesbloqueo();
+
+                lanzarConfeti();
+                mostrarToast(t('desbloqueoExito', data.descargasExtra), 'success', 6000);
+
+                actualizarBadgeRol();
+                actualizarBotonPrincipal();
+                renderizarGaleria();
+
+            } catch (e) {
+                console.error('Error desbloqueo social:', e);
+                mostrarToast('Error de conexión', 'warning');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = t('desbloqueoConfirmar');
+                }
+            }
+        }
+
+        // ==========================================
         // RENDER GALERÍA
         // ==========================================
         function mostrarOffline() {
@@ -3976,104 +3931,36 @@
             const ahora = Date.now();
             let html = "";
 
-            const yaToqueMinijuego = toquesPendientes.some(t => t.deviceId === getDispositivoId());
-
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
                 const urlImagen = foto.url;
                 const esNueva = fotosNuevasMap.has(foto.nombre);
-                const esSecreta = !!foto.esSecreta;
                 const esReciente = !!foto.esReciente && !esNueva;
-
-                let secretaRevelada = false;
-                if (esSecreta) {
-                    const entrada = secretasMap.get(foto.nombre);
-                    if (entrada) {
-                        secretaRevelada = ahora >= entrada.reveladaEn;
-                    }
-                }
-
-                const tieneMinijuego = minijuegoActual && minijuegoActual.activo &&
-                    minijuegoActual.fotoId === foto.nombre;
 
                 const clases = [
                     'foto',
                     esNueva ? 'nueva animar-entrada' : 'entrada-viewport',
-                    esSecreta ? 'secreta' : '',
-                    esSecreta && secretaRevelada ? 'revelada' : '',
                     esReciente ? 'reciente' : ''
                 ].filter(Boolean).join(' ');
 
                 let badges = '';
                 if (esNueva) badges += '<div class="badge-nueva">✨ NUEVA</div>';
-                if (esSecreta && !secretaRevelada) badges += '<div class="badge-secreta">🔒 SECRETA</div>';
-                if (esReciente && !esSecreta) badges += '<div class="badge-reciente">🔥 RECIÉN SUBIDA</div>';
-
-                let candado = '';
-                if (esSecreta && !secretaRevelada) {
-                    candado = `
-                        <div class="candado">
-                            <span class="icono">🔒</span>
-                            <div class="texto">${t('fotoSecretaText')}</div>
-                            <div class="contador" data-secreta="${foto.nombre}">5:00</div>
-                        </div>
-                    `;
-                }
-
-                let btnMinijuego = '';
-                if (tieneMinijuego) {
-                    const tocado = yaToqueMinijuego;
-                    btnMinijuego = `
-                        <button class="btn-minijuego-foto ${tocado ? 'tocado' : ''}"
-                                onclick="event.stopPropagation(); tocarMinijuego('${foto.nombre}')"
-                                ${tocado ? 'disabled' : ''}>
-                            ${tocado ? t('minijuegoTocado') : t('minijuegoBoton')}
-                        </button>
-                    `;
-                }
+                if (esReciente && !esNueva) badges += '<div class="badge-reciente">🔥 RECIÉN SUBIDA</div>';
 
                 html += `
                     <div class="${clases}"
                          data-index="${i}"
                          data-nombre="${foto.nombre}"
-                         data-secreta="${esSecreta ? '1' : '0'}"
                          style="animation-delay: ${Math.min(i * 50, 500)}ms"
                          onclick="abrirModal('${foto.nombre}')">
                         <div class="skeleton"></div>
                         ${badges}
-                        ${candado}
-                        ${btnMinijuego}
                         <img src="${urlImagen}" alt="Foto ${i + 1}"
                              data-src="${urlImagen}"
                              onload="this.classList.add('cargada')"
                              onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
                     </div>
                 `;
-            }
-
-            if (sesion && sesion.tipo === 'general' && sesionGeneral && !sesionGeneral.desbloqueoSocialUsado && sesionGeneral.desbloqueoSocialActivo !== false) {
-                const usadas = sesionGeneral.descargasSesion || 0;
-                const total = sesionGeneral.descargasPorSesion || 5;
-                const restantes = total - usadas;
-
-                if (restantes <= 1) {
-                    const descExtra = sesionGeneral.desbloqueoSocialDescargas || 3;
-                    html += `
-                        <div class="card-desbloqueo-social">
-                            <span class="emoji">🎁</span>
-                            <div class="titulo">${t('desbloqueoSocialTitulo')}</div>
-                            <div class="subtitulo">${t('desbloqueoSocialSubtitulo', descExtra)}</div>
-                            <div class="botones">
-                                <button class="btn-social btn-instagram" onclick="irAInstagram()">
-                                    ${t('desbloqueoSeguirIG')}
-                                </button>
-                                <button class="btn-social btn-confirmar" id="btnConfirmarSocial" onclick="confirmarDesbloqueoSocial()">
-                                    ${t('desbloqueoConfirmar')}
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
             }
 
             if (visibles < fotosCache.length) {
@@ -4209,11 +4096,10 @@
             }
         }
 
-        // Limpieza periódica
+        // Limpieza periódica de badges
         setInterval(() => {
             const ahora = Date.now();
             let huboCambio = false;
-            let secretaRevelada = null;
 
             for (const [nombre, ts] of fotosNuevasMap) {
                 if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
@@ -4221,29 +4107,6 @@
                     huboCambio = true;
                 }
             }
-
-            document.querySelectorAll('.foto.secreta:not(.revelada)').forEach(el => {
-                const nombre = el.dataset.nombre;
-                const entrada = secretasMap.get(nombre);
-                if (!entrada) return;
-
-                const restante = entrada.reveladaEn - ahora;
-                if (restante <= 0) {
-                    el.classList.add('revelada');
-                    secretaRevelada = el;
-                    setTimeout(() => {
-                        const candado = el.querySelector('.candado');
-                        if (candado) candado.remove();
-                    }, 1000);
-                } else {
-                    const contador = el.querySelector(`[data-secreta="${nombre}"]`);
-                    if (contador) {
-                        const min = Math.floor(restante / 60000);
-                        const seg = Math.floor((restante % 60000) / 1000);
-                        contador.textContent = `${min}:${String(seg).padStart(2, '0')}`;
-                    }
-                }
-            });
 
             if (huboCambio) {
                 document.querySelectorAll('.foto.nueva').forEach(el => {
@@ -4260,73 +4123,7 @@
                     }
                 });
             }
-
-            if (secretaRevelada) {
-                lanzarConfeti();
-                mostrarToast(`<strong>${t('fotoSecretaRevelada')}</strong>`, 'success', 6000);
-                setTimeout(() => {
-                    secretaRevelada.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-            }
         }, 1000);
-
-        // ==========================================
-        // DESBLOQUEO SOCIAL
-        // ==========================================
-        function irAInstagram() {
-            window.open(`https://instagram.com/${INSTAGRAM_USUARIO}`, '_blank');
-            mostrarToast(t('tipIG'), 'tip', 6000);
-        }
-
-        async function confirmarDesbloqueoSocial() {
-            const btn = document.getElementById('btnConfirmarSocial');
-            if (btn) {
-                btn.disabled = true;
-                btn.textContent = t('desbloqueoVerificando');
-            }
-
-            try {
-                const url = `${URL_CLOUDFLARE}/desbloqueo-social?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url, { method: 'POST' });
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    if (data.yaUsado) {
-                        mostrarToast(t('desbloqueoYaUsado'), 'warning');
-                        sesionGeneral.desbloqueoSocialUsado = true;
-                    } else {
-                        mostrarToast('Error: ' + (data.error || 'Desconocido'), 'warning');
-                    }
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.textContent = t('desbloqueoConfirmar');
-                    }
-                    return;
-                }
-
-                sesionGeneral.descargasSesion = data.descargasSesion;
-                sesionGeneral.descargasPorSesion = data.descargasPorSesion;
-                sesionGeneral.desbloqueoSocialUsado = true;
-
-                lanzarConfeti();
-                mostrarToast(t('desbloqueoExito', data.descargasExtra), 'success', 6000);
-
-                actualizarBadgeRol();
-                actualizarBotonPrincipal();
-                renderizarGaleria();
-
-            } catch (e) {
-                console.error('Error desbloqueo social:', e);
-                mostrarToast('Error de conexión', 'warning');
-                if (btn) {
-                    btn.disabled = false;
-                    btn.textContent = t('desbloqueoConfirmar');
-                }
-            }
-        }
 
         // ==========================================
         // MODAL FOTO
@@ -4546,6 +4343,9 @@
                     actualizarBadgeRol();
                     actualizarBotonPrincipal();
                     renderizarGaleria();
+
+                    // Verificar si hay que mostrar el modal de desbloqueo
+                    setTimeout(() => verificarMostrarDesbloqueo(), 500);
                 }
 
                 if (!tipsMostrados.primeraDescarga) {
@@ -4911,9 +4711,11 @@
             const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
             const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
             const modalDetrasActivo = document.getElementById('modalDetras').classList.contains('activo');
+            const modalDesbloqueoActivo = document.getElementById('modalDesbloqueo').classList.contains('activo');
 
             if (e.key === "Escape") {
-                if (modalDetrasActivo) cerrarDetrasCamara();
+                if (modalDesbloqueoActivo) cerrarDesbloqueo();
+                else if (modalDetrasActivo) cerrarDetrasCamara();
                 else if (modalQrGeneralActivo) cerrarQrGeneral();
                 else if (modalResultadoActivo) cerrarResultado();
                 else if (modalInvitarActivo) cerrarInvitar();
@@ -4921,7 +4723,7 @@
                 else cerrarLangMenu();
             }
 
-            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo) return;
+            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo || modalDesbloqueoActivo) return;
 
             if (e.key === "ArrowLeft") navegarFoto(-1);
             if (e.key === "ArrowRight") navegarFoto(1);
@@ -4973,13 +4775,6 @@
         // ==========================================
         async function inicializar() {
             fotosVistas = cargarFotosVistas();
-
-            try {
-                const guardados = JSON.parse(localStorage.getItem(getClaveMinijuegoToques()) || '[]');
-                if (Array.isArray(guardados)) {
-                    toquesPendientes = guardados;
-                }
-            } catch (e) { }
 
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
