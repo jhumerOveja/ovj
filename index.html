@@ -13,12 +13,44 @@
             box-sizing: border-box;
         }
 
+        :root {
+            /* Fondo */
+            --bg: #0a0a0a;
+            --bg-card: #141414;
+            --bg-hover: #1a1a1a;
+
+            /* Texto */
+            --texto: #ffffff;
+            --texto-suave: #a1a1aa;
+            --texto-tenue: #52525b;
+
+            /* Acento plateado (principal) */
+            --acento: #d4d4d8;
+            --acento-suave: #a1a1aa;
+            --acento-tenue: rgba(212, 212, 216, 0.1);
+
+            /* Dorado champagne (solo para "NUEVA") */
+            --champagne: #e8c47a;
+            --champagne-suave: #d4a94a;
+            --champagne-tenue: rgba(232, 196, 122, 0.15);
+
+            /* Estados */
+            --exito: #4ade80;
+            --error: #f87171;
+            --aviso: #fbbf24;
+
+            /* Bordes */
+            --borde: rgba(255, 255, 255, 0.06);
+            --borde-hover: rgba(255, 255, 255, 0.12);
+        }
+
         body {
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            color: #fff;
+            background: var(--bg);
+            color: var(--texto);
             min-height: 100vh;
             padding: 12px 16px 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ===== BLOQUEO ===== */
@@ -27,7 +59,7 @@
             position: fixed;
             inset: 0;
             z-index: 5000;
-            background: #0a0a0a;
+            background: var(--bg);
             justify-content: center;
             align-items: center;
             padding: 30px 24px;
@@ -52,14 +84,14 @@
         .bloqueo .titulo {
             font-size: 1.3rem;
             font-weight: 700;
-            color: #f39c12;
+            color: var(--acento);
             letter-spacing: 1px;
             margin-bottom: 12px;
         }
 
         .bloqueo .subtitulo {
             font-size: 0.9rem;
-            color: #888;
+            color: var(--texto-suave);
             line-height: 1.6;
             font-weight: 300;
         }
@@ -74,7 +106,7 @@
         .bloqueo .countdown {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #f39c12;
+            color: var(--acento);
             margin-top: 20px;
             font-family: monospace;
             letter-spacing: 2px;
@@ -87,12 +119,18 @@
 
         #app.activo {
             display: block;
+            animation: fadeInApp 0.5s ease;
         }
 
-        /* ===== HEADER SIMPLIFICADO ===== */
+        @keyframes fadeInApp {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== HEADER ===== */
         .header {
             padding: 10px 0 8px;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+            border-bottom: 1px solid var(--borde);
             margin-bottom: 10px;
             position: relative;
         }
@@ -104,7 +142,21 @@
             left: 25%;
             width: 50%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
+            background: linear-gradient(90deg, transparent, var(--acento-tenue), transparent);
+            animation: subrayadoHeader 4s ease-in-out infinite;
+        }
+
+        @keyframes subrayadoHeader {
+            0%, 100% {
+                left: 30%;
+                width: 40%;
+                opacity: 0.4;
+            }
+            50% {
+                left: 20%;
+                width: 60%;
+                opacity: 0.8;
+            }
         }
 
         .header-top {
@@ -132,7 +184,7 @@
 
         .header-left .ovj-studio span {
             font-weight: 700;
-            background: linear-gradient(135deg, #f9d976, #f39c12);
+            background: linear-gradient(135deg, #ffffff, var(--acento-suave));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -143,7 +195,7 @@
             left: -16px;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(243, 156, 18, 0.3);
+            color: var(--acento-tenue);
             font-size: 0.6rem;
         }
 
@@ -154,14 +206,14 @@
             flex-wrap: wrap;
         }
 
-        /* 🔥 Badge de rol + descargas integrado */
+        /* 🔥 Badge de rol */
         .badge-rol {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid rgba(243, 156, 18, 0.25);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            border: 1px solid rgba(212, 212, 216, 0.2);
+            color: var(--acento);
             font-size: 0.68rem;
             font-weight: 600;
             padding: 5px 10px;
@@ -172,33 +224,26 @@
         }
 
         .badge-rol.admin {
-            background: rgba(243, 156, 18, 0.12);
-            border-color: rgba(243, 156, 18, 0.35);
+            background: var(--acento-tenue);
+            border-color: rgba(212, 212, 216, 0.3);
         }
 
         .badge-rol.agotado {
-            background: rgba(231, 76, 60, 0.1);
-            border-color: rgba(231, 76, 60, 0.3);
-            color: #e74c3c;
+            background: rgba(248, 113, 113, 0.1);
+            border-color: rgba(248, 113, 113, 0.3);
+            color: var(--error);
         }
 
         .badge-rol.pulso {
-            animation: pulsoBadge 2s infinite;
+            animation: pulsoBadgeRol 2s infinite;
         }
 
-        @keyframes pulsoBadge {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
+        @keyframes pulsoBadgeRol {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
-        /* Botones admin compactos */
+        /* Botones admin */
         .btn-admin-mini {
             display: inline-flex;
             align-items: center;
@@ -209,34 +254,39 @@
             font-size: 0.65rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.2px;
             font-family: inherit;
             border: none;
         }
 
+        .btn-admin-mini:hover {
+            transform: translateY(-2px);
+        }
+
         .btn-admin-mini.invitar {
-            background: rgba(243, 156, 18, 0.15);
-            border: 1px solid rgba(243, 156, 18, 0.4);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            border: 1px solid rgba(212, 212, 216, 0.3);
+            color: var(--acento);
         }
 
         .btn-admin-mini.invitar:hover {
-            background: rgba(243, 156, 18, 0.25);
-            transform: scale(1.05);
+            background: rgba(212, 212, 216, 0.2);
+            box-shadow: 0 6px 20px rgba(212, 212, 216, 0.15);
         }
 
         .btn-admin-mini.qr {
-            background: rgba(52, 152, 219, 0.15);
-            border: 1px solid rgba(52, 152, 219, 0.4);
-            color: #5dade2;
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
         }
 
         .btn-admin-mini.qr:hover {
-            background: rgba(52, 152, 219, 0.25);
-            transform: scale(1.05);
+            background: rgba(96, 165, 250, 0.2);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.15);
         }
 
+        /* Selector de idioma */
         .lang-selector {
             position: relative;
             user-select: none;
@@ -247,20 +297,20 @@
             align-items: center;
             gap: 4px;
             background: rgba(255, 255, 255, 0.05);
-            color: #ccc;
+            color: var(--texto-suave);
             font-size: 0.68rem;
             font-weight: 600;
             padding: 5px 9px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--borde);
             cursor: pointer;
             transition: all 0.25s ease;
         }
 
         .lang-btn:hover {
-            background: rgba(255, 215, 0, 0.08);
-            border-color: rgba(255, 215, 0, 0.25);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            border-color: rgba(212, 212, 216, 0.25);
+            color: var(--acento);
         }
 
         .lang-btn .bandera {
@@ -283,7 +333,7 @@
             top: calc(100% + 6px);
             right: 0;
             background: #111;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--borde);
             border-radius: 12px;
             padding: 6px;
             min-width: 130px;
@@ -310,7 +360,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.72rem;
-            color: #aaa;
+            color: var(--texto-suave);
             transition: all 0.2s ease;
             font-weight: 500;
         }
@@ -320,13 +370,13 @@
         }
 
         .lang-opcion:hover {
-            background: rgba(255, 215, 0, 0.08);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            color: var(--acento);
         }
 
         .lang-opcion.activo {
-            background: rgba(255, 215, 0, 0.12);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            color: var(--acento);
             font-weight: 600;
         }
 
@@ -334,15 +384,15 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: rgba(231, 76, 60, 0.12);
-            color: #e74c3c;
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--error);
             font-size: 0.6rem;
             font-weight: 700;
             letter-spacing: 1.2px;
             padding: 4px 10px 4px 8px;
             border-radius: 50px;
             text-transform: uppercase;
-            border: 1px solid rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(248, 113, 113, 0.15);
             user-select: none;
         }
 
@@ -350,26 +400,15 @@
             display: inline-block;
             width: 5px;
             height: 5px;
-            background: #e74c3c;
+            background: var(--error);
             border-radius: 50%;
             animation: pulse 1.8s infinite;
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-
-            100% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.3; transform: scale(0.8); }
         }
 
         .header-bottom {
@@ -382,7 +421,7 @@
             font-weight: 700;
             letter-spacing: 3px;
             color: #fff;
-            background: linear-gradient(135deg, #fff, #ccc);
+            background: linear-gradient(135deg, #fff, var(--texto-suave));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
@@ -397,142 +436,13 @@
             left: 20%;
             width: 60%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, var(--acento-tenue), transparent);
+            animation: subrayadoTitulo 4s ease-in-out infinite;
         }
 
-        /* ===== CONTADOR DE PRÓXIMA FOTO ===== */
-        .contador-proxima {
-            max-width: 500px;
-            margin: 0 auto 14px;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, rgba(243, 156, 18, 0.08), rgba(243, 156, 18, 0.02));
-            border: 1px solid rgba(243, 156, 18, 0.2);
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.4s ease;
-            user-select: none;
-        }
-
-        .contador-proxima.oculto {
-            opacity: 0;
-            max-height: 0;
-            margin-bottom: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            overflow: hidden;
-            border-width: 0;
-        }
-
-        .contador-proxima .icono-contador {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            animation: pulsoContador 2s infinite;
-        }
-
-        @keyframes pulsoContador {
-
-            0%,
-            100% {
-                opacity: 0.7;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.1);
-            }
-        }
-
-        .contador-proxima .texto-contador {
-            font-size: 0.75rem;
-            color: #ccc;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            flex-shrink: 0;
-        }
-
-        .contador-proxima .texto-contador strong {
-            color: #f39c12;
-            font-weight: 700;
-            font-family: monospace;
-            font-size: 0.85rem;
-            margin-left: 2px;
-        }
-
-        .contador-proxima .barra-progreso {
-            flex: 1;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 50px;
-            overflow: hidden;
-            min-width: 60px;
-        }
-
-        .contador-proxima .barra-progreso .relleno {
-            height: 100%;
-            background: linear-gradient(90deg, #f39c12, #f1c40f);
-            border-radius: 50px;
-            width: 0%;
-            transition: width 1s linear;
-            box-shadow: 0 0 8px rgba(243, 156, 18, 0.5);
-        }
-
-        .contador-proxima.esperando .barra-progreso {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .contador-proxima.esperando .barra-progreso .relleno {
-            background: rgba(255, 255, 255, 0.15);
-            width: 30%;
-            animation: barraEspera 2s infinite;
-        }
-
-        @keyframes barraEspera {
-            0% {
-                transform: translateX(-100%);
-            }
-
-            100% {
-                transform: translateX(400%);
-            }
-        }
-
-        .contador-proxima.nueva {
-            background: linear-gradient(135deg, rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.04));
-            border-color: rgba(46, 204, 113, 0.4);
-            animation: flashNueva 1.5s ease;
-        }
-
-        @keyframes flashNueva {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.03);
-            }
-        }
-
-        .contador-proxima.nueva .icono-contador {
-            animation: saltoNueva 0.6s ease;
-        }
-
-        @keyframes saltoNueva {
-            0% {
-                transform: scale(1) rotate(0deg);
-            }
-
-            50% {
-                transform: scale(1.4) rotate(15deg);
-            }
-
-            100% {
-                transform: scale(1) rotate(0deg);
-            }
+        @keyframes subrayadoTitulo {
+            0%, 100% { left: 25%; width: 50%; opacity: 0.3; }
+            50% { left: 15%; width: 70%; opacity: 0.6; }
         }
 
         /* ===== ESTADO MINI ===== */
@@ -541,26 +451,26 @@
             padding: 4px 0 10px;
             font-size: 0.68rem;
             letter-spacing: 0.5px;
-            color: #444;
+            color: var(--texto-tenue);
             font-weight: 300;
             user-select: none;
         }
 
         #estado .num {
-            color: #888;
+            color: var(--texto-suave);
             font-weight: 600;
         }
 
         .ok .num {
-            color: #2ecc71;
+            color: var(--exito);
         }
 
         .error {
-            color: #e74c3c;
+            color: var(--error);
         }
 
         .cargando {
-            color: #f1c40f;
+            color: var(--aviso);
         }
 
         /* ===== GALERÍA ===== */
@@ -570,29 +480,38 @@
             gap: 14px;
             max-width: 1200px;
             margin: 0 auto;
+            animation: fadeInGaleria 0.6s ease;
+        }
+
+        @keyframes fadeInGaleria {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .foto {
-            background: #111;
+            background: var(--bg-card);
             border-radius: 14px;
             overflow: hidden;
-            border: 1px solid #1a1a1a;
+            border: 1px solid var(--borde);
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.4s ease,
+                        border-color 0.4s ease;
             position: relative;
             aspect-ratio: 1 / 1;
         }
 
         .foto:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
-            border-color: rgba(255, 215, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            border-color: rgba(212, 212, 216, 0.15);
         }
 
-        /* 🔥 Foto nueva: borde dorado animado + badge */
+        /* 🔥 Foto nueva: borde dorado girando + glow */
         .foto.nueva {
-            border-color: rgba(243, 156, 18, 0.5);
-            box-shadow: 0 0 20px rgba(243, 156, 18, 0.15);
+            border-color: var(--champagne);
+            box-shadow: 0 0 24px var(--champagne-tenue),
+                        0 0 48px rgba(232, 196, 122, 0.08);
         }
 
         .foto.nueva::before {
@@ -600,62 +519,57 @@
             position: absolute;
             inset: -1px;
             border-radius: 14px;
-            padding: 1px;
-            background: linear-gradient(135deg, #f39c12, #f1c40f, #f39c12);
+            padding: 1.5px;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                var(--champagne) 45deg,
+                transparent 90deg,
+                var(--champagne) 180deg,
+                transparent 270deg,
+                var(--champagne) 315deg,
+                transparent 360deg
+            );
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             pointer-events: none;
             z-index: 4;
-            animation: bordeGirando 3s linear infinite;
-            background-size: 200% 200%;
+            animation: bordeGirando 4s linear infinite;
         }
 
         @keyframes bordeGirando {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            to { transform: rotate(360deg); }
         }
 
         .foto .badge-nueva {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
             color: #0a0a0a;
             font-size: 0.55rem;
             font-weight: 800;
             letter-spacing: 1px;
-            padding: 3px 8px;
+            padding: 4px 9px;
             border-radius: 50px;
             z-index: 5;
             text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
-            animation: pulsoBadgeNueva 1.5s infinite;
+            box-shadow: 0 4px 16px rgba(232, 196, 122, 0.5);
             display: flex;
             align-items: center;
             gap: 3px;
+            animation: pulsoBadgeNueva 2s ease-in-out infinite;
         }
 
         @keyframes pulsoBadgeNueva {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
-                box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+                box-shadow: 0 4px 16px rgba(232, 196, 122, 0.5);
             }
-
             50% {
-                transform: scale(1.1);
-                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.7);
+                transform: scale(1.08);
+                box-shadow: 0 6px 24px rgba(232, 196, 122, 0.8);
             }
         }
 
@@ -665,20 +579,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #111 0%, #1a1a1a 50%, #111 100%);
+            background: linear-gradient(90deg, var(--bg-card) 0%, #1a1a1a 50%, var(--bg-card) 100%);
             background-size: 200% 100%;
             animation: skeleton 1.5s infinite;
             z-index: 1;
         }
 
         @keyframes skeleton {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .foto img {
@@ -686,7 +595,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            background: #0a0a0a;
+            background: var(--bg);
             position: relative;
             z-index: 2;
             opacity: 0;
@@ -713,31 +622,29 @@
         }
 
         .foto:hover::after {
-            color: rgba(255, 215, 0, 0.2);
+            color: rgba(212, 212, 216, 0.25);
             transform: translate(-4px, -4px);
         }
 
-        /* 🔥 Animación de aparición de foto nueva */
+        /* 🔥 Animación de revelado */
         .foto.animar-entrada {
-            animation: aparecerFoto 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: revelarFoto 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        @keyframes aparecerFoto {
+        @keyframes revelarFoto {
             0% {
                 opacity: 0;
-                transform: scale(0.85);
-                filter: blur(8px);
+                transform: scale(0.92) translateY(20px);
+                filter: blur(12px) brightness(1.3);
             }
-
             60% {
                 opacity: 1;
-                transform: scale(1.03);
-                filter: blur(0);
+                filter: blur(0px) brightness(1.05);
             }
-
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: scale(1) translateY(0);
+                filter: blur(0px) brightness(1);
             }
         }
 
@@ -752,34 +659,34 @@
 
         .btn-ver-mas {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            color: #f39c12;
+            border: 1px solid var(--borde);
+            color: var(--acento);
             padding: 14px 38px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.5px;
             backdrop-filter: blur(4px);
         }
 
         .btn-ver-mas:hover {
-            background: rgba(243, 156, 18, 0.1);
-            border-color: rgba(255, 215, 0, 0.4);
-            transform: scale(1.03);
-            box-shadow: 0 8px 35px rgba(243, 156, 18, 0.15);
+            background: var(--acento-tenue);
+            border-color: rgba(212, 212, 216, 0.3);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 35px rgba(212, 212, 216, 0.15);
         }
 
         .info-restantes {
             font-size: 0.7rem;
-            color: #555;
+            color: var(--texto-tenue);
             font-weight: 300;
             letter-spacing: 0.5px;
         }
 
         .info-restantes strong {
-            color: #f39c12;
+            color: var(--acento);
             font-weight: 600;
         }
 
@@ -789,7 +696,7 @@
             text-align: center;
             padding: 40px 24px;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.15);
+            border: 1px solid var(--borde);
             border-radius: 16px;
         }
 
@@ -803,13 +710,13 @@
         .estado-offline .titulo {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #f39c12;
+            color: var(--acento);
             margin-bottom: 10px;
         }
 
         .estado-offline .mensaje {
             font-size: 0.85rem;
-            color: #888;
+            color: var(--texto-suave);
             line-height: 1.6;
             font-weight: 300;
         }
@@ -850,15 +757,8 @@
         }
 
         @keyframes blurIn {
-            from {
-                backdrop-filter: blur(0px);
-                opacity: 0;
-            }
-
-            to {
-                backdrop-filter: blur(12px);
-                opacity: 1;
-            }
+            from { backdrop-filter: blur(0px); opacity: 0; }
+            to { backdrop-filter: blur(12px); opacity: 1; }
         }
 
         .modal-contenido {
@@ -868,18 +768,20 @@
             border-radius: 18px;
             position: relative;
             z-index: 999;
-            animation: zoomIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        @keyframes zoomIn {
-            0% {
-                transform: scale(0.85);
-                opacity: 0;
-            }
+        .modal.activo .modal-contenido {
+            animation: entradaCinematografica 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
+        @keyframes entradaCinematografica {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) rotateX(15deg);
+            }
             100% {
-                transform: scale(1);
                 opacity: 1;
+                transform: scale(1) rotateX(0);
             }
         }
 
@@ -887,8 +789,8 @@
             position: relative;
             border-radius: 16px;
             overflow: hidden;
-            background: #0a0a0a;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--bg);
+            border: 1px solid var(--borde);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
         }
 
@@ -897,7 +799,7 @@
             max-height: 68vh;
             object-fit: contain;
             display: block;
-            background: #0a0a0a;
+            background: var(--bg);
             padding: 16px;
             transition: transform 0.3s ease;
         }
@@ -918,7 +820,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 3;
             user-select: none;
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
@@ -926,8 +828,8 @@
 
         .nav-flecha:hover {
             background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 215, 0, 0.25);
-            transform: translateY(-50%) scale(1.08);
+            border-color: rgba(212, 212, 216, 0.3);
+            transform: translateY(-50%) scale(1.1);
         }
 
         .nav-flecha.izquierda {
@@ -952,7 +854,7 @@
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             border-radius: 0 0 16px 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            border-top: 1px solid var(--borde);
             margin-top: -1px;
         }
 
@@ -960,20 +862,20 @@
             width: 100%;
             text-align: center;
             padding: 12px 14px;
-            background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
-            border: 1px solid rgba(243, 156, 18, 0.15);
+            background: linear-gradient(135deg, var(--acento-tenue), transparent);
+            border: 1px solid rgba(212, 212, 216, 0.12);
             border-radius: 12px;
         }
 
         .publicidad-wrapper .pub-texto {
             font-size: 0.72rem;
-            color: #c9c9c9;
+            color: var(--texto-suave);
             line-height: 1.5;
             margin-bottom: 8px;
         }
 
         .publicidad-wrapper .pub-texto strong {
-            color: #f1c40f;
+            color: var(--acento);
             font-weight: 600;
         }
 
@@ -981,25 +883,25 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(243, 156, 18, 0.15);
-            border: 1px solid rgba(243, 156, 18, 0.4);
-            color: #f39c12;
+            background: var(--acento-tenue);
+            border: 1px solid rgba(212, 212, 216, 0.3);
+            color: var(--acento);
             padding: 8px 16px;
             border-radius: 50px;
             font-size: 0.72rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
         }
 
         .publicidad-wrapper .pub-btn:hover {
-            background: rgba(243, 156, 18, 0.25);
-            transform: scale(1.04);
+            background: rgba(212, 212, 216, 0.2);
+            transform: translateY(-2px) scale(1.04);
         }
 
         .btn-pedir {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #4ade80, #22c55e);
             color: #0a0a0a;
             border: none;
             padding: 14px 38px;
@@ -1007,24 +909,24 @@
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: inline-flex;
             align-items: center;
             gap: 10px;
             width: 100%;
             justify-content: center;
             max-width: 340px;
-            box-shadow: 0 4px 25px rgba(46, 204, 113, 0.15);
+            box-shadow: 0 4px 25px rgba(74, 222, 128, 0.2);
         }
 
         .btn-pedir:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 35px rgba(46, 204, 113, 0.25);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 35px rgba(74, 222, 128, 0.35);
         }
 
         .btn-pedir.agotado {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            box-shadow: 0 4px 25px rgba(230, 126, 34, 0.2);
+            background: linear-gradient(135deg, #fb923c, #ea580c);
+            box-shadow: 0 4px 25px rgba(251, 146, 60, 0.2);
         }
 
         .btn-pedir.cargando-btn {
@@ -1042,8 +944,8 @@
             right: 14px;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #aaa;
+            border: 1px solid var(--borde);
+            color: var(--texto-suave);
             font-size: 1.4rem;
             cursor: pointer;
             width: 42px;
@@ -1053,11 +955,13 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
+            transition: all 0.25s ease;
         }
 
         .btn-cerrar-modal:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+            transform: rotate(90deg);
         }
 
         /* ===== MODAL INVITAR ===== */
@@ -1081,13 +985,13 @@
         }
 
         .modal-invitar-contenido {
-            background: #141414;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: var(--bg-card);
+            border: 1px solid var(--borde-hover);
             border-radius: 20px;
             padding: 28px 24px 24px;
             max-width: 440px;
             width: 100%;
-            animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
             position: relative;
         }
@@ -1095,14 +999,14 @@
         .modal-invitar-contenido .titulo {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #f1c40f;
+            color: var(--acento);
             margin-bottom: 4px;
             text-align: center;
         }
 
         .modal-invitar-contenido .subtitulo {
             font-size: 0.75rem;
-            color: #888;
+            color: var(--texto-suave);
             text-align: center;
             margin-bottom: 20px;
         }
@@ -1114,7 +1018,7 @@
         .input-group label {
             display: block;
             font-size: 0.7rem;
-            color: #888;
+            color: var(--texto-suave);
             margin-bottom: 6px;
             padding-left: 4px;
         }
@@ -1123,20 +1027,21 @@
             width: 100%;
             padding: 12px 14px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--borde);
             background: rgba(255, 255, 255, 0.04);
             color: #fff;
             font-size: 0.9rem;
             outline: none;
             font-family: inherit;
+            transition: all 0.2s ease;
         }
 
         .input-group input::placeholder {
-            color: #555;
+            color: var(--texto-tenue);
         }
 
         .input-group input:focus {
-            border-color: rgba(255, 215, 0, 0.3);
+            border-color: rgba(212, 212, 216, 0.3);
             background: rgba(255, 255, 255, 0.06);
         }
 
@@ -1150,10 +1055,10 @@
             display: flex;
             align-items: center;
             padding: 0 12px;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid rgba(243, 156, 18, 0.3);
+            background: var(--acento-tenue);
+            border: 1px solid rgba(212, 212, 216, 0.25);
             border-radius: 12px;
-            color: #f39c12;
+            color: var(--acento);
             font-size: 0.9rem;
             font-weight: 600;
             flex-shrink: 0;
@@ -1167,19 +1072,19 @@
 
         .input-ayuda {
             font-size: 0.65rem;
-            color: #666;
+            color: var(--texto-tenue);
             margin-top: 6px;
             padding-left: 4px;
             line-height: 1.4;
         }
 
         .aviso-limite {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 0.72rem;
-            color: #e74c3c;
+            color: var(--error);
             text-align: center;
             margin-bottom: 12px;
         }
@@ -1190,18 +1095,18 @@
             padding: 14px 20px;
             border-radius: 12px;
             border: none;
-            background: linear-gradient(135deg, #f39c12, #d68910);
+            background: linear-gradient(135deg, var(--acento), var(--acento-suave));
             color: #0a0a0a;
             font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
         }
 
         .modal-invitar-contenido .btn-generar:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(212, 212, 216, 0.3);
         }
 
         .modal-invitar-contenido .btn-generar:disabled {
@@ -1217,16 +1122,42 @@
             border-radius: 12px;
             border: none;
             background: rgba(255, 255, 255, 0.06);
-            color: #ccc;
+            color: var(--texto-suave);
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
+            transition: all 0.2s ease;
         }
 
         .modal-invitar-contenido .btn-cancelar:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+        }
+
+        .btn-cerrar-instr {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: transparent;
+            border: none;
+            color: var(--texto-tenue);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-cerrar-instr:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transform: rotate(90deg);
         }
 
         /* ===== MODAL RESULTADO ===== */
@@ -1250,14 +1181,14 @@
         }
 
         .modal-resultado-contenido {
-            background: #141414;
-            border: 1px solid rgba(243, 156, 18, 0.3);
+            background: var(--bg-card);
+            border: 1px solid var(--borde-hover);
             border-radius: 20px;
             padding: 28px 24px 24px;
             max-width: 420px;
             width: 100%;
             text-align: center;
-            animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
             position: relative;
         }
@@ -1271,13 +1202,13 @@
         .modal-resultado-contenido .titulo {
             font-size: 1.05rem;
             font-weight: 700;
-            color: #2ecc71;
+            color: var(--exito);
             margin-bottom: 6px;
         }
 
         .modal-resultado-contenido .subtitulo {
             font-size: 0.8rem;
-            color: #aaa;
+            color: var(--texto-suave);
             margin-bottom: 18px;
             line-height: 1.5;
         }
@@ -1286,13 +1217,14 @@
             background: #fff;
             border-radius: 12px;
             padding: 12px;
-            display: inline-block;
-            margin-bottom: 16px;
-            min-width: 220px;
-            min-height: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto 16px;
+            min-width: 220px;
+            min-height: 220px;
+            width: 220px;
+            height: 220px;
         }
 
         .modal-resultado-contenido .qr-wrapper img {
@@ -1304,11 +1236,11 @@
 
         .modal-resultado-contenido .url-box {
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--borde);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 0.7rem;
-            color: #888;
+            color: var(--texto-suave);
             word-break: break-all;
             margin-bottom: 14px;
             max-height: 80px;
@@ -1332,7 +1264,7 @@
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
             display: inline-flex;
             align-items: center;
@@ -1341,18 +1273,18 @@
         }
 
         .modal-resultado-contenido .btn-whatsapp {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #4ade80, #22c55e);
             color: #0a0a0a;
         }
 
         .modal-resultado-contenido .btn-whatsapp:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.3);
         }
 
         .modal-resultado-contenido .btn-copiar {
             background: rgba(255, 255, 255, 0.06);
-            color: #ccc;
+            color: var(--texto-suave);
         }
 
         .modal-resultado-contenido .btn-copiar:hover {
@@ -1363,13 +1295,13 @@
         .modal-resultado-contenido .btn-cerrar-res {
             margin-top: 8px;
             background: transparent;
-            color: #666;
+            color: var(--texto-tenue);
             font-size: 0.75rem;
             padding: 10px;
         }
 
         .modal-resultado-contenido .btn-cerrar-res:hover {
-            color: #aaa;
+            color: var(--texto-suave);
         }
 
         /* ===== MODAL QR GENERAL ===== */
@@ -1393,14 +1325,14 @@
         }
 
         .modal-qr-general-contenido {
-            background: #141414;
-            border: 1px solid rgba(52, 152, 219, 0.3);
+            background: var(--bg-card);
+            border: 1px solid var(--borde-hover);
             border-radius: 20px;
             padding: 28px 24px 24px;
             max-width: 420px;
             width: 100%;
             text-align: center;
-            animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
             position: relative;
         }
@@ -1414,13 +1346,13 @@
         .modal-qr-general-contenido .titulo {
             font-size: 1.05rem;
             font-weight: 700;
-            color: #5dade2;
+            color: #93c5fd;
             margin-bottom: 6px;
         }
 
         .modal-qr-general-contenido .subtitulo {
             font-size: 0.8rem;
-            color: #aaa;
+            color: var(--texto-suave);
             margin-bottom: 18px;
             line-height: 1.5;
         }
@@ -1446,11 +1378,11 @@
 
         .modal-qr-general-contenido .url-box {
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--borde);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 0.7rem;
-            color: #888;
+            color: var(--texto-suave);
             word-break: break-all;
             margin-bottom: 14px;
             max-height: 80px;
@@ -1474,7 +1406,7 @@
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
             display: inline-flex;
             align-items: center;
@@ -1483,18 +1415,18 @@
         }
 
         .modal-qr-general-contenido .btn-primario {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
             color: #fff;
         }
 
         .modal-qr-general-contenido .btn-primario:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(96, 165, 250, 0.3);
         }
 
         .modal-qr-general-contenido .btn-secundario {
             background: rgba(255, 255, 255, 0.06);
-            color: #ccc;
+            color: var(--texto-suave);
         }
 
         .modal-qr-general-contenido .btn-secundario:hover {
@@ -1505,17 +1437,17 @@
         .modal-qr-general-contenido .btn-cerrar-res {
             margin-top: 8px;
             background: transparent;
-            color: #666;
+            color: var(--texto-tenue);
             font-size: 0.75rem;
             padding: 10px;
         }
 
         .modal-qr-general-contenido .btn-cerrar-res:hover {
-            color: #aaa;
+            color: var(--texto-suave);
         }
 
         .modal-qr-general-contenido .cargando-qr {
-            color: #666;
+            color: var(--texto-tenue);
             font-size: 0.85rem;
             padding: 80px 20px;
         }
@@ -1540,7 +1472,7 @@
         .toast-item {
             background: rgba(20, 20, 20, 0.95);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(243, 156, 18, 0.3);
+            border: 1px solid rgba(212, 212, 216, 0.2);
             border-radius: 50px;
             padding: 10px 18px;
             font-size: 0.75rem;
@@ -1550,7 +1482,7 @@
             line-height: 1.4;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-            animation: toastIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: auto;
             max-width: 420px;
         }
@@ -1560,40 +1492,39 @@
         }
 
         .toast-item strong {
-            color: #f39c12;
+            color: var(--acento);
             font-weight: 700;
         }
 
         .toast-item.tip {
-            border-color: rgba(52, 152, 219, 0.4);
+            border-color: rgba(96, 165, 250, 0.3);
         }
 
         .toast-item.tip strong {
-            color: #5dade2;
+            color: #93c5fd;
         }
 
         .toast-item.success {
-            border-color: rgba(46, 204, 113, 0.4);
+            border-color: rgba(74, 222, 128, 0.3);
         }
 
         .toast-item.success strong {
-            color: #2ecc71;
+            color: var(--exito);
         }
 
         .toast-item.warning {
-            border-color: rgba(231, 76, 60, 0.4);
+            border-color: rgba(248, 113, 113, 0.3);
         }
 
         .toast-item.warning strong {
-            color: #e74c3c;
+            color: var(--error);
         }
 
         @keyframes toastIn {
             0% {
                 opacity: 0;
-                transform: translateY(30px) scale(0.9);
+                transform: translateY(30px) scale(0.95);
             }
-
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -1605,10 +1536,9 @@
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
-
             100% {
                 opacity: 0;
-                transform: translateY(30px) scale(0.9);
+                transform: translateY(30px) scale(0.95);
             }
         }
 
@@ -1627,7 +1557,7 @@
         .footer::before {
             content: '✦';
             display: block;
-            color: rgba(255, 215, 0, 0.05);
+            color: var(--acento-tenue);
             font-size: 0.8rem;
             margin-bottom: 4px;
         }
@@ -1701,19 +1631,6 @@
                 padding: 12px 28px;
             }
 
-            .contador-proxima {
-                padding: 8px 12px;
-                gap: 8px;
-            }
-
-            .contador-proxima .texto-contador {
-                font-size: 0.68rem;
-            }
-
-            .contador-proxima .texto-contador strong {
-                font-size: 0.78rem;
-            }
-
             .badge-rol {
                 font-size: 0.62rem;
                 padding: 4px 8px;
@@ -1742,7 +1659,7 @@
         }
 
         ::selection {
-            background: #f39c12;
+            background: var(--acento);
             color: #0a0a0a;
         }
     </style>
@@ -1765,7 +1682,7 @@
 
     <!-- ===== APP ===== -->
     <div id="app">
-        <!-- ===== HEADER SIMPLIFICADO ===== -->
+        <!-- ===== HEADER ===== -->
         <div class="header">
             <div class="header-top">
                 <div class="header-left">
@@ -1810,15 +1727,6 @@
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
-            </div>
-        </div>
-
-        <!-- ===== CONTADOR DE PRÓXIMA FOTO ===== -->
-        <div class="contador-proxima oculto" id="contadorProxima">
-            <span class="icono-contador" id="iconoContador">📸</span>
-            <span class="texto-contador" id="textoContador">Próxima foto en <strong>0:00</strong></span>
-            <div class="barra-progreso">
-                <div class="relleno" id="barraRelleno"></div>
             </div>
         </div>
 
@@ -2014,29 +1922,19 @@
         let servidorOnline = true;
         let tituloEsDefault = true;
 
-        let invitacionTipo = 'admin';
         let invitacionGenerada = null;
 
         let countdownInterval = null;
 
         let urlQrGeneralActual = null;
 
-        // 🔥 Estado del contador de próxima foto
-        let contadorEstado = {
-            activo: false,
-            intervaloTotal: 60,       // segundos
-            segundosRestantes: 60,
-            timerId: null,
-            hayPendientes: false
-        };
-
-        // 🔥 Set de fotos nuevas (para badge "NUEVA")
-        let fotosNuevas = new Set();
+        // 🔥 Map<nombreFoto, timestampMs> para badge "NUEVA"
+        let fotosNuevasMap = new Map();
 
         // 🔥 Timers de toasts
         let toastsActivos = [];
 
-        // 🔥 Control de tips mostrados (para no repetir)
+        // 🔥 Control de tips mostrados
         let tipsMostrados = {
             primeraEntrada: false,
             primeraDescarga: false,
@@ -2060,10 +1958,6 @@
                 fotosMas: "fotos más",
                 porDescubrir: "por descubrir",
                 hasVistoTodo: "Has visto todas las fotos disponibles",
-                fotoNueva: "foto nueva",
-                fotosNuevas: "fotos nuevas",
-                disponibles: "disponible",
-                disponiblesPlural: "disponibles",
                 descargarFoto: "Descargar foto",
                 descargando: "Preparando descarga...",
                 sinCreditos: "Has visto todo por hoy. Gracias por ser parte.",
@@ -2083,20 +1977,15 @@
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
-                contadorAdmin: "👑 Admin · Ilimitado",
+                contadorAdmin: "👑 Admin",
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Receso",
-                // 🔥 Contador de próxima foto
-                proximaFoto: (tiempo) => `Próxima foto en <strong>${tiempo}</strong>`,
-                esperandoFoto: "Esperando la próxima foto...",
                 fotoNuevaLlegada: "¡Nueva foto disponible!",
-                // 🔥 Tips contextuales
                 tipEntrada: "💡 Toca una foto para verla en grande",
                 tipPrimeraDescarga: "💡 Descarga tus favoritas. Se guardan en tu celular",
                 tipFotoNueva: "✨ Acaba de aparecer una foto nueva",
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
-                // 🔥 Avisos rotativos (los que ya existían)
                 avisos: [
                     'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -2118,10 +2007,6 @@
                 fotosMas: "more photos",
                 porDescubrir: "to discover",
                 hasVistoTodo: "You've seen all available photos",
-                fotoNueva: "new photo",
-                fotosNuevas: "new photos",
-                disponibles: "available",
-                disponiblesPlural: "available",
                 descargarFoto: "Download photo",
                 descargando: "Preparing download...",
                 sinCreditos: "You've seen everything for today. Thanks for being part of it.",
@@ -2141,11 +2026,9 @@
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
-                contadorAdmin: "👑 Admin · Unlimited",
+                contadorAdmin: "👑 Admin",
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Break",
-                proximaFoto: (tiempo) => `Next photo in <strong>${tiempo}</strong>`,
-                esperandoFoto: "Waiting for the next photo...",
                 fotoNuevaLlegada: "New photo available!",
                 tipEntrada: "💡 Tap a photo to view it large",
                 tipPrimeraDescarga: "💡 Download your favorites. They save to your phone",
@@ -2173,10 +2056,6 @@
                 fotosMas: "张照片",
                 porDescubrir: "待查看",
                 hasVistoTodo: "你已看完全部照片",
-                fotoNueva: "张新照片",
-                fotosNuevas: "张新照片",
-                disponibles: "可用",
-                disponiblesPlural: "可用",
                 descargarFoto: "下载照片",
                 descargando: "正在准备下载...",
                 sinCreditos: "你已看完全部内容，感谢参与。",
@@ -2196,11 +2075,9 @@
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
-                contadorAdmin: "👑 管理员 · 无限",
+                contadorAdmin: "👑 管理员",
                 contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ 休息",
-                proximaFoto: (tiempo) => `下一张照片 <strong>${tiempo}</strong>`,
-                esperandoFoto: "正在等待下一张照片...",
                 fotoNuevaLlegada: "新照片已上线！",
                 tipEntrada: "💡 点击照片查看大图",
                 tipPrimeraDescarga: "💡 下载你喜欢的照片，会保存到手机",
@@ -2302,7 +2179,6 @@
 
             toastsActivos.push(toast);
 
-            // Limitar a 3 toasts visibles
             if (toastsActivos.length > 3) {
                 const viejo = toastsActivos.shift();
                 if (viejo && viejo.parentNode) {
@@ -2500,14 +2376,12 @@
 
             actualizarBadgeRol();
 
-            // 🔥 Tip de entrada
             if (!tipsMostrados.primeraEntrada) {
                 tipsMostrados.primeraEntrada = true;
                 setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 2000);
             }
         }
 
-        // 🔥 Badge compacto con rol + descargas
         function actualizarBadgeRol() {
             const el = document.getElementById('badgeRol');
 
@@ -2539,91 +2413,6 @@
             } else {
                 el.style.display = 'none';
             }
-        }
-
-        // ==========================================
-        // ⏱️ CONTADOR DE PRÓXIMA FOTO
-        // ==========================================
-        function iniciarContadorProxima(intervaloSegundos) {
-            detenerContadorProxima();
-
-            contadorEstado.activo = true;
-            contadorEstado.intervaloTotal = intervaloSegundos || 60;
-            contadorEstado.segundosRestantes = contadorEstado.intervaloTotal;
-
-            const contador = document.getElementById('contadorProxima');
-            contador.classList.remove('oculto', 'nueva', 'esperando');
-
-            actualizarTextoContador();
-            actualizarBarraContador();
-
-            contadorEstado.timerId = setInterval(() => {
-                contadorEstado.segundosRestantes--;
-                if (contadorEstado.segundosRestantes <= 0) {
-                    contadorEstado.segundosRestantes = 0;
-                    actualizarTextoContador();
-                    actualizarBarraContador();
-                    // Disparar poll inmediato
-                    clearTimeout(window._pollTimer);
-                    cargarFotos();
-                    // Reiniciar contador
-                    contadorEstado.segundosRestantes = contadorEstado.intervaloTotal;
-                } else {
-                    actualizarTextoContador();
-                    actualizarBarraContador();
-                }
-            }, 1000);
-        }
-
-        function detenerContadorProxima() {
-            if (contadorEstado.timerId) {
-                clearInterval(contadorEstado.timerId);
-                contadorEstado.timerId = null;
-            }
-            contadorEstado.activo = false;
-        }
-
-        function actualizarTextoContador() {
-            const textoEl = document.getElementById('textoContador');
-            if (!contadorEstado.hayPendientes) {
-                textoEl.textContent = t('esperandoFoto');
-                return;
-            }
-            const min = Math.floor(contadorEstado.segundosRestantes / 60);
-            const seg = contadorEstado.segundosRestantes % 60;
-            const tiempo = `${min}:${String(seg).padStart(2, '0')}`;
-            textoEl.innerHTML = t('proximaFoto', tiempo);
-        }
-
-        function actualizarBarraContador() {
-            const relleno = document.getElementById('barraRelleno');
-            const porcentaje = ((contadorEstado.intervaloTotal - contadorEstado.segundosRestantes) / contadorEstado.intervaloTotal) * 100;
-            relleno.style.width = Math.min(100, Math.max(0, porcentaje)) + '%';
-        }
-
-        function mostrarEsperando() {
-            const contador = document.getElementById('contadorProxima');
-            contador.classList.remove('oculto');
-            contador.classList.add('esperando');
-            contadorEstado.hayPendientes = false;
-            actualizarTextoContador();
-        }
-
-        function mostrarContadorActivo() {
-            const contador = document.getElementById('contadorProxima');
-            contador.classList.remove('oculto', 'esperando');
-            contadorEstado.hayPendientes = true;
-        }
-
-        function ocultarContador() {
-            const contador = document.getElementById('contadorProxima');
-            contador.classList.add('oculto');
-        }
-
-        function marcarContadorNueva() {
-            const contador = document.getElementById('contadorProxima');
-            contador.classList.add('nueva');
-            setTimeout(() => contador.classList.remove('nueva'), 2000);
         }
 
         // ==========================================
@@ -2695,14 +2484,20 @@
 
                 // 🔥 Detectar fotos nuevas por nombre
                 const nombresAnteriores = new Set(fotosCache.map(f => f.nombre));
-                const nombresNuevos = new Set(nuevasFotos.map(f => f.nombre));
-
                 const fotosRecienLlegadas = nuevasFotos.filter(f => !nombresAnteriores.has(f.nombre));
 
-                // Marcar fotos nuevas con badge
+                // Guardar timestamp de cada foto nueva
+                const ahora = Date.now();
                 fotosRecienLlegadas.forEach(f => {
-                    fotosNuevas.add(f.nombre);
+                    fotosNuevasMap.set(f.nombre, ahora);
                 });
+
+                // Limpiar fotos viejas del map (>3 min)
+                for (const [nombre, ts] of fotosNuevasMap) {
+                    if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
+                        fotosNuevasMap.delete(nombre);
+                    }
+                }
 
                 const huboCambio = JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache);
 
@@ -2715,15 +2510,8 @@
 
                     renderizarGaleria();
 
-                    // 🔥 Si llegaron fotos nuevas, mostrar animación + toast
                     if (fotosRecienLlegadas.length > 0) {
-                        marcarContadorNueva();
-                        if (!tipsMostrados.primeraFotoNueva) {
-                            tipsMostrados.primeraFotoNueva = true;
-                            mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
-                        } else {
-                            mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
-                        }
+                        mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
                     }
                 }
 
@@ -2731,30 +2519,10 @@
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
 
-                // 🔥 Actualizar contador de próxima foto según el poll
-                const intervalo = (data.poll && data.poll.intervaloBaseSeg) || 60;
-
-                // Si hay fotos pendientes en el server (no sabemos directamente),
-                // usamos el poll como referencia. Si el poll es corto, hay actividad.
-                if (intervalo <= 90) {
-                    // Hay actividad → mostrar contador activo
-                    if (!contadorEstado.activo) {
-                        iniciarContadorProxima(intervalo);
-                    } else {
-                        contadorEstado.intervaloTotal = intervalo;
-                    }
-                    mostrarContadorActivo();
-                } else {
-                    // Sin actividad → mostrar esperando
-                    mostrarEsperando();
-                    detenerContadorProxima();
-                }
-
             } catch (error) {
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
-                ocultarContador();
             }
 
             cargando = false;
@@ -2863,7 +2631,7 @@
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
                 const urlImagen = foto.url;
-                const esNueva = fotosNuevas.has(foto.nombre);
+                const esNueva = fotosNuevasMap.has(foto.nombre);
 
                 html += `
                     <div class="foto ${esNueva ? 'nueva animar-entrada' : ''}" onclick="abrirModal('${foto.nombre}')">
@@ -2901,19 +2669,6 @@
             galeria.innerHTML = html;
             cargarImagenesSecuencialmente();
             totalFotosAnterior = fotosCache.length;
-
-            // 🔥 Programar limpieza del badge "NUEVA" después de 3 min
-            if (fotosNuevas.size > 0) {
-                setTimeout(() => {
-                    fotosNuevas.clear();
-                    // Re-render suave solo si hay fotos visibles
-                    document.querySelectorAll('.foto.nueva').forEach(el => {
-                        el.classList.remove('nueva', 'animar-entrada');
-                        const badge = el.querySelector('.badge-nueva');
-                        if (badge) badge.remove();
-                    });
-                }, DURACION_BADGE_NUEVA_MS);
-            }
         }
 
         function cargarImagenesSecuencialmente() {
@@ -2974,6 +2729,32 @@
                 }
             }
         }
+
+        // 🔥 Limpieza periódica de badges "NUEVA"
+        setInterval(() => {
+            const ahora = Date.now();
+            let huboCambio = false;
+
+            for (const [nombre, ts] of fotosNuevasMap) {
+                if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
+                    fotosNuevasMap.delete(nombre);
+                    huboCambio = true;
+                }
+            }
+
+            if (huboCambio) {
+                document.querySelectorAll('.foto').forEach((el, index) => {
+                    const foto = fotosCache[index];
+                    if (!foto) return;
+                    const esNueva = fotosNuevasMap.has(foto.nombre);
+                    if (!esNueva && el.classList.contains('nueva')) {
+                        el.classList.remove('nueva', 'animar-entrada');
+                        const badge = el.querySelector('.badge-nueva');
+                        if (badge) badge.remove();
+                    }
+                });
+            }
+        }, 30000);
 
         // ==========================================
         // 🖼️ MODAL FOTO
@@ -3166,7 +2947,6 @@
                     actualizarBotonPrincipal();
                 }
 
-                // 🔥 Tip de primera descarga
                 if (!tipsMostrados.primeraDescarga) {
                     tipsMostrados.primeraDescarga = true;
                     setTimeout(() => mostrarToast(t('tipPrimeraDescarga'), 'tip'), 800);
@@ -3182,14 +2962,13 @@
         }
 
         // ==========================================
-        // ✨ INVITAR (solo Admin)
+        // ✨ INVITAR
         // ==========================================
         function abrirInvitar() {
             document.getElementById('modalInvitar').classList.add('activo');
             document.getElementById('inputNombreInvitacion').value = '';
             document.getElementById('inputWhatsAppInvitacion').value = '';
             document.getElementById('avisoLimiteVips').style.display = 'none';
-            invitacionTipo = 'admin';
         }
 
         function cerrarInvitar() {
@@ -3372,7 +3151,7 @@
                     const data = await resp.json();
 
                     if (!resp.ok || !data.ok || !data.tokenGeneral) {
-                        wrapper.innerHTML = '<div class="cargando-qr" style="color:#e74c3c;">No se pudo cargar el QR.<br>Contacta al fotógrafo.</div>';
+                        wrapper.innerHTML = '<div class="cargando-qr" style="color:#f87171;">No se pudo cargar el QR.<br>Contacta al fotógrafo.</div>';
                         urlBox.textContent = '(no disponible)';
                         return;
                     }
@@ -3382,7 +3161,7 @@
 
                 } catch (e) {
                     console.error('Error cargando token general:', e);
-                    wrapper.innerHTML = '<div class="cargando-qr" style="color:#e74c3c;">Error de conexión.</div>';
+                    wrapper.innerHTML = '<div class="cargando-qr" style="color:#f87171;">Error de conexión.</div>';
                     urlBox.textContent = '(no disponible)';
                     return;
                 }
@@ -3470,7 +3249,7 @@
         }
 
         // ==========================================
-        // 💬 AVISOS ROTATIVOS (ahora como toasts)
+        // 💬 AVISOS ROTATIVOS
         // ==========================================
         let indiceAviso = 0;
         let avisoTimeoutId = null;
@@ -3579,7 +3358,6 @@
 
             activarApp();
 
-            // 🔥 Detección de recargas excesivas
             (function detectarRecargas() {
                 const recargas = JSON.parse(localStorage.getItem('ovj_recargas') || '[]');
                 const ahora = Date.now();
