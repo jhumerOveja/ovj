@@ -14,43 +14,54 @@
         }
 
         :root {
-            /* Fondo */
-            --bg: #0a0a0a;
-            --bg-card: #141414;
-            --bg-hover: #1a1a1a;
+            --bg: #0a0a0c;
+            --bg-2: #0f0f12;
+            --bg-card: #141417;
+            --bg-hover: #1a1a1e;
 
-            /* Texto */
             --texto: #ffffff;
             --texto-suave: #a1a1aa;
             --texto-tenue: #52525b;
 
-            /* Acento plateado (principal) */
             --acento: #d4d4d8;
             --acento-suave: #a1a1aa;
             --acento-tenue: rgba(212, 212, 216, 0.1);
 
-            /* Dorado champagne (solo para "NUEVA") */
             --champagne: #e8c47a;
             --champagne-suave: #d4a94a;
             --champagne-tenue: rgba(232, 196, 122, 0.15);
+            --champagne-glow: rgba(232, 196, 122, 0.4);
 
-            /* Estados */
             --exito: #4ade80;
             --error: #f87171;
             --aviso: #fbbf24;
 
-            /* Bordes */
             --borde: rgba(255, 255, 255, 0.06);
             --borde-hover: rgba(255, 255, 255, 0.12);
+
+            --sombra-suave: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --sombra-media: 0 12px 40px rgba(0, 0, 0, 0.6);
+            --sombra-fuerte: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
+            background: radial-gradient(ellipse at top, var(--bg-2) 0%, var(--bg) 50%, #050506 100%);
+            background-attachment: fixed;
             color: var(--texto);
             min-height: 100vh;
             padding: 12px 16px 20px;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--champagne);
+            color: #0a0a0a;
         }
 
         /* ===== BLOQUEO ===== */
@@ -59,7 +70,7 @@
             position: fixed;
             inset: 0;
             z-index: 5000;
-            background: var(--bg);
+            background: radial-gradient(ellipse at center, var(--bg-2) 0%, var(--bg) 100%);
             justify-content: center;
             align-items: center;
             padding: 30px 24px;
@@ -68,17 +79,41 @@
 
         .bloqueo.activo {
             display: flex;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .bloqueo-contenido {
             max-width: 420px;
+            animation: bloquearEntrada 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bloquearEntrada {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .bloqueo .icono {
             font-size: 4rem;
             margin-bottom: 20px;
             display: block;
-            opacity: 0.4;
+            opacity: 0.5;
+            animation: pulsoIcono 3s ease-in-out infinite;
+        }
+
+        @keyframes pulsoIcono {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
         }
 
         .bloqueo .titulo {
@@ -99,17 +134,24 @@
         .bloqueo .marca {
             margin-top: 40px;
             font-size: 0.75rem;
-            letter-spacing: 2px;
-            color: #333;
+            letter-spacing: 3px;
+            color: var(--texto-tenue);
+            opacity: 0.5;
         }
 
         .bloqueo .countdown {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--acento);
+            color: var(--champagne);
             margin-top: 20px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             letter-spacing: 2px;
+            animation: pulsoCountdown 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoCountdown {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
         /* ===== APP ===== */
@@ -119,7 +161,7 @@
 
         #app.activo {
             display: block;
-            animation: fadeInApp 0.5s ease;
+            animation: fadeInApp 0.8s ease;
         }
 
         @keyframes fadeInApp {
@@ -132,7 +174,23 @@
             padding: 10px 0 8px;
             border-bottom: 1px solid var(--borde);
             margin-bottom: 10px;
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            transition: all 0.4s ease;
+            margin-left: -16px;
+            margin-right: -16px;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .header.scrolleado {
+            padding-top: 6px;
+            padding-bottom: 6px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         .header::after {
@@ -142,8 +200,8 @@
             left: 25%;
             width: 50%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--acento-tenue), transparent);
-            animation: subrayadoHeader 4s ease-in-out infinite;
+            background: linear-gradient(90deg, transparent, var(--champagne-tenue), transparent);
+            animation: subrayadoHeader 5s ease-in-out infinite;
         }
 
         @keyframes subrayadoHeader {
@@ -153,9 +211,9 @@
                 opacity: 0.4;
             }
             50% {
-                left: 20%;
-                width: 60%;
-                opacity: 0.8;
+                left: 15%;
+                width: 70%;
+                opacity: 0.9;
             }
         }
 
@@ -180,6 +238,7 @@
             user-select: none;
             cursor: default;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .header-left .ovj-studio span {
@@ -187,6 +246,7 @@
             background: linear-gradient(135deg, #ffffff, var(--acento-suave));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
         }
 
         .header-left .ovj-studio::before {
@@ -195,8 +255,13 @@
             left: -16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--acento-tenue);
+            color: var(--champagne-tenue);
             font-size: 0.6rem;
+            animation: rotarEstrella 8s linear infinite;
+        }
+
+        @keyframes rotarEstrella {
+            to { transform: translateY(-50%) rotate(360deg); }
         }
 
         .header-right {
@@ -206,7 +271,7 @@
             flex-wrap: wrap;
         }
 
-        /* 🔥 Badge de rol */
+        /* Badge de rol */
         .badge-rol {
             display: inline-flex;
             align-items: center;
@@ -220,12 +285,30 @@
             border-radius: 50px;
             letter-spacing: 0.3px;
             user-select: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-rol::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .badge-rol:hover::before {
+            left: 100%;
         }
 
         .badge-rol.admin {
-            background: var(--acento-tenue);
-            border-color: rgba(212, 212, 216, 0.3);
+            background: var(--champagne-tenue);
+            border-color: rgba(232, 196, 122, 0.35);
+            color: var(--champagne);
         }
 
         .badge-rol.agotado {
@@ -243,7 +326,7 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Botones admin */
+        /* Botones admin mini */
         .btn-admin-mini {
             display: inline-flex;
             align-items: center;
@@ -254,10 +337,12 @@
             font-size: 0.65rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.2px;
             font-family: inherit;
             border: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-admin-mini:hover {
@@ -286,7 +371,7 @@
             box-shadow: 0 6px 20px rgba(96, 165, 250, 0.15);
         }
 
-        /* Selector de idioma */
+        /* Selector idioma */
         .lang-selector {
             position: relative;
             user-select: none;
@@ -304,13 +389,14 @@
             border-radius: 50px;
             border: 1px solid var(--borde);
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
         }
 
         .lang-btn:hover {
             background: var(--acento-tenue);
             border-color: rgba(212, 212, 216, 0.25);
             color: var(--acento);
+            transform: translateY(-1px);
         }
 
         .lang-btn .bandera {
@@ -321,7 +407,7 @@
         .lang-btn .flecha {
             font-size: 0.5rem;
             opacity: 0.6;
-            transition: transform 0.25s ease;
+            transition: transform 0.3s ease;
         }
 
         .lang-selector.abierto .lang-btn .flecha {
@@ -332,24 +418,24 @@
             position: absolute;
             top: calc(100% + 6px);
             right: 0;
-            background: #111;
-            border: 1px solid var(--borde);
+            background: rgba(20, 20, 23, 0.98);
+            border: 1px solid var(--borde-hover);
             border-radius: 12px;
             padding: 6px;
             min-width: 130px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: var(--sombra-fuerte);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: all 0.2s ease;
+            transform: translateY(-6px) scale(0.95);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 100;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
         }
 
         .lang-selector.abierto .lang-menu {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .lang-opcion {
@@ -372,6 +458,7 @@
         .lang-opcion:hover {
             background: var(--acento-tenue);
             color: var(--acento);
+            transform: translateX(2px);
         }
 
         .lang-opcion.activo {
@@ -380,6 +467,7 @@
             font-weight: 600;
         }
 
+        /* Badge en vivo */
         .badge-en-vivo {
             display: inline-flex;
             align-items: center;
@@ -403,6 +491,7 @@
             background: var(--error);
             border-radius: 50%;
             animation: pulse 1.8s infinite;
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
         }
 
         @keyframes pulse {
@@ -411,9 +500,42 @@
             100% { opacity: 0.3; transform: scale(0.8); }
         }
 
+        /* Contador de fotos en header */
+        .contador-fotos-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--borde);
+            color: var(--texto-suave);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .contador-fotos-header.actualizado {
+            animation: pulsoContador 0.6s ease;
+        }
+
+        @keyframes pulsoContador {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Header bottom */
         .header-bottom {
             text-align: center;
             padding-top: 4px;
+            transition: all 0.4s ease;
+        }
+
+        .header.scrolleado .header-bottom {
+            padding-top: 2px;
         }
 
         .header-bottom .evento-titulo {
@@ -421,12 +543,24 @@
             font-weight: 700;
             letter-spacing: 3px;
             color: #fff;
-            background: linear-gradient(135deg, #fff, var(--texto-suave));
+            background: linear-gradient(135deg, #fff 0%, var(--texto-suave) 50%, #fff 100%);
+            background-size: 200% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
             position: relative;
             display: inline-block;
+            transition: all 0.4s ease;
+            animation: brilloTitulo 6s ease-in-out infinite;
+        }
+
+        @keyframes brilloTitulo {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header.scrolleado .header-bottom .evento-titulo {
+            font-size: 1.5rem;
         }
 
         .header-bottom .evento-titulo::after {
@@ -436,13 +570,13 @@
             left: 20%;
             width: 60%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--acento-tenue), transparent);
-            animation: subrayadoTitulo 4s ease-in-out infinite;
+            background: linear-gradient(90deg, transparent, var(--champagne-tenue), transparent);
+            animation: subrayadoTitulo 5s ease-in-out infinite;
         }
 
         @keyframes subrayadoTitulo {
             0%, 100% { left: 25%; width: 50%; opacity: 0.3; }
-            50% { left: 15%; width: 70%; opacity: 0.6; }
+            50% { left: 15%; width: 70%; opacity: 0.8; }
         }
 
         /* ===== ESTADO MINI ===== */
@@ -499,15 +633,18 @@
                         border-color 0.4s ease;
             position: relative;
             aspect-ratio: 1 / 1;
+            will-change: transform;
         }
 
         .foto:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
+                        0 0 0 1px rgba(212, 212, 216, 0.08);
             border-color: rgba(212, 212, 216, 0.15);
+            z-index: 2;
         }
 
-        /* 🔥 Foto nueva: borde dorado girando + glow */
+        /* Foto nueva */
         .foto.nueva {
             border-color: var(--champagne);
             box-shadow: 0 0 24px var(--champagne-tenue),
@@ -535,18 +672,20 @@
             mask-composite: exclude;
             pointer-events: none;
             z-index: 4;
-            animation: bordeGirando 4s linear infinite;
+            animation: bordeGirando 3s linear infinite;
         }
 
         @keyframes bordeGirando {
             to { transform: rotate(360deg); }
         }
 
+        /* Badge NUEVA con shimmer */
         .foto .badge-nueva {
             position: absolute;
             top: 10px;
             right: 10px;
             background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            background-size: 200% 200%;
             color: #0a0a0a;
             font-size: 0.55rem;
             font-weight: 800;
@@ -559,7 +698,15 @@
             display: flex;
             align-items: center;
             gap: 3px;
-            animation: pulsoBadgeNueva 2s ease-in-out infinite;
+            animation: pulsoBadgeNueva 1.8s ease-in-out infinite,
+                       shimmerBadge 3s linear infinite;
+            overflow: hidden;
+            position: absolute;
+        }
+
+        @keyframes shimmerBadge {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         @keyframes pulsoBadgeNueva {
@@ -573,15 +720,23 @@
             }
         }
 
+        /* Skeleton shimmer plateado */
         .foto .skeleton {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, var(--bg-card) 0%, #1a1a1a 50%, var(--bg-card) 100%);
+            background: linear-gradient(
+                90deg,
+                var(--bg-card) 0%,
+                #1f1f23 30%,
+                #2a2a2f 50%,
+                #1f1f23 70%,
+                var(--bg-card) 100%
+            );
             background-size: 200% 100%;
-            animation: skeleton 1.5s infinite;
+            animation: skeleton 1.8s infinite;
             z-index: 1;
         }
 
@@ -599,7 +754,7 @@
             position: relative;
             z-index: 2;
             opacity: 0;
-            transition: opacity 0.6s ease, filter 0.4s ease;
+            transition: opacity 0.7s ease, filter 0.4s ease, transform 0.6s ease;
         }
 
         .foto img.cargada {
@@ -607,7 +762,7 @@
         }
 
         .foto:hover img {
-            filter: brightness(1.06);
+            filter: brightness(1.08);
         }
 
         .foto::after {
@@ -617,16 +772,17 @@
             right: 14px;
             color: rgba(255, 255, 255, 0.08);
             font-size: 1.2rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 3;
+            transform: translateY(4px);
         }
 
         .foto:hover::after {
-            color: rgba(212, 212, 216, 0.25);
+            color: rgba(232, 196, 122, 0.4);
             transform: translate(-4px, -4px);
         }
 
-        /* 🔥 Animación de revelado */
+        /* Animación de revelado */
         .foto.animar-entrada {
             animation: revelarFoto 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -634,7 +790,7 @@
         @keyframes revelarFoto {
             0% {
                 opacity: 0;
-                transform: scale(0.92) translateY(20px);
+                transform: scale(0.9) translateY(20px);
                 filter: blur(12px) brightness(1.3);
             }
             60% {
@@ -648,6 +804,23 @@
             }
         }
 
+        /* Animación de entrada al viewport */
+        .foto.entrada-viewport {
+            animation: entradaViewport 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        @keyframes entradaViewport {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Ver más wrapper */
         .ver-mas-wrapper {
             grid-column: 1 / -1;
             display: flex;
@@ -658,7 +831,7 @@
         }
 
         .btn-ver-mas {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--borde);
             color: var(--acento);
             padding: 14px 38px;
@@ -669,6 +842,23 @@
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.5px;
             backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ver-mas::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 212, 216, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-ver-mas:hover::before {
+            left: 100%;
         }
 
         .btn-ver-mas:hover {
@@ -686,25 +876,44 @@
         }
 
         .info-restantes strong {
-            color: var(--acento);
+            color: var(--champagne);
             font-weight: 600;
         }
 
+        /* Estado vacío */
         .estado-offline {
             max-width: 400px;
             margin: 60px auto;
             text-align: center;
-            padding: 40px 24px;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 50px 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
             border: 1px solid var(--borde);
-            border-radius: 16px;
+            border-radius: 20px;
+            animation: entradaEstadoVacio 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes entradaEstadoVacio {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .estado-offline .icono {
             font-size: 3rem;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: block;
             opacity: 0.9;
+            animation: pulsoIconoVacio 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsoIconoVacio {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 1; }
         }
 
         .estado-offline .titulo {
@@ -745,8 +954,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.94);
+            backdrop-filter: blur(16px) saturate(150%);
             z-index: 998;
             display: none;
             animation: blurIn 0.4s ease;
@@ -758,7 +967,7 @@
 
         @keyframes blurIn {
             from { backdrop-filter: blur(0px); opacity: 0; }
-            to { backdrop-filter: blur(12px); opacity: 1; }
+            to { backdrop-filter: blur(16px); opacity: 1; }
         }
 
         .modal-contenido {
@@ -771,17 +980,19 @@
         }
 
         .modal.activo .modal-contenido {
-            animation: entradaCinematografica 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: entradaCinematografica 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes entradaCinematografica {
             0% {
                 opacity: 0;
-                transform: scale(0.7) rotateX(15deg);
+                transform: scale(0.7) rotateX(15deg) translateY(40px);
+                filter: blur(8px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) rotateX(0);
+                transform: scale(1) rotateX(0) translateY(0);
+                filter: blur(0px);
             }
         }
 
@@ -791,7 +1002,8 @@
             overflow: hidden;
             background: var(--bg);
             border: 1px solid var(--borde);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
+                        0 0 0 1px rgba(232, 196, 122, 0.05);
         }
 
         .modal-contenido img {
@@ -801,7 +1013,7 @@
             display: block;
             background: var(--bg);
             padding: 16px;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
         }
 
         .nav-flecha {
@@ -828,8 +1040,13 @@
 
         .nav-flecha:hover {
             background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(212, 212, 216, 0.3);
-            transform: translateY(-50%) scale(1.1);
+            border-color: rgba(232, 196, 122, 0.4);
+            transform: translateY(-50%) scale(1.12);
+            box-shadow: 0 8px 30px rgba(232, 196, 122, 0.2);
+        }
+
+        .nav-flecha:active {
+            transform: translateY(-50%) scale(0.95);
         }
 
         .nav-flecha.izquierda {
@@ -862,8 +1079,8 @@
             width: 100%;
             text-align: center;
             padding: 12px 14px;
-            background: linear-gradient(135deg, var(--acento-tenue), transparent);
-            border: 1px solid rgba(212, 212, 216, 0.12);
+            background: linear-gradient(135deg, var(--champagne-tenue), transparent);
+            border: 1px solid rgba(232, 196, 122, 0.15);
             border-radius: 12px;
         }
 
@@ -875,7 +1092,7 @@
         }
 
         .publicidad-wrapper .pub-texto strong {
-            color: var(--acento);
+            color: var(--champagne);
             font-weight: 600;
         }
 
@@ -883,21 +1100,39 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--acento-tenue);
-            border: 1px solid rgba(212, 212, 216, 0.3);
-            color: var(--acento);
+            background: var(--champagne-tenue);
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            color: var(--champagne);
             padding: 8px 16px;
             border-radius: 50px;
             font-size: 0.72rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .publicidad-wrapper .pub-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 196, 122, 0.25), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .publicidad-wrapper .pub-btn:hover::before {
+            left: 100%;
         }
 
         .publicidad-wrapper .pub-btn:hover {
-            background: rgba(212, 212, 216, 0.2);
+            background: rgba(232, 196, 122, 0.2);
             transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 20px rgba(232, 196, 122, 0.25);
         }
 
         .btn-pedir {
@@ -917,11 +1152,32 @@
             justify-content: center;
             max-width: 340px;
             box-shadow: 0 4px 25px rgba(74, 222, 128, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-pedir::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-pedir:hover::before {
+            left: 100%;
         }
 
         .btn-pedir:hover {
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 8px 35px rgba(74, 222, 128, 0.35);
+        }
+
+        .btn-pedir:active {
+            transform: translateY(0) scale(0.98);
         }
 
         .btn-pedir.agotado {
@@ -955,13 +1211,14 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
-            transition: all 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .btn-cerrar-modal:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            transform: rotate(90deg);
+            transform: rotate(90deg) scale(1.1);
+            border-color: rgba(232, 196, 122, 0.3);
         }
 
         /* ===== MODAL INVITAR ===== */
@@ -991,15 +1248,15 @@
             padding: 28px 24px 24px;
             max-width: 440px;
             width: 100%;
-            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--sombra-fuerte);
             position: relative;
         }
 
         .modal-invitar-contenido .titulo {
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--acento);
+            color: var(--champagne);
             margin-bottom: 4px;
             text-align: center;
         }
@@ -1033,7 +1290,7 @@
             font-size: 0.9rem;
             outline: none;
             font-family: inherit;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .input-group input::placeholder {
@@ -1041,8 +1298,9 @@
         }
 
         .input-group input:focus {
-            border-color: rgba(212, 212, 216, 0.3);
+            border-color: rgba(232, 196, 122, 0.4);
             background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(232, 196, 122, 0.08);
         }
 
         .input-con-prefijo {
@@ -1055,10 +1313,10 @@
             display: flex;
             align-items: center;
             padding: 0 12px;
-            background: var(--acento-tenue);
-            border: 1px solid rgba(212, 212, 216, 0.25);
+            background: var(--champagne-tenue);
+            border: 1px solid rgba(232, 196, 122, 0.25);
             border-radius: 12px;
-            color: var(--acento);
+            color: var(--champagne);
             font-size: 0.9rem;
             font-weight: 600;
             flex-shrink: 0;
@@ -1095,18 +1353,35 @@
             padding: 14px 20px;
             border-radius: 12px;
             border: none;
-            background: linear-gradient(135deg, var(--acento), var(--acento-suave));
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
             color: #0a0a0a;
             font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-invitar-contenido .btn-generar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .modal-invitar-contenido .btn-generar:hover::before {
+            left: 100%;
         }
 
         .modal-invitar-contenido .btn-generar:hover {
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(212, 212, 216, 0.3);
+            box-shadow: 0 8px 30px rgba(232, 196, 122, 0.3);
         }
 
         .modal-invitar-contenido .btn-generar:disabled {
@@ -1150,14 +1425,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
         }
 
         .btn-cerrar-instr:hover {
             background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            transform: rotate(90deg);
+            transform: rotate(90deg) scale(1.1);
         }
 
         /* ===== MODAL RESULTADO ===== */
@@ -1188,8 +1463,8 @@
             max-width: 420px;
             width: 100%;
             text-align: center;
-            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--sombra-fuerte);
             position: relative;
         }
 
@@ -1197,6 +1472,12 @@
             font-size: 2.5rem;
             display: block;
             margin-bottom: 12px;
+            animation: pulsoEmoji 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoEmoji {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .modal-resultado-contenido .titulo {
@@ -1264,17 +1545,34 @@
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
 
         .modal-resultado-contenido .btn-whatsapp {
             background: linear-gradient(135deg, #4ade80, #22c55e);
             color: #0a0a0a;
+        }
+
+        .modal-resultado-contenido .btn-whatsapp::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .modal-resultado-contenido .btn-whatsapp:hover::before {
+            left: 100%;
         }
 
         .modal-resultado-contenido .btn-whatsapp:hover {
@@ -1332,8 +1630,8 @@
             max-width: 420px;
             width: 100%;
             text-align: center;
-            animation: entradaCinematografica 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--sombra-fuerte);
             position: relative;
         }
 
@@ -1406,7 +1704,7 @@
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
             display: inline-flex;
             align-items: center;
@@ -1470,8 +1768,8 @@
         }
 
         .toast-item {
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(20, 20, 23, 0.96);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(212, 212, 216, 0.2);
             border-radius: 50px;
             padding: 10px 18px;
@@ -1481,10 +1779,29 @@
             letter-spacing: 0.3px;
             line-height: 1.4;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7),
+                        0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: auto;
             max-width: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            animation: shimmerToast 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmerToast {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .toast-item.saliendo {
@@ -1505,11 +1822,11 @@
         }
 
         .toast-item.success {
-            border-color: rgba(74, 222, 128, 0.3);
+            border-color: rgba(232, 196, 122, 0.3);
         }
 
         .toast-item.success strong {
-            color: var(--exito);
+            color: var(--champagne);
         }
 
         .toast-item.warning {
@@ -1523,7 +1840,7 @@
         @keyframes toastIn {
             0% {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(30px) scale(0.9);
             }
             100% {
                 opacity: 1;
@@ -1538,7 +1855,30 @@
             }
             100% {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(30px) scale(0.9);
+            }
+        }
+
+        /* ===== CONFETI ===== */
+        .confeti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--champagne);
+            pointer-events: none;
+            z-index: 3500;
+            border-radius: 50%;
+            animation: caerConfeti 2s ease-out forwards;
+        }
+
+        @keyframes caerConfeti {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
             }
         }
 
@@ -1546,25 +1886,34 @@
         .footer {
             text-align: center;
             padding: 24px 10px 6px;
-            color: #1a1a1a;
+            color: var(--texto-tenue);
             font-size: 0.6rem;
             letter-spacing: 1px;
-            border-top: 1px solid #111;
+            border-top: 1px solid var(--borde);
             margin-top: 24px;
             position: relative;
+            opacity: 0.4;
         }
 
         .footer::before {
             content: '✦';
             display: block;
-            color: var(--acento-tenue);
+            color: var(--champagne-tenue);
             font-size: 0.8rem;
             margin-bottom: 4px;
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             body {
                 padding: 8px 10px 80px;
+            }
+
+            .header {
+                margin-left: -10px;
+                margin-right: -10px;
+                padding-left: 10px;
+                padding-right: 10px;
             }
 
             .galeria {
@@ -1583,6 +1932,10 @@
             .header-bottom .evento-titulo {
                 font-size: 1.5rem;
                 letter-spacing: 1px;
+            }
+
+            .header.scrolleado .header-bottom .evento-titulo {
+                font-size: 1.2rem;
             }
 
             .modal {
@@ -1645,6 +1998,11 @@
                 font-size: 0.7rem;
                 padding: 9px 14px;
             }
+
+            .contador-fotos-header {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -1654,13 +2012,15 @@
             }
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        ::selection {
-            background: var(--acento);
-            color: #0a0a0a;
+        /* Reducir animaciones si el usuario lo prefiere */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -1683,13 +2043,16 @@
     <!-- ===== APP ===== -->
     <div id="app">
         <!-- ===== HEADER ===== -->
-        <div class="header">
+        <div class="header" id="header">
             <div class="header-top">
                 <div class="header-left">
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                     <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
+                    <div class="contador-fotos-header" id="contadorFotosHeader" style="display:none;">
+                        📸 <span id="contadorFotosNum">0</span>
+                    </div>
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
                         ✨ Invitar
                     </button>
@@ -1857,7 +2220,7 @@
         </div>
     </div>
 
-    <!-- 🔥 Contenedor de toasts flotantes -->
+    <!-- Contenedor de toasts -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script src="qrcode.min.js"></script>
@@ -1877,11 +2240,17 @@
 
         const FOTOS_POR_CARGA = 6;
 
-        // 🔥 Duración del badge "NUEVA" (3 minutos)
-        const DURACION_BADGE_NUEVA_MS = 3 * 60 * 1000;
+        // 🔥 Badge "NUEVA" dura 25s o hasta que el usuario toque la foto
+        const DURACION_BADGE_NUEVA_MS = 25 * 1000;
 
-        // 🔥 Duración del toast (5s)
+        // 🔥 Máximo de badges simultáneos
+        const MAX_BADGES_NUEVOS = 3;
+
+        // 🔥 Duración del toast
         const DURACION_TOAST_MS = 5000;
+
+        // 🔥 Límite de fotos guardadas en localStorage
+        const MAX_VISTAS_LS = 1000;
 
         // ==========================================
         // 🔑 PARÁMETROS DEL URL
@@ -1909,6 +2278,38 @@
             return id;
         }
 
+        // 🔥 Clave de localStorage para fotos vistas
+        function getClaveVistas() {
+            return 'ovj_vistas_' + (EVENTO_ID || 'default');
+        }
+
+        // 🔥 Lee las fotos vistas del localStorage
+        function cargarFotosVistas() {
+            try {
+                const raw = localStorage.getItem(getClaveVistas());
+                if (!raw) return new Set();
+                const arr = JSON.parse(raw);
+                if (!Array.isArray(arr)) return new Set();
+                return new Set(arr);
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        // 🔥 Guarda las fotos vistas en localStorage
+        function guardarFotosVistas(set) {
+            try {
+                let arr = Array.from(set);
+                // Limitar a MAX_VISTAS_LS (mantener las últimas)
+                if (arr.length > MAX_VISTAS_LS) {
+                    arr = arr.slice(-MAX_VISTAS_LS);
+                }
+                localStorage.setItem(getClaveVistas(), JSON.stringify(arr));
+            } catch (e) {
+                // localStorage lleno, ignorar
+            }
+        }
+
         // ==========================================
         // 🌍 VARIABLES GLOBALES
         // ==========================================
@@ -1918,15 +2319,15 @@
         let fotosVisibles = FOTOS_POR_CARGA;
         let fotoSeleccionadaIndex = -1;
         let cargando = false;
-        let totalFotosAnterior = 0;
         let servidorOnline = true;
         let tituloEsDefault = true;
 
         let invitacionGenerada = null;
-
         let countdownInterval = null;
-
         let urlQrGeneralActual = null;
+
+        // 🔥 Set de fotos vistas (persiste en localStorage)
+        let fotosVistas = new Set();
 
         // 🔥 Map<nombreFoto, timestampMs> para badge "NUEVA"
         let fotosNuevasMap = new Map();
@@ -1938,7 +2339,6 @@
         let tipsMostrados = {
             primeraEntrada: false,
             primeraDescarga: false,
-            primeraFotoNueva: false,
             primerReceso: false
         };
 
@@ -1951,7 +2351,7 @@
                 tituloDefault: "Galería en Vivo",
                 enVivo: "En vivo",
                 cargando: "Cargando...",
-                noHayFotos: "No hay fotos aún",
+                noHayFotos: "Esperando las primeras fotos...",
                 mostrando: (v, t) => `Mostrando <span class="num">${v}</span> de <span class="num">${t}</span> fotos`,
                 verMas: "Ver más fotos ↓",
                 fotoMas: "foto más",
@@ -1983,14 +2383,12 @@
                 fotoNuevaLlegada: "¡Nueva foto disponible!",
                 tipEntrada: "💡 Toca una foto para verla en grande",
                 tipPrimeraDescarga: "💡 Descarga tus favoritas. Se guardan en tu celular",
-                tipFotoNueva: "✨ Acaba de aparecer una foto nueva",
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 avisos: [
-                    'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
+                    'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
-                    'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
-                    'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
+                    'Cada foto descargada es un <strong>momento único</strong>.',
                     'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
                     'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
                 ]
@@ -2000,7 +2398,7 @@
                 tituloDefault: "Live Gallery",
                 enVivo: "Live",
                 cargando: "Loading...",
-                noHayFotos: "No photos yet",
+                noHayFotos: "Waiting for the first photos...",
                 mostrando: (v, t) => `Showing <span class="num">${v}</span> of <span class="num">${t}</span> photos`,
                 verMas: "See more photos ↓",
                 fotoMas: "more photo",
@@ -2032,14 +2430,12 @@
                 fotoNuevaLlegada: "New photo available!",
                 tipEntrada: "💡 Tap a photo to view it large",
                 tipPrimeraDescarga: "💡 Download your favorites. They save to your phone",
-                tipFotoNueva: "✨ A new photo just appeared",
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 avisos: [
-                    'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
+                    'Photos are a <strong>preview</strong>. Download in original quality.',
                     'OVJ Studio · <strong>Photographing with heart</strong>',
-                    'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
-                    'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
+                    'Each photo is a <strong>unique moment</strong>.',
                     'Your event, your memories, <strong>your exclusive gallery</strong>.',
                     'The best photos deserve to be <strong>downloaded and treasured</strong>.'
                 ]
@@ -2049,7 +2445,7 @@
                 tituloDefault: "现场画廊",
                 enVivo: "直播",
                 cargando: "加载中...",
-                noHayFotos: "暂无照片",
+                noHayFotos: "正在等待第一批照片...",
                 mostrando: (v, t) => `显示 <span class="num">${v}</span> / <span class="num">${t}</span> 张照片`,
                 verMas: "查看更多照片 ↓",
                 fotoMas: "张照片",
@@ -2081,14 +2477,12 @@
                 fotoNuevaLlegada: "新照片已上线！",
                 tipEntrada: "💡 点击照片查看大图",
                 tipPrimeraDescarga: "💡 下载你喜欢的照片，会保存到手机",
-                tipFotoNueva: "✨ 刚刚出现了一张新照片",
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 avisos: [
-                    '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
+                    '照片为 <strong>预览图</strong>。请下载原画质照片。',
                     'OVJ Studio · <strong>用心拍摄</strong>',
-                    '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
-                    '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
+                    '每一张照片都是 <strong>独一无二的瞬间</strong>。',
                     '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
                     '最好的照片值得被 <strong>下载和珍藏</strong>。'
                 ]
@@ -2198,6 +2592,37 @@
                     }, 400);
                 }
             }, duracionMs);
+        }
+
+        // ==========================================
+        // 🎉 CONFETI
+        // ==========================================
+        function lanzarConfeti() {
+            const colores = ['#e8c47a', '#d4a94a', '#f1c40f', '#d4d4d8'];
+            const cantidad = 12;
+
+            for (let i = 0; i < cantidad; i++) {
+                setTimeout(() => {
+                    const confeti = document.createElement('div');
+                    confeti.className = 'confeti';
+                    confeti.style.left = Math.random() * 100 + 'vw';
+                    confeti.style.top = '-10px';
+                    confeti.style.background = colores[Math.floor(Math.random() * colores.length)];
+                    confeti.style.animationDelay = (Math.random() * 0.3) + 's';
+                    confeti.style.animationDuration = (1.5 + Math.random() * 1) + 's';
+
+                    // Variar tamaño
+                    const size = 6 + Math.random() * 6;
+                    confeti.style.width = size + 'px';
+                    confeti.style.height = size + 'px';
+
+                    document.body.appendChild(confeti);
+
+                    setTimeout(() => {
+                        if (confeti.parentNode) confeti.parentNode.removeChild(confeti);
+                    }, 2500);
+                }, i * 30);
+            }
         }
 
         // ==========================================
@@ -2415,6 +2840,24 @@
             }
         }
 
+        function actualizarContadorFotosHeader(total) {
+            const el = document.getElementById('contadorFotosHeader');
+            const num = document.getElementById('contadorFotosNum');
+
+            if (!total || total === 0) {
+                el.style.display = 'none';
+                return;
+            }
+
+            el.style.display = 'inline-flex';
+            num.textContent = total;
+
+            // Animación de pulso si cambió
+            el.classList.remove('actualizado');
+            void el.offsetWidth;
+            el.classList.add('actualizado');
+        }
+
         // ==========================================
         // 📷 GALERÍA
         // ==========================================
@@ -2482,17 +2925,27 @@
 
                 const nuevasFotos = data.fotos || [];
 
-                // 🔥 Detectar fotos nuevas por nombre
-                const nombresAnteriores = new Set(fotosCache.map(f => f.nombre));
-                const fotosRecienLlegadas = nuevasFotos.filter(f => !nombresAnteriores.has(f.nombre));
-
-                // Guardar timestamp de cada foto nueva
+                // 🔥 Detectar fotos nuevas usando fotosVistas
                 const ahora = Date.now();
-                fotosRecienLlegadas.forEach(f => {
-                    fotosNuevasMap.set(f.nombre, ahora);
+                const fotosRecienLlegadas = [];
+
+                nuevasFotos.forEach(f => {
+                    if (!fotosVistas.has(f.nombre)) {
+                        // Es nueva (nunca vista)
+                        fotosRecienLlegadas.push(f);
+                        fotosNuevasMap.set(f.nombre, ahora);
+                    }
                 });
 
-                // Limpiar fotos viejas del map (>3 min)
+                // 🔥 Limitar badges simultáneos: solo las últimas MAX_BADGES_NUEVOS
+                if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
+                    const ordenadas = Array.from(fotosNuevasMap.entries())
+                        .sort((a, b) => a[1] - b[1]);
+                    const sobran = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
+                    sobran.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
+                }
+
+                // 🔥 Limpiar badges expirados
                 for (const [nombre, ts] of fotosNuevasMap) {
                     if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
                         fotosNuevasMap.delete(nombre);
@@ -2511,6 +2964,7 @@
                     renderizarGaleria();
 
                     if (fotosRecienLlegadas.length > 0) {
+                        lanzarConfeti();
                         mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
                     }
                 }
@@ -2518,6 +2972,7 @@
                 actualizarEstado();
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
+                actualizarContadorFotosHeader(fotosCache.length);
 
             } catch (error) {
                 console.error("Error:", error);
@@ -2634,7 +3089,10 @@
                 const esNueva = fotosNuevasMap.has(foto.nombre);
 
                 html += `
-                    <div class="foto ${esNueva ? 'nueva animar-entrada' : ''}" onclick="abrirModal('${foto.nombre}')">
+                    <div class="foto ${esNueva ? 'nueva animar-entrada' : 'entrada-viewport'}"
+                         data-index="${i}"
+                         style="animation-delay: ${Math.min(i * 50, 500)}ms"
+                         onclick="abrirModal('${foto.nombre}')">
                         <div class="skeleton"></div>
                         ${esNueva ? '<div class="badge-nueva">✨ NUEVA</div>' : ''}
                         <img src="${urlImagen}" alt="Foto ${i + 1}"
@@ -2668,13 +3126,43 @@
 
             galeria.innerHTML = html;
             cargarImagenesSecuencialmente();
-            totalFotosAnterior = fotosCache.length;
+            observarFotosViewport();
+        }
+
+        // 🔥 Observer para animar fotos al entrar al viewport
+        let _observerFotos = null;
+
+        function observarFotosViewport() {
+            if (_observerFotos) {
+                _observerFotos.disconnect();
+            }
+
+            _observerFotos = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        // Solo animar si no es "nueva" (ya tiene animación)
+                        if (!el.classList.contains('nueva')) {
+                            el.style.opacity = '1';
+                        }
+                        _observerFotos.unobserve(el);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px'
+            });
+
+            document.querySelectorAll('.foto.entrada-viewport').forEach(el => {
+                el.style.opacity = '0';
+                _observerFotos.observe(el);
+            });
         }
 
         function cargarImagenesSecuencialmente() {
             const imagenes = document.querySelectorAll('.foto img[data-src]');
             const pendientes = Array.from(imagenes).filter(img => !img.src || img.src === window.location.href);
-            const CONCURRENTES = 2;
+            const CONCURRENTES = 3;
             let indice = 0;
 
             function cargarSiguiente() {
@@ -2730,6 +3218,28 @@
             }
         }
 
+        // 🔥 Marcar foto como vista (quita badge "NUEVA")
+        function marcarFotoComoVista(nombreFoto) {
+            fotosVistas.add(nombreFoto);
+            guardarFotosVistas(fotosVistas);
+            fotosNuevasMap.delete(nombreFoto);
+
+            // Actualizar el DOM solo de esa foto
+            const fotoEl = Array.from(document.querySelectorAll('.foto')).find(el => {
+                const idx = parseInt(el.dataset.index);
+                return fotosCache[idx] && fotosCache[idx].nombre === nombreFoto;
+            });
+
+            if (fotoEl) {
+                fotoEl.classList.remove('nueva');
+                const badge = fotoEl.querySelector('.badge-nueva');
+                if (badge) {
+                    badge.style.animation = 'toastOut 0.3s ease forwards';
+                    setTimeout(() => badge.remove(), 300);
+                }
+            }
+        }
+
         // 🔥 Limpieza periódica de badges "NUEVA"
         setInterval(() => {
             const ahora = Date.now();
@@ -2743,18 +3253,21 @@
             }
 
             if (huboCambio) {
-                document.querySelectorAll('.foto').forEach((el, index) => {
-                    const foto = fotosCache[index];
+                document.querySelectorAll('.foto.nueva').forEach(el => {
+                    const idx = parseInt(el.dataset.index);
+                    const foto = fotosCache[idx];
                     if (!foto) return;
-                    const esNueva = fotosNuevasMap.has(foto.nombre);
-                    if (!esNueva && el.classList.contains('nueva')) {
-                        el.classList.remove('nueva', 'animar-entrada');
+                    if (!fotosNuevasMap.has(foto.nombre)) {
+                        el.classList.remove('nueva');
                         const badge = el.querySelector('.badge-nueva');
-                        if (badge) badge.remove();
+                        if (badge) {
+                            badge.style.animation = 'toastOut 0.3s ease forwards';
+                            setTimeout(() => badge.remove(), 300);
+                        }
                     }
                 });
             }
-        }, 30000);
+        }, 5000);
 
         // ==========================================
         // 🖼️ MODAL FOTO
@@ -2767,6 +3280,9 @@
             if (!foto || !foto.nombre || !foto.url) return;
 
             fotoSeleccionadaIndex = index;
+
+            // 🔥 Marcar como vista (quita badge)
+            marcarFotoComoVista(nombreFoto);
 
             const modal = document.getElementById("modal");
             const fondo = document.getElementById("modalFondo");
@@ -2802,6 +3318,9 @@
 
             fotoSeleccionadaIndex = nuevoIndex;
             const foto = fotosCache[nuevoIndex];
+
+            // Marcar como vista
+            marcarFotoComoVista(foto.nombre);
 
             document.getElementById("modalImagen").src = foto.url;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
@@ -3272,6 +3791,25 @@
         }
 
         // ==========================================
+        // 📜 HEADER SCROLL
+        // ==========================================
+        let _headerScrollTick = false;
+        window.addEventListener('scroll', () => {
+            if (!_headerScrollTick) {
+                window.requestAnimationFrame(() => {
+                    const header = document.getElementById('header');
+                    if (window.scrollY > 30) {
+                        header.classList.add('scrolleado');
+                    } else {
+                        header.classList.remove('scrolleado');
+                    }
+                    _headerScrollTick = false;
+                });
+                _headerScrollTick = true;
+            }
+        }, { passive: true });
+
+        // ==========================================
         // 🔥 PAUSA DE POLLING POR VISIBILIDAD
         // ==========================================
         document.addEventListener('visibilitychange', () => {
@@ -3349,6 +3887,9 @@
         // 🚀 INICIALIZACIÓN
         // ==========================================
         async function inicializar() {
+            // Cargar fotos vistas del localStorage
+            fotosVistas = cargarFotosVistas();
+
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
 
