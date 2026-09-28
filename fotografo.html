@@ -942,6 +942,75 @@
             margin-top: 6px;
         }
 
+        /* 🔥 Checkbox foto secreta */
+        .opcion-secreta {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.08), rgba(232, 196, 122, 0.02));
+            border: 1px solid rgba(232, 196, 122, 0.25);
+            border-radius: 12px;
+        }
+
+        .checkbox-secreta {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-secreta input {
+            display: none;
+        }
+
+        .checkbox-secreta .checkmark {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid rgba(232, 196, 122, 0.4);
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.25s ease;
+            margin-top: 1px;
+        }
+
+        .checkbox-secreta input:checked + .checkmark {
+            background: linear-gradient(135deg, #e8c47a, #d4a94a);
+            border-color: #e8c47a;
+        }
+
+        .checkbox-secreta input:checked + .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0a0a0a;
+            font-weight: 900;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-secreta .texto {
+            font-size: 0.8rem;
+            color: #ddd;
+            line-height: 1.4;
+        }
+
+        .checkbox-secreta .texto strong {
+            color: #e8c47a;
+            font-weight: 700;
+        }
+
+        .checkbox-secreta .texto small {
+            display: block;
+            font-size: 0.68rem;
+            color: #888;
+            margin-top: 4px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
         .lista-subidas {
             max-height: 220px;
             overflow-y: auto;
@@ -1163,6 +1232,18 @@
             <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none"
                 onchange="manejarSeleccionFotos(event)" />
 
+            <!-- 🔥 Checkbox foto secreta -->
+            <div class="opcion-secreta">
+                <label class="checkbox-secreta">
+                    <input type="checkbox" id="checkFotoSecreta" />
+                    <span class="checkmark"></span>
+                    <span class="texto">
+                        🔒 Marcar como <strong>Foto Secreta</strong>
+                        <small>Se mostrará borrosa y se revelará en 5 minutos. Solo una por evento.</small>
+                    </span>
+                </label>
+            </div>
+
             <div class="lista-subidas" id="listaSubidas"></div>
 
             <button class="btn-secundario" id="btnCerrarSubir" onclick="cerrarSubir()">Cerrar</button>
@@ -1278,6 +1359,9 @@
         let subidaEnProceso = false;
 
         let intervalRefresh = null;
+
+        // 🔥 Flag para saber si ya hay una foto secreta subida
+        let fotoSecretaYaSubida = false;
 
         // ==========================================
         // 🛠️ UTILIDADES
@@ -1470,6 +1554,13 @@
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
 
+                // 🔥 Detectar si ya hay una foto secreta subida
+                if (contadores && contadores.fotosSecretas > 0) {
+                    fotoSecretaYaSubida = true;
+                } else {
+                    fotoSecretaYaSubida = false;
+                }
+
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
@@ -1561,13 +1652,15 @@
                 }
             }
 
-            // 🔥 Contadores: sin VIPs, solo generales
+            // 🔥 Contadores: generales + foto secreta + desbloqueos
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
                 const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
                 const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
                 const descSesion = contadores.descargasPorSesion || 5;
+                const secretas = contadores.fotosSecretas || 0;
+                const desbloqueos = contadores.desbloqueosSociales || 0;
 
                 contadoresHtml = `
                     <div class="contadores-grid">
@@ -1590,6 +1683,20 @@
                             <div class="info">
                                 <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
                                 <div class="etiqueta">Generales activos</div>
+                            </div>
+                        </div>
+                        <div class="contador-item">
+                            <span class="emoji">🔒</span>
+                            <div class="info">
+                                <div class="valor" style="color:${secretas > 0 ? '#e8c47a' : '#888'};">${secretas}</div>
+                                <div class="etiqueta">Foto secreta</div>
+                            </div>
+                        </div>
+                        <div class="contador-item" style="grid-column: 1 / -1;">
+                            <span class="emoji">🎁</span>
+                            <div class="info">
+                                <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
+                                <div class="etiqueta">Desbloqueos sociales usados</div>
                             </div>
                         </div>
                     </div>
@@ -2097,6 +2204,23 @@
         function abrirSubir() {
             colaSubidas = [];
             renderizarListaSubidas();
+
+            // 🔥 Actualizar checkbox según si ya hay secreta
+            const check = $('checkFotoSecreta');
+            if (check) {
+                if (fotoSecretaYaSubida) {
+                    check.checked = false;
+                    check.disabled = true;
+                    check.closest('.opcion-secreta').style.opacity = '0.5';
+                    check.closest('.opcion-secreta').style.pointerEvents = 'none';
+                } else {
+                    check.checked = false;
+                    check.disabled = false;
+                    check.closest('.opcion-secreta').style.opacity = '1';
+                    check.closest('.opcion-secreta').style.pointerEvents = 'auto';
+                }
+            }
+
             $('modalSubir').classList.add('activo');
         }
 
@@ -2112,6 +2236,9 @@
             const archivos = Array.from(event.target.files || []);
             if (archivos.length === 0) return;
 
+            const check = $('checkFotoSecreta');
+            const marcadaComoSecreta = check && check.checked;
+
             for (const archivo of archivos) {
                 if (!archivo.type.startsWith('image/jpeg')) {
                     toast('Solo JPG: ' + archivo.name, 'error');
@@ -2121,7 +2248,11 @@
                     toast('Supera 15 MB: ' + archivo.name, 'error');
                     continue;
                 }
-                colaSubidas.push({ archivo, estado: 'pendiente' });
+                colaSubidas.push({
+                    archivo,
+                    estado: 'pendiente',
+                    esSecreta: marcadaComoSecreta && colaSubidas.filter(s => s.esSecreta).length === 0 && !fotoSecretaYaSubida
+                });
             }
 
             event.target.value = '';
@@ -2149,9 +2280,10 @@
                     error: ['✗ Error', 'error']
                 };
                 const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
+                const secretaTag = s.esSecreta ? ' <span style="color:#e8c47a;">🔒</span>' : '';
                 html += `
                     <div class="item-subida">
-                        <div class="nombre">${escapeHtml(s.archivo.name)}</div>
+                        <div class="nombre">${escapeHtml(s.archivo.name)}${secretaTag}</div>
                         <div class="estado ${clase}">${texto}</div>
                     </div>
                 `;
@@ -2295,15 +2427,23 @@
             const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
             const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
+            const esSecreta = !!subida.esSecreta;
+
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
                 body: JSON.stringify({
                     f: nombreFotografoActual,
                     e: eventoActivo.id,
                     keyOriginal: keyOriginal,
-                    keyPreview: keyPreview
+                    keyPreview: keyPreview,
+                    esSecreta: esSecreta
                 })
             });
+
+            // 🔥 Si era secreta, marcar flag
+            if (esSecreta) {
+                fotoSecretaYaSubida = true;
+            }
 
             return true;
         }
