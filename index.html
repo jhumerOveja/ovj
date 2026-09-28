@@ -89,9 +89,9 @@
             display: block;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER SIMPLIFICADO ===== */
         .header {
-            padding: 12px 0 8px;
+            padding: 10px 0 8px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.08);
             margin-bottom: 10px;
             position: relative;
@@ -112,11 +112,17 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .header-left .ovj-studio {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 300;
             letter-spacing: 1px;
             user-select: none;
@@ -134,7 +140,7 @@
         .header-left .ovj-studio::before {
             content: '✦';
             position: absolute;
-            left: -18px;
+            left: -16px;
             top: 50%;
             transform: translateY(-50%);
             color: rgba(243, 156, 18, 0.3);
@@ -144,7 +150,91 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* 🔥 Badge de rol + descargas integrado */
+        .badge-rol {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.25);
+            color: #f39c12;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .badge-rol.admin {
+            background: rgba(243, 156, 18, 0.12);
+            border-color: rgba(243, 156, 18, 0.35);
+        }
+
+        .badge-rol.agotado {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .badge-rol.pulso {
+            animation: pulsoBadge 2s infinite;
+        }
+
+        @keyframes pulsoBadge {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Botones admin compactos */
+        .btn-admin-mini {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.2px;
+            font-family: inherit;
+            border: none;
+        }
+
+        .btn-admin-mini.invitar {
+            background: rgba(243, 156, 18, 0.15);
+            border: 1px solid rgba(243, 156, 18, 0.4);
+            color: #f39c12;
+        }
+
+        .btn-admin-mini.invitar:hover {
+            background: rgba(243, 156, 18, 0.25);
+            transform: scale(1.05);
+        }
+
+        .btn-admin-mini.qr {
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.4);
+            color: #5dade2;
+        }
+
+        .btn-admin-mini.qr:hover {
+            background: rgba(52, 152, 219, 0.25);
+            transform: scale(1.05);
         }
 
         .lang-selector {
@@ -155,17 +245,16 @@
         .lang-btn {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: rgba(255, 255, 255, 0.05);
             color: #ccc;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 600;
-            padding: 5px 10px;
+            padding: 5px 9px;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             cursor: pointer;
             transition: all 0.25s ease;
-            backdrop-filter: blur(4px);
         }
 
         .lang-btn:hover {
@@ -175,7 +264,7 @@
         }
 
         .lang-btn .bandera {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1;
         }
 
@@ -197,7 +286,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             padding: 6px;
-            min-width: 140px;
+            min-width: 130px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             opacity: 0;
             visibility: hidden;
@@ -220,7 +309,7 @@
             padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #aaa;
             transition: all 0.2s ease;
             font-weight: 500;
@@ -228,7 +317,6 @@
 
         .lang-opcion .bandera {
             font-size: 1rem;
-            line-height: 1;
         }
 
         .lang-opcion:hover {
@@ -245,28 +333,26 @@
         .badge-en-vivo {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: rgba(231, 76, 60, 0.12);
             color: #e74c3c;
             font-size: 0.6rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            padding: 4px 14px 4px 10px;
+            letter-spacing: 1.2px;
+            padding: 4px 10px 4px 8px;
             border-radius: 50px;
             text-transform: uppercase;
             border: 1px solid rgba(231, 76, 60, 0.15);
             user-select: none;
-            backdrop-filter: blur(4px);
         }
 
         .badge-en-vivo .punto {
             display: inline-block;
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: #e74c3c;
             border-radius: 50%;
             animation: pulse 1.8s infinite;
-            box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
         }
 
         @keyframes pulse {
@@ -292,7 +378,7 @@
         }
 
         .header-bottom .evento-titulo {
-            font-size: 2.0rem;
+            font-size: 1.9rem;
             font-weight: 700;
             letter-spacing: 3px;
             color: #fff;
@@ -314,103 +400,146 @@
             background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
         }
 
-        /* ===== BARRA DE ROL ===== */
-        .barra-rol {
-            max-width: 1200px;
+        /* ===== CONTADOR DE PRÓXIMA FOTO ===== */
+        .contador-proxima {
+            max-width: 500px;
             margin: 0 auto 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
             padding: 10px 16px;
-            background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
-            border: 1px solid rgba(243, 156, 18, 0.15);
-            border-radius: 14px;
-            flex-wrap: wrap;
-        }
-
-        .barra-rol .rol-info {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.08), rgba(243, 156, 18, 0.02));
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            border-radius: 50px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            transition: all 0.4s ease;
+            user-select: none;
         }
 
-        .barra-rol .rol-emoji {
-            font-size: 1.3rem;
+        .contador-proxima.oculto {
+            opacity: 0;
+            max-height: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+            border-width: 0;
         }
 
-        .barra-rol .rol-texto {
-            font-size: 0.8rem;
-            color: #ccc;
-            letter-spacing: 0.3px;
+        .contador-proxima .icono-contador {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            animation: pulsoContador 2s infinite;
         }
 
-        .barra-rol .rol-texto strong {
-            color: #f1c40f;
-            font-weight: 600;
+        @keyframes pulsoContador {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
         }
 
-        .barra-rol .contador-sesion {
-            font-size: 0.72rem;
-            color: #f39c12;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid rgba(243, 156, 18, 0.25);
-            border-radius: 50px;
-            padding: 4px 12px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        .barra-rol .contador-sesion.agotado {
-            color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-            border-color: rgba(231, 76, 60, 0.3);
-        }
-
-        .barra-rol .btn-invitar,
-        .barra-rol .btn-qr-general {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 50px;
+        .contador-proxima .texto-contador {
             font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            color: #ccc;
+            font-weight: 500;
             letter-spacing: 0.3px;
-            font-family: inherit;
+            flex-shrink: 0;
         }
 
-        .barra-rol .btn-invitar {
-            background: rgba(243, 156, 18, 0.15);
-            border: 1px solid rgba(243, 156, 18, 0.4);
+        .contador-proxima .texto-contador strong {
             color: #f39c12;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-left: 2px;
         }
 
-        .barra-rol .btn-invitar:hover {
-            background: rgba(243, 156, 18, 0.25);
-            transform: scale(1.04);
-            box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
+        .contador-proxima .barra-progreso {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            overflow: hidden;
+            min-width: 60px;
         }
 
-        .barra-rol .btn-qr-general {
-            background: rgba(52, 152, 219, 0.15);
-            border: 1px solid rgba(52, 152, 219, 0.4);
-            color: #5dade2;
+        .contador-proxima .barra-progreso .relleno {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #f1c40f);
+            border-radius: 50px;
+            width: 0%;
+            transition: width 1s linear;
+            box-shadow: 0 0 8px rgba(243, 156, 18, 0.5);
         }
 
-        .barra-rol .btn-qr-general:hover {
-            background: rgba(52, 152, 219, 0.25);
-            transform: scale(1.04);
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.2);
+        .contador-proxima.esperando .barra-progreso {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .contador-proxima.esperando .barra-progreso .relleno {
+            background: rgba(255, 255, 255, 0.15);
+            width: 30%;
+            animation: barraEspera 2s infinite;
+        }
+
+        @keyframes barraEspera {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(400%);
+            }
+        }
+
+        .contador-proxima.nueva {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.04));
+            border-color: rgba(46, 204, 113, 0.4);
+            animation: flashNueva 1.5s ease;
+        }
+
+        @keyframes flashNueva {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+        }
+
+        .contador-proxima.nueva .icono-contador {
+            animation: saltoNueva 0.6s ease;
+        }
+
+        @keyframes saltoNueva {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.4) rotate(15deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
         }
 
         /* ===== ESTADO MINI ===== */
         #estado {
             text-align: center;
-            padding: 4px 0 12px;
-            font-size: 0.7rem;
+            padding: 4px 0 10px;
+            font-size: 0.68rem;
             letter-spacing: 0.5px;
             color: #444;
             font-weight: 300;
@@ -434,93 +563,6 @@
             color: #f1c40f;
         }
 
-        /* ===== AVISO DE RECARGA ===== */
-        .aviso-recarga {
-            max-width: 500px;
-            margin: 0 auto 12px;
-            padding: 10px 18px;
-            background: rgba(52, 152, 219, 0.06);
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            border-radius: 12px;
-            font-size: 0.72rem;
-            color: #5dade2;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-            line-height: 1.4;
-            text-align: center;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.4s ease;
-        }
-
-        .aviso-recarga.alerta {
-            background: rgba(243, 156, 18, 0.1);
-            border-color: rgba(243, 156, 18, 0.4);
-            color: #f39c12;
-            font-weight: 600;
-        }
-
-        .aviso-recarga-icono {
-            font-size: 1rem;
-            animation: pulse-recarga 2.5s infinite;
-        }
-
-        @keyframes pulse-recarga {
-
-            0%,
-            100% {
-                opacity: 0.4;
-                transform: rotate(0deg);
-            }
-
-            50% {
-                opacity: 1;
-                transform: rotate(180deg);
-            }
-        }
-
-        /* ===== AVISO INTERMITENTE ===== */
-        .aviso-intermitente {
-            max-width: 500px;
-            margin: 0 auto 12px;
-            padding: 10px 18px;
-            background: rgba(243, 156, 18, 0.06);
-            border: 1px solid rgba(243, 156, 18, 0.18);
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #f39c12;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-            line-height: 1.5;
-            text-align: center;
-            user-select: none;
-            opacity: 0;
-            visibility: hidden;
-            max-height: 0;
-            margin-bottom: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            overflow: hidden;
-            transition: opacity 0.6s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
-        }
-
-        .aviso-intermitente.visible {
-            opacity: 1;
-            visibility: visible;
-            max-height: 200px;
-            margin-bottom: 12px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        .aviso-intermitente strong {
-            color: #f1c40f;
-            font-weight: 600;
-        }
-
         /* ===== GALERÍA ===== */
         .galeria {
             display: grid;
@@ -536,7 +578,7 @@
             overflow: hidden;
             border: 1px solid #1a1a1a;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             position: relative;
             aspect-ratio: 1 / 1;
         }
@@ -545,6 +587,76 @@
             transform: translateY(-6px) scale(1.01);
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
             border-color: rgba(255, 215, 0, 0.15);
+        }
+
+        /* 🔥 Foto nueva: borde dorado animado + badge */
+        .foto.nueva {
+            border-color: rgba(243, 156, 18, 0.5);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.15);
+        }
+
+        .foto.nueva::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 14px;
+            padding: 1px;
+            background: linear-gradient(135deg, #f39c12, #f1c40f, #f39c12);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 4;
+            animation: bordeGirando 3s linear infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes bordeGirando {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .foto .badge-nueva {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: #0a0a0a;
+            font-size: 0.55rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 50px;
+            z-index: 5;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+            animation: pulsoBadgeNueva 1.5s infinite;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        @keyframes pulsoBadgeNueva {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.7);
+            }
         }
 
         .foto .skeleton {
@@ -605,6 +717,30 @@
             transform: translate(-4px, -4px);
         }
 
+        /* 🔥 Animación de aparición de foto nueva */
+        .foto.animar-entrada {
+            animation: aparecerFoto 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes aparecerFoto {
+            0% {
+                opacity: 0;
+                transform: scale(0.85);
+                filter: blur(8px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.03);
+                filter: blur(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .ver-mas-wrapper {
             grid-column: 1 / -1;
             display: flex;
@@ -645,35 +781,6 @@
         .info-restantes strong {
             color: #f39c12;
             font-weight: 600;
-        }
-
-        .aviso-nuevas {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px 16px;
-            background: rgba(46, 204, 113, 0.08);
-            border: 1px solid rgba(46, 204, 113, 0.2);
-            border-radius: 50px;
-            color: #2ecc71;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            animation: pulseNuevas 2s infinite;
-            margin: 0 auto;
-            max-width: 340px;
-            width: 100%;
-        }
-
-        @keyframes pulseNuevas {
-
-            0%,
-            100% {
-                opacity: 0.85;
-            }
-
-            50% {
-                opacity: 1;
-            }
         }
 
         .estado-offline {
@@ -1010,7 +1117,6 @@
             color: #888;
             margin-bottom: 6px;
             padding-left: 4px;
-            letter-spacing: 0.3px;
         }
 
         .input-group input {
@@ -1064,7 +1170,6 @@
             color: #666;
             margin-top: 6px;
             padding-left: 4px;
-            letter-spacing: 0.2px;
             line-height: 1.4;
         }
 
@@ -1124,7 +1229,7 @@
             color: #fff;
         }
 
-        /* ===== MODAL RESULTADO INVITACIÓN ===== */
+        /* ===== MODAL RESULTADO ===== */
         .modal-resultado {
             display: none;
             position: fixed;
@@ -1415,6 +1520,99 @@
             padding: 80px 20px;
         }
 
+        /* ===== TOASTS FLOTANTES ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            pointer-events: none;
+            max-width: 90vw;
+            width: 100%;
+            padding: 0 12px;
+        }
+
+        .toast-item {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-size: 0.75rem;
+            color: #e0e0e0;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            animation: toastIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: auto;
+            max-width: 420px;
+        }
+
+        .toast-item.saliendo {
+            animation: toastOut 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .toast-item strong {
+            color: #f39c12;
+            font-weight: 700;
+        }
+
+        .toast-item.tip {
+            border-color: rgba(52, 152, 219, 0.4);
+        }
+
+        .toast-item.tip strong {
+            color: #5dade2;
+        }
+
+        .toast-item.success {
+            border-color: rgba(46, 204, 113, 0.4);
+        }
+
+        .toast-item.success strong {
+            color: #2ecc71;
+        }
+
+        .toast-item.warning {
+            border-color: rgba(231, 76, 60, 0.4);
+        }
+
+        .toast-item.warning strong {
+            color: #e74c3c;
+        }
+
+        @keyframes toastIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toastOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+        }
+
+        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             padding: 24px 10px 6px;
@@ -1436,12 +1634,25 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 8px 10px 16px;
+                padding: 8px 10px 80px;
             }
 
             .galeria {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 10px;
+            }
+
+            .header-left .ovj-studio {
+                font-size: 1.1rem;
+            }
+
+            .header-left .ovj-studio::before {
+                display: none;
+            }
+
+            .header-bottom .evento-titulo {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
             }
 
             .modal {
@@ -1455,15 +1666,6 @@
 
             .modal-footer {
                 padding: 12px 14px 16px;
-            }
-
-            .publicidad-wrapper .pub-texto {
-                font-size: 0.65rem;
-            }
-
-            .publicidad-wrapper .pub-btn {
-                font-size: 0.65rem;
-                padding: 7px 14px;
             }
 
             .btn-pedir {
@@ -1488,7 +1690,6 @@
 
             #estado {
                 font-size: 0.6rem;
-                padding: 2px 0 8px;
             }
 
             .foto::after {
@@ -1500,41 +1701,32 @@
                 padding: 12px 28px;
             }
 
-            .aviso-intermitente {
-                font-size: 0.7rem;
-                padding: 8px 14px;
-            }
-
-            .aviso-recarga {
-                font-size: 0.65rem;
+            .contador-proxima {
                 padding: 8px 12px;
+                gap: 8px;
             }
 
-            .header-left .ovj-studio {
-                font-size: 1.1rem;
+            .contador-proxima .texto-contador {
+                font-size: 0.68rem;
             }
 
-            .header-left .ovj-studio::before {
-                display: none;
+            .contador-proxima .texto-contador strong {
+                font-size: 0.78rem;
             }
 
-            .header-bottom .evento-titulo {
-                font-size: 1.5rem;
-                letter-spacing: 1px;
+            .badge-rol {
+                font-size: 0.62rem;
+                padding: 4px 8px;
             }
 
-            .barra-rol {
-                flex-direction: column;
-                align-items: stretch;
+            .btn-admin-mini {
+                font-size: 0.6rem;
+                padding: 4px 8px;
             }
 
-            .barra-rol .rol-info {
-                justify-content: center;
-            }
-
-            .barra-rol .btn-invitar,
-            .barra-rol .btn-qr-general {
-                justify-content: center;
+            .toast-item {
+                font-size: 0.7rem;
+                padding: 9px 14px;
             }
         }
 
@@ -1573,13 +1765,21 @@
 
     <!-- ===== APP ===== -->
     <div id="app">
-        <!-- ===== HEADER ===== -->
+        <!-- ===== HEADER SIMPLIFICADO ===== -->
         <div class="header">
             <div class="header-top">
                 <div class="header-left">
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
+                    <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
+                    <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
+                        ✨ Invitar
+                    </button>
+                    <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
+                        🎫 QR
+                    </button>
+
                     <div class="lang-selector" id="langSelector">
                         <div class="lang-btn" onclick="toggleLangMenu()">
                             <span class="bandera" id="langBanderaActual">🇧🇴</span>
@@ -1613,33 +1813,16 @@
             </div>
         </div>
 
-        <!-- ===== BARRA DE ROL ===== -->
-        <div class="barra-rol" id="barraRol" style="display: none;">
-            <div class="rol-info">
-                <span class="rol-emoji" id="rolEmoji">🎟️</span>
-                <div class="rol-texto" id="rolTexto">
-                    Bienvenido, <strong id="rolNombre">Invitado</strong>
-                </div>
-                <div class="contador-sesion" id="contadorSesion" style="display:none;"></div>
-            </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="btn-qr-general" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
-                    🎫 <span id="textoQrGeneral">QR General</span>
-                </button>
-                <button class="btn-invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
-                    ✨ <span id="textoInvitar">Invitar</span>
-                </button>
+        <!-- ===== CONTADOR DE PRÓXIMA FOTO ===== -->
+        <div class="contador-proxima oculto" id="contadorProxima">
+            <span class="icono-contador" id="iconoContador">📸</span>
+            <span class="texto-contador" id="textoContador">Próxima foto en <strong>0:00</strong></span>
+            <div class="barra-progreso">
+                <div class="relleno" id="barraRelleno"></div>
             </div>
         </div>
-
-        <div class="aviso-intermitente" id="avisoIntermitente"></div>
 
         <div id="estado">Cargando...</div>
-
-        <div class="aviso-recarga" id="avisoRecarga">
-            <span class="aviso-recarga-icono">🔄</span>
-            <span id="avisoRecargaTexto">Las fotos aparecen solas. No hace falta recargar.</span>
-        </div>
 
         <div class="galeria" id="galeria"></div>
 
@@ -1765,8 +1948,11 @@
             </div>
         </div>
     </div>
+
+    <!-- 🔥 Contenedor de toasts flotantes -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script src="qrcode.min.js"></script>
-    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
     <script src="config.js"></script>
 
     <script>
@@ -1782,7 +1968,12 @@
         const CODIGO_PAIS_DEFECTO = "591";
 
         const FOTOS_POR_CARGA = 6;
-        const INTERVALO_AVISOS = 45;
+
+        // 🔥 Duración del badge "NUEVA" (3 minutos)
+        const DURACION_BADGE_NUEVA_MS = 3 * 60 * 1000;
+
+        // 🔥 Duración del toast (5s)
+        const DURACION_TOAST_MS = 5000;
 
         // ==========================================
         // 🔑 PARÁMETROS DEL URL
@@ -1823,16 +2014,35 @@
         let servidorOnline = true;
         let tituloEsDefault = true;
 
-        let avisoTimeoutId = null;
-        let avisoOcultoTimeoutId = null;
-        let indiceAviso = 0;
-
         let invitacionTipo = 'admin';
         let invitacionGenerada = null;
 
         let countdownInterval = null;
 
         let urlQrGeneralActual = null;
+
+        // 🔥 Estado del contador de próxima foto
+        let contadorEstado = {
+            activo: false,
+            intervaloTotal: 60,       // segundos
+            segundosRestantes: 60,
+            timerId: null,
+            hayPendientes: false
+        };
+
+        // 🔥 Set de fotos nuevas (para badge "NUEVA")
+        let fotosNuevas = new Set();
+
+        // 🔥 Timers de toasts
+        let toastsActivos = [];
+
+        // 🔥 Control de tips mostrados (para no repetir)
+        let tipsMostrados = {
+            primeraEntrada: false,
+            primeraDescarga: false,
+            primeraFotoNueva: false,
+            primerReceso: false
+        };
 
         // ==========================================
         // 🌍 IDIOMA
@@ -1865,14 +2075,6 @@
                 pubTexto: '¿Quieres tu propia <strong>galería en vivo</strong> para tu evento?',
                 pubBoton: 'Agenda tu evento',
                 waPublicidad: 'Hola, me interesa una galería en vivo para mi evento.',
-                avisos: [
-                    'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
-                    'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
-                    'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
-                    'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
-                    'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
-                    'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
-                ],
                 bloqueoTitulo: "Galería Privada",
                 bloqueoMensaje: "Este es un evento exclusivo.<br>Necesitas una invitación para acceder.",
                 bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
@@ -1881,11 +2083,28 @@
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
-                textoInvitar: "Invitar",
-                textoQrGeneral: "QR General",
-                contadorAdmin: "👑 Admin · Descargas ilimitadas",
-                contadorSesion: (usadas, total) => `Te quedan ${total - usadas} de ${total} descargas`,
-                contadorAgotado: "Descargas agotadas · Vuelve en el receso"
+                contadorAdmin: "👑 Admin · Ilimitado",
+                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorAgotado: "⏸️ Receso",
+                // 🔥 Contador de próxima foto
+                proximaFoto: (tiempo) => `Próxima foto en <strong>${tiempo}</strong>`,
+                esperandoFoto: "Esperando la próxima foto...",
+                fotoNuevaLlegada: "¡Nueva foto disponible!",
+                // 🔥 Tips contextuales
+                tipEntrada: "💡 Toca una foto para verla en grande",
+                tipPrimeraDescarga: "💡 Descarga tus favoritas. Se guardan en tu celular",
+                tipFotoNueva: "✨ Acaba de aparecer una foto nueva",
+                tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
+                tipReceso: "💡 Vuelve en un rato para más fotos",
+                // 🔥 Avisos rotativos (los que ya existían)
+                avisos: [
+                    'Las fotos de la galería son una <strong>vista previa</strong>. Descarga tu foto en calidad original.',
+                    'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
+                    'Recuerda pedir tu foto. <strong>Hazlo sin miedo</strong>, el fotógrafo está contigo.',
+                    'Cada foto que descargas es un momento <strong>único e irrepetible</strong>.',
+                    'Tu evento, tus recuerdos, <strong>tu galería exclusiva</strong>.',
+                    'Las mejores fotos merecen ser <strong>descargadas y atesoradas</strong>.'
+                ]
             },
             en: {
                 tituloVentana: "OVJ Studio - Live Gallery",
@@ -1914,14 +2133,6 @@
                 pubTexto: 'Want your own <strong>live gallery</strong> for your event?',
                 pubBoton: 'Book your event',
                 waPublicidad: "Hi, I'm interested in a live gallery for my event.",
-                avisos: [
-                    'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
-                    'OVJ Studio · <strong>Photographing with heart</strong>',
-                    'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
-                    'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
-                    'Your event, your memories, <strong>your exclusive gallery</strong>.',
-                    'The best photos deserve to be <strong>downloaded and treasured</strong>.'
-                ],
                 bloqueoTitulo: "Private Gallery",
                 bloqueoMensaje: "This is an exclusive event.<br>You need an invitation to access.",
                 bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
@@ -1930,11 +2141,25 @@
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
-                textoInvitar: "Invite",
-                textoQrGeneral: "General QR",
-                contadorAdmin: "👑 Admin · Unlimited downloads",
-                contadorSesion: (usadas, total) => `${total - usadas} of ${total} downloads left`,
-                contadorAgotado: "Downloads exhausted · Come back after break"
+                contadorAdmin: "👑 Admin · Unlimited",
+                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorAgotado: "⏸️ Break",
+                proximaFoto: (tiempo) => `Next photo in <strong>${tiempo}</strong>`,
+                esperandoFoto: "Waiting for the next photo...",
+                fotoNuevaLlegada: "New photo available!",
+                tipEntrada: "💡 Tap a photo to view it large",
+                tipPrimeraDescarga: "💡 Download your favorites. They save to your phone",
+                tipFotoNueva: "✨ A new photo just appeared",
+                tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
+                tipReceso: "💡 Come back in a while for more photos",
+                avisos: [
+                    'Gallery photos are a <strong>preview</strong>. Download your photo in original quality.',
+                    'OVJ Studio · <strong>Photographing with heart</strong>',
+                    'Remember to request your photo. <strong>Do it without fear</strong>, the photographer is with you.',
+                    'Each photo you download is a <strong>unique and unrepeatable moment</strong>.',
+                    'Your event, your memories, <strong>your exclusive gallery</strong>.',
+                    'The best photos deserve to be <strong>downloaded and treasured</strong>.'
+                ]
             },
             zh: {
                 tituloVentana: "OVJ Studio - 现场画廊",
@@ -1963,14 +2188,6 @@
                 pubTexto: '想要自己的 <strong>现场画廊</strong> 吗？',
                 pubBoton: '预订活动',
                 waPublicidad: "你好，我对现场画廊感兴趣。",
-                avisos: [
-                    '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
-                    'OVJ Studio · <strong>用心拍摄</strong>',
-                    '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
-                    '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
-                    '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
-                    '最好的照片值得被 <strong>下载和珍藏</strong>。'
-                ],
                 bloqueoTitulo: "私人画廊",
                 bloqueoMensaje: "这是一个专属活动。<br>你需要邀请才能访问。",
                 bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
@@ -1979,11 +2196,25 @@
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
-                textoInvitar: "邀请",
-                textoQrGeneral: "现场二维码",
-                contadorAdmin: "👑 管理员 · 无限下载",
-                contadorSesion: (usadas, total) => `剩余 ${total - usadas}/${total} 次下载`,
-                contadorAgotado: "下载次数已用完 · 休息后再来"
+                contadorAdmin: "👑 管理员 · 无限",
+                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorAgotado: "⏸️ 休息",
+                proximaFoto: (tiempo) => `下一张照片 <strong>${tiempo}</strong>`,
+                esperandoFoto: "正在等待下一张照片...",
+                fotoNuevaLlegada: "新照片已上线！",
+                tipEntrada: "💡 点击照片查看大图",
+                tipPrimeraDescarga: "💡 下载你喜欢的照片，会保存到手机",
+                tipFotoNueva: "✨ 刚刚出现了一张新照片",
+                tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
+                tipReceso: "💡 稍后再来查看更多照片",
+                avisos: [
+                    '画廊中的照片为 <strong>预览图</strong>。请下载原画质照片。',
+                    'OVJ Studio · <strong>用心拍摄</strong>',
+                    '记得索取您的照片，<strong>放心下载</strong>，摄影师与你同在。',
+                    '每一张下载的照片都是 <strong>独一无二的瞬间</strong>。',
+                    '你的活动，你的回忆，<strong>你的专属画廊</strong>。',
+                    '最好的照片值得被 <strong>下载和珍藏</strong>。'
+                ]
             }
         };
 
@@ -1999,14 +2230,10 @@
 
         function detectarIdiomaInicial() {
             const guardado = localStorage.getItem('ovj_idioma');
-            if (guardado && TRADUCCIONES[guardado]) {
-                return guardado;
-            }
+            if (guardado && TRADUCCIONES[guardado]) return guardado;
             const idiomaNavegador = navigator.language || navigator.userLanguage || 'en';
             const idiomaBase = idiomaNavegador.split('-')[0].toLowerCase();
-            if (TRADUCCIONES[idiomaBase]) {
-                return idiomaBase;
-            }
+            if (TRADUCCIONES[idiomaBase]) return idiomaBase;
             return 'en';
         }
 
@@ -2031,18 +2258,13 @@
             document.getElementById('bloqueoTitulo').textContent = t('bloqueoTitulo');
             document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoMensaje');
 
-            document.getElementById('textoInvitar').textContent = t('textoInvitar');
-
-            const elQr = document.getElementById('textoQrGeneral');
-            if (elQr) elQr.textContent = t('textoQrGeneral');
-
             if (tituloEsDefault) {
                 document.getElementById('eventoTitulo').textContent = t('tituloDefault');
             }
 
             actualizarBotonPrincipal();
             actualizarEstado();
-            actualizarContadorSesion();
+            actualizarBadgeRol();
             if (fotosCache.length > 0) {
                 renderizarGaleria();
             }
@@ -2067,6 +2289,40 @@
                 cerrarLangMenu();
             }
         });
+
+        // ==========================================
+        // 🍞 TOASTS FLOTANTES
+        // ==========================================
+        function mostrarToast(mensaje, tipo = 'tip', duracionMs = DURACION_TOAST_MS) {
+            const contenedor = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast-item ' + tipo;
+            toast.innerHTML = mensaje;
+            contenedor.appendChild(toast);
+
+            toastsActivos.push(toast);
+
+            // Limitar a 3 toasts visibles
+            if (toastsActivos.length > 3) {
+                const viejo = toastsActivos.shift();
+                if (viejo && viejo.parentNode) {
+                    viejo.classList.add('saliendo');
+                    setTimeout(() => {
+                        if (viejo.parentNode) viejo.parentNode.removeChild(viejo);
+                    }, 400);
+                }
+            }
+
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('saliendo');
+                    setTimeout(() => {
+                        if (toast.parentNode) toast.parentNode.removeChild(toast);
+                        toastsActivos = toastsActivos.filter(t => t !== toast);
+                    }, 400);
+                }
+            }, duracionMs);
+        }
 
         // ==========================================
         // 🔒 BLOQUEO / ACCESO
@@ -2100,6 +2356,11 @@
 
         function mostrarReceso(minutos) {
             mostrarBloqueo('receso', t('bloqueoReceso'));
+
+            if (!tipsMostrados.primerReceso) {
+                tipsMostrados.primerReceso = true;
+                setTimeout(() => mostrarToast(t('tipReceso'), 'tip'), 3000);
+            }
 
             const el = document.getElementById('bloqueoCountdown');
             el.style.display = 'block';
@@ -2226,41 +2487,40 @@
             document.getElementById('bloqueo').classList.remove('activo');
             document.getElementById('app').classList.add('activo');
 
-            const barraRol = document.getElementById('barraRol');
-            const rolEmoji = document.getElementById('rolEmoji');
-            const rolNombre = document.getElementById('rolNombre');
             const btnInvitar = document.getElementById('btnInvitar');
             const btnQrGeneral = document.getElementById('btnQrGeneral');
 
-            barraRol.style.display = 'flex';
-
             if (sesion.tipo === 'admin') {
-                rolEmoji.textContent = '👑';
-                rolNombre.textContent = sesion.nombre || t('rolAdmin');
                 btnInvitar.style.display = 'inline-flex';
                 btnQrGeneral.style.display = 'inline-flex';
             } else {
-                rolEmoji.textContent = '🎟️';
-                rolNombre.textContent = sesion.nombre || t('rolInvitado');
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
             }
 
-            actualizarContadorSesion();
+            actualizarBadgeRol();
+
+            // 🔥 Tip de entrada
+            if (!tipsMostrados.primeraEntrada) {
+                tipsMostrados.primeraEntrada = true;
+                setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 2000);
+            }
         }
 
-        function actualizarContadorSesion() {
-            const el = document.getElementById('contadorSesion');
+        // 🔥 Badge compacto con rol + descargas
+        function actualizarBadgeRol() {
+            const el = document.getElementById('badgeRol');
 
             if (!sesion) {
                 el.style.display = 'none';
                 return;
             }
 
+            el.style.display = 'inline-flex';
+
             if (sesion.tipo === 'admin') {
                 el.textContent = t('contadorAdmin');
-                el.className = 'contador-sesion';
-                el.style.display = 'inline-block';
+                el.className = 'badge-rol admin';
             } else if (sesion.tipo === 'general' && sesionGeneral) {
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
@@ -2268,15 +2528,102 @@
 
                 if (restantes <= 0) {
                     el.textContent = t('contadorAgotado');
-                    el.className = 'contador-sesion agotado';
+                    el.className = 'badge-rol agotado';
                 } else {
                     el.textContent = t('contadorSesion', usadas, total);
-                    el.className = 'contador-sesion';
+                    el.className = 'badge-rol';
+                    if (restantes <= 2) {
+                        el.classList.add('pulso');
+                    }
                 }
-                el.style.display = 'inline-block';
             } else {
                 el.style.display = 'none';
             }
+        }
+
+        // ==========================================
+        // ⏱️ CONTADOR DE PRÓXIMA FOTO
+        // ==========================================
+        function iniciarContadorProxima(intervaloSegundos) {
+            detenerContadorProxima();
+
+            contadorEstado.activo = true;
+            contadorEstado.intervaloTotal = intervaloSegundos || 60;
+            contadorEstado.segundosRestantes = contadorEstado.intervaloTotal;
+
+            const contador = document.getElementById('contadorProxima');
+            contador.classList.remove('oculto', 'nueva', 'esperando');
+
+            actualizarTextoContador();
+            actualizarBarraContador();
+
+            contadorEstado.timerId = setInterval(() => {
+                contadorEstado.segundosRestantes--;
+                if (contadorEstado.segundosRestantes <= 0) {
+                    contadorEstado.segundosRestantes = 0;
+                    actualizarTextoContador();
+                    actualizarBarraContador();
+                    // Disparar poll inmediato
+                    clearTimeout(window._pollTimer);
+                    cargarFotos();
+                    // Reiniciar contador
+                    contadorEstado.segundosRestantes = contadorEstado.intervaloTotal;
+                } else {
+                    actualizarTextoContador();
+                    actualizarBarraContador();
+                }
+            }, 1000);
+        }
+
+        function detenerContadorProxima() {
+            if (contadorEstado.timerId) {
+                clearInterval(contadorEstado.timerId);
+                contadorEstado.timerId = null;
+            }
+            contadorEstado.activo = false;
+        }
+
+        function actualizarTextoContador() {
+            const textoEl = document.getElementById('textoContador');
+            if (!contadorEstado.hayPendientes) {
+                textoEl.textContent = t('esperandoFoto');
+                return;
+            }
+            const min = Math.floor(contadorEstado.segundosRestantes / 60);
+            const seg = contadorEstado.segundosRestantes % 60;
+            const tiempo = `${min}:${String(seg).padStart(2, '0')}`;
+            textoEl.innerHTML = t('proximaFoto', tiempo);
+        }
+
+        function actualizarBarraContador() {
+            const relleno = document.getElementById('barraRelleno');
+            const porcentaje = ((contadorEstado.intervaloTotal - contadorEstado.segundosRestantes) / contadorEstado.intervaloTotal) * 100;
+            relleno.style.width = Math.min(100, Math.max(0, porcentaje)) + '%';
+        }
+
+        function mostrarEsperando() {
+            const contador = document.getElementById('contadorProxima');
+            contador.classList.remove('oculto');
+            contador.classList.add('esperando');
+            contadorEstado.hayPendientes = false;
+            actualizarTextoContador();
+        }
+
+        function mostrarContadorActivo() {
+            const contador = document.getElementById('contadorProxima');
+            contador.classList.remove('oculto', 'esperando');
+            contadorEstado.hayPendientes = true;
+        }
+
+        function ocultarContador() {
+            const contador = document.getElementById('contadorProxima');
+            contador.classList.add('oculto');
+        }
+
+        function marcarContadorNueva() {
+            const contador = document.getElementById('contadorProxima');
+            contador.classList.add('nueva');
+            setTimeout(() => contador.classList.remove('nueva'), 2000);
         }
 
         // ==========================================
@@ -2346,9 +2693,18 @@
 
                 const nuevasFotos = data.fotos || [];
 
-                const huboCambio =
-                    JSON.stringify(nuevasFotos) !==
-                    JSON.stringify(fotosCache);
+                // 🔥 Detectar fotos nuevas por nombre
+                const nombresAnteriores = new Set(fotosCache.map(f => f.nombre));
+                const nombresNuevos = new Set(nuevasFotos.map(f => f.nombre));
+
+                const fotosRecienLlegadas = nuevasFotos.filter(f => !nombresAnteriores.has(f.nombre));
+
+                // Marcar fotos nuevas con badge
+                fotosRecienLlegadas.forEach(f => {
+                    fotosNuevas.add(f.nombre);
+                });
+
+                const huboCambio = JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache);
 
                 if (huboCambio) {
                     fotosCache = nuevasFotos;
@@ -2358,15 +2714,47 @@
                     }
 
                     renderizarGaleria();
+
+                    // 🔥 Si llegaron fotos nuevas, mostrar animación + toast
+                    if (fotosRecienLlegadas.length > 0) {
+                        marcarContadorNueva();
+                        if (!tipsMostrados.primeraFotoNueva) {
+                            tipsMostrados.primeraFotoNueva = true;
+                            mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
+                        } else {
+                            mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
+                        }
+                    }
                 }
 
                 actualizarEstado();
                 actualizarBotonPrincipal();
+                actualizarBadgeRol();
+
+                // 🔥 Actualizar contador de próxima foto según el poll
+                const intervalo = (data.poll && data.poll.intervaloBaseSeg) || 60;
+
+                // Si hay fotos pendientes en el server (no sabemos directamente),
+                // usamos el poll como referencia. Si el poll es corto, hay actividad.
+                if (intervalo <= 90) {
+                    // Hay actividad → mostrar contador activo
+                    if (!contadorEstado.activo) {
+                        iniciarContadorProxima(intervalo);
+                    } else {
+                        contadorEstado.intervaloTotal = intervalo;
+                    }
+                    mostrarContadorActivo();
+                } else {
+                    // Sin actividad → mostrar esperando
+                    mostrarEsperando();
+                    detenerContadorProxima();
+                }
 
             } catch (error) {
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
+                ocultarContador();
             }
 
             cargando = false;
@@ -2475,26 +2863,16 @@
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
                 const urlImagen = foto.url;
+                const esNueva = fotosNuevas.has(foto.nombre);
 
                 html += `
-                    <div class="foto" onclick="abrirModal('${foto.nombre}')">
+                    <div class="foto ${esNueva ? 'nueva animar-entrada' : ''}" onclick="abrirModal('${foto.nombre}')">
                         <div class="skeleton"></div>
+                        ${esNueva ? '<div class="badge-nueva">✨ NUEVA</div>' : ''}
                         <img src="${urlImagen}" alt="Foto ${i + 1}"
                              data-src="${urlImagen}"
                              onload="this.classList.add('cargada')"
                              onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
-                    </div>
-                `;
-            }
-
-            const hayNuevas = fotosCache.length > totalFotosAnterior && totalFotosAnterior > 0;
-            if (hayNuevas) {
-                const nuevas = fotosCache.length - totalFotosAnterior;
-                const texto = nuevas === 1 ? t('fotoNueva') : t('fotosNuevas');
-                const disp = nuevas === 1 ? t('disponibles') : t('disponiblesPlural');
-                html += `
-                    <div class="aviso-nuevas">
-                        ${nuevas} ${texto} ${disp}
                     </div>
                 `;
             }
@@ -2523,6 +2901,19 @@
             galeria.innerHTML = html;
             cargarImagenesSecuencialmente();
             totalFotosAnterior = fotosCache.length;
+
+            // 🔥 Programar limpieza del badge "NUEVA" después de 3 min
+            if (fotosNuevas.size > 0) {
+                setTimeout(() => {
+                    fotosNuevas.clear();
+                    // Re-render suave solo si hay fotos visibles
+                    document.querySelectorAll('.foto.nueva').forEach(el => {
+                        el.classList.remove('nueva', 'animar-entrada');
+                        const badge = el.querySelector('.badge-nueva');
+                        if (badge) badge.remove();
+                    });
+                }, DURACION_BADGE_NUEVA_MS);
+            }
         }
 
         function cargarImagenesSecuencialmente() {
@@ -2589,14 +2980,10 @@
         // ==========================================
         function abrirModal(nombreFoto) {
             const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
-            if (index < 0) {
-                return;
-            }
+            if (index < 0) return;
 
             const foto = fotosCache[index];
-            if (!foto || !foto.nombre || !foto.url) {
-                return;
-            }
+            if (!foto || !foto.nombre || !foto.url) return;
 
             fotoSeleccionadaIndex = index;
 
@@ -2775,8 +3162,14 @@
                 if (data.tipo === 'general' && sesionGeneral) {
                     sesionGeneral.descargasSesion = data.descargasSesion || sesionGeneral.descargasSesion;
                     sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
-                    actualizarContadorSesion();
+                    actualizarBadgeRol();
                     actualizarBotonPrincipal();
+                }
+
+                // 🔥 Tip de primera descarga
+                if (!tipsMostrados.primeraDescarga) {
+                    tipsMostrados.primeraDescarga = true;
+                    setTimeout(() => mostrarToast(t('tipPrimeraDescarga'), 'tip'), 800);
                 }
 
             } catch (error) {
@@ -2957,7 +3350,6 @@
             });
         }
 
-
         // ==========================================
         // 🎫 QR GENERAL
         // ==========================================
@@ -3064,7 +3456,6 @@
             });
         }
 
-
         // ==========================================
         // 🛡️ UTILIDADES
         // ==========================================
@@ -3079,11 +3470,12 @@
         }
 
         // ==========================================
-        // 💬 AVISOS INTERMITENTES
+        // 💬 AVISOS ROTATIVOS (ahora como toasts)
         // ==========================================
-        function iniciarAvisosIntermitentes() {
-            const contenedor = document.getElementById('avisoIntermitente');
+        let indiceAviso = 0;
+        let avisoTimeoutId = null;
 
+        function iniciarAvisosRotativos() {
             function mostrarAviso() {
                 const listaAvisos = TRADUCCIONES[idiomaActual].avisos || [];
                 if (listaAvisos.length === 0) return;
@@ -3091,19 +3483,13 @@
                 const texto = listaAvisos[indiceAviso % listaAvisos.length];
                 indiceAviso++;
 
-                contenedor.innerHTML = texto;
-                contenedor.classList.add('visible');
-
-                if (avisoOcultoTimeoutId) clearTimeout(avisoOcultoTimeoutId);
-                avisoOcultoTimeoutId = setTimeout(() => {
-                    contenedor.classList.remove('visible');
-                }, 8000);
+                mostrarToast(texto, 'tip');
 
                 if (avisoTimeoutId) clearTimeout(avisoTimeoutId);
-                avisoTimeoutId = setTimeout(mostrarAviso, INTERVALO_AVISOS * 1000);
+                avisoTimeoutId = setTimeout(mostrarAviso, 45000);
             }
 
-            avisoTimeoutId = setTimeout(mostrarAviso, 15000);
+            avisoTimeoutId = setTimeout(mostrarAviso, 20000);
         }
 
         // ==========================================
@@ -3193,6 +3579,7 @@
 
             activarApp();
 
+            // 🔥 Detección de recargas excesivas
             (function detectarRecargas() {
                 const recargas = JSON.parse(localStorage.getItem('ovj_recargas') || '[]');
                 const ahora = Date.now();
@@ -3201,17 +3588,12 @@
                 localStorage.setItem('ovj_recargas', JSON.stringify(recientes));
 
                 if (recientes.length > 5) {
-                    const aviso = document.getElementById('avisoRecarga');
-                    const texto = document.getElementById('avisoRecargaTexto');
-                    if (aviso && texto) {
-                        aviso.classList.add('alerta');
-                        texto.textContent = 'Recargar no acelera las fotos. Se actualizan solas cada pocos minutos.';
-                    }
+                    mostrarToast(t('tipRecarga'), 'warning', 6000);
                 }
             })();
 
             cargarFotos();
-            iniciarAvisosIntermitentes();
+            iniciarAvisosRotativos();
         }
 
         inicializar();
