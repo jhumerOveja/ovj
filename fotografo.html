@@ -1561,7 +1561,7 @@
                 }
             }
 
-            // Contadores del pool
+            // 🔥 Contadores: sin VIPs, solo generales
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
@@ -1576,13 +1576,6 @@
                             <div class="info">
                                 <div class="valor">${descSesion}</div>
                                 <div class="etiqueta">Descargas / sesión</div>
-                            </div>
-                        </div>
-                        <div class="contador-item">
-                            <span class="emoji">⭐</span>
-                            <div class="info">
-                                <div class="valor">${contadores.vips} / ${contadores.limiteVips}</div>
-                                <div class="etiqueta">VIPs</div>
                             </div>
                         </div>
                         <div class="contador-item">
@@ -1890,7 +1883,7 @@
 
                 $('linkAdminSubtitulo').innerHTML = data.reclamada
                     ? '⚠️ Este link ya fue usado en otro dispositivo. Si el cliente necesita acceso desde otro, usá "Regenerar link del cliente".'
-                    : 'Compartile este link al cliente. Él podrá invitar VIPs y administrar la galería.';
+                    : 'Compartile este link al cliente. Él podrá invitar administradores.';
 
                 $('modalLinkAdmin').classList.add('activo');
 
@@ -2065,7 +2058,6 @@
             $('modalConfirmar').classList.add('activo');
         }
 
-        // 🔥 REEMPLAZAR el bloque de ejecutarFinalizar
         async function ejecutarFinalizar() {
             cerrarConfirmar();
             loader(true);
@@ -2209,7 +2201,7 @@
             }
         }
 
-        // 🔥 NUEVO: genera la preview 900px con canvas
+        // 🔥 Genera la preview 900px con canvas
         async function generarPreview(archivo) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -2221,7 +2213,6 @@
                             let ancho = img.width;
                             let alto = img.height;
 
-                            // Si es más ancha que el máximo, escalar
                             if (ancho > PREVIEW_MAX_ANCHO) {
                                 alto = Math.round(alto * (PREVIEW_MAX_ANCHO / ancho));
                                 ancho = PREVIEW_MAX_ANCHO;
@@ -2258,14 +2249,13 @@
 
         // 🔥 Sube un archivo a B2 con URL firmada
         async function subirArchivoAB2(archivo, nombreOriginal, tipo) {
-            // 1) Pedir URL firmada al server
             const dataPedido = await apiFetch('/subir_url', {
                 method: 'POST',
                 body: JSON.stringify({
                     f: nombreFotografoActual,
                     e: eventoActivo.id,
                     nombreOriginal: nombreOriginal,
-                    tipo: tipo   // 'original' | 'preview'
+                    tipo: tipo
                 })
             });
 
@@ -2273,7 +2263,6 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            // 2) Subir el archivo directo a B2
             const resp = await fetch(dataPedido.url, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'image/jpeg' },
@@ -2289,29 +2278,23 @@
         async function subirUnaFoto(subida) {
             const { archivo } = subida;
 
-            // 1) Preparar el preview
             subida.estado = 'preparando';
             renderizarListaSubidas();
 
             const previewBlob = await generarPreview(archivo);
 
-            // 2) Construir nombres
             const timestamp = Date.now();
             const random = Math.random().toString(36).substring(2, 8);
             const baseNombre = `foto-${timestamp}-${random}`;
             const nombreOriginal = `${baseNombre}.jpg`;
             const nombrePreview = `${baseNombre}_web.jpg`;
 
-            // 3) Subir original con disposition: attachment
             subida.estado = 'subiendo';
             renderizarListaSubidas();
 
             const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
-
-            // 4) Subir preview con disposition: inline
             const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
-            // 5) Confirmar al server que ambas subieron
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
                 body: JSON.stringify({
