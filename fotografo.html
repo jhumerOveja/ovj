@@ -15,6 +15,7 @@
         :root {
             --oro: #f39c12;
             --oro-claro: #f1c40f;
+            --champagne: #e8c47a;
             --verde: #2ecc71;
             --rojo: #e74c3c;
             --azul: #3498db;
@@ -372,7 +373,7 @@
             font-weight: 600;
         }
 
-        /* 🔥 Tiempo restante */
+        /* Tiempo restante */
         .aviso-tiempo {
             background: rgba(52, 152, 219, 0.08);
             border: 1px solid rgba(52, 152, 219, 0.25);
@@ -481,6 +482,76 @@
             color: var(--verde);
         }
 
+        /* Minijuego activo */
+        .card-minijuego {
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.1), rgba(232, 196, 122, 0.02));
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-minijuego .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .card-minijuego .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-minijuego .titulo {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 3px;
+        }
+
+        .card-minijuego .detalle {
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+        }
+
+        /* Mensaje activo */
+        .card-mensaje {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(52, 152, 219, 0.02));
+            border: 1px solid rgba(52, 152, 219, 0.25);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-mensaje .emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-mensaje .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-mensaje .titulo {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #5dade2;
+            margin-bottom: 4px;
+        }
+
+        .card-mensaje .texto {
+            font-size: 0.8rem;
+            color: #fff;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
         /* Botones de acciones */
         .acciones-grid {
             display: grid;
@@ -490,6 +561,10 @@
 
         .acciones-grid .full {
             grid-column: 1 / -1;
+        }
+
+        .acciones-grid .tercio {
+            grid-column: span 1;
         }
 
         .btn-accion {
@@ -547,6 +622,36 @@
 
         .btn-qr:hover:not(:disabled) {
             background: rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-minijuego {
+            background: linear-gradient(135deg, #e8c47a, #d4a94a);
+            color: #0a0a0a;
+            box-shadow: 0 4px 20px rgba(232, 196, 122, 0.25);
+        }
+
+        .btn-minijuego:hover:not(:disabled) {
+            box-shadow: 0 8px 30px rgba(232, 196, 122, 0.4);
+        }
+
+        .btn-mensaje {
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.4);
+            color: #5dade2;
+        }
+
+        .btn-mensaje:hover:not(:disabled) {
+            background: rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-detras {
+            background: rgba(155, 89, 182, 0.15);
+            border: 1px solid rgba(155, 89, 182, 0.4);
+            color: #b794f4;
+        }
+
+        .btn-detras:hover:not(:disabled) {
+            background: rgba(155, 89, 182, 0.25);
         }
 
         .btn-finalizar {
@@ -739,6 +844,10 @@
             position: relative;
         }
 
+        .modal-contenido.grande {
+            max-width: 560px;
+        }
+
         @keyframes zoomIn {
             from {
                 transform: scale(0.9);
@@ -791,7 +900,9 @@
             line-height: 1.5;
         }
 
-        .modal-contenido input[type="text"] {
+        .modal-contenido input[type="text"],
+        .modal-contenido input[type="number"],
+        .modal-contenido textarea {
             width: 100%;
             padding: 14px 16px;
             border-radius: 12px;
@@ -802,9 +913,16 @@
             outline: none;
             font-family: inherit;
             margin-bottom: 16px;
+            resize: none;
         }
 
-        .modal-contenido input[type="text"]:focus {
+        .modal-contenido textarea {
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .modal-contenido input:focus,
+        .modal-contenido textarea:focus {
             border-color: rgba(255, 215, 0, 0.3);
         }
 
@@ -942,9 +1060,9 @@
             margin-top: 6px;
         }
 
-        /* 🔥 Checkbox foto secreta */
+        /* Checkbox foto secreta */
         .opcion-secreta {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             padding: 14px 16px;
             background: linear-gradient(135deg, rgba(232, 196, 122, 0.08), rgba(232, 196, 122, 0.02));
             border: 1px solid rgba(232, 196, 122, 0.25);
@@ -1011,6 +1129,38 @@
             line-height: 1.4;
         }
 
+        /* Campo de mensaje */
+        .campo-mensaje {
+            margin-bottom: 12px;
+        }
+
+        .campo-mensaje label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+            margin-bottom: 6px;
+            padding-left: 4px;
+        }
+
+        .campo-mensaje input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .campo-mensaje .ayuda {
+            font-size: 0.65rem;
+            color: var(--texto-tenue);
+            margin-top: 5px;
+            padding-left: 4px;
+        }
+
         .lista-subidas {
             max-height: 220px;
             overflow-y: auto;
@@ -1069,6 +1219,81 @@
         .item-subida .estado.error {
             background: rgba(231, 76, 60, 0.15);
             color: var(--rojo);
+        }
+
+        /* Lista detrás de cámara */
+        .lista-detras {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 4px;
+            margin-bottom: 14px;
+        }
+
+        .item-detras {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .item-detras img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .item-detras .texto {
+            font-size: 0.68rem;
+            color: #ccc;
+            padding: 6px 8px;
+            line-height: 1.3;
+            max-height: 50px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .item-detras .btn-eliminar {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 2;
+            font-family: inherit;
+        }
+
+        .item-detras .btn-eliminar:hover {
+            background: rgba(231, 76, 60, 0.8);
+        }
+
+        .aviso-detras {
+            background: rgba(155, 89, 182, 0.08);
+            border: 1px solid rgba(155, 89, 182, 0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.72rem;
+            color: #b794f4;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            text-align: center;
         }
 
         /* Loader */
@@ -1232,7 +1457,7 @@
             <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none"
                 onchange="manejarSeleccionFotos(event)" />
 
-            <!-- 🔥 Checkbox foto secreta -->
+            <!-- Checkbox foto secreta -->
             <div class="opcion-secreta">
                 <label class="checkbox-secreta">
                     <input type="checkbox" id="checkFotoSecreta" />
@@ -1242,6 +1467,14 @@
                         <small>Se mostrará borrosa y se revelará en 5 minutos. Solo una por evento.</small>
                     </span>
                 </label>
+            </div>
+
+            <!-- Campo de mensaje opcional -->
+            <div class="campo-mensaje">
+                <label>📝 Mensaje para esta foto (opcional)</label>
+                <input type="text" id="inputMensajeFoto" placeholder="Ej: La mejor de la ceremonia" maxlength="100"
+                    autocomplete="off" />
+                <div class="ayuda">Aparecerá cuando el invitado abra la foto. Máximo 100 caracteres.</div>
             </div>
 
             <div class="lista-subidas" id="listaSubidas"></div>
@@ -1317,18 +1550,109 @@
         </div>
     </div>
 
+    <!-- ===== MODAL MINIJUEGO ===== -->
+    <div class="modal" id="modalMinijuego">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarMinijuego()">✕</button>
+            <div class="titulo">🎮 Activar Minijuego</div>
+            <div class="subtitulo">
+                Se esconde el botón "OVJ · Aquí estoy" en una foto aleatoria.<br>
+                El primero que lo toque gana <strong>reset de sesión</strong> (tiempo + descargas completas).
+            </div>
+
+            <label style="display:block; font-size:0.72rem; color:#aaa; margin-bottom:6px; padding-left:4px;">
+                Duración (minutos)
+            </label>
+            <input type="number" id="inputMinijuegoDuracion" value="10" min="1" max="30" />
+
+            <div class="aviso-detras" style="background:rgba(232,196,122,0.08); border-color:rgba(232,196,122,0.25); color:#e8c47a;">
+                💡 Necesitás al menos 5 fotos liberadas para activarlo.
+            </div>
+
+            <button class="btn-primario" onclick="activarMinijuego()">Activar ahora</button>
+            <button class="btn-secundario" onclick="cerrarMinijuego()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL MENSAJE EN VIVO ===== -->
+    <div class="modal" id="modalMensaje">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarMensaje()">✕</button>
+            <div class="titulo">💬 Mensaje en vivo</div>
+            <div class="subtitulo">
+                Aparece como banner en la galería de los invitados.<br>
+                Dura 10 minutos o hasta que lo borres.
+            </div>
+
+            <textarea id="inputMensajeFotografo" placeholder="Ej: Subo el bloque de la torta en 5 min" maxlength="200"></textarea>
+            <div class="ayuda" style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
+                Máximo 200 caracteres.
+            </div>
+
+            <button class="btn-primario" onclick="enviarMensaje()">Enviar mensaje</button>
+            <button class="btn-peligro" id="btnBorrarMensaje" onclick="borrarMensaje()" style="display:none;">
+                🗑️ Borrar mensaje activo
+            </button>
+            <button class="btn-secundario" onclick="cerrarMensaje()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
+    <div class="modal" id="modalDetrasCamara">
+        <div class="modal-contenido grande">
+            <button class="btn-cerrar" onclick="cerrarDetrasCamara()">✕</button>
+            <div class="titulo">📸 Detrás de cámara</div>
+            <div class="subtitulo">
+                Fotos casuales que humanizan tu marca.<br>
+                Los invitados las ven, pero no las pueden descargar.
+            </div>
+
+            <div class="aviso-detras">
+                💡 Subí fotos de tu llegada, del equipo, de la comida, etc.<br>
+                Texto corto con cada foto (opcional).
+            </div>
+
+            <div class="zona-drop" id="zonaDropDetras" onclick="document.getElementById('inputDetrasCamara').click()">
+                <span class="icono">📸</span>
+                <div class="texto">Toca aquí para elegir una foto</div>
+                <div class="subtexto">Máximo 15 MB · JPG</div>
+            </div>
+            <input type="file" id="inputDetrasCamara" accept="image/jpeg,image/jpg" style="display:none"
+                onchange="manejarSeleccionDetras(event)" />
+
+            <div class="campo-mensaje">
+                <label>📝 Texto para la foto (opcional)</label>
+                <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas" maxlength="200"
+                    autocomplete="off" />
+                <div class="ayuda">Máximo 200 caracteres.</div>
+            </div>
+
+            <button class="btn-primario" id="btnSubirDetras" onclick="subirDetrasCamara()" disabled>
+                📤 Subir foto
+            </button>
+
+            <div class="seccion-titulo" style="margin-top:20px;">Fotos subidas (<span id="contadorDetras">0</span>)</div>
+            <div class="lista-detras" id="listaDetras">
+                <div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">
+                    Cargando...
+                </div>
+            </div>
+
+            <button class="btn-secundario" onclick="cerrarDetrasCamara()">Cerrar</button>
+        </div>
+    </div>
+
     <!-- Loader y toast -->
     <div class="loader-overlay" id="loader">
         <div class="loader-spinner"></div>
     </div>
     <div class="toast" id="toast"></div>
     <script src="qrcode.min.js"></script>
-    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
     <script src="config.js"></script>
 
     <script>
         // ==========================================
-        // ⚙️ CONFIGURACIÓN
+        // CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
         const URL_API = _esLocalhost
@@ -1336,35 +1660,36 @@
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
         const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
-        const REINTENTOS_SUBIDA = 3;
         const INTERVALO_REFRESH_MS = 30000;
 
-        // 🔥 Configuración de la preview
         const PREVIEW_MAX_ANCHO = 900;
         const PREVIEW_CALIDAD = 0.8;
 
-        // 🔥 Umbral para avisar que el tiempo se está agotando
         const UMBRAL_AVISO_MIN = 15;
 
         // ==========================================
-        // 🔑 ESTADO GLOBAL
+        // ESTADO GLOBAL
         // ==========================================
         let tokenSesion = null;
         let nombreFotografoActual = null;
         let eventoActivo = null;
         let contadores = null;
         let tiempoEvento = null;
+        let minijuegoInfo = null;
+        let mensajeInfo = null;
+        let detrasCamaraInfo = null;
 
         let colaSubidas = [];
         let subidaEnProceso = false;
 
         let intervalRefresh = null;
 
-        // 🔥 Flag para saber si ya hay una foto secreta subida
         let fotoSecretaYaSubida = false;
 
+        let archivoDetrasSeleccionado = null;
+
         // ==========================================
-        // 🛠️ UTILIDADES
+        // UTILIDADES
         // ==========================================
         function $(id) { return document.getElementById(id); }
 
@@ -1426,7 +1751,7 @@
         }
 
         // ==========================================
-        // 🔐 SESIÓN
+        // SESIÓN
         // ==========================================
         function guardarSesion(token, nombre, expiraEn) {
             localStorage.setItem('ovj_fotografo_token', token);
@@ -1520,7 +1845,7 @@
         }
 
         // ==========================================
-        // 🖥️ PANTALLAS
+        // PANTALLAS
         // ==========================================
         function mostrarLogin() {
             $('pantallaLogin').classList.add('activo');
@@ -1539,7 +1864,7 @@
         }
 
         // ==========================================
-        // 📊 CARGA DE DATOS
+        // CARGA DE DATOS
         // ==========================================
         async function cargarTodo() {
             try {
@@ -1553,8 +1878,10 @@
                 eventoActivo = estado.activo;
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
+                minijuegoInfo = estado.minijuego || null;
+                mensajeInfo = estado.mensajeFotografo || null;
+                detrasCamaraInfo = estado.detrasCamara || null;
 
-                // 🔥 Detectar si ya hay una foto secreta subida
                 if (contadores && contadores.fotosSecretas > 0) {
                     fotoSecretaYaSubida = true;
                 } else {
@@ -1595,7 +1922,7 @@
         }
 
         // ==========================================
-        // 🎨 RENDER
+        // RENDER
         // ==========================================
         function renderActivo(activo, estado) {
             const cont = $('seccionActivo');
@@ -1617,7 +1944,6 @@
             metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
             metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
-            // Aviso de tiempo
             let avisoTiempoHtml = '';
             if (tiempoEvento) {
                 if (tiempoEvento.yaTermino) {
@@ -1652,7 +1978,7 @@
                 }
             }
 
-            // 🔥 Contadores: generales + foto secreta + desbloqueos
+            // Contadores
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
@@ -1703,6 +2029,45 @@
                 `;
             }
 
+            // Card de minijuego
+            let minijuegoHtml = '';
+            if (minijuegoInfo && minijuegoInfo.activo) {
+                minijuegoHtml = `
+                    <div class="card-minijuego">
+                        <span class="emoji">🎮</span>
+                        <div class="info">
+                            <div class="titulo">Minijuego activo</div>
+                            <div class="detalle">${minijuegoInfo.participantes || 0} participantes hasta ahora</div>
+                        </div>
+                    </div>
+                `;
+            } else if (minijuegoInfo && minijuegoInfo.finalizado) {
+                const ganador = minijuegoInfo.ganadorNombre || (minijuegoInfo.anulado ? 'Anulado (nadie ganó)' : 'Nadie participó');
+                minijuegoHtml = `
+                    <div class="card-minijuego" style="background:linear-gradient(135deg, rgba(102,102,102,0.1), rgba(102,102,102,0.02)); border-color:rgba(102,102,102,0.3);">
+                        <span class="emoji">🏆</span>
+                        <div class="info">
+                            <div class="titulo" style="color:#aaa;">Minijuego finalizado</div>
+                            <div class="detalle">Ganador: ${escapeHtml(ganador)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Card de mensaje activo
+            let mensajeHtml = '';
+            if (mensajeInfo && mensajeInfo.activo) {
+                mensajeHtml = `
+                    <div class="card-mensaje">
+                        <span class="emoji">💬</span>
+                        <div class="info">
+                            <div class="titulo">Mensaje en vivo</div>
+                            <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
+                        </div>
+                    </div>
+                `;
+            }
+
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="seccion-titulo">Evento activo</div>
@@ -1715,13 +2080,24 @@
 
                         ${avisoTiempoHtml}
                         ${contadoresHtml}
+                        ${minijuegoHtml}
+                        ${mensajeHtml}
 
                         <div class="acciones-grid">
                             <button class="btn-accion btn-subir full" onclick="abrirSubir()">
                                 📤 Subir fotos
                             </button>
+                            <button class="btn-accion btn-minijuego" onclick="abrirMinijuego()">
+                                🎮 Minijuego
+                            </button>
+                            <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+                                💬 Mensaje
+                            </button>
+                            <button class="btn-accion btn-detras" onclick="abrirDetrasCamara()">
+                                📸 Detrás de cámara
+                            </button>
                             <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                                🔗 Link del Cliente
+                                🔗 Link Cliente
                             </button>
                             <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
                                 🎫 QR General
@@ -1740,7 +2116,7 @@
 
             if (!agendados || agendados.length === 0) {
                 cont.innerHTML = '';
-                return { activables: 0, huerfanos: 0 };
+                return;
             }
 
             agendados.sort((a, b) => {
@@ -1823,11 +2199,6 @@
             }
 
             cont.innerHTML = html;
-
-            return {
-                activables: activables.length,
-                huerfanos: huerfanos.length
-            };
         }
 
         function renderFinalizados(finalizados) {
@@ -1889,7 +2260,7 @@
         }
 
         // ==========================================
-        // ✅ ACTIVAR EVENTO
+        // ACTIVAR EVENTO
         // ==========================================
         async function activarEvento(eventoId) {
             loader(true);
@@ -1912,7 +2283,7 @@
         }
 
         // ==========================================
-        // 🆘 MODO LIBRE
+        // MODO LIBRE
         // ==========================================
         function abrirModoLibre(hayActivo = false) {
             if (hayActivo) {
@@ -1957,7 +2328,7 @@
         }
 
         // ==========================================
-        // 🔗 LINK DEL CLIENTE
+        // LINK DEL CLIENTE
         // ==========================================
         let urlAdminActual = null;
 
@@ -2058,7 +2429,7 @@
         }
 
         // ==========================================
-        // 🎫 TOKEN GENERAL (QR)
+        // TOKEN GENERAL (QR)
         // ==========================================
         let urlTokenGeneralActual = null;
 
@@ -2151,7 +2522,260 @@
         }
 
         // ==========================================
-        // 🏁 FINALIZAR
+        // MINIJUEGO
+        // ==========================================
+        function abrirMinijuego() {
+            if (minijuegoInfo && minijuegoInfo.activo) {
+                // Ya hay uno activo: opción de cancelar
+                if (confirm('Hay un minijuego activo. ¿Querés cancelarlo?')) {
+                    cancelarMinijuego();
+                }
+                return;
+            }
+
+            if (contadores && contadores.fotosSecretas >= 0 && (!contadores || !contadores.generalesTotal)) {
+                // ok
+            }
+
+            const fotosWeb = eventoActivo && contadores ? (contadores.fotosWeb || 0) : 0;
+
+            // Verificar mínimo de fotos
+            if (detrasCamaraInfo && detrasCamaraInfo.puedeUsar === false) {
+                toast('⚠️ Necesitás al menos 5 fotos liberadas para activar el minijuego', 'error');
+                return;
+            }
+
+            $('inputMinijuegoDuracion').value = 10;
+            $('modalMinijuego').classList.add('activo');
+        }
+
+        function cerrarMinijuego() {
+            $('modalMinijuego').classList.remove('activo');
+        }
+
+        async function activarMinijuego() {
+            const duracionMin = parseInt($('inputMinijuegoDuracion').value, 10) || 10;
+
+            if (duracionMin < 1 || duracionMin > 30) {
+                toast('Duración inválida (1-30)', 'error');
+                return;
+            }
+
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/minijuego/activar', {
+                    method: 'POST',
+                    body: JSON.stringify({ duracionMin })
+                });
+
+                cerrarMinijuego();
+                toast(`🎮 Minijuego activado por ${duracionMin} min`, 'ok');
+                await cargarTodo();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function cancelarMinijuego() {
+            loader(true);
+            try {
+                await apiFetch('/fotografo/minijuego/cancelar', { method: 'POST' });
+                toast('🚫 Minijuego cancelado', 'ok');
+                await cargarTodo();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // MENSAJE EN VIVO
+        // ==========================================
+        function abrirMensaje() {
+            $('inputMensajeFotografo').value = '';
+            $('btnBorrarMensaje').style.display = (mensajeInfo && mensajeInfo.activo) ? 'block' : 'none';
+            $('modalMensaje').classList.add('activo');
+        }
+
+        function cerrarMensaje() {
+            $('modalMensaje').classList.remove('activo');
+        }
+
+        async function enviarMensaje() {
+            const texto = $('inputMensajeFotografo').value.trim();
+            if (texto.length < 2) {
+                toast('Mensaje muy corto', 'error');
+                return;
+            }
+
+            loader(true);
+            try {
+                await apiFetch('/fotografo/mensaje', {
+                    method: 'POST',
+                    body: JSON.stringify({ texto })
+                });
+
+                cerrarMensaje();
+                toast('💬 Mensaje enviado', 'ok');
+                await cargarTodo();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function borrarMensaje() {
+            if (!confirm('¿Borrar el mensaje activo?')) return;
+
+            loader(true);
+            try {
+                await apiFetch('/fotografo/mensaje', { method: 'DELETE' });
+                cerrarMensaje();
+                toast('🗑️ Mensaje borrado', 'ok');
+                await cargarTodo();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
+        // DETRÁS DE CÁMARA
+        // ==========================================
+        function abrirDetrasCamara() {
+            archivoDetrasSeleccionado = null;
+            $('inputTextoDetras').value = '';
+            $('inputDetrasCamara').value = '';
+            $('btnSubirDetras').disabled = true;
+            $('modalDetrasCamara').classList.add('activo');
+            cargarListaDetras();
+        }
+
+        function cerrarDetrasCamara() {
+            $('modalDetrasCamara').classList.remove('activo');
+        }
+
+        function manejarSeleccionDetras(event) {
+            const archivos = Array.from(event.target.files || []);
+            if (archivos.length === 0) return;
+
+            const archivo = archivos[0];
+
+            if (!archivo.type.startsWith('image/jpeg')) {
+                toast('Solo JPG', 'error');
+                return;
+            }
+            if (archivo.size > TAMANO_MAX_FOTO) {
+                toast('Supera 15 MB', 'error');
+                return;
+            }
+
+            archivoDetrasSeleccionado = archivo;
+            $('btnSubirDetras').disabled = false;
+            toast('📸 Foto lista para subir', 'ok');
+
+            event.target.value = '';
+        }
+
+        async function subirDetrasCamara() {
+            if (!archivoDetrasSeleccionado) return;
+
+            const texto = $('inputTextoDetras').value.trim();
+
+            loader(true);
+            $('btnSubirDetras').disabled = true;
+
+            try {
+                // 1. Pedir URL firmada
+                const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
+                    method: 'POST',
+                    body: JSON.stringify({ nombreArchivo: archivoDetrasSeleccionado.name })
+                });
+
+                if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
+
+                // 2. Subir directo a B2
+                const resp = await fetch(dataUrl.url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'image/jpeg' },
+                    body: archivoDetrasSeleccionado
+                });
+
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+                // 3. Confirmar
+                await apiFetch('/fotografo/detras-camara/confirmar', {
+                    method: 'POST',
+                    body: JSON.stringify({ key: dataUrl.key, texto })
+                });
+
+                toast('✅ Foto subida', 'ok');
+                archivoDetrasSeleccionado = null;
+                $('inputTextoDetras').value = '';
+                $('btnSubirDetras').disabled = true;
+                cargarListaDetras();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+                $('btnSubirDetras').disabled = false;
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function cargarListaDetras() {
+            const cont = $('listaDetras');
+            cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">Cargando...</div>';
+
+            try {
+                const data = await apiFetch('/fotografo/detras-camara');
+                const items = data.items || [];
+
+                $('contadorDetras').textContent = items.length;
+
+                if (items.length === 0) {
+                    cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">No hay fotos todavía</div>';
+                    return;
+                }
+
+                let html = '';
+                items.slice().reverse().forEach(item => {
+                    html += `
+                        <div class="item-detras">
+                            <img src="${item.url}" alt="Detrás de cámara" loading="lazy" />
+                            ${item.texto ? `<div class="texto">${escapeHtml(item.texto)}</div>` : ''}
+                            <button class="btn-eliminar" onclick="eliminarDetras('${item.id}')">✕</button>
+                        </div>
+                    `;
+                });
+                cont.innerHTML = html;
+
+            } catch (e) {
+                cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#e74c3c; padding:20px; font-size:0.8rem;">Error cargando</div>';
+            }
+        }
+
+        async function eliminarDetras(id) {
+            if (!confirm('¿Eliminar esta foto?')) return;
+
+            try {
+                await apiFetch('/fotografo/detras-camara/' + encodeURIComponent(id), { method: 'DELETE' });
+                toast('🗑️ Foto eliminada', 'ok');
+                cargarListaDetras();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // FINALIZAR
         // ==========================================
         let confirmarCallback = null;
 
@@ -2199,13 +2823,14 @@
         });
 
         // ==========================================
-        // 📤 SUBIR FOTOS
+        // SUBIR FOTOS
         // ==========================================
         function abrirSubir() {
             colaSubidas = [];
             renderizarListaSubidas();
 
-            // 🔥 Actualizar checkbox según si ya hay secreta
+            $('inputMensajeFoto').value = '';
+
             const check = $('checkFotoSecreta');
             if (check) {
                 if (fotoSecretaYaSubida) {
@@ -2239,6 +2864,8 @@
             const check = $('checkFotoSecreta');
             const marcadaComoSecreta = check && check.checked;
 
+            const mensajeFoto = $('inputMensajeFoto').value.trim();
+
             for (const archivo of archivos) {
                 if (!archivo.type.startsWith('image/jpeg')) {
                     toast('Solo JPG: ' + archivo.name, 'error');
@@ -2251,7 +2878,8 @@
                 colaSubidas.push({
                     archivo,
                     estado: 'pendiente',
-                    esSecreta: marcadaComoSecreta && colaSubidas.filter(s => s.esSecreta).length === 0 && !fotoSecretaYaSubida
+                    esSecreta: marcadaComoSecreta && colaSubidas.filter(s => s.esSecreta).length === 0 && !fotoSecretaYaSubida,
+                    mensaje: mensajeFoto || null
                 });
             }
 
@@ -2281,9 +2909,10 @@
                 };
                 const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
                 const secretaTag = s.esSecreta ? ' <span style="color:#e8c47a;">🔒</span>' : '';
+                const mensajeTag = s.mensaje ? ' <span style="color:#5dade2;">📝</span>' : '';
                 html += `
                     <div class="item-subida">
-                        <div class="nombre">${escapeHtml(s.archivo.name)}${secretaTag}</div>
+                        <div class="nombre">${escapeHtml(s.archivo.name)}${secretaTag}${mensajeTag}</div>
                         <div class="estado ${clase}">${texto}</div>
                     </div>
                 `;
@@ -2333,7 +2962,6 @@
             }
         }
 
-        // 🔥 Genera la preview 900px con canvas
         async function generarPreview(archivo) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -2379,7 +3007,6 @@
             });
         }
 
-        // 🔥 Sube un archivo a B2 con URL firmada
         async function subirArchivoAB2(archivo, nombreOriginal, tipo) {
             const dataPedido = await apiFetch('/subir_url', {
                 method: 'POST',
@@ -2406,7 +3033,6 @@
             return dataPedido.key;
         }
 
-        // 🔥 Sube una foto completa: original + preview + confirmación
         async function subirUnaFoto(subida) {
             const { archivo } = subida;
 
@@ -2428,6 +3054,7 @@
             const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
             const esSecreta = !!subida.esSecreta;
+            const mensaje = subida.mensaje || null;
 
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
@@ -2436,11 +3063,11 @@
                     e: eventoActivo.id,
                     keyOriginal: keyOriginal,
                     keyPreview: keyPreview,
-                    esSecreta: esSecreta
+                    esSecreta: esSecreta,
+                    mensaje: mensaje
                 })
             });
 
-            // 🔥 Si era secreta, marcar flag
             if (esSecreta) {
                 fotoSecretaYaSubida = true;
             }
@@ -2449,7 +3076,7 @@
         }
 
         // ==========================================
-        // 🚀 INICIALIZACIÓN
+        // INICIALIZACIÓN
         // ==========================================
         async function inicializar() {
             if (cargarSesionLocal()) {
