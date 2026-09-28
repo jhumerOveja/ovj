@@ -410,26 +410,6 @@
             color: var(--rojo);
         }
 
-        /* Aviso de receso */
-        .aviso-receso {
-            background: rgba(231, 76, 60, 0.08);
-            border: 1px solid rgba(231, 76, 60, 0.25);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-            font-size: 0.8rem;
-            color: #e74c3c;
-            line-height: 1.5;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .aviso-receso .emoji {
-            font-size: 1.4rem;
-            flex-shrink: 0;
-        }
-
         /* Contadores */
         .contadores-grid {
             display: grid;
@@ -482,7 +462,7 @@
             color: var(--verde);
         }
 
-        /* Minijuego activo */
+        /* Minijuego */
         .card-minijuego {
             background: linear-gradient(135deg, rgba(232, 196, 122, 0.1), rgba(232, 196, 122, 0.02));
             border: 1px solid rgba(232, 196, 122, 0.3);
@@ -561,10 +541,6 @@
 
         .acciones-grid .full {
             grid-column: 1 / -1;
-        }
-
-        .acciones-grid .tercio {
-            grid-column: span 1;
         }
 
         .btn-accion {
@@ -1060,75 +1036,6 @@
             margin-top: 6px;
         }
 
-        /* Checkbox foto secreta */
-        .opcion-secreta {
-            margin-bottom: 12px;
-            padding: 14px 16px;
-            background: linear-gradient(135deg, rgba(232, 196, 122, 0.08), rgba(232, 196, 122, 0.02));
-            border: 1px solid rgba(232, 196, 122, 0.25);
-            border-radius: 12px;
-        }
-
-        .checkbox-secreta {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .checkbox-secreta input {
-            display: none;
-        }
-
-        .checkbox-secreta .checkmark {
-            flex-shrink: 0;
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            border: 2px solid rgba(232, 196, 122, 0.4);
-            background: rgba(0, 0, 0, 0.3);
-            position: relative;
-            transition: all 0.25s ease;
-            margin-top: 1px;
-        }
-
-        .checkbox-secreta input:checked + .checkmark {
-            background: linear-gradient(135deg, #e8c47a, #d4a94a);
-            border-color: #e8c47a;
-        }
-
-        .checkbox-secreta input:checked + .checkmark::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #0a0a0a;
-            font-weight: 900;
-            font-size: 0.9rem;
-        }
-
-        .checkbox-secreta .texto {
-            font-size: 0.8rem;
-            color: #ddd;
-            line-height: 1.4;
-        }
-
-        .checkbox-secreta .texto strong {
-            color: #e8c47a;
-            font-weight: 700;
-        }
-
-        .checkbox-secreta .texto small {
-            display: block;
-            font-size: 0.68rem;
-            color: #888;
-            margin-top: 4px;
-            font-weight: 400;
-            line-height: 1.4;
-        }
-
         /* Campo de mensaje */
         .campo-mensaje {
             margin-bottom: 12px;
@@ -1457,18 +1364,6 @@
             <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none"
                 onchange="manejarSeleccionFotos(event)" />
 
-            <!-- Checkbox foto secreta -->
-            <div class="opcion-secreta">
-                <label class="checkbox-secreta">
-                    <input type="checkbox" id="checkFotoSecreta" />
-                    <span class="checkmark"></span>
-                    <span class="texto">
-                        🔒 Marcar como <strong>Foto Secreta</strong>
-                        <small>Se mostrará borrosa y se revelará en 5 minutos. Solo una por evento.</small>
-                    </span>
-                </label>
-            </div>
-
             <!-- Campo de mensaje opcional -->
             <div class="campo-mensaje">
                 <label>📝 Mensaje para esta foto (opcional)</label>
@@ -1554,22 +1449,14 @@
     <div class="modal" id="modalMinijuego">
         <div class="modal-contenido">
             <button class="btn-cerrar" onclick="cerrarMinijuego()">✕</button>
-            <div class="titulo">🎮 Activar Minijuego</div>
+            <div class="titulo">🎁 Sorteo sorpresa</div>
             <div class="subtitulo">
-                Se esconde el botón "OVJ · Aquí estoy" en una foto aleatoria.<br>
-                El primero que lo toque gana <strong>reset de sesión</strong> (tiempo + descargas completas).
+                El sistema elegirá <strong>1 invitado activo al azar</strong>.<br>
+                El ganador recibirá <strong>reset de sesión</strong> (tiempo + descargas completas).<br><br>
+                Se necesitan al menos 5 invitados activos.
             </div>
 
-            <label style="display:block; font-size:0.72rem; color:#aaa; margin-bottom:6px; padding-left:4px;">
-                Duración (minutos)
-            </label>
-            <input type="number" id="inputMinijuegoDuracion" value="10" min="1" max="30" />
-
-            <div class="aviso-detras" style="background:rgba(232,196,122,0.08); border-color:rgba(232,196,122,0.25); color:#e8c47a;">
-                💡 Necesitás al menos 5 fotos liberadas para activarlo.
-            </div>
-
-            <button class="btn-primario" onclick="activarMinijuego()">Activar ahora</button>
+            <button class="btn-primario" onclick="activarMinijuego()">🎲 Sortear ahora</button>
             <button class="btn-secundario" onclick="cerrarMinijuego()">Cancelar</button>
         </div>
     </div>
@@ -1683,8 +1570,6 @@
         let subidaEnProceso = false;
 
         let intervalRefresh = null;
-
-        let fotoSecretaYaSubida = false;
 
         let archivoDetrasSeleccionado = null;
 
@@ -1882,12 +1767,6 @@
                 mensajeInfo = estado.mensajeFotografo || null;
                 detrasCamaraInfo = estado.detrasCamara || null;
 
-                if (contadores && contadores.fotosSecretas > 0) {
-                    fotoSecretaYaSubida = true;
-                } else {
-                    fotoSecretaYaSubida = false;
-                }
-
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
@@ -1978,14 +1857,12 @@
                 }
             }
 
-            // Contadores
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
                 const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
                 const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
                 const descSesion = contadores.descargasPorSesion || 5;
-                const secretas = contadores.fotosSecretas || 0;
                 const desbloqueos = contadores.desbloqueosSociales || 0;
 
                 contadoresHtml = `
@@ -2012,13 +1889,6 @@
                             </div>
                         </div>
                         <div class="contador-item">
-                            <span class="emoji">🔒</span>
-                            <div class="info">
-                                <div class="valor" style="color:${secretas > 0 ? '#e8c47a' : '#888'};">${secretas}</div>
-                                <div class="etiqueta">Foto secreta</div>
-                            </div>
-                        </div>
-                        <div class="contador-item" style="grid-column: 1 / -1;">
                             <span class="emoji">🎁</span>
                             <div class="info">
                                 <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
@@ -2029,32 +1899,22 @@
                 `;
             }
 
-            // Card de minijuego
             let minijuegoHtml = '';
-            if (minijuegoInfo && minijuegoInfo.activo) {
+            if (minijuegoInfo && minijuegoInfo.finalizado) {
                 minijuegoHtml = `
                     <div class="card-minijuego">
-                        <span class="emoji">🎮</span>
+                        <span class="emoji">🎉</span>
                         <div class="info">
-                            <div class="titulo">Minijuego activo</div>
-                            <div class="detalle">${minijuegoInfo.participantes || 0} participantes hasta ahora</div>
-                        </div>
-                    </div>
-                `;
-            } else if (minijuegoInfo && minijuegoInfo.finalizado) {
-                const ganador = minijuegoInfo.ganadorNombre || (minijuegoInfo.anulado ? 'Anulado (nadie ganó)' : 'Nadie participó');
-                minijuegoHtml = `
-                    <div class="card-minijuego" style="background:linear-gradient(135deg, rgba(102,102,102,0.1), rgba(102,102,102,0.02)); border-color:rgba(102,102,102,0.3);">
-                        <span class="emoji">🏆</span>
-                        <div class="info">
-                            <div class="titulo" style="color:#aaa;">Minijuego finalizado</div>
-                            <div class="detalle">Ganador: ${escapeHtml(ganador)}</div>
+                            <div class="titulo">Sorteo realizado</div>
+                            <div class="detalle">
+                                Ganador: <strong>${escapeHtml(minijuegoInfo.ganadorNombre)}</strong><br>
+                                ${minijuegoInfo.totalParticipantes || 0} participantes · ${minijuegoInfo.aplicadoEn ? formatearHora(new Date(minijuegoInfo.aplicadoEn).toISOString()) : ''}
+                            </div>
                         </div>
                     </div>
                 `;
             }
 
-            // Card de mensaje activo
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
@@ -2067,6 +1927,10 @@
                     </div>
                 `;
             }
+
+            // Puede usar minijuego si hay mínimo de invitados activos
+            const puedeMinijuego = detrasCamaraInfo?.puedeUsarMinijuego !== false;
+            const minInv = detrasCamaraInfo?.minimoInvitados || 5;
 
             cont.innerHTML = `
                 <div class="seccion">
@@ -2087,8 +1951,8 @@
                             <button class="btn-accion btn-subir full" onclick="abrirSubir()">
                                 📤 Subir fotos
                             </button>
-                            <button class="btn-accion btn-minijuego" onclick="abrirMinijuego()">
-                                🎮 Minijuego
+                            <button class="btn-accion btn-minijuego" onclick="abrirMinijuego()" ${!puedeMinijuego ? 'disabled title="Se necesitan al menos ' + minInv + ' invitados activos"' : ''}>
+                                🎁 Sorteo
                             </button>
                             <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                                 💬 Mensaje
@@ -2522,30 +2386,9 @@
         }
 
         // ==========================================
-        // MINIJUEGO
+        // MINIJUEGO (Sorteo)
         // ==========================================
         function abrirMinijuego() {
-            if (minijuegoInfo && minijuegoInfo.activo) {
-                // Ya hay uno activo: opción de cancelar
-                if (confirm('Hay un minijuego activo. ¿Querés cancelarlo?')) {
-                    cancelarMinijuego();
-                }
-                return;
-            }
-
-            if (contadores && contadores.fotosSecretas >= 0 && (!contadores || !contadores.generalesTotal)) {
-                // ok
-            }
-
-            const fotosWeb = eventoActivo && contadores ? (contadores.fotosWeb || 0) : 0;
-
-            // Verificar mínimo de fotos
-            if (detrasCamaraInfo && detrasCamaraInfo.puedeUsar === false) {
-                toast('⚠️ Necesitás al menos 5 fotos liberadas para activar el minijuego', 'error');
-                return;
-            }
-
-            $('inputMinijuegoDuracion').value = 10;
             $('modalMinijuego').classList.add('activo');
         }
 
@@ -2554,37 +2397,16 @@
         }
 
         async function activarMinijuego() {
-            const duracionMin = parseInt($('inputMinijuegoDuracion').value, 10) || 10;
-
-            if (duracionMin < 1 || duracionMin > 30) {
-                toast('Duración inválida (1-30)', 'error');
-                return;
-            }
+            if (!confirm('¿Sortear un ganador al azar entre los invitados activos?')) return;
 
             loader(true);
             try {
-                const data = await apiFetch('/fotografo/minijuego/activar', {
-                    method: 'POST',
-                    body: JSON.stringify({ duracionMin })
-                });
+                const data = await apiFetch('/fotografo/minijuego/activar', { method: 'POST' });
 
                 cerrarMinijuego();
-                toast(`🎮 Minijuego activado por ${duracionMin} min`, 'ok');
+                toast(`🎉 Ganador: ${data.ganador.nombre} (${data.totalParticipantes} participantes)`, 'ok');
                 await cargarTodo();
 
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-            }
-        }
-
-        async function cancelarMinijuego() {
-            loader(true);
-            try {
-                await apiFetch('/fotografo/minijuego/cancelar', { method: 'POST' });
-                toast('🚫 Minijuego cancelado', 'ok');
-                await cargarTodo();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
             } finally {
@@ -2693,7 +2515,6 @@
             $('btnSubirDetras').disabled = true;
 
             try {
-                // 1. Pedir URL firmada
                 const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
                     method: 'POST',
                     body: JSON.stringify({ nombreArchivo: archivoDetrasSeleccionado.name })
@@ -2701,7 +2522,6 @@
 
                 if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
 
-                // 2. Subir directo a B2
                 const resp = await fetch(dataUrl.url, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'image/jpeg' },
@@ -2710,7 +2530,6 @@
 
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-                // 3. Confirmar
                 await apiFetch('/fotografo/detras-camara/confirmar', {
                     method: 'POST',
                     body: JSON.stringify({ key: dataUrl.key, texto })
@@ -2828,24 +2647,7 @@
         function abrirSubir() {
             colaSubidas = [];
             renderizarListaSubidas();
-
             $('inputMensajeFoto').value = '';
-
-            const check = $('checkFotoSecreta');
-            if (check) {
-                if (fotoSecretaYaSubida) {
-                    check.checked = false;
-                    check.disabled = true;
-                    check.closest('.opcion-secreta').style.opacity = '0.5';
-                    check.closest('.opcion-secreta').style.pointerEvents = 'none';
-                } else {
-                    check.checked = false;
-                    check.disabled = false;
-                    check.closest('.opcion-secreta').style.opacity = '1';
-                    check.closest('.opcion-secreta').style.pointerEvents = 'auto';
-                }
-            }
-
             $('modalSubir').classList.add('activo');
         }
 
@@ -2861,9 +2663,6 @@
             const archivos = Array.from(event.target.files || []);
             if (archivos.length === 0) return;
 
-            const check = $('checkFotoSecreta');
-            const marcadaComoSecreta = check && check.checked;
-
             const mensajeFoto = $('inputMensajeFoto').value.trim();
 
             for (const archivo of archivos) {
@@ -2878,7 +2677,6 @@
                 colaSubidas.push({
                     archivo,
                     estado: 'pendiente',
-                    esSecreta: marcadaComoSecreta && colaSubidas.filter(s => s.esSecreta).length === 0 && !fotoSecretaYaSubida,
                     mensaje: mensajeFoto || null
                 });
             }
@@ -2908,11 +2706,10 @@
                     error: ['✗ Error', 'error']
                 };
                 const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
-                const secretaTag = s.esSecreta ? ' <span style="color:#e8c47a;">🔒</span>' : '';
                 const mensajeTag = s.mensaje ? ' <span style="color:#5dade2;">📝</span>' : '';
                 html += `
                     <div class="item-subida">
-                        <div class="nombre">${escapeHtml(s.archivo.name)}${secretaTag}${mensajeTag}</div>
+                        <div class="nombre">${escapeHtml(s.archivo.name)}${mensajeTag}</div>
                         <div class="estado ${clase}">${texto}</div>
                     </div>
                 `;
@@ -3053,7 +2850,6 @@
             const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
             const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
-            const esSecreta = !!subida.esSecreta;
             const mensaje = subida.mensaje || null;
 
             await apiFetch('/confirmar_subida', {
@@ -3063,14 +2859,9 @@
                     e: eventoActivo.id,
                     keyOriginal: keyOriginal,
                     keyPreview: keyPreview,
-                    esSecreta: esSecreta,
                     mensaje: mensaje
                 })
             });
-
-            if (esSecreta) {
-                fotoSecretaYaSubida = true;
-            }
 
             return true;
         }
