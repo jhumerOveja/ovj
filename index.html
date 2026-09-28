@@ -1000,40 +1000,6 @@
             margin-bottom: 20px;
         }
 
-        .tipo-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-
-        .tipo-btn {
-            padding: 14px 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            color: #ccc;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            text-align: center;
-            line-height: 1.3;
-        }
-
-        .tipo-btn .emoji {
-            font-size: 1.4rem;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .tipo-btn.activo {
-            background: rgba(243, 156, 18, 0.12);
-            border-color: rgba(243, 156, 18, 0.4);
-            color: #f39c12;
-        }
-
         .input-group {
             margin-bottom: 12px;
         }
@@ -1713,19 +1679,8 @@
     <div class="modal-invitar" id="modalInvitar">
         <div class="modal-invitar-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarInvitar()">✕</button>
-            <div class="titulo">✨ Nueva Invitación</div>
-            <div class="subtitulo">Genera un pase único para compartir</div>
-
-            <div class="tipo-selector">
-                <button class="tipo-btn activo" id="tipoVip" onclick="seleccionarTipo('vip')">
-                    <span class="emoji">⭐</span>
-                    VIP
-                </button>
-                <button class="tipo-btn" id="tipoAdmin" onclick="seleccionarTipo('admin')">
-                    <span class="emoji">👑</span>
-                    Admin
-                </button>
-            </div>
+            <div class="titulo">👑 Invitar Administrador</div>
+            <div class="subtitulo">Máximo 3 administradores por evento</div>
 
             <div class="input-group">
                 <label>Nombre (obligatorio)</label>
@@ -1756,10 +1711,10 @@
     <div class="modal-resultado" id="modalResultado">
         <div class="modal-resultado-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarResultado()">✕</button>
-            <span class="emoji-grande" id="resultadoEmoji">🎉</span>
-            <div class="titulo" id="resultadoTitulo">¡Invitación generada!</div>
+            <span class="emoji-grande" id="resultadoEmoji">👑</span>
+            <div class="titulo" id="resultadoTitulo">¡Admin generado!</div>
             <div class="subtitulo" id="resultadoSubtitulo">
-                Comparte el QR o el link con tu invitado
+                Este usuario tendrá control total del evento
             </div>
 
             <div class="qr-wrapper" id="qrWrapper"></div>
@@ -1872,7 +1827,7 @@
         let avisoOcultoTimeoutId = null;
         let indiceAviso = 0;
 
-        let invitacionTipo = 'vip';
+        let invitacionTipo = 'admin';
         let invitacionGenerada = null;
 
         let countdownInterval = null;
@@ -1925,13 +1880,9 @@
                 bloqueoDespedida: "Has completado tus sesiones.<br>Gracias por ser parte.",
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
-                rolVip: "VIP",
                 rolInvitado: "Invitado",
                 textoInvitar: "Invitar",
                 textoQrGeneral: "QR General",
-                tipoVip: "VIP",
-                tipoAdmin: "Admin",
-                contadorVip: "⭐ VIP · Descargas ilimitadas",
                 contadorAdmin: "👑 Admin · Descargas ilimitadas",
                 contadorSesion: (usadas, total) => `Te quedan ${total - usadas} de ${total} descargas`,
                 contadorAgotado: "Descargas agotadas · Vuelve en el receso"
@@ -1978,13 +1929,9 @@
                 bloqueoDespedida: "You've completed your sessions.<br>Thanks for being part of it.",
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
-                rolVip: "VIP",
                 rolInvitado: "Guest",
                 textoInvitar: "Invite",
                 textoQrGeneral: "General QR",
-                tipoVip: "VIP",
-                tipoAdmin: "Admin",
-                contadorVip: "⭐ VIP · Unlimited downloads",
                 contadorAdmin: "👑 Admin · Unlimited downloads",
                 contadorSesion: (usadas, total) => `${total - usadas} of ${total} downloads left`,
                 contadorAgotado: "Downloads exhausted · Come back after break"
@@ -2031,13 +1978,9 @@
                 bloqueoDespedida: "你已完成所有会话。<br>感谢参与。",
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
-                rolVip: "VIP",
                 rolInvitado: "嘉宾",
                 textoInvitar: "邀请",
                 textoQrGeneral: "现场二维码",
-                tipoVip: "VIP",
-                tipoAdmin: "管理员",
-                contadorVip: "⭐ VIP · 无限下载",
                 contadorAdmin: "👑 管理员 · 无限下载",
                 contadorSesion: (usadas, total) => `剩余 ${total - usadas}/${total} 次下载`,
                 contadorAgotado: "下载次数已用完 · 休息后再来"
@@ -2092,9 +2035,6 @@
 
             const elQr = document.getElementById('textoQrGeneral');
             if (elQr) elQr.textContent = t('textoQrGeneral');
-
-            document.getElementById('tipoVip').innerHTML = `<span class="emoji">⭐</span>${t('tipoVip')}`;
-            document.getElementById('tipoAdmin').innerHTML = `<span class="emoji">👑</span>${t('tipoAdmin')}`;
 
             if (tituloEsDefault) {
                 document.getElementById('eventoTitulo').textContent = t('tituloDefault');
@@ -2158,7 +2098,6 @@
             }
         }
 
-        // 🔥 Receso: solo minutos, actualizado cada 60s
         function mostrarReceso(minutos) {
             mostrarBloqueo('receso', t('bloqueoReceso'));
 
@@ -2250,23 +2189,6 @@
                 }
 
                 if (!respuesta.ok || !data.valido) {
-                    if (data.reclamada) {
-                        const tokenGuardado2 = localStorage.getItem('ovj_token');
-                        if (tokenGuardado2 === TOKEN) {
-                            sesion = {
-                                tipo: data.tipo || 'invitado',
-                                nombre: data.nombre || '',
-                                id: data.id || ''
-                            };
-                            localStorage.setItem('ovj_token', TOKEN);
-                            localStorage.setItem('ovj_tipo', sesion.tipo);
-                            localStorage.setItem('ovj_rol_nombre', sesion.nombre);
-                            localStorage.setItem('ovj_rol_id', sesion.id);
-                            return true;
-                        }
-                        mostrarBloqueo('reclamada', t('bloqueoInvalido'));
-                        return false;
-                    }
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
@@ -2317,11 +2239,6 @@
                 rolNombre.textContent = sesion.nombre || t('rolAdmin');
                 btnInvitar.style.display = 'inline-flex';
                 btnQrGeneral.style.display = 'inline-flex';
-            } else if (sesion.tipo === 'vip') {
-                rolEmoji.textContent = '⭐';
-                rolNombre.textContent = sesion.nombre || t('rolVip');
-                btnInvitar.style.display = 'none';
-                btnQrGeneral.style.display = 'none';
             } else {
                 rolEmoji.textContent = '🎟️';
                 rolNombre.textContent = sesion.nombre || t('rolInvitado');
@@ -2342,10 +2259,6 @@
 
             if (sesion.tipo === 'admin') {
                 el.textContent = t('contadorAdmin');
-                el.className = 'contador-sesion';
-                el.style.display = 'inline-block';
-            } else if (sesion.tipo === 'vip') {
-                el.textContent = t('contadorVip');
                 el.className = 'contador-sesion';
                 el.style.display = 'inline-block';
             } else if (sesion.tipo === 'general' && sesionGeneral) {
@@ -2427,7 +2340,6 @@
                     }
                 }
 
-                // 🔥 Guardar instrucciones de polling del server
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
                 }
@@ -2459,15 +2371,12 @@
 
             cargando = false;
 
-            // 🔥 Programar el próximo poll según lo que dijo el server
             if (servidorOnline) {
-                let segundos = 60; // fallback
+                let segundos = 60;
                 if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
                     segundos = window._ultimoPoll.intervaloBaseSeg;
                 }
 
-                // 🔥 Jitter adicional del cliente (±15%) para desincronizar polls
-                // entre invitados. Se aplica DESPUÉS del primer poll.
                 if (window._primerPollHecho) {
                     const variacion = segundos * 0.15;
                     segundos = segundos + (Math.random() * variacion * 2) - variacion;
@@ -2475,12 +2384,10 @@
                     window._primerPollHecho = true;
                 }
 
-                // Si la pestaña está oculta, multiplicar el intervalo x3 (ahorra peticiones)
                 if (document.hidden) {
                     segundos = segundos * 3;
                 }
 
-                // Piso mínimo: 30 segundos
                 if (segundos < 30) segundos = 30;
 
                 clearTimeout(window._pollTimer);
@@ -2525,7 +2432,7 @@
             const icono = document.getElementById('btnIcono');
             const texto = document.getElementById('btnPedirTexto');
 
-            if (sesion && (sesion.tipo === 'vip' || sesion.tipo === 'admin')) {
+            if (sesion && sesion.tipo === 'admin') {
                 btn.classList.remove('agotado');
                 icono.textContent = "⬇️";
                 texto.textContent = t('descargarFoto');
@@ -2567,7 +2474,6 @@
 
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
-                // 🔥 La URL ya viene completa del Worker
                 const urlImagen = foto.url;
 
                 html += `
@@ -2707,7 +2613,7 @@
 
             actualizarFlechas();
             actualizarBotonPrincipal();
-            precargarAdyacentes(index);   // 🔥 NUEVO
+            precargarAdyacentes(index);
         }
 
         function cerrarModal() {
@@ -2734,7 +2640,7 @@
 
             actualizarFlechas();
             actualizarBotonPrincipal();
-            precargarAdyacentes(nuevoIndex);   // 🔥 NUEVO
+            precargarAdyacentes(nuevoIndex);
         }
 
         // ==========================================
@@ -2793,7 +2699,6 @@
             texto.textContent = t('descargando');
 
             try {
-                // 1) Pedir al server la URL del Worker
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
@@ -2845,8 +2750,6 @@
 
                 if (!data.url) throw new Error('Sin URL');
 
-                // 2) Descargar el archivo del Worker como Blob
-                //    Esto va DIRECTO del navegador al Worker (Cloudflare), sin pasar por el túnel.
                 const respuestaArchivo = await fetch(data.url + '?dl=1');
 
                 if (!respuestaArchivo.ok) {
@@ -2855,7 +2758,6 @@
 
                 const blob = await respuestaArchivo.blob();
 
-                // 3) Crear una URL local (blob:) para forzar la descarga
                 const urlBlob = window.URL.createObjectURL(blob);
 
                 const a = document.createElement('a');
@@ -2865,13 +2767,11 @@
                 document.body.appendChild(a);
                 a.click();
 
-                // 4) Limpiar después
                 setTimeout(() => {
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(urlBlob);
                 }, 100);
 
-                // 5) Actualizar contador si es general
                 if (data.tipo === 'general' && sesionGeneral) {
                     sesionGeneral.descargasSesion = data.descargasSesion || sesionGeneral.descargasSesion;
                     sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
@@ -2889,31 +2789,18 @@
         }
 
         // ==========================================
-        // ✨ INVITAR
+        // ✨ INVITAR (solo Admin)
         // ==========================================
         function abrirInvitar() {
             document.getElementById('modalInvitar').classList.add('activo');
             document.getElementById('inputNombreInvitacion').value = '';
             document.getElementById('inputWhatsAppInvitacion').value = '';
             document.getElementById('avisoLimiteVips').style.display = 'none';
-            seleccionarTipo('vip');
+            invitacionTipo = 'admin';
         }
 
         function cerrarInvitar() {
             document.getElementById('modalInvitar').classList.remove('activo');
-        }
-
-        function seleccionarTipo(tipo) {
-            invitacionTipo = tipo;
-            document.getElementById('tipoVip').classList.toggle('activo', tipo === 'vip');
-            document.getElementById('tipoAdmin').classList.toggle('activo', tipo === 'admin');
-
-            const grupoWa = document.getElementById('grupoWhatsapp');
-            grupoWa.style.display = 'block';
-
-            if (tipo === 'vip') {
-                document.getElementById('avisoLimiteVips').style.display = 'none';
-            }
         }
 
         async function generarInvitacion() {
@@ -2936,7 +2823,7 @@
             }
 
             if (!nombre) {
-                alert('El nombre es obligatorio para VIP y Admin');
+                alert('El nombre es obligatorio');
                 btn.disabled = false;
                 btn.textContent = 'Generar Invitación';
                 return;
@@ -2951,7 +2838,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        tipo: invitacionTipo,
+                        tipo: 'admin',
                         nombre: nombre
                     })
                 });
@@ -2959,11 +2846,7 @@
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.ok) {
-                    if (respuesta.status === 409 && data.limiteVips) {
-                        document.getElementById('avisoLimiteVips').textContent =
-                            `Límite de VIPs alcanzado (${data.vipsActuales}/${data.limiteVips}).`;
-                        document.getElementById('avisoLimiteVips').style.display = 'block';
-                    } else if (respuesta.status === 409 && data.limiteAdmins) {
+                    if (respuesta.status === 409 && data.limiteAdmins) {
                         document.getElementById('avisoLimiteVips').textContent =
                             `Límite de administradores alcanzado (${data.adminsActuales}/${data.limiteAdmins}).`;
                         document.getElementById('avisoLimiteVips').style.display = 'block';
@@ -3025,19 +2908,9 @@
         function mostrarResultado() {
             const modal = document.getElementById('modalResultado');
 
-            const emojis = { vip: '⭐', admin: '👑' };
-            const titulos = {
-                vip: '¡VIP generado!',
-                admin: '¡Admin generado!'
-            };
-            const subtitulos = {
-                vip: 'Este usuario tendrá descargas ilimitadas',
-                admin: 'Este usuario tendrá control total del evento'
-            };
-
-            document.getElementById('resultadoEmoji').textContent = emojis[invitacionGenerada.tipo] || '🎉';
-            document.getElementById('resultadoTitulo').textContent = titulos[invitacionGenerada.tipo] || '¡Invitación generada!';
-            document.getElementById('resultadoSubtitulo').textContent = subtitulos[invitacionGenerada.tipo] || '';
+            document.getElementById('resultadoEmoji').textContent = '👑';
+            document.getElementById('resultadoTitulo').textContent = '¡Admin generado!';
+            document.getElementById('resultadoSubtitulo').textContent = 'Este usuario tendrá control total del evento';
 
             document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
 
@@ -3238,11 +3111,9 @@
         // ==========================================
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                // Pestaña oculta: cancelar el próximo poll (se reprograma al volver)
                 clearTimeout(window._pollTimer);
                 window._pollTimer = null;
             } else {
-                // Pestaña visible: hacer poll inmediato y reprogramar
                 if (!cargando) {
                     clearTimeout(window._pollTimer);
                     cargarFotos();
@@ -3322,7 +3193,6 @@
 
             activarApp();
 
-            // 🔥 Detección de recargas excesivas
             (function detectarRecargas() {
                 const recargas = JSON.parse(localStorage.getItem('ovj_recargas') || '[]');
                 const ahora = Date.now();
@@ -3340,7 +3210,6 @@
                 }
             })();
 
-            // 🔥 Primer poll INMEDIATO (sin jitter) para que el invitado vea fotos al instante
             cargarFotos();
             iniciarAvisosIntermitentes();
         }
