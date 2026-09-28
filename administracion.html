@@ -19,6 +19,7 @@
             --rojo: #e74c3c;
             --azul: #3498db;
             --violeta: #9b59b6;
+            --champagne: #e8c47a;
             --bg: #0a0a0a;
             --card: #141414;
             --card-borde: rgba(255, 215, 0, 0.15);
@@ -766,6 +767,11 @@
             padding-top: 16px;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             font-weight: 600;
+        }
+
+        .seccion-titulo-form.destacado {
+            color: var(--champagne);
+            border-top-color: rgba(232, 196, 122, 0.2);
         }
 
         .config-sugerida {
@@ -1702,9 +1708,16 @@
             }
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
 
-            // 🔥 Pool general: sin VIPs, sin sesiones máximas
+            // Pool general
             if (e.poolGeneral) {
                 meta += `<div class="fila" style="color:#5dade2;">📥 ${e.poolGeneral.descargasPorSesion} desc/sesión · ${e.poolGeneral.maxGeneralesSimultaneos || 20} simultáneos</div>`;
+
+                // 🔥 Desbloqueo social
+                if (e.poolGeneral.desbloqueoSocialActivo) {
+                    meta += `<div class="fila" style="color:#e8c47a;">🎁 Desbloqueo social: +${e.poolGeneral.desbloqueoSocialDescargas || 3} descargas</div>`;
+                } else {
+                    meta += `<div class="fila" style="color:#666;">🎁 Desbloqueo social: desactivado</div>`;
+                }
             }
 
             // Razón de cierre
@@ -1832,6 +1845,26 @@
                     </div>
                 </div>
 
+                <div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
+
+                <div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
+                    💡 El invitado sigue a OVJ en Instagram y obtiene descargas extra. Solo se puede usar <strong style="color:#e8c47a;">1 vez por cliente</strong>.
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Desbloqueo social activo</label>
+                        <select id="inputDesbloqueoSocialActivo">
+                            <option value="true">Sí, activado</option>
+                            <option value="false">No, desactivado</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Descargas extra</label>
+                        <input type="number" id="inputDesbloqueoSocialDescargas" value="3" min="1" max="20" />
+                    </div>
+                </div>
+
                 <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
@@ -1847,12 +1880,13 @@
             const duracion = parseInt($('inputEventoDuracion').value, 10);
             const whatsapp = $('inputEventoWhatsapp').value.replace(/[^0-9]/g, '');
 
-            // 🔥 Sin sesionesMaximas, sin limiteVips
             const poolGeneral = {
                 descargasPorSesion: parseInt($('inputDescargasPorSesion').value, 10),
                 duracionSesionMin: parseInt($('inputDuracionSesion').value, 10),
                 descansoMin: parseInt($('inputDescanso').value, 10),
-                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales').value, 10)
+                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales').value, 10),
+                desbloqueoSocialActivo: $('inputDesbloqueoSocialActivo').value === 'true',
+                desbloqueoSocialDescargas: parseInt($('inputDesbloqueoSocialDescargas').value, 10) || 3
             };
 
             if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
@@ -1898,7 +1932,7 @@
         }
 
         // ==========================================
-        // 💡 SUGERENCIA AUTOMÁTICA (sin sesionesMaximas)
+        // 💡 SUGERENCIA AUTOMÁTICA
         // ==========================================
         function getSugerencia(duracion) {
             if (duracion <= 3) {
