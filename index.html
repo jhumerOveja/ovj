@@ -339,7 +339,6 @@
             flex-wrap: wrap;
         }
 
-        /* Badge de rol */
         .badge-rol {
             display: inline-flex;
             align-items: center;
@@ -394,7 +393,6 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Botones admin mini */
         .btn-admin-mini {
             display: inline-flex;
             align-items: center;
@@ -409,6 +407,7 @@
             letter-spacing: 0.2px;
             font-family: inherit;
             border: none;
+            position: relative;
         }
 
         .btn-admin-mini:hover {
@@ -437,7 +436,36 @@
             box-shadow: 0 6px 20px rgba(96, 165, 250, 0.15);
         }
 
-        /* Selector idioma */
+        .btn-admin-mini.detras {
+            background: rgba(155, 89, 182, 0.12);
+            border: 1px solid rgba(155, 89, 182, 0.35);
+            color: #b794f4;
+            position: relative;
+        }
+
+        .btn-admin-mini.detras:hover {
+            background: rgba(155, 89, 182, 0.22);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.2);
+        }
+
+        .badge-novedad {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--champagne);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+            animation: pulsoNovedad 1.5s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--champagne-glow);
+        }
+
+        @keyframes pulsoNovedad {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
         .lang-selector {
             position: relative;
             user-select: none;
@@ -533,7 +561,6 @@
             font-weight: 600;
         }
 
-        /* Badge en vivo */
         .badge-en-vivo {
             display: inline-flex;
             align-items: center;
@@ -617,6 +644,86 @@
             50% { left: 15%; width: 70%; opacity: 0.8; }
         }
 
+        /* ===== BANNER MENSAJE FOTÓGRAFO ===== */
+        .banner-mensaje {
+            max-width: 700px;
+            margin: 0 auto 14px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.02));
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes entradaBanner {
+            from {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .banner-mensaje .emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            animation: pulsoEmojiMensaje 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoEmojiMensaje {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .banner-mensaje .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .banner-mensaje .etiqueta {
+            font-size: 0.65rem;
+            color: #93c5fd;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .banner-mensaje .texto {
+            font-size: 0.88rem;
+            color: #fff;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .banner-mensaje .btn-cerrar-banner {
+            background: transparent;
+            border: none;
+            color: var(--texto-tenue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-family: inherit;
+        }
+
+        .banner-mensaje .btn-cerrar-banner:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
         /* ===== ESTADO MINI ===== */
         #estado {
             text-align: center;
@@ -682,7 +789,6 @@
             z-index: 2;
         }
 
-        /* Foto nueva */
         .foto.nueva {
             border-color: var(--champagne);
             box-shadow: 0 0 24px var(--champagne-tenue),
@@ -717,7 +823,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Badge NUEVA con shimmer */
         .foto .badge-nueva {
             position: absolute;
             top: 10px;
@@ -757,7 +862,6 @@
             }
         }
 
-        /* Badge reciente (foto del momento) */
         .foto .badge-reciente {
             position: absolute;
             top: 10px;
@@ -789,7 +893,6 @@
             }
         }
 
-        /* Foto secreta */
         .foto.secreta {
             position: relative;
         }
@@ -893,7 +996,45 @@
             display: none;
         }
 
-        /* Skeleton shimmer plateado */
+        .btn-minijuego-foto {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            z-index: 6;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(232, 196, 122, 0.6);
+            animation: pulsoMinijuego 1.5s ease-in-out infinite;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-minijuego-foto.tocado {
+            background: linear-gradient(135deg, #666, #444);
+            color: #fff;
+            cursor: wait;
+            animation: none;
+            opacity: 0.8;
+        }
+
+        @keyframes pulsoMinijuego {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 16px rgba(232, 196, 122, 0.6);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 6px 24px rgba(232, 196, 122, 0.9);
+            }
+        }
+
         .foto .skeleton {
             position: absolute;
             top: 0;
@@ -955,7 +1096,6 @@
             transform: translate(-4px, -4px);
         }
 
-        /* Animación de revelado */
         .foto.animar-entrada {
             animation: revelarFoto 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -977,7 +1117,6 @@
             }
         }
 
-        /* Animación de entrada al viewport */
         .foto.entrada-viewport {
             animation: entradaViewport 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         }
@@ -993,7 +1132,6 @@
             }
         }
 
-        /* Ver más wrapper */
         .ver-mas-wrapper {
             grid-column: 1 / -1;
             display: flex;
@@ -1053,7 +1191,6 @@
             font-weight: 600;
         }
 
-        /* Desbloqueo social */
         .card-desbloqueo-social {
             grid-column: 1 / -1;
             background: linear-gradient(135deg,
@@ -1159,7 +1296,6 @@
             pointer-events: none;
         }
 
-        /* Estado vacío */
         .estado-offline {
             max-width: 400px;
             margin: 60px auto;
@@ -1339,6 +1475,30 @@
         .nav-flecha.oculto {
             opacity: 0;
             pointer-events: none;
+        }
+
+        .mensaje-foto {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.02));
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .mensaje-foto .emoji {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .mensaje-foto .texto {
+            font-size: 0.8rem;
+            color: #fff;
+            line-height: 1.4;
+            font-style: italic;
+            word-break: break-word;
         }
 
         .modal-footer {
@@ -2029,7 +2189,118 @@
             padding: 80px 20px;
         }
 
-        /* ===== TOASTS FLOTANTES ===== */
+        /* ===== MODAL DETRÁS DE CÁMARA ===== */
+        .modal-detras {
+            display: none;
+            position: fixed;
+            z-index: 1400;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-detras.activo {
+            display: flex;
+        }
+
+        .modal-detras-contenido {
+            background: var(--bg-card);
+            border: 1px solid var(--borde-hover);
+            border-radius: 20px;
+            padding: 28px 24px 24px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--sombra-fuerte);
+            position: relative;
+        }
+
+        .modal-detras-contenido .emoji-grande {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .modal-detras-contenido .titulo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #b794f4;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .modal-detras-contenido .subtitulo {
+            font-size: 0.8rem;
+            color: var(--texto-suave);
+            margin-bottom: 18px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .detras-lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .detras-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: entradaDetras 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes entradaDetras {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .detras-item img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .detras-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .detras-item .texto {
+            font-size: 0.72rem;
+            color: #ddd;
+            padding: 10px 12px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .detras-vacio {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--texto-tenue);
+            font-size: 0.85rem;
+        }
+
+        /* ===== TOASTS ===== */
         .toast-container {
             position: fixed;
             bottom: 20px;
@@ -2277,6 +2548,18 @@
                 font-size: 0.7rem;
                 padding: 9px 14px;
             }
+
+            .banner-mensaje {
+                padding: 12px 14px;
+            }
+
+            .banner-mensaje .texto {
+                font-size: 0.8rem;
+            }
+
+            .detras-lista {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 400px) {
@@ -2335,6 +2618,11 @@
                     <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
+                    <button class="btn-admin-mini detras" id="btnDetrasCamara" onclick="abrirDetrasCamara()" style="display: none;">
+                        📸 <span id="textoDetras">Detrás</span>
+                        <span class="badge-novedad" id="badgeNovedadDetras" style="display: none;"></span>
+                    </button>
+
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
                         ✨ Invitar
                     </button>
@@ -2375,6 +2663,9 @@
             </div>
         </div>
 
+        <!-- Banner mensaje del fotógrafo -->
+        <div id="bannerMensajeContainer"></div>
+
         <div id="estado">Cargando...</div>
 
         <div class="galeria" id="galeria"></div>
@@ -2393,6 +2684,8 @@
                 <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
             </div>
             <div class="modal-footer">
+                <div id="mensajeFotoContainer"></div>
+
                 <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
                     <span class="icono-whatsapp" id="btnIcono">📱</span>
                     <span id="btnPedirTexto">Descargar foto</span>
@@ -2502,6 +2795,22 @@
         </div>
     </div>
 
+    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
+    <div class="modal-detras" id="modalDetras">
+        <div class="modal-detras-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarDetrasCamara()">✕</button>
+            <span class="emoji-grande">📸</span>
+            <div class="titulo" id="detrasTitulo">Detrás de cámara</div>
+            <div class="subtitulo">
+                Los momentos detrás del evento, contados por el fotógrafo.
+            </div>
+
+            <div id="detrasListaContainer">
+                <div class="detras-vacio">Cargando...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenedor de toasts -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -2510,7 +2819,7 @@
 
     <script>
         // ==========================================
-        // ⚙️ CONFIGURACIÓN
+        // CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
         const URL_CLOUDFLARE = _esLocalhost
@@ -2522,23 +2831,15 @@
 
         const FOTOS_POR_CARGA = 6;
 
-        // 🔥 Duración del badge "NUEVA" (25s)
         const DURACION_BADGE_NUEVA_MS = 25 * 1000;
-
-        // 🔥 Máximo de badges simultáneos
         const MAX_BADGES_NUEVOS = 3;
-
-        // 🔥 Duración del toast
         const DURACION_TOAST_MS = 5000;
-
-        // 🔥 Límite de fotos guardadas en localStorage
         const MAX_VISTAS_LS = 1000;
 
-        // 🔥 Instagram de OVJ (cambiar por el real)
         const INSTAGRAM_USUARIO = 'ovjstudio';
 
         // ==========================================
-        // 🔑 PARÁMETROS DEL URL
+        // PARÁMETROS DEL URL
         // ==========================================
         function getParametrosURL() {
             const params = new URLSearchParams(window.location.search);
@@ -2563,7 +2864,6 @@
             return id;
         }
 
-        // 🔥 Clave de localStorage para fotos vistas
         function getClaveVistas() {
             return 'ovj_vistas_' + (EVENTO_ID || 'default');
         }
@@ -2590,8 +2890,24 @@
             } catch (e) { }
         }
 
+        function getClaveMinijuegoToques() {
+            return 'ovj_minijuego_toques_' + (EVENTO_ID || 'default');
+        }
+
+        function getClaveMinijuegoPremiado() {
+            return 'ovj_minijuego_premiado_' + (EVENTO_ID || 'default');
+        }
+
+        function getClaveMensajeCerrado() {
+            return 'ovj_mensaje_cerrado_' + (EVENTO_ID || 'default');
+        }
+
+        function getClaveDetrasVisto() {
+            return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
+        }
+
         // ==========================================
-        // 🌍 VARIABLES GLOBALES
+        // VARIABLES GLOBALES
         // ==========================================
         let sesion = null;
         let sesionGeneral = null;
@@ -2606,27 +2922,29 @@
         let countdownInterval = null;
         let urlQrGeneralActual = null;
 
-        // 🔥 Fotos vistas (persiste en localStorage)
         let fotosVistas = new Set();
-
-        // 🔥 Map<nombreFoto, timestampMs> para badge "NUEVA"
         let fotosNuevasMap = new Map();
-
-        // 🔥 Map<nombreFoto, { reveladaEn }> para fotos secretas
         let secretasMap = new Map();
 
-        // 🔥 Timers de toasts
         let toastsActivos = [];
 
-        // 🔥 Control de tips mostrados
+        let minijuegoActual = null;
+        let toquesPendientes = [];
+
+        let mensajeFotografoActual = null;
+
+        let detrasCamaraTotal = 0;
+        let detrasCamaraUltima = null;
+
         let tipsMostrados = {
             primeraEntrada: false,
             primeraDescarga: false,
-            primerReceso: false
+            primerReceso: false,
+            primerMinijuego: false
         };
 
         // ==========================================
-        // 🌍 IDIOMA
+        // IDIOMA
         // ==========================================
         const TRADUCCIONES = {
             es: {
@@ -2678,6 +2996,16 @@
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 tipIG: "💡 Una vez que nos sigas, toca 'Ya lo hice'",
+                tipMinijuego: "🎮 ¡Hay un botón escondido en una foto! Encuéntralo",
+                tipMinijuegoTocado: "⏳ Esperando el final del juego...",
+                tipMinijuegoGanaste: "🎉 ¡Ganaste! Reset de sesión + descargas completas",
+                tipMinijuegoPerdiste: "😅 Otro invitado lo encontró primero",
+                tipMinijuegoAnulado: "😴 El minijuego fue anulado. Otra vez será",
+                minijuegoBoton: "🎮 OVJ · Aquí estoy",
+                minijuegoTocado: "⏳ Esperando...",
+                mensajeTitulo: "📢 Mensaje del fotógrafo",
+                detrasBoton: "Detrás",
+                detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -2735,6 +3063,16 @@
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 tipIG: "💡 Once you follow us, tap 'Done'",
+                tipMinijuego: "🎮 There's a hidden button in a photo! Find it",
+                tipMinijuegoTocado: "⏳ Waiting for the game to end...",
+                tipMinijuegoGanaste: "🎉 You won! Session reset + full downloads",
+                tipMinijuegoPerdiste: "😅 Another guest found it first",
+                tipMinijuegoAnulado: "😴 The minigame was cancelled. Try again next time",
+                minijuegoBoton: "🎮 OVJ · Here I am",
+                minijuegoTocado: "⏳ Waiting...",
+                mensajeTitulo: "📢 Photographer's message",
+                detrasBoton: "Behind",
+                detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
                     'OVJ Studio · <strong>Photographing with heart</strong>',
@@ -2792,6 +3130,16 @@
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 tipIG: "💡 关注后，点击 '已完成'",
+                tipMinijuego: "🎮 有隐藏按钮在照片中！找到它",
+                tipMinijuegoTocado: "⏳ 等待游戏结束...",
+                tipMinijuegoGanaste: "🎉 你赢了！重置会话 + 完整下载次数",
+                tipMinijuegoPerdiste: "😅 其他嘉宾先找到了",
+                tipMinijuegoAnulado: "😴 小游戏已取消。下次再试",
+                minijuegoBoton: "🎮 OVJ · 我在这里",
+                minijuegoTocado: "⏳ 等待中...",
+                mensajeTitulo: "📢 摄影师消息",
+                detrasBoton: "幕后",
+                detrasVacio: "摄影师还没有上传幕后照片。",
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
                     'OVJ Studio · <strong>用心拍摄</strong>',
@@ -2831,6 +3179,7 @@
             document.getElementById('badgeEnVivo').textContent = t('enVivo');
             document.getElementById('langTextoActual').textContent = t('langTexto');
             document.getElementById('langBanderaActual').textContent = t('langBandera');
+            document.getElementById('textoDetras').textContent = t('detrasBoton');
 
             document.querySelectorAll('.lang-opcion').forEach(op => {
                 op.classList.toggle('activo', op.dataset.lang === idioma);
@@ -2875,7 +3224,7 @@
         });
 
         // ==========================================
-        // 🍞 TOASTS FLOTANTES
+        // TOASTS
         // ==========================================
         function mostrarToast(mensaje, tipo = 'tip', duracionMs = DURACION_TOAST_MS) {
             const contenedor = document.getElementById('toastContainer');
@@ -2908,7 +3257,7 @@
         }
 
         // ==========================================
-        // 🎉 CONFETI
+        // CONFETI
         // ==========================================
         function lanzarConfeti() {
             const colores = ['#e8c47a', '#d4a94a', '#fbbf24', '#d4d4d8'];
@@ -2938,7 +3287,7 @@
         }
 
         // ==========================================
-        // 🔒 BLOQUEO / ACCESO
+        // BLOQUEO / ACCESO
         // ==========================================
         function mostrarBloqueo(tipo, mensajeCustom) {
             if (countdownInterval) {
@@ -2947,7 +3296,6 @@
             }
             document.getElementById('bloqueoCountdown').style.display = 'none';
 
-            // 🔥 Ocultar publicidad si no es receso
             const pubReceso = document.getElementById('pubReceso');
             if (pubReceso && tipo !== 'receso') pubReceso.style.display = 'none';
 
@@ -2974,7 +3322,6 @@
         function mostrarReceso(minutos) {
             mostrarBloqueo('receso', t('bloqueoReceso'));
 
-            // 🔥 Mostrar publicidad en receso
             const pubReceso = document.getElementById('pubReceso');
             if (pubReceso) pubReceso.style.display = 'block';
 
@@ -3089,7 +3436,6 @@
                 if (data.tipo === 'general' && data.sesion) {
                     sesionGeneral = data.sesion;
 
-                    // 🔥 Info de desbloqueo social
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
                         sesionGeneral.desbloqueoSocialDescargas = data.desbloqueoSocial.descargasExtra;
@@ -3168,7 +3514,7 @@
         }
 
         // ==========================================
-        // 📷 GALERÍA
+        // GALERÍA
         // ==========================================
         async function cargarFotos() {
             if (cargando) return;
@@ -3232,9 +3578,21 @@
                     window._ultimoPoll = data.poll;
                 }
 
+                // Enviar toques pendientes al server (silencioso)
+                enviarToquesPendientes();
+
+                // Procesar minijuego
+                procesarMinijuego(data.minijuego);
+
+                // Procesar mensaje del fotógrafo
+                procesarMensaje(data.mensajeFotografo);
+
+                // Procesar detrás de cámara
+                procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
+
+                // Procesar fotos
                 const nuevasFotos = data.fotos || [];
 
-                // 🔥 Detectar fotos nuevas usando fotosVistas
                 const ahora = Date.now();
                 const fotosRecienLlegadas = [];
 
@@ -3244,15 +3602,13 @@
                         fotosNuevasMap.set(f.nombre, ahora);
                     }
 
-                    // 🔥 Inicializar timer para fotos secretas
                     if (f.esSecreta && !secretasMap.has(f.nombre)) {
                         secretasMap.set(f.nombre, {
-                            reveladaEn: Date.now() + (5 * 60 * 1000) // 5 minutos
+                            reveladaEn: Date.now() + (5 * 60 * 1000)
                         });
                     }
                 });
 
-                // 🔥 Limitar badges simultáneos
                 if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
                     const ordenadas = Array.from(fotosNuevasMap.entries())
                         .sort((a, b) => a[1] - b[1]);
@@ -3260,7 +3616,6 @@
                     sobran.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
                 }
 
-                // 🔥 Limpiar badges expirados
                 for (const [nombre, ts] of fotosNuevasMap) {
                     if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
                         fotosNuevasMap.delete(nombre);
@@ -3320,6 +3675,229 @@
             }
         }
 
+        // ==========================================
+        // MINIJUEGO
+        // ==========================================
+        function procesarMinijuego(minijuego) {
+            const anterior = minijuegoActual;
+            minijuegoActual = minijuego;
+
+            if (!minijuego) return;
+
+            // Si hay minijuego activo y no lo habíamos visto, mostrar tip
+            if (minijuego.activo && (!anterior || !anterior.activo)) {
+                if (!tipsMostrados.primerMinijuego) {
+                    tipsMostrados.primerMinijuego = true;
+                    setTimeout(() => mostrarToast(t('tipMinijuego'), 'success', 8000), 1000);
+                } else {
+                    mostrarToast(t('tipMinijuego'), 'success', 6000);
+                }
+            }
+
+            // Si finalizó y tenemos toques guardados, procesar resultado
+            if (minijuego.finalizado && (!anterior || anterior.activo)) {
+                procesarFinalMinijuego(minijuego);
+            }
+
+            // Re-renderizar si cambió el estado
+            if (anterior && anterior.activo !== minijuego.activo) {
+                renderizarGaleria();
+            }
+        }
+
+        function procesarFinalMinijuego(minijuego) {
+            const toquesGuardados = JSON.parse(localStorage.getItem(getClaveMinijuegoToques()) || '[]');
+            const yaPremiado = localStorage.getItem(getClaveMinijuegoPremiado());
+
+            if (minijuego.anulado) {
+                if (toquesGuardados.length > 0 && !yaPremiado) {
+                    mostrarToast(t('tipMinijuegoAnulado'), 'warning', 6000);
+                }
+                localStorage.removeItem(getClaveMinijuegoToques());
+                return;
+            }
+
+            if (minijuego.ganadorDeviceId === getDispositivoId() && !yaPremiado) {
+                lanzarConfeti();
+                lanzarConfeti();
+                mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
+
+                if (sesionGeneral) {
+                    sesionGeneral.descargasSesion = 0;
+                }
+
+                localStorage.setItem(getClaveMinijuegoPremiado(), '1');
+                localStorage.removeItem(getClaveMinijuegoToques());
+
+                actualizarBadgeRol();
+                actualizarBotonPrincipal();
+                renderizarGaleria();
+
+            } else if (toquesGuardados.length > 0) {
+                mostrarToast(t('tipMinijuegoPerdiste'), 'warning', 6000);
+                localStorage.removeItem(getClaveMinijuegoToques());
+            }
+        }
+
+        function enviarToquesPendientes() {
+            if (toquesPendientes.length === 0) return;
+
+            const urlParticipar = `${URL_CLOUDFLARE}/minijuego/participar?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`;
+
+            fetch(urlParticipar, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toques: toquesPendientes })
+            }).catch(() => { });
+        }
+
+        function tocarMinijuego(fotoNombre) {
+            if (!minijuegoActual || !minijuegoActual.activo) return;
+
+            const yaToque = toquesPendientes.some(t => t.deviceId === getDispositivoId());
+            if (yaToque) return;
+
+            const toque = {
+                deviceId: getDispositivoId(),
+                invitadoId: sesion?.id || null,
+                nombre: sesion?.nombre || 'Invitado',
+                timestamp: Date.now()
+            };
+
+            toquesPendientes.push(toque);
+
+            try {
+                localStorage.setItem(getClaveMinijuegoToques(), JSON.stringify(toquesPendientes));
+            } catch (e) { }
+
+            mostrarToast(t('tipMinijuegoTocado'), 'success', 6000);
+
+            renderizarGaleria();
+        }
+
+        // ==========================================
+        // MENSAJE DEL FOTÓGRAFO
+        // ==========================================
+        function procesarMensaje(mensaje) {
+            const anterior = mensajeFotografoActual;
+            mensajeFotografoActual = mensaje;
+
+            if (mensaje && mensaje.activo) {
+                const msgGuardado = localStorage.getItem(getClaveMensajeCerrado());
+                const esElMismo = anterior && anterior.activo && anterior.creadoEn === mensaje.creadoEn;
+
+                if (msgGuardado === String(mensaje.creadoEn)) {
+                    document.getElementById('bannerMensajeContainer').innerHTML = '';
+                } else if (!esElMismo || !anterior || !anterior.activo) {
+                    renderBannerMensaje(mensaje);
+                }
+            } else {
+                document.getElementById('bannerMensajeContainer').innerHTML = '';
+            }
+        }
+
+        function renderBannerMensaje(mensaje) {
+            const cont = document.getElementById('bannerMensajeContainer');
+            cont.innerHTML = `
+                <div class="banner-mensaje" id="bannerMensaje">
+                    <span class="emoji">💬</span>
+                    <div class="info">
+                        <div class="etiqueta">${t('mensajeTitulo')}</div>
+                        <div class="texto">${escapeHtml(mensaje.texto)}</div>
+                    </div>
+                    <button class="btn-cerrar-banner" onclick="cerrarBannerMensaje(${mensaje.creadoEn})">✕</button>
+                </div>
+            `;
+        }
+
+        function cerrarBannerMensaje(creadoEn) {
+            document.getElementById('bannerMensajeContainer').innerHTML = '';
+            try {
+                localStorage.setItem(getClaveMensajeCerrado(), String(creadoEn));
+            } catch (e) { }
+        }
+
+        // ==========================================
+        // DETRÁS DE CÁMARA
+        // ==========================================
+        function procesarDetrasCamara(total, ultima) {
+            const btnDetras = document.getElementById('btnDetrasCamara');
+            const badgeNovedad = document.getElementById('badgeNovedadDetras');
+
+            if (total > 0) {
+                btnDetras.style.display = 'inline-flex';
+
+                const ultimaVista = localStorage.getItem(getClaveDetrasVisto());
+
+                if (ultima && ultima !== ultimaVista) {
+                    badgeNovedad.style.display = 'block';
+                } else {
+                    badgeNovedad.style.display = 'none';
+                }
+            } else {
+                btnDetras.style.display = 'none';
+            }
+
+            detrasCamaraTotal = total;
+            detrasCamaraUltima = ultima;
+        }
+
+        async function abrirDetrasCamara() {
+            const modal = document.getElementById('modalDetras');
+            const cont = document.getElementById('detrasListaContainer');
+
+            cont.innerHTML = '<div class="detras-vacio">Cargando...</div>';
+            modal.classList.add('activo');
+
+            try {
+                const url = `${URL_CLOUDFLARE}/detras-camara?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    cont.innerHTML = '<div class="detras-vacio">No se pudo cargar. Intenta de nuevo.</div>';
+                    return;
+                }
+
+                const items = data.items || [];
+
+                if (items.length === 0) {
+                    cont.innerHTML = `<div class="detras-vacio">${t('detrasVacio')}</div>`;
+                    return;
+                }
+
+                if (detrasCamaraUltima) {
+                    try {
+                        localStorage.setItem(getClaveDetrasVisto(), detrasCamaraUltima);
+                    } catch (e) { }
+                    document.getElementById('badgeNovedadDetras').style.display = 'none';
+                }
+
+                let html = '<div class="detras-lista">';
+                items.slice().reverse().forEach((item, idx) => {
+                    html += `
+                        <div class="detras-item" style="animation-delay: ${idx * 60}ms">
+                            <img src="${item.url}" alt="Detrás de cámara" loading="lazy" />
+                            ${item.texto ? `<div class="texto">${escapeHtml(item.texto)}</div>` : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                cont.innerHTML = html;
+
+            } catch (e) {
+                cont.innerHTML = '<div class="detras-vacio">Error de conexión.</div>';
+            }
+        }
+
+        function cerrarDetrasCamara() {
+            document.getElementById('modalDetras').classList.remove('activo');
+        }
+
+        // ==========================================
+        // RENDER GALERÍA
+        // ==========================================
         function mostrarOffline() {
             const estado = document.getElementById("estado");
             const galeria = document.getElementById("galeria");
@@ -3398,6 +3976,8 @@
             const ahora = Date.now();
             let html = "";
 
+            const yaToqueMinijuego = toquesPendientes.some(t => t.deviceId === getDispositivoId());
+
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
                 const urlImagen = foto.url;
@@ -3412,6 +3992,9 @@
                         secretaRevelada = ahora >= entrada.reveladaEn;
                     }
                 }
+
+                const tieneMinijuego = minijuegoActual && minijuegoActual.activo &&
+                    minijuegoActual.fotoId === foto.nombre;
 
                 const clases = [
                     'foto',
@@ -3437,6 +4020,18 @@
                     `;
                 }
 
+                let btnMinijuego = '';
+                if (tieneMinijuego) {
+                    const tocado = yaToqueMinijuego;
+                    btnMinijuego = `
+                        <button class="btn-minijuego-foto ${tocado ? 'tocado' : ''}"
+                                onclick="event.stopPropagation(); tocarMinijuego('${foto.nombre}')"
+                                ${tocado ? 'disabled' : ''}>
+                            ${tocado ? t('minijuegoTocado') : t('minijuegoBoton')}
+                        </button>
+                    `;
+                }
+
                 html += `
                     <div class="${clases}"
                          data-index="${i}"
@@ -3447,6 +4042,7 @@
                         <div class="skeleton"></div>
                         ${badges}
                         ${candado}
+                        ${btnMinijuego}
                         <img src="${urlImagen}" alt="Foto ${i + 1}"
                              data-src="${urlImagen}"
                              onload="this.classList.add('cargada')"
@@ -3455,7 +4051,6 @@
                 `;
             }
 
-            // 🔥 Desbloqueo social (si aplica)
             if (sesion && sesion.tipo === 'general' && sesionGeneral && !sesionGeneral.desbloqueoSocialUsado && sesionGeneral.desbloqueoSocialActivo !== false) {
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
@@ -3507,7 +4102,6 @@
             observarFotosViewport();
         }
 
-        // 🔥 Observer para animar fotos al entrar al viewport
         let _observerFotos = null;
 
         function observarFotosViewport() {
@@ -3595,7 +4189,6 @@
             }
         }
 
-        // 🔥 Marcar foto como vista (quita badge "NUEVA")
         function marcarFotoComoVista(nombreFoto) {
             fotosVistas.add(nombreFoto);
             guardarFotosVistas(fotosVistas);
@@ -3616,13 +4209,12 @@
             }
         }
 
-        // 🔥 Limpieza periódica de badges y secretas
+        // Limpieza periódica
         setInterval(() => {
             const ahora = Date.now();
             let huboCambio = false;
             let secretaRevelada = null;
 
-            // Limpiar badges "NUEVA"
             for (const [nombre, ts] of fotosNuevasMap) {
                 if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
                     fotosNuevasMap.delete(nombre);
@@ -3630,7 +4222,6 @@
                 }
             }
 
-            // Actualizar contadores de secretas y revelar si corresponde
             document.querySelectorAll('.foto.secreta:not(.revelada)').forEach(el => {
                 const nombre = el.dataset.nombre;
                 const entrada = secretasMap.get(nombre);
@@ -3638,7 +4229,6 @@
 
                 const restante = entrada.reveladaEn - ahora;
                 if (restante <= 0) {
-                    // Revelar
                     el.classList.add('revelada');
                     secretaRevelada = el;
                     setTimeout(() => {
@@ -3671,7 +4261,6 @@
                 });
             }
 
-            // 🔥 Notificar revelado
             if (secretaRevelada) {
                 lanzarConfeti();
                 mostrarToast(`<strong>${t('fotoSecretaRevelada')}</strong>`, 'success', 6000);
@@ -3682,7 +4271,7 @@
         }, 1000);
 
         // ==========================================
-        // 🎁 DESBLOQUEO SOCIAL
+        // DESBLOQUEO SOCIAL
         // ==========================================
         function irAInstagram() {
             window.open(`https://instagram.com/${INSTAGRAM_USUARIO}`, '_blank');
@@ -3740,7 +4329,7 @@
         }
 
         // ==========================================
-        // 🖼️ MODAL FOTO
+        // MODAL FOTO
         // ==========================================
         function abrirModal(nombreFoto) {
             const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
@@ -3759,6 +4348,18 @@
 
             modalImagen.src = foto.url;
             modalImagen.alt = `Foto ${index + 1}`;
+
+            const contMensaje = document.getElementById('mensajeFotoContainer');
+            if (foto.mensaje) {
+                contMensaje.innerHTML = `
+                    <div class="mensaje-foto">
+                        <span class="emoji">📝</span>
+                        <div class="texto">${escapeHtml(foto.mensaje)}</div>
+                    </div>
+                `;
+            } else {
+                contMensaje.innerHTML = '';
+            }
 
             modal.classList.add("activo");
             fondo.classList.add("activo");
@@ -3793,13 +4394,25 @@
             document.getElementById("modalImagen").src = foto.url;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
+            const contMensaje = document.getElementById('mensajeFotoContainer');
+            if (foto.mensaje) {
+                contMensaje.innerHTML = `
+                    <div class="mensaje-foto">
+                        <span class="emoji">📝</span>
+                        <div class="texto">${escapeHtml(foto.mensaje)}</div>
+                    </div>
+                `;
+            } else {
+                contMensaje.innerHTML = '';
+            }
+
             actualizarFlechas();
             actualizarBotonPrincipal();
             precargarAdyacentes(nuevoIndex);
         }
 
         // ==========================================
-        // 📥 DESCARGA
+        // DESCARGA
         // ==========================================
         function accionBotonPrincipal() {
             if (!fotosCache || fotosCache.length === 0) {
@@ -3932,7 +4545,6 @@
                     sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
                     actualizarBadgeRol();
                     actualizarBotonPrincipal();
-                    // 🔥 Re-render para mostrar/ocultar desbloqueo social
                     renderizarGaleria();
                 }
 
@@ -3951,7 +4563,7 @@
         }
 
         // ==========================================
-        // ✨ INVITAR
+        // INVITAR
         // ==========================================
         function abrirInvitar() {
             document.getElementById('modalInvitar').classList.add('activo');
@@ -4035,7 +4647,7 @@
         }
 
         // ==========================================
-        // 🔲 GENERADOR DE QR
+        // GENERADOR QR
         // ==========================================
         function dibujarQR(texto, contenedor, tamaño) {
             try {
@@ -4063,9 +4675,6 @@
             }
         }
 
-        // ==========================================
-        // 🎉 MODAL RESULTADO
-        // ==========================================
         function mostrarResultado() {
             const modal = document.getElementById('modalResultado');
 
@@ -4119,7 +4728,7 @@
         }
 
         // ==========================================
-        // 🎫 QR GENERAL
+        // QR GENERAL
         // ==========================================
         async function abrirQrGeneral() {
             const modal = document.getElementById('modalQrGeneral');
@@ -4225,7 +4834,7 @@
         }
 
         // ==========================================
-        // 🛡️ UTILIDADES
+        // UTILIDADES
         // ==========================================
         function escapeHtml(str) {
             if (!str) return '';
@@ -4238,7 +4847,7 @@
         }
 
         // ==========================================
-        // 💬 AVISOS ROTATIVOS
+        // AVISOS ROTATIVOS
         // ==========================================
         let indiceAviso = 0;
         let avisoTimeoutId = null;
@@ -4261,7 +4870,7 @@
         }
 
         // ==========================================
-        // 📜 HEADER SCROLL
+        // HEADER SCROLL
         // ==========================================
         let _headerScrollTick = false;
         window.addEventListener('scroll', () => {
@@ -4280,7 +4889,7 @@
         }, { passive: true });
 
         // ==========================================
-        // 🔥 PAUSA DE POLLING POR VISIBILIDAD
+        // PAUSA POR VISIBILIDAD
         // ==========================================
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
@@ -4295,22 +4904,24 @@
         });
 
         // ==========================================
-        // 🎧 EVENTOS
+        // EVENTOS
         // ==========================================
         document.addEventListener("keydown", (e) => {
             const modalInvitarActivo = document.getElementById('modalInvitar').classList.contains('activo');
             const modalResultadoActivo = document.getElementById('modalResultado').classList.contains('activo');
             const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
+            const modalDetrasActivo = document.getElementById('modalDetras').classList.contains('activo');
 
             if (e.key === "Escape") {
-                if (modalQrGeneralActivo) cerrarQrGeneral();
+                if (modalDetrasActivo) cerrarDetrasCamara();
+                else if (modalQrGeneralActivo) cerrarQrGeneral();
                 else if (modalResultadoActivo) cerrarResultado();
                 else if (modalInvitarActivo) cerrarInvitar();
                 else if (document.getElementById("modal").classList.contains("activo")) cerrarModal();
                 else cerrarLangMenu();
             }
 
-            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo) return;
+            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo) return;
 
             if (e.key === "ArrowLeft") navegarFoto(-1);
             if (e.key === "ArrowRight") navegarFoto(1);
@@ -4332,8 +4943,12 @@
             if (e.target.id === 'modalQrGeneral') cerrarQrGeneral();
         });
 
+        document.getElementById('modalDetras').addEventListener('click', (e) => {
+            if (e.target.id === 'modalDetras') cerrarDetrasCamara();
+        });
+
         // ==========================================
-        // 🔥 DETECCIÓN DE CAMBIO DE URL
+        // DETECCIÓN CAMBIO URL
         // ==========================================
         (function () {
             const eventoIdOriginal = EVENTO_ID;
@@ -4354,10 +4969,17 @@
         })();
 
         // ==========================================
-        // 🚀 INICIALIZACIÓN
+        // INICIALIZACIÓN
         // ==========================================
         async function inicializar() {
             fotosVistas = cargarFotosVistas();
+
+            try {
+                const guardados = JSON.parse(localStorage.getItem(getClaveMinijuegoToques()) || '[]');
+                if (Array.isArray(guardados)) {
+                    toquesPendientes = guardados;
+                }
+            } catch (e) { }
 
             idiomaActual = detectarIdiomaInicial();
             aplicarIdioma(idiomaActual);
