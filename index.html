@@ -3463,8 +3463,22 @@
                     `&t=${encodeURIComponent(TOKEN)}` +
                     `&d=${encodeURIComponent(dispositivoId)}`;
 
+                console.log('🔍 validarAcceso → REQUEST:', {
+                    url,
+                    FOTOGRAFO_ID,
+                    EVENTO_ID,
+                    TOKEN_que_se_envia: TOKEN,
+                    dispositivoId
+                });
+
                 const respuesta = await fetch(url);
                 const data = await respuesta.json();
+
+                console.log('🔍 validarAcceso → RESPONSE:', {
+                    status: respuesta.status,
+                    ok: respuesta.ok,
+                    data
+                });
 
                 if (data.receso) {
                     if (data.motivo === 'saturacion') {
@@ -3481,11 +3495,17 @@
                 }
 
                 if (!respuesta.ok || !data.valido) {
+                    console.log('❌ validarAcceso → BLOQUEADO:', {
+                        ok: respuesta.ok,
+                        valido: data.valido,
+                        error: data.error
+                    });
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
 
                 if (data.tokenPersonal) {
+                    console.log('🔄 validarAcceso → tokenPersonal recibido, cambiando TOKEN:', data.tokenPersonal);
                     TOKEN = data.tokenPersonal;
                     localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
                 }
@@ -3511,10 +3531,16 @@
                 localStorage.setItem('ovj_rol_nombre', data.nombre || '');
                 localStorage.setItem('ovj_rol_id', data.id || '');
 
+                console.log('✅ validarAcceso → OK:', {
+                    tipo: sesion.tipo,
+                    nombre: sesion.nombre,
+                    id: sesion.id
+                });
+
                 return true;
 
             } catch (error) {
-                console.error('Error validando acceso:', error);
+                console.error('❌ Error validando acceso:', error);
                 mostrarBloqueo('error', t('offlineMensaje'));
                 return false;
             }
