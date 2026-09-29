@@ -1230,30 +1230,6 @@
             pointer-events: none;
         }
 
-        .mensaje-foto {
-            margin-top: 10px;
-            padding: 12px 16px;
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.02));
-            border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .mensaje-foto .emoji {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .mensaje-foto .texto {
-            font-size: 0.8rem;
-            color: #fff;
-            line-height: 1.4;
-            font-style: italic;
-            word-break: break-word;
-        }
-
         .modal-footer {
             padding: 16px 20px 20px;
             display: flex;
@@ -2096,7 +2072,7 @@
             padding: 80px 20px;
         }
 
-        /* ===== MODAL DETRÁS DE CÁMARA ===== */
+        /* ===== MODAL DETRÁS DE CÁMARA (FEED VERTICAL) ===== */
         .modal-detras {
             display: none;
             position: fixed;
@@ -2106,10 +2082,11 @@
             width: 100%;
             height: 100%;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 20px;
             background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(12px);
+            overflow-y: auto;
         }
 
         .modal-detras.activo {
@@ -2120,11 +2097,10 @@
             background: var(--bg-card);
             border: 1px solid var(--borde-hover);
             border-radius: 20px;
-            padding: 28px 24px 24px;
-            max-width: 700px;
+            padding: 28px 22px 22px;
+            max-width: 520px;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
+            margin: 20px auto;
             animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: var(--sombra-fuerte);
             position: relative;
@@ -2153,25 +2129,25 @@
             text-align: center;
         }
 
-        .detras-lista {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 12px;
+        .feed-detras {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             margin-top: 16px;
         }
 
-        .detras-item {
+        .post-detras {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--borde);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            animation: entradaDetras 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation: entradaPost 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
 
-        @keyframes entradaDetras {
+        @keyframes entradaPost {
             from {
                 opacity: 0;
-                transform: translateY(15px) scale(0.95);
+                transform: translateY(15px) scale(0.98);
             }
             to {
                 opacity: 1;
@@ -2179,28 +2155,66 @@
             }
         }
 
-        .detras-item img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            display: block;
-            cursor: pointer;
-            transition: transform 0.4s ease;
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px 12px;
         }
 
-        .detras-item:hover img {
-            transform: scale(1.05);
+        .post-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
-        .detras-item .texto {
-            font-size: 0.72rem;
-            color: #ddd;
-            padding: 10px 12px;
-            line-height: 1.4;
+        .post-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-nombre {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
             word-break: break-word;
         }
 
-        .detras-vacio {
+        .post-tiempo {
+            font-size: 0.72rem;
+            color: var(--texto-tenue);
+        }
+
+        .post-texto {
+            font-size: 0.88rem;
+            color: #e5e5e5;
+            padding: 0 16px 14px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .post-imagen {
+            width: 100%;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+            background: var(--bg);
+        }
+
+        .post-imagen:hover {
+            transform: scale(1.02);
+        }
+
+        .feed-vacio {
             text-align: center;
             padding: 40px 20px;
             color: var(--texto-tenue);
@@ -2464,10 +2478,6 @@
                 font-size: 0.8rem;
             }
 
-            .detras-lista {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .modal-desbloqueo-contenido {
                 padding: 32px 22px 26px;
             }
@@ -2478,6 +2488,23 @@
 
             .modal-desbloqueo-contenido .titulo {
                 font-size: 1.2rem;
+            }
+
+            .modal-detras {
+                padding: 8px;
+            }
+
+            .modal-detras-contenido {
+                padding: 24px 16px 16px;
+                margin: 8px auto;
+            }
+
+            .post-header {
+                padding: 12px 14px 10px;
+            }
+
+            .post-texto {
+                padding: 0 14px 12px;
             }
         }
 
@@ -2513,7 +2540,6 @@
             <div class="countdown" id="bloqueoCountdown" style="display:none;"></div>
             <div class="marca">OVJ STUDIO</div>
 
-            <!-- Publicidad en receso -->
             <div class="pub-receso" id="pubReceso" style="display:none;">
                 <span class="emoji">✨</span>
                 <div class="texto">
@@ -2582,7 +2608,6 @@
             </div>
         </div>
 
-        <!-- Banner mensaje del fotógrafo -->
         <div id="bannerMensajeContainer"></div>
 
         <div id="estado">Cargando...</div>
@@ -2603,8 +2628,6 @@
                 <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
             </div>
             <div class="modal-footer">
-                <div id="mensajeFotoContainer"></div>
-
                 <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
                     <span class="icono-whatsapp" id="btnIcono">📱</span>
                     <span id="btnPedirTexto">Descargar foto</span>
@@ -2623,7 +2646,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DESBLOQUEO SOCIAL (FULL SCREEN) ===== -->
+    <!-- ===== MODAL DESBLOQUEO SOCIAL ===== -->
     <div class="modal-desbloqueo" id="modalDesbloqueo">
         <div class="modal-desbloqueo-contenido">
             <button class="btn-cerrar-desbloqueo" onclick="cerrarDesbloqueo()">✕</button>
@@ -2743,7 +2766,7 @@
             </div>
 
             <div id="detrasListaContainer">
-                <div class="detras-vacio">Cargando...</div>
+                <div class="feed-vacio">Cargando...</div>
             </div>
         </div>
     </div>
@@ -2775,7 +2798,6 @@
 
         const INSTAGRAM_USUARIO = 'ovjstudio';
 
-        // Umbral: cuando quedan ≤2 descargas, mostrar modal de desbloqueo
         const UMBRAL_DESBLOQUEO = 2;
 
         // ==========================================
@@ -2830,6 +2852,10 @@
             } catch (e) { }
         }
 
+        function getClaveMensajeActual() {
+            return 'ovj_mensaje_actual_' + (EVENTO_ID || 'default');
+        }
+
         function getClaveMensajeCerrado() {
             return 'ovj_mensaje_cerrado_' + (EVENTO_ID || 'default');
         }
@@ -2867,8 +2893,6 @@
 
         let detrasCamaraTotal = 0;
         let detrasCamaraUltima = null;
-
-        let minijuegoAnterior = null;
 
         let desbloqueoCerradoEnEstaSesion = false;
 
@@ -3516,8 +3540,8 @@
                 if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
                     const ordenadas = Array.from(fotosNuevasMap.entries())
                         .sort((a, b) => a[1] - b[1]);
-                    const sobran = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
-                    sobran.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
+                    const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
+                    sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
                 }
 
                 for (const [nombre, ts] of fotosNuevasMap) {
@@ -3583,7 +3607,7 @@
         }
 
         // ==========================================
-        // MINIJUEGO — Solo notificación al ganador
+        // MINIJUEGO
         // ==========================================
         function procesarMinijuego(minijuego) {
             if (!minijuego || !minijuego.finalizado) return;
@@ -3592,17 +3616,13 @@
             const clave = getClaveMinijuegoNotificado();
             const yaNotificado = localStorage.getItem(clave);
 
-            // Si ya notificamos este sorteo, no hacer nada
             if (yaNotificado === String(aplicadoEn)) return;
 
-            // ¿Soy el ganador?
             if (minijuego.ganadorDeviceId === getDispositivoId()) {
-                // ¡Ganaste!
                 lanzarConfeti();
                 lanzarConfeti();
                 mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
 
-                // Resetear sesión local
                 if (sesionGeneral) {
                     sesionGeneral.descargasSesion = 0;
                 }
@@ -3613,7 +3633,6 @@
                 actualizarBotonPrincipal();
                 renderizarGaleria();
             } else {
-                // No gané: solo guardo que ya vi este sorteo
                 localStorage.setItem(clave, String(aplicadoEn));
             }
         }
@@ -3622,36 +3641,36 @@
         // MENSAJE DEL FOTÓGRAFO
         // ==========================================
         function procesarMensaje(mensaje) {
-            const anterior = mensajeFotografoActual;
-            mensajeFotografoActual = mensaje;
-
             const cont = document.getElementById('bannerMensajeContainer');
+            const claveActual = getClaveMensajeActual();
+            const claveCerrado = getClaveMensajeCerrado();
 
             // Si no hay mensaje, limpiar
             if (!mensaje || !mensaje.activo) {
                 cont.innerHTML = '';
+                // Limpiar el mensaje actual guardado si ya no hay
+                localStorage.removeItem(claveActual);
                 return;
             }
 
+            // ¿Es un mensaje nuevo (distinto creadoEn al guardado)?
+            const guardado = localStorage.getItem(claveActual);
+            const esNuevo = guardado !== String(mensaje.creadoEn);
+
+            // Si es nuevo, guardar y resetear el "cerrado"
+            if (esNuevo) {
+                localStorage.setItem(claveActual, String(mensaje.creadoEn));
+                localStorage.removeItem(claveCerrado);
+            }
+
             // ¿El invitado ya cerró este mensaje?
-            const msgGuardado = localStorage.getItem(getClaveMensajeCerrado());
-            if (msgGuardado === String(mensaje.creadoEn)) {
+            const msgCerrado = localStorage.getItem(claveCerrado);
+            if (msgCerrado === String(mensaje.creadoEn)) {
                 cont.innerHTML = '';
                 return;
             }
 
-            // ¿Es el mismo mensaje que ya se mostró?
-            const esElMismo = anterior && anterior.activo && anterior.creadoEn === mensaje.creadoEn;
-            if (esElMismo && cont.innerHTML.trim() !== '') {
-                return;
-            }
-
-            // Renderizar el banner
-            renderBannerMensaje(mensaje);
-        }
-
-        function renderBannerMensaje(mensaje) {
-            const cont = document.getElementById('bannerMensajeContainer');
+            // Renderizar
             cont.innerHTML = `
                 <div class="banner-mensaje" id="bannerMensaje">
                     <span class="emoji">💬</span>
@@ -3696,11 +3715,26 @@
             detrasCamaraUltima = ultima;
         }
 
+        function tiempoRelativo(fechaISO) {
+            if (!fechaISO) return '';
+            const ahora = Date.now();
+            const fecha = new Date(fechaISO).getTime();
+            const diff = Math.floor((ahora - fecha) / 1000);
+
+            if (diff < 60) return 'hace unos segundos';
+            if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
+            if (diff < 86400) return `hace ${Math.floor(diff / 3600)} h`;
+            if (diff < 604800) return `hace ${Math.floor(diff / 86400)} d`;
+
+            const d = new Date(fechaISO);
+            return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
+        }
+
         async function abrirDetrasCamara() {
             const modal = document.getElementById('modalDetras');
             const cont = document.getElementById('detrasListaContainer');
 
-            cont.innerHTML = '<div class="detras-vacio">Cargando...</div>';
+            cont.innerHTML = '<div class="feed-vacio">Cargando...</div>';
             modal.classList.add('activo');
 
             try {
@@ -3709,14 +3743,14 @@
                 const data = await resp.json();
 
                 if (!resp.ok || !data.ok) {
-                    cont.innerHTML = '<div class="detras-vacio">No se pudo cargar. Intenta de nuevo.</div>';
+                    cont.innerHTML = '<div class="feed-vacio">No se pudo cargar. Intenta de nuevo.</div>';
                     return;
                 }
 
                 const items = data.items || [];
 
                 if (items.length === 0) {
-                    cont.innerHTML = `<div class="detras-vacio">${t('detrasVacio')}</div>`;
+                    cont.innerHTML = `<div class="feed-vacio">${t('detrasVacio')}</div>`;
                     return;
                 }
 
@@ -3727,12 +3761,24 @@
                     document.getElementById('badgeNovedadDetras').style.display = 'none';
                 }
 
-                let html = '<div class="detras-lista">';
+                let html = '<div class="feed-detras">';
                 items.slice().reverse().forEach((item, idx) => {
+                    const nombre = item.fotografoNombre || FOTOGRAFO_ID || 'Fotógrafo';
+                    const inicial = nombre.charAt(0).toUpperCase();
+                    const tiempo = tiempoRelativo(item.subidoEn);
+
                     html += `
-                        <div class="detras-item" style="animation-delay: ${idx * 60}ms">
-                            <img src="${item.url}" alt="Detrás de cámara" loading="lazy" />
-                            ${item.texto ? `<div class="texto">${escapeHtml(item.texto)}</div>` : ''}
+                        <div class="post-detras" style="animation-delay: ${idx * 80}ms">
+                            <div class="post-header">
+                                <div class="post-avatar">${inicial}</div>
+                                <div class="post-info">
+                                    <div class="post-nombre">${escapeHtml(nombre)}</div>
+                                    <div class="post-tiempo">${tiempo}</div>
+                                </div>
+                            </div>
+                            ${item.texto ? `<div class="post-texto">${escapeHtml(item.texto)}</div>` : ''}
+                            <img class="post-imagen" src="${item.url}" alt="Detrás de cámara" loading="lazy"
+                                 onclick="window.open('${item.url}', '_blank')" />
                         </div>
                     `;
                 });
@@ -3741,7 +3787,7 @@
                 cont.innerHTML = html;
 
             } catch (e) {
-                cont.innerHTML = '<div class="detras-vacio">Error de conexión.</div>';
+                cont.innerHTML = '<div class="feed-vacio">Error de conexión.</div>';
             }
         }
 
@@ -3750,29 +3796,20 @@
         }
 
         // ==========================================
-        // DESBLOQUEO SOCIAL (MODAL FULL SCREEN)
+        // DESBLOQUEO SOCIAL
         // ==========================================
         function verificarMostrarDesbloqueo() {
-            // Solo aplica a generales
             if (!sesion || sesion.tipo !== 'general' || !sesionGeneral) return;
-
-            // Si ya lo usó, no mostrar
             if (sesionGeneral.desbloqueoSocialUsado) return;
-
-            // Si está desactivado en el evento, no mostrar
             if (sesionGeneral.desbloqueoSocialActivo === false) return;
-
-            // Si ya lo cerró en esta sesión, no mostrar
             if (desbloqueoCerradoEnEstaSesion) return;
 
-            // Si el modal ya está activo, no hacer nada
             if (document.getElementById('modalDesbloqueo').classList.contains('activo')) return;
 
             const usadas = sesionGeneral.descargasSesion || 0;
             const total = sesionGeneral.descargasPorSesion || 5;
             const restantes = total - usadas;
 
-            // Mostrar si quedan ≤2 descargas
             if (restantes <= UMBRAL_DESBLOQUEO) {
                 abrirDesbloqueo();
             }
@@ -3851,7 +3888,7 @@
         }
 
         // ==========================================
-        // RENDER GALERÍA
+        // RENDER
         // ==========================================
         function mostrarOffline() {
             const estado = document.getElementById("estado");
@@ -3861,12 +3898,12 @@
             estado.className = "";
 
             galeria.innerHTML = `
-                    <div class="estado-offline">
-                        <span class="icono">📸</span>
-                        <div class="titulo">${t('offlineTitulo')}</div>
-                        <div class="mensaje">${t('offlineMensaje')}</div>
-                    </div>
-                `;
+                <div class="estado-offline">
+                    <span class="icono">📸</span>
+                    <div class="titulo">${t('offlineTitulo')}</div>
+                    <div class="mensaje">${t('offlineMensaje')}</div>
+                </div>
+            `;
         }
 
         function actualizarEstado() {
@@ -3928,7 +3965,6 @@
             }
 
             const visibles = Math.min(fotosVisibles, fotosCache.length);
-            const ahora = Date.now();
             let html = "";
 
             for (let i = 0; i < visibles; i++) {
@@ -4146,18 +4182,6 @@
             modalImagen.src = foto.url;
             modalImagen.alt = `Foto ${index + 1}`;
 
-            const contMensaje = document.getElementById('mensajeFotoContainer');
-            if (foto.mensaje) {
-                contMensaje.innerHTML = `
-                    <div class="mensaje-foto">
-                        <span class="emoji">📝</span>
-                        <div class="texto">${escapeHtml(foto.mensaje)}</div>
-                    </div>
-                `;
-            } else {
-                contMensaje.innerHTML = '';
-            }
-
             modal.classList.add("activo");
             fondo.classList.add("activo");
             document.body.style.overflow = "hidden";
@@ -4190,18 +4214,6 @@
 
             document.getElementById("modalImagen").src = foto.url;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
-
-            const contMensaje = document.getElementById('mensajeFotoContainer');
-            if (foto.mensaje) {
-                contMensaje.innerHTML = `
-                    <div class="mensaje-foto">
-                        <span class="emoji">📝</span>
-                        <div class="texto">${escapeHtml(foto.mensaje)}</div>
-                    </div>
-                `;
-            } else {
-                contMensaje.innerHTML = '';
-            }
 
             actualizarFlechas();
             actualizarBotonPrincipal();
@@ -4344,7 +4356,6 @@
                     actualizarBotonPrincipal();
                     renderizarGaleria();
 
-                    // Verificar si hay que mostrar el modal de desbloqueo
                     setTimeout(() => verificarMostrarDesbloqueo(), 500);
                 }
 
