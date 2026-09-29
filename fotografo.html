@@ -1036,38 +1036,6 @@
             margin-top: 6px;
         }
 
-        /* Campo de mensaje */
-        .campo-mensaje {
-            margin-bottom: 12px;
-        }
-
-        .campo-mensaje label {
-            display: block;
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-            margin-bottom: 6px;
-            padding-left: 4px;
-        }
-
-        .campo-mensaje input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            font-size: 0.9rem;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .campo-mensaje .ayuda {
-            font-size: 0.65rem;
-            color: var(--texto-tenue);
-            margin-top: 5px;
-            padding-left: 4px;
-        }
-
         .lista-subidas {
             max-height: 220px;
             overflow-y: auto;
@@ -1130,10 +1098,7 @@
 
         /* Lista detrás de cámara */
         .lista-detras {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             padding: 4px;
             margin-bottom: 14px;
@@ -1142,42 +1107,75 @@
         .item-detras {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
+            border-radius: 14px;
             overflow: hidden;
             position: relative;
+            margin-bottom: 12px;
         }
 
-        .item-detras img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            display: block;
+        .item-detras-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px 8px;
         }
 
-        .item-detras .texto {
+        .item-detras-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .item-detras-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-detras-nombre {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .item-detras-tiempo {
             font-size: 0.68rem;
-            color: #ccc;
-            padding: 6px 8px;
-            line-height: 1.3;
-            max-height: 50px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            color: var(--texto-tenue);
+        }
+
+        .item-detras-texto {
+            font-size: 0.82rem;
+            color: #ddd;
+            padding: 0 14px 12px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .item-detras-imagen {
+            width: 100%;
+            display: block;
+            cursor: pointer;
         }
 
         .item-detras .btn-eliminar {
             position: absolute;
-            top: 6px;
-            right: 6px;
+            top: 10px;
+            right: 10px;
             background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
-            width: 26px;
-            height: 26px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1364,14 +1362,6 @@
             <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none"
                 onchange="manejarSeleccionFotos(event)" />
 
-            <!-- Campo de mensaje opcional -->
-            <div class="campo-mensaje">
-                <label>📝 Mensaje para esta foto (opcional)</label>
-                <input type="text" id="inputMensajeFoto" placeholder="Ej: La mejor de la ceremonia" maxlength="100"
-                    autocomplete="off" />
-                <div class="ayuda">Aparecerá cuando el invitado abra la foto. Máximo 100 caracteres.</div>
-            </div>
-
             <div class="lista-subidas" id="listaSubidas"></div>
 
             <button class="btn-secundario" id="btnCerrarSubir" onclick="cerrarSubir()">Cerrar</button>
@@ -1490,8 +1480,8 @@
             <button class="btn-cerrar" onclick="cerrarDetrasCamara()">✕</button>
             <div class="titulo">📸 Detrás de cámara</div>
             <div class="subtitulo">
-                Fotos casuales que humanizan tu marca.<br>
-                Los invitados las ven, pero no las pueden descargar.
+                Publicá fotos casuales tipo red social.<br>
+                Los invitados las ven en un feed vertical.
             </div>
 
             <div class="aviso-detras">
@@ -1507,20 +1497,22 @@
             <input type="file" id="inputDetrasCamara" accept="image/jpeg,image/jpg" style="display:none"
                 onchange="manejarSeleccionDetras(event)" />
 
-            <div class="campo-mensaje">
-                <label>📝 Texto para la foto (opcional)</label>
+            <div class="campo-mensaje" style="margin-bottom:12px;">
+                <label style="display:block; font-size:0.72rem; color:var(--texto-suave); margin-bottom:6px; padding-left:4px;">
+                    📝 Texto para la publicación (opcional)
+                </label>
                 <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas" maxlength="200"
-                    autocomplete="off" />
-                <div class="ayuda">Máximo 200 caracteres.</div>
+                    autocomplete="off" style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#fff; font-size:0.9rem; outline:none; font-family:inherit;" />
+                <div style="font-size:0.65rem; color:var(--texto-tenue); margin-top:5px; padding-left:4px;">Máximo 200 caracteres.</div>
             </div>
 
             <button class="btn-primario" id="btnSubirDetras" onclick="subirDetrasCamara()" disabled>
-                📤 Subir foto
+                📤 Publicar
             </button>
 
-            <div class="seccion-titulo" style="margin-top:20px;">Fotos subidas (<span id="contadorDetras">0</span>)</div>
+            <div class="seccion-titulo" style="margin-top:20px;">Publicaciones (<span id="contadorDetras">0</span>)</div>
             <div class="lista-detras" id="listaDetras">
-                <div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">
+                <div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">
                     Cargando...
                 </div>
             </div>
@@ -1613,6 +1605,21 @@
                 minute: '2-digit',
                 hour12: false
             });
+        }
+
+        function tiempoRelativo(fechaISO) {
+            if (!fechaISO) return '';
+            const ahora = Date.now();
+            const fecha = new Date(fechaISO).getTime();
+            const diff = Math.floor((ahora - fecha) / 1000);
+
+            if (diff < 60) return 'hace unos segundos';
+            if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
+            if (diff < 86400) return `hace ${Math.floor(diff / 3600)} h`;
+            if (diff < 604800) return `hace ${Math.floor(diff / 86400)} d`;
+
+            const d = new Date(fechaISO);
+            return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
         }
 
         async function apiFetch(ruta, opciones = {}) {
@@ -1928,7 +1935,6 @@
                 `;
             }
 
-            // Puede usar minijuego si hay mínimo de invitados activos
             const puedeMinijuego = detrasCamaraInfo?.puedeUsarMinijuego !== false;
             const minInv = detrasCamaraInfo?.minimoInvitados || 5;
 
@@ -2501,7 +2507,7 @@
 
             archivoDetrasSeleccionado = archivo;
             $('btnSubirDetras').disabled = false;
-            toast('📸 Foto lista para subir', 'ok');
+            toast('📸 Foto lista para publicar', 'ok');
 
             event.target.value = '';
         }
@@ -2535,7 +2541,7 @@
                     body: JSON.stringify({ key: dataUrl.key, texto })
                 });
 
-                toast('✅ Foto subida', 'ok');
+                toast('✅ Publicación subida', 'ok');
                 archivoDetrasSeleccionado = null;
                 $('inputTextoDetras').value = '';
                 $('btnSubirDetras').disabled = true;
@@ -2551,7 +2557,7 @@
 
         async function cargarListaDetras() {
             const cont = $('listaDetras');
-            cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">Cargando...</div>';
+            cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">Cargando...</div>';
 
             try {
                 const data = await apiFetch('/fotografo/detras-camara');
@@ -2560,33 +2566,44 @@
                 $('contadorDetras').textContent = items.length;
 
                 if (items.length === 0) {
-                    cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#666; padding:20px; font-size:0.8rem;">No hay fotos todavía</div>';
+                    cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">No hay publicaciones todavía</div>';
                     return;
                 }
 
                 let html = '';
                 items.slice().reverse().forEach(item => {
+                    const nombre = item.fotografoNombre || nombreFotografoActual || 'Fotógrafo';
+                    const inicial = nombre.charAt(0).toUpperCase();
+                    const tiempo = tiempoRelativo(item.subidoEn);
+
                     html += `
                         <div class="item-detras">
-                            <img src="${item.url}" alt="Detrás de cámara" loading="lazy" />
-                            ${item.texto ? `<div class="texto">${escapeHtml(item.texto)}</div>` : ''}
                             <button class="btn-eliminar" onclick="eliminarDetras('${item.id}')">✕</button>
+                            <div class="item-detras-header">
+                                <div class="item-detras-avatar">${inicial}</div>
+                                <div class="item-detras-info">
+                                    <div class="item-detras-nombre">${escapeHtml(nombre)}</div>
+                                    <div class="item-detras-tiempo">${tiempo}</div>
+                                </div>
+                            </div>
+                            ${item.texto ? `<div class="item-detras-texto">${escapeHtml(item.texto)}</div>` : ''}
+                            <img class="item-detras-imagen" src="${item.url}" alt="Publicación" loading="lazy" onclick="window.open('${item.url}', '_blank')" />
                         </div>
                     `;
                 });
                 cont.innerHTML = html;
 
             } catch (e) {
-                cont.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#e74c3c; padding:20px; font-size:0.8rem;">Error cargando</div>';
+                cont.innerHTML = '<div style="text-align:center; color:#e74c3c; padding:20px; font-size:0.8rem;">Error cargando</div>';
             }
         }
 
         async function eliminarDetras(id) {
-            if (!confirm('¿Eliminar esta foto?')) return;
+            if (!confirm('¿Eliminar esta publicación?')) return;
 
             try {
                 await apiFetch('/fotografo/detras-camara/' + encodeURIComponent(id), { method: 'DELETE' });
-                toast('🗑️ Foto eliminada', 'ok');
+                toast('🗑️ Publicación eliminada', 'ok');
                 cargarListaDetras();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -2647,7 +2664,6 @@
         function abrirSubir() {
             colaSubidas = [];
             renderizarListaSubidas();
-            $('inputMensajeFoto').value = '';
             $('modalSubir').classList.add('activo');
         }
 
@@ -2663,8 +2679,6 @@
             const archivos = Array.from(event.target.files || []);
             if (archivos.length === 0) return;
 
-            const mensajeFoto = $('inputMensajeFoto').value.trim();
-
             for (const archivo of archivos) {
                 if (!archivo.type.startsWith('image/jpeg')) {
                     toast('Solo JPG: ' + archivo.name, 'error');
@@ -2676,8 +2690,7 @@
                 }
                 colaSubidas.push({
                     archivo,
-                    estado: 'pendiente',
-                    mensaje: mensajeFoto || null
+                    estado: 'pendiente'
                 });
             }
 
@@ -2706,10 +2719,9 @@
                     error: ['✗ Error', 'error']
                 };
                 const [texto, clase] = estados[s.estado] || ['?', 'pendiente'];
-                const mensajeTag = s.mensaje ? ' <span style="color:#5dade2;">📝</span>' : '';
                 html += `
                     <div class="item-subida">
-                        <div class="nombre">${escapeHtml(s.archivo.name)}${mensajeTag}</div>
+                        <div class="nombre">${escapeHtml(s.archivo.name)}</div>
                         <div class="estado ${clase}">${texto}</div>
                     </div>
                 `;
@@ -2850,16 +2862,13 @@
             const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
             const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
-            const mensaje = subida.mensaje || null;
-
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
                 body: JSON.stringify({
                     f: nombreFotografoActual,
                     e: eventoActivo.id,
                     keyOriginal: keyOriginal,
-                    keyPreview: keyPreview,
-                    mensaje: mensaje
+                    keyPreview: keyPreview
                 })
             });
 
