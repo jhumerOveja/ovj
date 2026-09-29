@@ -155,7 +155,6 @@
             50% { opacity: 1; }
         }
 
-        /* Publicidad en receso */
         .pub-receso {
             margin-top: 28px;
             padding: 20px 18px;
@@ -222,7 +221,6 @@
             box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
         }
 
-        /* ===== APP ===== */
         #app {
             display: none;
         }
@@ -237,7 +235,6 @@
             to { opacity: 1; }
         }
 
-        /* ===== HEADER ===== */
         .header {
             padding: 10px 0 8px;
             border-bottom: 1px solid var(--borde);
@@ -644,7 +641,6 @@
             50% { left: 15%; width: 70%; opacity: 0.8; }
         }
 
-        /* ===== BANNER MENSAJE FOTÓGRAFO ===== */
         .banner-mensaje {
             max-width: 700px;
             margin: 0 auto 14px;
@@ -724,7 +720,6 @@
             color: #fff;
         }
 
-        /* ===== ESTADO MINI ===== */
         #estado {
             text-align: center;
             padding: 4px 0 10px;
@@ -752,7 +747,6 @@
             color: var(--aviso);
         }
 
-        /* ===== GALERÍA ===== */
         .galeria {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1098,7 +1092,6 @@
             font-weight: 300;
         }
 
-        /* ===== MODAL FOTO ===== */
         .modal {
             display: none;
             position: fixed;
@@ -1389,7 +1382,6 @@
             border-color: rgba(232, 196, 122, 0.3);
         }
 
-        /* ===== MODAL DESBLOQUEO SOCIAL (FULL SCREEN) ===== */
         .modal-desbloqueo {
             display: none;
             position: fixed;
@@ -1543,7 +1535,6 @@
             pointer-events: none;
         }
 
-        /* ===== MODAL INVITAR ===== */
         .modal-invitar {
             display: none;
             position: fixed;
@@ -1757,7 +1748,6 @@
             transform: rotate(90deg) scale(1.1);
         }
 
-        /* ===== MODAL RESULTADO ===== */
         .modal-resultado {
             display: none;
             position: fixed;
@@ -1924,7 +1914,6 @@
             color: var(--texto-suave);
         }
 
-        /* ===== MODAL QR GENERAL ===== */
         .modal-qr-general {
             display: none;
             position: fixed;
@@ -2072,7 +2061,6 @@
             padding: 80px 20px;
         }
 
-        /* ===== MODAL DETRÁS DE CÁMARA (FEED VERTICAL) ===== */
         .modal-detras {
             display: none;
             position: fixed;
@@ -2221,7 +2209,6 @@
             font-size: 0.85rem;
         }
 
-        /* ===== TOASTS ===== */
         .toast-container {
             position: fixed;
             bottom: 20px;
@@ -2330,7 +2317,6 @@
             }
         }
 
-        /* ===== CONFETI ===== */
         .confeti {
             position: fixed;
             width: 8px;
@@ -2353,7 +2339,6 @@
             }
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             padding: 24px 10px 6px;
@@ -2374,7 +2359,6 @@
             margin-bottom: 4px;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             body {
                 padding: 8px 10px 80px;
@@ -2528,7 +2512,6 @@
 </head>
 
 <body>
-    <!-- ===== BLOQUEO ===== -->
     <div class="bloqueo" id="bloqueo">
         <div class="bloqueo-contenido">
             <span class="icono" id="bloqueoIcono">🔒</span>
@@ -2553,9 +2536,7 @@
         </div>
     </div>
 
-    <!-- ===== APP ===== -->
     <div id="app">
-        <!-- ===== HEADER ===== -->
         <div class="header" id="header">
             <div class="header-top">
                 <div class="header-left">
@@ -2617,7 +2598,6 @@
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
 
-    <!-- ===== MODAL FOTO ===== -->
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
         <div class="modal-contenido">
@@ -2646,7 +2626,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DESBLOQUEO SOCIAL ===== -->
     <div class="modal-desbloqueo" id="modalDesbloqueo">
         <div class="modal-desbloqueo-contenido">
             <button class="btn-cerrar-desbloqueo" onclick="cerrarDesbloqueo()">✕</button>
@@ -2664,7 +2643,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL INVITAR ===== -->
     <div class="modal-invitar" id="modalInvitar">
         <div class="modal-invitar-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarInvitar()">✕</button>
@@ -2696,7 +2674,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL RESULTADO ===== -->
     <div class="modal-resultado" id="modalResultado">
         <div class="modal-resultado-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarResultado()">✕</button>
@@ -2724,7 +2701,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL QR GENERAL ===== -->
     <div class="modal-qr-general" id="modalQrGeneral">
         <div class="modal-qr-general-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarQrGeneral()">✕</button>
@@ -2755,7 +2731,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
     <div class="modal-detras" id="modalDetras">
         <div class="modal-detras-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarDetrasCamara()">✕</button>
@@ -2771,7 +2746,6 @@
         </div>
     </div>
 
-    <!-- Contenedor de toasts -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script src="qrcode.min.js"></script>
@@ -3463,11 +3437,13 @@
                 estado.innerHTML = t('cargando');
                 estado.className = "cargando";
 
+                // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
                 const url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                    `&t=${encodeURIComponent(TOKEN || '')}`;
+                    `&t=${encodeURIComponent(TOKEN || '')}` +
+                    `&_=${Date.now()}`;
 
-                const respuesta = await fetch(url);
+                const respuesta = await fetch(url, { cache: 'no-store' });
 
                 if (respuesta.status === 403) {
                     cerrarSesionYBloquear();
@@ -3515,16 +3491,10 @@
                     window._ultimoPoll = data.poll;
                 }
 
-                // Procesar mensaje del fotógrafo
                 procesarMensaje(data.mensajeFotografo);
-
-                // Procesar detrás de cámara
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
-
-                // Procesar minijuego
                 procesarMinijuego(data.minijuego);
 
-                // Procesar fotos
                 const nuevasFotos = data.fotos || [];
 
                 const ahora = Date.now();
@@ -3571,7 +3541,6 @@
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
 
-                // Verificar si hay que mostrar el modal de desbloqueo
                 verificarMostrarDesbloqueo();
 
             } catch (error) {
@@ -3645,32 +3614,26 @@
             const claveActual = getClaveMensajeActual();
             const claveCerrado = getClaveMensajeCerrado();
 
-            // Si no hay mensaje, limpiar
             if (!mensaje || !mensaje.activo) {
                 cont.innerHTML = '';
-                // Limpiar el mensaje actual guardado si ya no hay
                 localStorage.removeItem(claveActual);
                 return;
             }
 
-            // ¿Es un mensaje nuevo (distinto creadoEn al guardado)?
             const guardado = localStorage.getItem(claveActual);
             const esNuevo = guardado !== String(mensaje.creadoEn);
 
-            // Si es nuevo, guardar y resetear el "cerrado"
             if (esNuevo) {
                 localStorage.setItem(claveActual, String(mensaje.creadoEn));
                 localStorage.removeItem(claveCerrado);
             }
 
-            // ¿El invitado ya cerró este mensaje?
             const msgCerrado = localStorage.getItem(claveCerrado);
             if (msgCerrado === String(mensaje.creadoEn)) {
                 cont.innerHTML = '';
                 return;
             }
 
-            // Renderizar
             cont.innerHTML = `
                 <div class="banner-mensaje" id="bannerMensaje">
                     <span class="emoji">💬</span>
@@ -3738,8 +3701,9 @@
             modal.classList.add('activo');
 
             try {
-                const url = `${URL_CLOUDFLARE}/detras-camara?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`;
-                const resp = await fetch(url);
+                // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
+                const url = `${URL_CLOUDFLARE}/detras-camara?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}&_=${Date.now()}`;
+                const resp = await fetch(url, { cache: 'no-store' });
                 const data = await resp.json();
 
                 if (!resp.ok || !data.ok) {
@@ -4132,7 +4096,6 @@
             }
         }
 
-        // Limpieza periódica de badges
         setInterval(() => {
             const ahora = Date.now();
             let huboCambio = false;
