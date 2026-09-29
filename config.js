@@ -17,7 +17,7 @@
 
 window.OVJ_CONFIG = {
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://chance-williams-somerset-realize.trycloudflare.com',
+    urlTunel: 'https://earlier-fee-authorized-yeah.trycloudflare.com',
 
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
