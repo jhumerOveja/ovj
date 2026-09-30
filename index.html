@@ -3616,12 +3616,14 @@
                 estado.className = "cargando";
 
                 // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
-                const url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                // 🔥 Ahora va al Worker (con cache de 15s)
+                const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || URL_CLOUDFLARE;
+                const url = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                    `&t=${encodeURIComponent(TOKEN || '')}` +
-                    `&_=${Date.now()}`;
+                    `&t=${encodeURIComponent(TOKEN || '')}`;
 
                 const respuesta = await fetch(url, { cache: 'no-store' });
+
 
                 if (respuesta.status === 403) {
                     cerrarSesionYBloquear();
