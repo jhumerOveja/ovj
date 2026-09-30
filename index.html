@@ -804,6 +804,48 @@
             color: #fff;
         }
 
+
+        .banner-emergencia {
+            max-width: 700px;
+            margin: 0 auto 14px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.12), rgba(232, 196, 122, 0.03));
+            border: 1px solid rgba(232, 196, 122, 0.4);
+            border-radius: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .banner-emergencia .emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            animation: pulsoEmojiMensaje 2s ease-in-out infinite;
+        }
+
+        .banner-emergencia .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .banner-emergencia .etiqueta {
+            font-size: 0.65rem;
+            color: var(--champagne);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .banner-emergencia .texto {
+            font-size: 0.88rem;
+            color: #fff;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
         #estado {
             text-align: center;
             padding: 4px 0 10px;
@@ -2742,6 +2784,7 @@
         </div>
 
         <div id="bannerMensajeContainer"></div>
+        <div id="bannerEmergenciaContainer"></div>
 
         <div id="estado">Cargando...</div>
 
@@ -2912,6 +2955,9 @@
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
+        // 🔥 Worker base (para /api/fotos y descargas en modo emergencia)
+        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || URL_CLOUDFLARE;
+
         const WHATSAPP_PUBLICIDAD = window.OVJ_CONFIG?.whatsappPublicidad || '59160004962';
         const CODIGO_PAIS_DEFECTO = "591";
 
@@ -3021,6 +3067,11 @@
         let detrasCamaraUltima = null;
 
         let desbloqueoCerradoEnEstaSesion = false;
+
+        // 🔥 Modo emergencia
+        let modoEmergenciaActivo = false;
+        let modoEmergenciaAvisado = false;
+        let servidorCaidoNotificado = false;
 
         let tipsMostrados = {
             primeraEntrada: false,
@@ -3617,7 +3668,6 @@
 
                 // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
                 // 🔥 Ahora va al Worker (con cache de 15s)
-                const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || URL_CLOUDFLARE;
                 const url = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
                     `&t=${encodeURIComponent(TOKEN || '')}`;
@@ -3670,7 +3720,7 @@
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
                 }
-
+                procesarModoEmergencia(data);
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
                 procesarMinijuego(data.minijuego);
@@ -3783,6 +3833,69 @@
                 renderizarGaleria();
             } else {
                 localStorage.setItem(clave, String(aplicadoEn));
+            }
+        }
+
+        // ==========================================
+        // MODO EMERGENCIA
+        // ==========================================
+        function procesarModoEmergencia(data) {
+            const cont = document.getElementById('bannerEmergenciaContainer');
+            const enEmergencia = !!data.modoEmergencia;
+
+            if (enEmergencia) {
+                // ── ENTRAR EN MODO EMERGENCIA ──
+                if (!modoEmergenciaActivo) {
+                    modoEmergenciaActivo = true;
+                    modoEmergenciaAvisado = false;
+                }
+
+                // Mostrar banner (una sola vez por sesión)
+                if (!modoEmergenciaAvisado) {
+                    modoEmergenciaAvisado = true;
+
+                    const textoAviso = data.avisoEmergencia
+                        || 'El fotógrafo está subiendo más fotos. Mientras tanto, disfrutá de estos momentos.';
+
+                    cont.innerHTML = `
+                        <div class="banner-emergencia">
+                            <span class="emoji">✨</span>
+                            <div class="info">
+                                <div class="etiqueta">Modo Fiesta Sin Fin</div>
+                                <div class="texto">${escapeHtml(textoAviso)}</div>
+                            </div>
+                        </div>
+                    `;
+
+                    lanzarConfeti();
+                    mostrarToast('🎉 Modo Fiesta Sin Fin activado. Descargá todo lo que quieras.', 'success', 10000);
+                }
+
+                // Desbloquear descargas: forzamos que el invitado tenga sesión "ilimitada"
+                if (sesionGeneral) {
+                    sesionGeneral.descargasIlimitadas = true;
+                }
+
+            } else {
+                // ── SALIR DE MODO EMERGENCIA ──
+                if (modoEmergenciaActivo) {
+                    // Notificar la reconexión
+                    if (!servidorCaidoNotificado) {
+                        servidorCaidoNotificado = true;
+                        mostrarToast('✅ El fotógrafo volvió. Subiendo más fotos.', 'success', 8000);
+                    }
+
+                    // Limpiar banner
+                    cont.innerHTML = '';
+
+                    // Restaurar sesión normal
+                    if (sesionGeneral) {
+                        sesionGeneral.descargasIlimitadas = false;
+                    }
+
+                    modoEmergenciaActivo = false;
+                    modoEmergenciaAvisado = false;
+                }
             }
         }
 
@@ -4080,6 +4193,14 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                // 🔥 En modo emergencia, siempre puede descargar
+                if (modoEmergenciaActivo || sesionGeneral.descargasIlimitadas) {
+                    btn.classList.remove('agotado');
+                    icono.textContent = "⬇️";
+                    texto.textContent = t('descargarFoto');
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4420,6 +4541,38 @@
             texto.textContent = t('descargando');
 
             try {
+                // 🔥 MODO EMERGENCIA: descarga directa desde el Worker, sin pasar por /descargar
+                // (no hay servidor para validar sesión, pero tampoco hay restricciones)
+                if (modoEmergenciaActivo) {
+                    const urlDirecta = `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}?dl=1`;
+
+                    const respuestaArchivo = await fetch(urlDirecta);
+
+                    if (!respuestaArchivo.ok) {
+                        throw new Error(`HTTP ${respuestaArchivo.status}`);
+                    }
+
+                    const blob = await respuestaArchivo.blob();
+                    const urlBlob = window.URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = urlBlob;
+                    a.download = foto.nombre.replace('_web.jpg', '.jpg');
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(urlBlob);
+                    }, 100);
+
+                    btn.classList.remove('cargando-btn');
+                    texto.textContent = textoOriginal;
+                    return;
+                }
+
+                // ── FLUJO NORMAL ──
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
