@@ -3713,7 +3713,7 @@
 
                     renderizarGaleria();
 
-                    if (fotosRecienLlegadas.length > 0 && !modoEmergenciaActivo) {
+                    if (fotosRecienLlegadas.length > 0) {
                         lanzarConfeti();
                         mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
                     }
@@ -4083,14 +4083,6 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
-                // 🔥 En modo emergencia, siempre puede descargar
-                if (modoEmergenciaActivo || sesionGeneral.descargasIlimitadas) {
-                    btn.classList.remove('agotado');
-                    icono.textContent = "⬇️";
-                    texto.textContent = t('descargarFoto');
-                    return;
-                }
-
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4440,37 +4432,6 @@
             texto.textContent = t('descargando');
 
             try {
-                // 🔥 MODO EMERGENCIA: descarga directa desde el Worker, sin pasar por /descargar
-                // (no hay servidor para validar sesión, pero tampoco hay restricciones)
-                if (modoEmergenciaActivo) {
-                    const urlDirecta = `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}?dl=1`;
-
-                    const respuestaArchivo = await fetch(urlDirecta);
-
-                    if (!respuestaArchivo.ok) {
-                        throw new Error(`HTTP ${respuestaArchivo.status}`);
-                    }
-
-                    const blob = await respuestaArchivo.blob();
-                    const urlBlob = window.URL.createObjectURL(blob);
-
-                    const a = document.createElement('a');
-                    a.href = urlBlob;
-                    a.download = foto.nombre.replace('_web.jpg', '.jpg');
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(urlBlob);
-                    }, 100);
-
-                    btn.classList.remove('cargando-btn');
-                    texto.textContent = textoOriginal;
-                    return;
-                }
-
                 // ── FLUJO NORMAL ──
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
