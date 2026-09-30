@@ -3073,6 +3073,17 @@
         let modoEmergenciaAvisado = false;
         let servidorCaidoNotificado = false;
 
+        // 🔥 Estado guardado en localStorage (para sobrevivir caídas del server)
+        let ultimoEstadoGuardado = null;
+
+        // 🔥 Umbral: si el status.json tiene más de 90s sin actualizar, activamos emergencia
+        const UMBRAL_EMERGENCIA_MS = 90 * 1000;
+
+        // Clave de localStorage para el estado
+        function getClaveEstadoGuardado() {
+            return 'ovj_estado_' + (EVENTO_ID || 'default');
+        }
+
         let tipsMostrados = {
             primeraEntrada: false,
             primeraDescarga: false,
@@ -3653,6 +3664,78 @@
             }
         }
 
+
+        // ==========================================
+        // 🔥 LOCALSTORAGE: guardar/recuperar estado
+        // ==========================================
+        function guardarEstadoEnLocalStorage(data) {
+            try {
+                // Solo guardamos lo esencial: lo que el frontend necesita para reconstruir la galería
+                const aGuardar = {
+                    evento: data.evento || null,
+                    publicadoEn: data.publicadoEn || new Date().toISOString(),
+                    fotos: data.fotos || [],
+                    fotosEmergencia: data.fotosEmergencia || [],
+                    mensajeFotografo: data.mensajeFotografo || null,
+                    detrasCamaraTotal: data.detrasCamaraTotal || 0,
+                    detrasCamaraUltima: data.detrasCamaraUltima || null,
+                    minijuego: data.minijuego || null,
+                    guardadoEn: Date.now()
+                };
+
+                localStorage.setItem(getClaveEstadoGuardado(), JSON.stringify(aGuardar));
+                ultimoEstadoGuardado = aGuardar;
+            } catch (e) {
+                console.warn('No se pudo guardar el estado en localStorage:', e.message);
+            }
+        }
+
+        function cargarEstadoDeLocalStorage() {
+            try {
+                const raw = localStorage.getItem(getClaveEstadoGuardado());
+                if (!raw) return null;
+
+                const data = JSON.parse(raw);
+
+                // Solo usar si tiene menos de 24h (evitar datos viejos)
+                const edadMs = Date.now() - (data.guardadoEn || 0);
+                if (edadMs > 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem(getClaveEstadoGuardado());
+                    return null;
+                }
+
+                ultimoEstadoGuardado = data;
+                return data;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function detectarEmergenciaPorFecha(data) {
+            if (!data.publicadoEn) return false;
+
+            try {
+                const publicadoEnMs = new Date(data.publicadoEn).getTime();
+                const edadMs = Date.now() - publicadoEnMs;
+                return edadMs > UMBRAL_EMERGENCIA_MS;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function combinarFotosConEmergencia(data) {
+            const fotosNormales = data.fotos || [];
+            const fotosEmergencia = data.fotosEmergencia || [];
+
+            // Marcar las fotos de emergencia con un flag
+            const fotosEmergenciaMarcadas = fotosEmergencia.map(f => ({
+                ...f,
+                emergencia: true
+            }));
+
+            // Combinar: primero las normales, después las de emergencia
+            return [...fotosNormales, ...fotosEmergenciaMarcadas];
+        }
         // ==========================================
         // GALERÍA
         // ==========================================
@@ -3666,14 +3749,12 @@
                 estado.innerHTML = t('cargando');
                 estado.className = "cargando";
 
-                // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
-                // 🔥 Ahora va al Worker (con cache de 15s)
+                // 🔥 Va al Worker (con cache de 15s)
                 const url = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
                     `&t=${encodeURIComponent(TOKEN || '')}`;
 
                 const respuesta = await fetch(url, { cache: 'no-store' });
-
 
                 if (respuesta.status === 403) {
                     cerrarSesionYBloquear();
@@ -3699,6 +3780,9 @@
 
                 const data = await respuesta.json();
 
+                // 🔥 Guardar el estado en localStorage (por si después se cae el server)
+                guardarEstadoEnLocalStorage(data);
+
                 if (!servidorOnline) {
                     servidorOnline = true;
                     fotosCache = [];
@@ -3720,12 +3804,19 @@
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
                 }
-                procesarModoEmergencia(data);
+
+                // 🔥 Detectar emergencia por publicadoEn viejo
+                const emergenciaDetectada = detectarEmergenciaPorFecha(data);
+
+                procesarModoEmergencia(data, emergenciaDetectada);
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
                 procesarMinijuego(data.minijuego);
 
-                const nuevasFotos = data.fotos || [];
+                // 🔥 Combinar fotos normales + fotos de emergencia si estamos en emergencia
+                const nuevasFotos = modoEmergenciaActivo
+                    ? combinarFotosConEmergencia(data)
+                    : (data.fotos || []);
 
                 const ahora = Date.now();
                 const fotosRecienLlegadas = [];
@@ -3761,7 +3852,7 @@
 
                     renderizarGaleria();
 
-                    if (fotosRecienLlegadas.length > 0) {
+                    if (fotosRecienLlegadas.length > 0 && !modoEmergenciaActivo) {
                         lanzarConfeti();
                         mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
                     }
@@ -3775,34 +3866,71 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                servidorOnline = false;
-                mostrarOffline();
+
+                // 🔥 CAÍDA DEL SERVER: intentar usar el localStorage
+                const guardado = cargarEstadoDeLocalStorage();
+
+                if (guardado) {
+                    // Tenemos estado guardado: activar emergencia y seguir funcionando
+                    if (!modoEmergenciaActivo) {
+                        modoEmergenciaActivo = true;
+                        modoEmergenciaAvisado = false;
+                    }
+
+                    // Reconstruir fotosCache con el estado guardado + fotos de emergencia
+                    const fotosConEmergencia = combinarFotosConEmergencia(guardado);
+                    const huboCambio = JSON.stringify(fotosConEmergencia) !== JSON.stringify(fotosCache);
+
+                    if (huboCambio) {
+                        fotosCache = fotosConEmergencia;
+                        renderizarGaleria();
+                    }
+
+                    // Mostrar el banner de emergencia
+                    procesarModoEmergencia({ modoEmergencia: true }, true);
+
+                    // Estado visual
+                    const estadoEl = document.getElementById("estado");
+                    if (estadoEl) {
+                        estadoEl.innerHTML = t('mostrando', Math.min(fotosVisibles, fotosCache.length), fotosCache.length);
+                        estadoEl.className = "ok";
+                    }
+                } else {
+                    // No hay estado guardado: mostrar offline
+                    servidorOnline = false;
+                    mostrarOffline();
+                }
             }
 
             cargando = false;
 
-            if (servidorOnline) {
-                let segundos = 60;
-                if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
-                    segundos = window._ultimoPoll.intervaloBaseSeg;
-                }
-
-                if (window._primerPollHecho) {
-                    const variacion = segundos * 0.15;
-                    segundos = segundos + (Math.random() * variacion * 2) - variacion;
-                } else {
-                    window._primerPollHecho = true;
-                }
-
-                if (document.hidden) {
-                    segundos = segundos * 3;
-                }
-
-                if (segundos < 30) segundos = 30;
-
-                clearTimeout(window._pollTimer);
-                window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
+            // 🔥 Programar próximo poll
+            // En emergencia, poleamos más seguido para detectar la reconexión
+            let segundos = 60;
+            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
+                segundos = window._ultimoPoll.intervaloBaseSeg;
             }
+
+            if (window._primerPollHecho) {
+                const variacion = segundos * 0.15;
+                segundos = segundos + (Math.random() * variacion * 2) - variacion;
+            } else {
+                window._primerPollHecho = true;
+            }
+
+            if (document.hidden) {
+                segundos = segundos * 3;
+            }
+
+            // 🔥 En emergencia, poleamos más rápido para detectar reconexión
+            if (modoEmergenciaActivo) {
+                segundos = Math.min(segundos, 45);
+            }
+
+            if (segundos < 30) segundos = 30;
+
+            clearTimeout(window._pollTimer);
+            window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
         }
 
         // ==========================================
@@ -3836,12 +3964,13 @@
             }
         }
 
-        // ==========================================
-        // MODO EMERGENCIA
-        // ==========================================
-        function procesarModoEmergencia(data) {
+        function procesarModoEmergencia(data, emergenciaDetectada) {
             const cont = document.getElementById('bannerEmergenciaContainer');
-            const enEmergencia = !!data.modoEmergencia;
+
+            // 🔥 La emergencia se activa por:
+            //   - El campo "modoEmergencia" del Worker, O
+            //   - El parámetro "emergenciaDetectada" (por fecha vieja o fallo de red)
+            const enEmergencia = !!(data.modoEmergencia || emergenciaDetectada || modoEmergenciaActivo);
 
             if (enEmergencia) {
                 // ── ENTRAR EN MODO EMERGENCIA ──
@@ -3871,7 +4000,7 @@
                     mostrarToast('🎉 Modo Fiesta Sin Fin activado. Descargá todo lo que quieras.', 'success', 10000);
                 }
 
-                // Desbloquear descargas: forzamos que el invitado tenga sesión "ilimitada"
+                // Desbloquear descargas
                 if (sesionGeneral) {
                     sesionGeneral.descargasIlimitadas = true;
                 }
@@ -3879,16 +4008,13 @@
             } else {
                 // ── SALIR DE MODO EMERGENCIA ──
                 if (modoEmergenciaActivo) {
-                    // Notificar la reconexión
                     if (!servidorCaidoNotificado) {
                         servidorCaidoNotificado = true;
                         mostrarToast('✅ El fotógrafo volvió. Subiendo más fotos.', 'success', 8000);
                     }
 
-                    // Limpiar banner
                     cont.innerHTML = '';
 
-                    // Restaurar sesión normal
                     if (sesionGeneral) {
                         sesionGeneral.descargasIlimitadas = false;
                     }
@@ -4235,7 +4361,10 @@
 
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
-                const urlImagen = foto.url;
+                // 🔥 Fallback: si no viene url (ej: viene del status.json de B2),
+                // construirla desde el nombre
+                const urlImagen = foto.url
+                    || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
                 const esNueva = fotosNuevasMap.has(foto.nombre);
                 const esReciente = !!foto.esReciente && !esNueva;
 
@@ -4370,9 +4499,11 @@
                 const i = index + offset;
                 if (i >= 0 && i < fotosCache.length) {
                     const foto = fotosCache[i];
-                    if (foto && foto.url) {
+                    if (foto && foto.nombre) {
+                        const urlImagen = foto.url
+                            || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
                         const img = new Image();
-                        img.src = foto.url;
+                        img.src = urlImagen;
                     }
                 }
             }
@@ -4444,7 +4575,9 @@
             const fondo = document.getElementById("modalFondo");
             const modalImagen = document.getElementById("modalImagen");
 
-            modalImagen.src = foto.url;
+            const urlImagen = foto.url
+                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+            modalImagen.src = urlImagen;
             modalImagen.alt = `Foto ${index + 1}`;
 
             modal.classList.add("activo");
@@ -4477,7 +4610,9 @@
 
             marcarFotoComoVista(foto.nombre);
 
-            document.getElementById("modalImagen").src = foto.url;
+            const urlImagen = foto.url
+                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+            document.getElementById("modalImagen").src = urlImagen;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
             actualizarFlechas();
