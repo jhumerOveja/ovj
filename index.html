@@ -3077,7 +3077,7 @@
         let ultimoEstadoGuardado = null;
 
         // 🔥 Umbral: si el status.json tiene más de 90s sin actualizar, activamos emergencia
-        const UMBRAL_EMERGENCIA_MS = 90 * 1000;
+        const UMBRAL_EMERGENCIA_MS = 30 * 60 * 1000;   // 30 minutos
 
         // Clave de localStorage para el estado
         function getClaveEstadoGuardado() {
