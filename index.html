@@ -805,47 +805,6 @@
         }
 
 
-        .banner-emergencia {
-            max-width: 700px;
-            margin: 0 auto 14px;
-            padding: 14px 18px;
-            background: linear-gradient(135deg, rgba(232, 196, 122, 0.12), rgba(232, 196, 122, 0.03));
-            border: 1px solid rgba(232, 196, 122, 0.4);
-            border-radius: 14px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-
-        .banner-emergencia .emoji {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            animation: pulsoEmojiMensaje 2s ease-in-out infinite;
-        }
-
-        .banner-emergencia .info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .banner-emergencia .etiqueta {
-            font-size: 0.65rem;
-            color: var(--champagne);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .banner-emergencia .texto {
-            font-size: 0.88rem;
-            color: #fff;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
         #estado {
             text-align: center;
             padding: 4px 0 10px;
@@ -2784,7 +2743,6 @@
         </div>
 
         <div id="bannerMensajeContainer"></div>
-        <div id="bannerEmergenciaContainer"></div>
 
         <div id="estado">Cargando...</div>
 
@@ -3067,22 +3025,6 @@
         let detrasCamaraUltima = null;
 
         let desbloqueoCerradoEnEstaSesion = false;
-
-        // 🔥 Modo emergencia
-        let modoEmergenciaActivo = false;
-        let modoEmergenciaAvisado = false;
-        let servidorCaidoNotificado = false;
-
-        // 🔥 Estado guardado en localStorage (para sobrevivir caídas del server)
-        let ultimoEstadoGuardado = null;
-
-        // 🔥 Umbral: si el status.json tiene más de 90s sin actualizar, activamos emergencia
-        const UMBRAL_EMERGENCIA_MS = 30 * 60 * 1000;   // 30 minutos
-
-        // Clave de localStorage para el estado
-        function getClaveEstadoGuardado() {
-            return 'ovj_estado_' + (EVENTO_ID || 'default');
-        }
 
         let tipsMostrados = {
             primeraEntrada: false,
@@ -3664,78 +3606,6 @@
             }
         }
 
-
-        // ==========================================
-        // 🔥 LOCALSTORAGE: guardar/recuperar estado
-        // ==========================================
-        function guardarEstadoEnLocalStorage(data) {
-            try {
-                // Solo guardamos lo esencial: lo que el frontend necesita para reconstruir la galería
-                const aGuardar = {
-                    evento: data.evento || null,
-                    publicadoEn: data.publicadoEn || new Date().toISOString(),
-                    fotos: data.fotos || [],
-                    fotosEmergencia: data.fotosEmergencia || [],
-                    mensajeFotografo: data.mensajeFotografo || null,
-                    detrasCamaraTotal: data.detrasCamaraTotal || 0,
-                    detrasCamaraUltima: data.detrasCamaraUltima || null,
-                    minijuego: data.minijuego || null,
-                    guardadoEn: Date.now()
-                };
-
-                localStorage.setItem(getClaveEstadoGuardado(), JSON.stringify(aGuardar));
-                ultimoEstadoGuardado = aGuardar;
-            } catch (e) {
-                console.warn('No se pudo guardar el estado en localStorage:', e.message);
-            }
-        }
-
-        function cargarEstadoDeLocalStorage() {
-            try {
-                const raw = localStorage.getItem(getClaveEstadoGuardado());
-                if (!raw) return null;
-
-                const data = JSON.parse(raw);
-
-                // Solo usar si tiene menos de 24h (evitar datos viejos)
-                const edadMs = Date.now() - (data.guardadoEn || 0);
-                if (edadMs > 24 * 60 * 60 * 1000) {
-                    localStorage.removeItem(getClaveEstadoGuardado());
-                    return null;
-                }
-
-                ultimoEstadoGuardado = data;
-                return data;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function detectarEmergenciaPorFecha(data) {
-            if (!data.publicadoEn) return false;
-
-            try {
-                const publicadoEnMs = new Date(data.publicadoEn).getTime();
-                const edadMs = Date.now() - publicadoEnMs;
-                return edadMs > UMBRAL_EMERGENCIA_MS;
-            } catch (e) {
-                return false;
-            }
-        }
-
-        function combinarFotosConEmergencia(data) {
-            const fotosNormales = data.fotos || [];
-            const fotosEmergencia = data.fotosEmergencia || [];
-
-            // Marcar las fotos de emergencia con un flag
-            const fotosEmergenciaMarcadas = fotosEmergencia.map(f => ({
-                ...f,
-                emergencia: true
-            }));
-
-            // Combinar: primero las normales, después las de emergencia
-            return [...fotosNormales, ...fotosEmergenciaMarcadas];
-        }
         // ==========================================
         // GALERÍA
         // ==========================================
@@ -3780,9 +3650,6 @@
 
                 const data = await respuesta.json();
 
-                // 🔥 Guardar el estado en localStorage (por si después se cae el server)
-                guardarEstadoEnLocalStorage(data);
-
                 if (!servidorOnline) {
                     servidorOnline = true;
                     fotosCache = [];
@@ -3805,18 +3672,12 @@
                     window._ultimoPoll = data.poll;
                 }
 
-                // 🔥 Detectar emergencia por publicadoEn viejo
-                const emergenciaDetectada = detectarEmergenciaPorFecha(data);
-
-                procesarModoEmergencia(data, emergenciaDetectada);
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
                 procesarMinijuego(data.minijuego);
 
                 // 🔥 Combinar fotos normales + fotos de emergencia si estamos en emergencia
-                const nuevasFotos = modoEmergenciaActivo
-                    ? combinarFotosConEmergencia(data)
-                    : (data.fotos || []);
+                const nuevasFotos = data.fotos || [];
 
                 const ahora = Date.now();
                 const fotosRecienLlegadas = [];
@@ -3866,40 +3727,8 @@
 
             } catch (error) {
                 console.error("Error:", error);
-
-                // 🔥 CAÍDA DEL SERVER: intentar usar el localStorage
-                const guardado = cargarEstadoDeLocalStorage();
-
-                if (guardado) {
-                    // Tenemos estado guardado: activar emergencia y seguir funcionando
-                    if (!modoEmergenciaActivo) {
-                        modoEmergenciaActivo = true;
-                        modoEmergenciaAvisado = false;
-                    }
-
-                    // Reconstruir fotosCache con el estado guardado + fotos de emergencia
-                    const fotosConEmergencia = combinarFotosConEmergencia(guardado);
-                    const huboCambio = JSON.stringify(fotosConEmergencia) !== JSON.stringify(fotosCache);
-
-                    if (huboCambio) {
-                        fotosCache = fotosConEmergencia;
-                        renderizarGaleria();
-                    }
-
-                    // Mostrar el banner de emergencia
-                    procesarModoEmergencia({ modoEmergencia: true }, true);
-
-                    // Estado visual
-                    const estadoEl = document.getElementById("estado");
-                    if (estadoEl) {
-                        estadoEl.innerHTML = t('mostrando', Math.min(fotosVisibles, fotosCache.length), fotosCache.length);
-                        estadoEl.className = "ok";
-                    }
-                } else {
-                    // No hay estado guardado: mostrar offline
-                    servidorOnline = false;
-                    mostrarOffline();
-                }
+                servidorOnline = false;
+                mostrarOffline();
             }
 
             cargando = false;
@@ -3922,10 +3751,6 @@
                 segundos = segundos * 3;
             }
 
-            // 🔥 En emergencia, poleamos más rápido para detectar reconexión
-            if (modoEmergenciaActivo) {
-                segundos = Math.min(segundos, 45);
-            }
 
             if (segundos < 30) segundos = 30;
 
@@ -3961,67 +3786,6 @@
                 renderizarGaleria();
             } else {
                 localStorage.setItem(clave, String(aplicadoEn));
-            }
-        }
-
-        function procesarModoEmergencia(data, emergenciaDetectada) {
-            const cont = document.getElementById('bannerEmergenciaContainer');
-
-            // 🔥 La emergencia se activa por:
-            //   - El campo "modoEmergencia" del Worker, O
-            //   - El parámetro "emergenciaDetectada" (por fecha vieja o fallo de red)
-            const enEmergencia = !!(data.modoEmergencia || emergenciaDetectada || modoEmergenciaActivo);
-
-            if (enEmergencia) {
-                // ── ENTRAR EN MODO EMERGENCIA ──
-                if (!modoEmergenciaActivo) {
-                    modoEmergenciaActivo = true;
-                    modoEmergenciaAvisado = false;
-                }
-
-                // Mostrar banner (una sola vez por sesión)
-                if (!modoEmergenciaAvisado) {
-                    modoEmergenciaAvisado = true;
-
-                    const textoAviso = data.avisoEmergencia
-                        || 'El fotógrafo está subiendo más fotos. Mientras tanto, disfrutá de estos momentos.';
-
-                    cont.innerHTML = `
-                        <div class="banner-emergencia">
-                            <span class="emoji">✨</span>
-                            <div class="info">
-                                <div class="etiqueta">Modo Fiesta Sin Fin</div>
-                                <div class="texto">${escapeHtml(textoAviso)}</div>
-                            </div>
-                        </div>
-                    `;
-
-                    lanzarConfeti();
-                    mostrarToast('🎉 Modo Fiesta Sin Fin activado. Descargá todo lo que quieras.', 'success', 10000);
-                }
-
-                // Desbloquear descargas
-                if (sesionGeneral) {
-                    sesionGeneral.descargasIlimitadas = true;
-                }
-
-            } else {
-                // ── SALIR DE MODO EMERGENCIA ──
-                if (modoEmergenciaActivo) {
-                    if (!servidorCaidoNotificado) {
-                        servidorCaidoNotificado = true;
-                        mostrarToast('✅ El fotógrafo volvió. Subiendo más fotos.', 'success', 8000);
-                    }
-
-                    cont.innerHTML = '';
-
-                    if (sesionGeneral) {
-                        sesionGeneral.descargasIlimitadas = false;
-                    }
-
-                    modoEmergenciaActivo = false;
-                    modoEmergenciaAvisado = false;
-                }
             }
         }
 
@@ -4565,7 +4329,7 @@
             if (index < 0) return;
 
             const foto = fotosCache[index];
-            if (!foto || !foto.nombre || !foto.url) return;
+            if (!foto || !foto.nombre) return;
 
             fotoSeleccionadaIndex = index;
 
