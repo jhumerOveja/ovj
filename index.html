@@ -155,94 +155,6 @@
             opacity: 0.5;
         }
 
-        .bloqueo .countdown {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--champagne);
-            margin-top: 20px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            animation: pulsoCountdown 2s ease-in-out infinite;
-        }
-
-        @keyframes pulsoCountdown {
-
-            0%,
-            100% {
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .pub-receso {
-            margin-top: 28px;
-            padding: 20px 18px;
-            background: linear-gradient(135deg,
-                    rgba(232, 196, 122, 0.08),
-                    rgba(232, 196, 122, 0.02));
-            border: 1px solid rgba(232, 196, 122, 0.2);
-            border-radius: 16px;
-            text-align: center;
-            max-width: 360px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: entradaPubReceso 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes entradaPubReceso {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .pub-receso .emoji {
-            font-size: 1.8rem;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .pub-receso .texto {
-            font-size: 0.78rem;
-            color: var(--texto-suave);
-            line-height: 1.5;
-            margin-bottom: 14px;
-        }
-
-        .pub-receso .texto strong {
-            color: var(--champagne);
-            font-weight: 700;
-        }
-
-        .pub-receso .btn-cotizar {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: #0a0a0a;
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: none;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-family: inherit;
-            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.2);
-        }
-
-        .pub-receso .btn-cotizar:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
-        }
 
         #app {
             display: none;
@@ -2670,19 +2582,7 @@
                 Este es un evento exclusivo.<br>
                 Necesitas una invitación para acceder.
             </div>
-            <div class="countdown" id="bloqueoCountdown" style="display:none;"></div>
             <div class="marca">OVJ STUDIO</div>
-
-            <div class="pub-receso" id="pubReceso" style="display:none;">
-                <span class="emoji">✨</span>
-                <div class="texto">
-                    ¿Te gusta esta web?<br>
-                    <strong>Lleva esta misma tecnología a tu evento.</strong>
-                </div>
-                <button class="btn-cotizar" onclick="abrirWhatsAppPublicidad()">
-                    💬 Cotizar por WhatsApp
-                </button>
-            </div>
         </div>
     </div>
 
@@ -3011,7 +2911,6 @@
         let tituloEsDefault = true;
 
         let invitacionGenerada = null;
-        let countdownInterval = null;
         let urlQrGeneralActual = null;
 
         let fotosVistas = new Set();
@@ -3357,26 +3256,13 @@
         // BLOQUEO / ACCESO
         // ==========================================
         function mostrarBloqueo(tipo, mensajeCustom) {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
-            document.getElementById('bloqueoCountdown').style.display = 'none';
-
-            const pubReceso = document.getElementById('pubReceso');
-            if (pubReceso && tipo !== 'receso') pubReceso.style.display = 'none';
-
             document.getElementById('bloqueo').classList.add('activo');
             document.getElementById('app').classList.remove('activo');
 
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
-                reclamada: '⚠️',
-                error: '❌',
-                receso: '⏸️',
-                despedida: '👋',
-                saturacion: '⏸️'
+                error: '❌'
             };
 
             document.getElementById('bloqueoIcono').textContent = iconos[tipo] || '🔒';
@@ -3384,46 +3270,6 @@
             if (mensajeCustom) {
                 document.getElementById('bloqueoMensaje').innerHTML = mensajeCustom;
             }
-        }
-
-        function mostrarReceso(minutos) {
-            mostrarBloqueo('receso', t('bloqueoReceso'));
-
-            const pubReceso = document.getElementById('pubReceso');
-            if (pubReceso) pubReceso.style.display = 'block';
-
-            if (!tipsMostrados.primerReceso) {
-                tipsMostrados.primerReceso = true;
-                setTimeout(() => mostrarToast(t('tipReceso'), 'tip'), 3000);
-            }
-
-            const el = document.getElementById('bloqueoCountdown');
-            el.style.display = 'block';
-
-            const finMs = Date.now() + minutos * 60 * 1000;
-
-            const actualizar = () => {
-                const restanteMs = finMs - Date.now();
-                if (restanteMs <= 0) {
-                    el.textContent = '0 min';
-                    if (countdownInterval) clearInterval(countdownInterval);
-                    countdownInterval = null;
-                    return;
-                }
-                const m = Math.ceil(restanteMs / 60000);
-                el.textContent = t('bloqueoCountdown', m);
-            };
-
-            actualizar();
-            countdownInterval = setInterval(actualizar, 60000);
-        }
-
-        function mostrarDespedida() {
-            mostrarBloqueo('despedida', t('bloqueoDespedida'));
-        }
-
-        function mostrarSaturacion() {
-            mostrarBloqueo('saturacion', 'La web está en receso.<br>Vuelve en unos minutos.');
         }
 
         function cerrarSesionYBloquear() {
@@ -3484,20 +3330,6 @@
                     data
                 });
 
-                if (data.receso) {
-                    if (data.motivo === 'saturacion') {
-                        mostrarSaturacion();
-                    } else {
-                        mostrarReceso(data.reanudarEn || 30);
-                    }
-                    return false;
-                }
-
-                if (data.bloqueado) {
-                    mostrarDespedida();
-                    return false;
-                }
-
                 if (!respuesta.ok || !data.valido) {
                     console.log('❌ validarAcceso → BLOQUEADO:', {
                         ok: respuesta.ok,
@@ -3522,6 +3354,10 @@
 
                 if (data.tipo === 'general' && data.sesion) {
                     sesionGeneral = data.sesion;
+                    sesionGeneral.enReceso = !!data.enReceso;
+                    sesionGeneral.reanudarEn = data.enReceso
+                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
+                        : 0;
 
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
@@ -3587,6 +3423,13 @@
                 el.textContent = t('contadorAdmin');
                 el.className = 'badge-rol admin';
             } else if (sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                    el.textContent = `⏸️ Receso · ${min} min`;
+                    el.className = 'badge-rol agotado pulso';
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -3632,19 +3475,6 @@
                     return;
                 }
 
-                if (respuesta.status === 429) {
-                    const data = await respuesta.json();
-                    if (data.receso) {
-                        if (data.motivo === 'saturacion') {
-                            mostrarSaturacion();
-                        } else {
-                            mostrarReceso(data.reanudarEn || 30);
-                        }
-                        cargando = false;
-                        return;
-                    }
-                }
-
                 if (!respuesta.ok)
                     throw new Error(`HTTP ${respuesta.status}`);
 
@@ -3670,6 +3500,18 @@
 
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
+                }
+
+                // 🔥 Actualizar estado de receso según lo que diga el server
+                if (sesionGeneral) {
+                    if (data.enReceso) {
+                        sesionGeneral.enReceso = true;
+                        sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                    } else if (sesionGeneral.enReceso) {
+                        // El server ya no reporta receso → terminó
+                        sesionGeneral.enReceso = false;
+                        sesionGeneral.reanudarEn = 0;
+                    }
                 }
 
                 procesarMensaje(data.mensajeFotografo);
@@ -3948,6 +3790,7 @@
         // ==========================================
         function verificarMostrarDesbloqueo() {
             if (!sesion || sesion.tipo !== 'general' || !sesionGeneral) return;
+            if (sesionGeneral.enReceso) return;
             if (sesionGeneral.desbloqueoSocialUsado) return;
             if (sesionGeneral.desbloqueoSocialActivo === false) return;
             if (desbloqueoCerradoEnEstaSesion) return;
@@ -4083,6 +3926,14 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                    btn.classList.add('agotado');
+                    icono.textContent = "⏸️";
+                    texto.textContent = `Podrás descargar en ${min} min`;
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4397,6 +4248,12 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                    mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 if (usadas >= total) {
@@ -4418,6 +4275,13 @@
 
             const foto = fotosCache[fotoSeleccionadaIndex];
             if (!foto || !foto.nombre) return;
+
+            // 🔥 Guard: si está en receso, no descargar
+            if (sesion && sesion.tipo === 'general' && sesionGeneral && sesionGeneral.enReceso) {
+                const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
+                return;
+            }
 
             if (!FOTOGRAFO_ID || !EVENTO_ID || !TOKEN) {
                 alert('Faltan datos de acceso. Recargá la página.');
@@ -4460,18 +4324,14 @@
                     if (data.receso) {
                         btn.classList.remove('cargando-btn');
                         texto.textContent = textoOriginal;
-                        if (data.motivo === 'saturacion') {
-                            mostrarSaturacion();
-                        } else {
-                            mostrarReceso(data.reanudarEn || 30);
-                        }
-                        return;
-                    }
 
-                    if (data.bloqueado) {
-                        btn.classList.remove('cargando-btn');
-                        texto.textContent = textoOriginal;
-                        mostrarDespedida();
+                        // Actualizar estado local
+                        if (sesionGeneral) {
+                            sesionGeneral.enReceso = true;
+                            sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                            actualizarBadgeRol();
+                            actualizarBotonPrincipal();
+                        }
                         return;
                     }
                 }
@@ -4967,6 +4827,18 @@
 
             cargarFotos();
             iniciarAvisosRotativos();
+
+            // 🔥 Countdown en vivo del receso (actualiza badge y botón cada 30s)
+            setInterval(() => {
+                if (sesionGeneral && sesionGeneral.enReceso) {
+                    if (Date.now() >= sesionGeneral.reanudarEn) {
+                        sesionGeneral.enReceso = false;
+                        sesionGeneral.reanudarEn = 0;
+                    }
+                    actualizarBadgeRol();
+                    actualizarBotonPrincipal();
+                }
+            }, 30000);
         }
 
         inicializar();
