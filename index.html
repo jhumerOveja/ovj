@@ -3613,11 +3613,9 @@
                     const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
                     const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
                     const min = Math.max(1, Math.ceil(restanteMs / 60000));
-                    mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
 
-                    btn.classList.add('agotado');
-                    icono.textContent = "⏸️";
-                    texto.textContent = `Podrás descargar en ${min} min`;
+                    el.textContent = `⏸️ Receso · ${min} min`;
+                    el.className = 'badge-rol agotado pulso';
                     return;
                 }
 
