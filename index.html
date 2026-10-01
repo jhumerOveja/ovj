@@ -229,7 +229,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 8px;
         }
 
@@ -237,6 +237,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-shrink: 0;
+            min-width: 0;
         }
 
         .header-left .ovj-studio {
@@ -278,7 +280,9 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            min-width: 0;
         }
 
         .badge-rol {
@@ -517,31 +521,6 @@
             font-weight: 600;
         }
 
-        .badge-en-vivo {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(248, 113, 113, 0.1);
-            color: var(--error);
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            padding: 4px 10px 4px 8px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            border: 1px solid rgba(248, 113, 113, 0.15);
-            user-select: none;
-        }
-
-        .badge-en-vivo .punto {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            background: var(--error);
-            border-radius: 50%;
-            animation: pulse 1.8s infinite;
-            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
-        }
 
         @keyframes pulse {
             0% {
@@ -2754,6 +2733,94 @@
                 padding: 7px 10px;
             }
         }
+
+        /* ===== INDICADOR EN VIVO FLOTANTE ===== */
+        .indicador-vivo {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px 7px 12px;
+            background: rgba(20, 20, 23, 0.85);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            border-radius: 50px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(248, 113, 113, 0.1) inset;
+            user-select: none;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .indicador-vivo-punto {
+            position: relative;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
+        }
+
+        .indicador-vivo-punto::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(248, 113, 113, 0.5);
+            animation: pulsoIndicadorVivo 1.8s ease-out infinite;
+        }
+
+        @keyframes pulsoIndicadorVivo {
+            0% {
+                transform: scale(0.6);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        .indicador-vivo-texto {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fca5a5;
+            white-space: nowrap;
+        }
+
+        /* Ajuste responsive en móvil */
+        @media (max-width: 600px) {
+            .indicador-vivo {
+                bottom: 14px;
+                left: 14px;
+                padding: 6px 12px 6px 10px;
+            }
+
+            .indicador-vivo-texto {
+                font-size: 0.62rem;
+                letter-spacing: 1.2px;
+            }
+
+            .indicador-vivo-punto {
+                width: 7px;
+                height: 7px;
+            }
+        }
+
+        /* Ocultar texto de botones admin en móvil muy chico */
+        @media (max-width: 420px) {
+            .btn-admin-texto {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -2788,11 +2855,11 @@
 
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()"
                         style="display: none;">
-                        ✨ Invitar
+                        ✨ <span class="btn-admin-texto">Invitar</span>
                     </button>
                     <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()"
                         style="display: none;">
-                        🎫 QR
+                        🎫 <span class="btn-admin-texto">QR</span>
                     </button>
 
                     <div class="lang-selector" id="langSelector">
@@ -2816,11 +2883,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="badge-en-vivo">
-                        <span class="punto"></span>
-                        <span id="badgeEnVivo">En vivo</span>
-                    </div>
                 </div>
             </div>
             <div class="header-bottom">
@@ -2836,6 +2898,7 @@
 
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
+
 
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
@@ -2986,7 +3049,11 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-
+    <!-- 🔴 Indicador EN VIVO flotante -->
+    <div class="indicador-vivo" id="indicadorVivo">
+        <span class="indicador-vivo-punto"></span>
+        <span class="indicador-vivo-texto" id="indicadorVivoTexto">En vivo</span>
+    </div>
     <script src="qrcode.min.js"></script>
     <script src="config.js"></script>
 
@@ -3326,7 +3393,7 @@
             document.documentElement.lang = idioma;
             document.title = t('tituloVentana');
 
-            document.getElementById('badgeEnVivo').textContent = t('enVivo');
+            document.getElementById('indicadorVivoTexto').textContent = t('enVivo');
             document.getElementById('langTextoActual').textContent = t('langTexto');
             document.getElementById('langBanderaActual').textContent = t('langBandera');
             document.getElementById('textoDetras').textContent = t('detrasBoton');
@@ -4126,10 +4193,13 @@
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
                 if (sesionGeneral.enReceso) {
-                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
+                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
+
                     btn.classList.add('agotado');
                     icono.textContent = "⏸️";
-                    texto.textContent = `Podrás descargar en ${min} min`;
+                    texto.textContent = `Descargas disponibles en ${min} min`;
                     return;
                 }
 
@@ -4140,7 +4210,7 @@
                 if (restantes <= 0) {
                     btn.classList.add('agotado');
                     icono.textContent = "⏸️";
-                    texto.textContent = t('sinCreditos');
+                    texto.textContent = "Descargas disponibles pronto";
                 } else {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
