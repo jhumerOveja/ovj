@@ -1536,19 +1536,6 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function generarNombreFoto() {
-            // Slug del evento: MAYÚSCULAS, solo A-Z, 0-9 y guiones
-            const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
-                .toUpperCase()
-                .replace(/[^A-Z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .slice(0, 30) || 'EVENTO';
-
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 6);
-
-            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
-        }
 
         function formatearFecha(fechaStr) {
             if (!fechaStr) return '';
@@ -2432,12 +2419,9 @@
             $('btnSubirDetras').disabled = true;
 
             try {
-                const nombreBaseDetras = `${generarNombreFoto()}_detras`;
-                const nombreArchivoDetras = `${nombreBaseDetras}.jpg`;
-
                 const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
                     method: 'POST',
-                    body: JSON.stringify({ nombreArchivo: nombreArchivoDetras })
+                    body: JSON.stringify({ nombreArchivo: archivoDetrasSeleccionado.name })
                 });
 
                 if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
@@ -2767,8 +2751,10 @@
 
             const previewBlob = await generarPreview(archivo);
 
-            // 🔥 Nuevo naming profesional
-            const baseNombre = generarNombreFoto();
+            // 🔥 Formato anterior (más corto, sin prefijo)
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8);
+            const baseNombre = `foto-${timestamp}-${random}`;
             const nombreOriginal = `${baseNombre}.jpg`;
             const nombrePreview = `${baseNombre}_web.jpg`;
 
