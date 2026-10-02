@@ -2726,15 +2726,38 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            const resp = await fetch(dataPedido.url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'image/jpeg' },
-                body: archivo
-            });
+            // 🔥 Reintentos con backoff para el PUT a B2
+            const MAX_INTENTOS = 3;
+            const ESPERAS_MS = [0, 2000, 5000];
+            let ultimoError = null;
 
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            for (let intento = 1; intento <= MAX_INTENTOS; intento++) {
+                if (ESPERAS_MS[intento - 1] > 0) {
+                    await new Promise(r => setTimeout(r, ESPERAS_MS[intento - 1]));
+                }
 
-            return dataPedido.key;
+                try {
+                    const resp = await fetch(dataPedido.url, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'image/jpeg' },
+                        body: archivo
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error(`HTTP ${resp.status}`);
+                    }
+
+                    return dataPedido.key;
+
+                } catch (error) {
+                    ultimoError = error.message;
+                    if (intento < MAX_INTENTOS) {
+                        console.warn(`⚠️ Intento ${intento}/${MAX_INTENTOS} falló (${error.message}). Reintentando...`);
+                    }
+                }
+            }
+
+            throw new Error(`Subida falló tras ${MAX_INTENTOS} intentos: ${ultimoError}`);
         }
 
         async function subirUnaFoto(subida) {
@@ -2791,6 +2814,15 @@
         });
         $('inputPin').addEventListener('input', e => {
             e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // 🔥 Avisar si el fotógrafo intenta cerrar mientras hay subidas en curso
+        window.addEventListener('beforeunload', (e) => {
+            if (subidaEnProceso) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
         });
 
         inicializar();
