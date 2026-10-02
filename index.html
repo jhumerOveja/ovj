@@ -2821,6 +2821,328 @@
                 display: none;
             }
         }
+
+        /* ===== 🔥 PUNTO 14: BANNER DE AFORO ===== */
+        .banner-aforo {
+            max-width: 700px;
+            margin: 0 auto 14px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.02));
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .banner-aforo:hover {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.05));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
+        }
+
+        .banner-aforo .icono {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .banner-aforo .info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .banner-aforo .info strong {
+            font-size: 0.85rem;
+            color: var(--aviso);
+            font-weight: 700;
+        }
+
+        .banner-aforo .info span {
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+        }
+
+        .banner-aforo .flecha {
+            font-size: 1.3rem;
+            color: var(--aviso);
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        /* ===== 🔥 PUNTO 14: MODAL NOMBRE ===== */
+        .modal-nombre {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2600;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-nombre.activo {
+            display: flex;
+        }
+
+        .modal-nombre-contenido {
+            background: linear-gradient(135deg, var(--bg-card), #1a1a1e);
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 24px;
+            padding: 40px 28px 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: entradaDesbloqueo 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-nombre-contenido .emoji-grande {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .modal-nombre-contenido .titulo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 8px;
+        }
+
+        .modal-nombre-contenido .subtitulo {
+            font-size: 0.85rem;
+            color: var(--texto-suave);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal-nombre-contenido input {
+            width: 100%;
+            padding: 16px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--borde);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            font-family: inherit;
+            margin-bottom: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-nombre-contenido input:focus {
+            border-color: rgba(232, 196, 122, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 4px rgba(232, 196, 122, 0.08);
+        }
+
+        .modal-nombre-contenido .btn-confirmar-nombre {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 25px rgba(232, 196, 122, 0.25);
+        }
+
+        .modal-nombre-contenido .btn-confirmar-nombre:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(232, 196, 122, 0.4);
+        }
+
+        .modal-nombre-contenido .btn-confirmar-nombre:disabled {
+            opacity: 0.5;
+            cursor: wait;
+            pointer-events: none;
+        }
+
+        /* ===== 🔥 PUNTO 14: MODAL GENERALES ===== */
+        .modal-generales {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2600;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-generales.activo {
+            display: flex;
+        }
+
+        .modal-generales-contenido {
+            background: var(--bg-card);
+            border: 1px solid var(--borde-hover);
+            border-radius: 20px;
+            padding: 28px 22px 22px;
+            max-width: 480px;
+            width: 100%;
+            margin: 20px auto;
+            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--sombra-fuerte);
+            position: relative;
+        }
+
+        .modal-generales-contenido .emoji-grande {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .modal-generales-contenido .titulo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #93c5fd;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .modal-generales-contenido .subtitulo {
+            font-size: 0.8rem;
+            color: var(--texto-suave);
+            margin-bottom: 18px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .lista-generales {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+        }
+
+        .item-general {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .item-general.activo {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .item-general.en-receso {
+            opacity: 0.6;
+        }
+
+        .item-general.expulsado {
+            opacity: 0.4;
+            border-color: rgba(248, 113, 113, 0.3);
+        }
+
+        .item-general .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .item-general .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-general .nombre {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-general .meta {
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .item-general .meta .estado {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .item-general .meta .estado.activo {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+
+        .item-general .meta .estado.receso {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--aviso);
+        }
+
+        .item-general .meta .estado.expulsado {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--error);
+        }
+
+        .item-general .btn-expulsar {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: var(--error);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+
+        .item-general .btn-expulsar:hover {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        .item-general .btn-expulsar:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .cargando-generales {
+            text-align: center;
+            color: var(--texto-tenue);
+            font-size: 0.8rem;
+            padding: 40px 20px;
+        }
     </style>
 </head>
 
@@ -2890,6 +3212,7 @@
             </div>
         </div>
 
+        <div id="bannerAforoContainer"></div>
         <div id="bannerMensajeContainer"></div>
 
         <div id="estado">Cargando...</div>
@@ -3048,6 +3371,42 @@
         </div>
     </div>
 
+    <!-- 🔥 PUNTO 14: Modal de nombre -->
+    <div class="modal-nombre" id="modalNombre">
+        <div class="modal-nombre-contenido">
+            <span class="emoji-grande">👋</span>
+            <div class="titulo">¿Cómo te llamas?</div>
+            <div class="subtitulo">
+                Para que el anfitrión sepa quién está en la galería.
+            </div>
+            <input type="text" id="inputNombreGeneral" placeholder="Tu nombre" maxlength="50" autocomplete="off" />
+            <button class="btn-confirmar-nombre" id="btnConfirmarNombre" onclick="confirmarNombreGeneral()">
+                Entrar a la galería
+            </button>
+        </div>
+    </div>
+
+    <!-- 🔥 PUNTO 14: Modal de generales activos -->
+    <div class="modal-generales" id="modalGenerales">
+        <div class="modal-generales-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalGenerales()">✕</button>
+            <span class="emoji-grande">👥</span>
+            <div class="titulo">Generales activos</div>
+            <div class="subtitulo" id="generalesSubtitulo">
+                Cargando...
+            </div>
+
+            <div class="lista-generales" id="listaGenerales">
+                <div class="cargando-generales">Cargando...</div>
+            </div>
+
+            <button class="btn-accion btn-secundario" onclick="cerrarModalGenerales()"
+                style="width:100%; padding:12px 18px; border-radius:12px; border:none; background:rgba(255,255,255,0.06); color:var(--texto-suave); font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
     <div class="toast-container" id="toastContainer"></div>
     <!-- 🔴 Indicador EN VIVO flotante -->
     <div class="indicador-vivo" id="indicadorVivo">
@@ -3178,6 +3537,11 @@
             primeraEntrada: false,
             primeraDescarga: false
         };
+
+        // 🔥 PUNTO 14: aforo y expulsión manual
+        let aforoActual = null;
+        let generalesActivos = [];
+        let contadorAforoPoll = 0;
 
         // ==========================================
         // IDIOMA
@@ -3622,6 +3986,11 @@
                     id: sesion.id
                 });
 
+                // 🔥 PUNTO 14: si el server pide nombre, abrir modal
+                if (data.tipo === 'general' && data.requiereNombre) {
+                    setTimeout(() => abrirModalNombre(), 800);
+                }
+
                 return true;
 
             } catch (error) {
@@ -3641,6 +4010,9 @@
             if (sesion.tipo === 'admin') {
                 btnInvitar.style.display = 'inline-flex';
                 btnQrGeneral.style.display = 'inline-flex';
+
+                // 🔥 PUNTO 14: cargar aforo si es admin
+                setTimeout(cargarAforoAdmin, 1500);
             } else {
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
@@ -3694,6 +4066,244 @@
                 }
             } else {
                 el.style.display = 'none';
+            }
+        }
+
+        // ==========================================
+        // 🔥 PUNTO 14: REGISTRO DE NOMBRE
+        // ==========================================
+        let nombrePendiente = false;
+
+        function abrirModalNombre() {
+            nombrePendiente = true;
+            document.getElementById('modalNombre').classList.add('activo');
+            document.getElementById('inputNombreGeneral').value = '';
+            setTimeout(() => document.getElementById('inputNombreGeneral').focus(), 300);
+        }
+
+        async function confirmarNombreGeneral() {
+            const nombre = document.getElementById('inputNombreGeneral').value.trim();
+
+            if (nombre.length < 2) {
+                mostrarToast('Escribe tu nombre (mínimo 2 letras)', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btnConfirmarNombre');
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+
+            try {
+                const url = `${URL_CLOUDFLARE}/general/registrar-nombre?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    throw new Error(data.error || 'Error');
+                }
+
+                sesion.nombre = data.nombre;
+                nombrePendiente = false;
+                document.getElementById('modalNombre').classList.remove('activo');
+
+                actualizarBadgeRol();
+                mostrarToast(`👋 ¡Bienvenido, ${data.nombre}!`, 'success');
+
+            } catch (e) {
+                console.error('Error registrando nombre:', e);
+                mostrarToast('Error al guardar. Intenta de nuevo.', 'warning');
+                btn.disabled = false;
+                btn.textContent = 'Entrar a la galería';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputNombre = document.getElementById('inputNombreGeneral');
+            if (inputNombre) {
+                inputNombre.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') confirmarNombreGeneral();
+                });
+            }
+        });
+
+        // ==========================================
+        // 🔥 PUNTO 14: AFORO PARA EL CLIENTE
+        // ==========================================
+        async function cargarAforoAdmin() {
+            if (!sesion || sesion.tipo !== 'admin') return;
+
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) return;
+
+                aforoActual = data.aforo;
+                generalesActivos = data.generales || [];
+
+                actualizarAvisoAforo();
+            } catch (e) {
+                console.error('Error cargando aforo:', e);
+            }
+        }
+
+        function actualizarAvisoAforo() {
+            if (!aforoActual || !sesion || sesion.tipo !== 'admin') return;
+
+            const cont = document.getElementById('bannerAforoContainer');
+
+            if (!aforoActual.excedido) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            // Solo crear si no existe
+            if (!document.getElementById('bannerAforo')) {
+                cont.innerHTML = `
+                    <div class="banner-aforo" id="bannerAforo" onclick="abrirModalGenerales()">
+                        <span class="icono">⚠️</span>
+                        <div class="info">
+                            <strong>${aforoActual.activos} generales activos</strong>
+                            <span>Contrataste ${aforoActual.limite}. Toca para ver la lista.</span>
+                        </div>
+                        <span class="flecha">›</span>
+                    </div>
+                `;
+            } else {
+                // Actualizar valores si ya existe
+                const banner = document.getElementById('bannerAforo');
+                banner.querySelector('.info strong').textContent = `${aforoActual.activos} generales activos`;
+                banner.querySelector('.info span').textContent = `Contrataste ${aforoActual.limite}. Toca para ver la lista.`;
+            }
+        }
+
+        async function abrirModalGenerales() {
+            document.getElementById('modalGenerales').classList.add('activo');
+            await cargarListaGenerales();
+        }
+
+        function cerrarModalGenerales() {
+            document.getElementById('modalGenerales').classList.remove('activo');
+        }
+
+        async function cargarListaGenerales() {
+            const cont = document.getElementById('listaGenerales');
+            const subtitulo = document.getElementById('generalesSubtitulo');
+
+            cont.innerHTML = '<div class="cargando-generales">Cargando...</div>';
+
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    cont.innerHTML = '<div class="cargando-generales">Error al cargar</div>';
+                    return;
+                }
+
+                const generales = data.generales || [];
+                const aforo = data.aforo || {};
+
+                aforoActual = aforo;
+                generalesActivos = generales;
+
+                subtitulo.innerHTML = aforo.excedido
+                    ? `<strong style="color:var(--aviso);">${aforo.activos} activos</strong> · Límite contratado: ${aforo.limite}`
+                    : `${aforo.activos || 0} activos · Límite contratado: ${aforo.limite || 20}`;
+
+                if (generales.length === 0) {
+                    cont.innerHTML = '<div class="cargando-generales">No hay generales todavía</div>';
+                    return;
+                }
+
+                let html = '';
+                generales.forEach(g => {
+                    const inicial = (g.nombre || '?').charAt(0).toUpperCase();
+                    const tiempo = tiempoRelativo(g.ultimaActividad);
+
+                    let estadoClase = 'activo';
+                    let estadoTexto = 'Activo';
+                    if (g.expulsadoManualmente) {
+                        estadoClase = 'expulsado';
+                        estadoTexto = 'Expulsado';
+                    } else if (g.enReceso) {
+                        estadoClase = 'receso';
+                        estadoTexto = 'Receso';
+                    }
+
+                    const puedeExpulsar = !g.expulsadoManualmente && (g.sesionActiva || g.enReceso);
+
+                    html += `
+                        <div class="item-general ${g.sesionActiva ? 'activo' : ''} ${g.enReceso ? 'en-receso' : ''} ${g.expulsadoManualmente ? 'expulsado' : ''}">
+                            <div class="avatar">${inicial}</div>
+                            <div class="info">
+                                <div class="nombre">${escapeHtml(g.nombre)}</div>
+                                <div class="meta">
+                                    <span class="estado ${estadoClase}">${estadoTexto}</span>
+                                    <span>📥 ${g.descargasSesion}/${g.descargasPorSesion}</span>
+                                    <span>🕐 ${tiempo}</span>
+                                </div>
+                            </div>
+                            ${puedeExpulsar ? `
+                                <button class="btn-expulsar" onclick="expulsarGeneral('${g.id}', '${escapeHtml(g.nombre)}')">
+                                    Expulsar
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+
+                cont.innerHTML = html;
+
+            } catch (e) {
+                console.error('Error:', e);
+                cont.innerHTML = '<div class="cargando-generales">Error de conexión</div>';
+            }
+        }
+
+        async function expulsarGeneral(id, nombre) {
+            if (!confirm(`¿Expulsar a "${nombre}"?\n\nSeguirá viendo fotos, pero no podrá descargar hasta que pase el descanso.`)) {
+                return;
+            }
+
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/generales/${encodeURIComponent(id)}/expulsar` +
+                    `?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url, { method: 'POST' });
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    mostrarToast('Error: ' + (data.error || 'Desconocido'), 'warning');
+                    return;
+                }
+
+                mostrarToast(`🚪 ${nombre} expulsado`, 'success');
+
+                await cargarListaGenerales();
+                await cargarAforoAdmin();  // actualizar banner
+
+            } catch (e) {
+                console.error('Error:', e);
+                mostrarToast('Error de conexión', 'warning');
             }
         }
 
@@ -3818,6 +4428,15 @@
                 actualizarBadgeRol();
 
                 verificarMostrarDesbloqueo();
+
+                // 🔥 PUNTO 14: refrescar aforo cada ~5 polls si es admin
+                if (sesion.tipo === 'admin') {
+                    contadorAforoPoll++;
+                    if (contadorAforoPoll >= 5) {
+                        contadorAforoPoll = 0;
+                        cargarAforoAdmin();
+                    }
+                }
 
             } catch (error) {
                 console.error("Error:", error);
@@ -4970,9 +5589,16 @@
             const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
             const modalDetrasActivo = document.getElementById('modalDetras').classList.contains('activo');
             const modalDesbloqueoActivo = document.getElementById('modalDesbloqueo').classList.contains('activo');
+            const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
+            const modalGeneralesActivo = document.getElementById('modalGenerales').classList.contains('activo');
 
             if (e.key === "Escape") {
-                if (modalDesbloqueoActivo) cerrarDesbloqueo();
+                if (modalNombreActivo) {
+                    // No cerrar el modal de nombre con ESC (es obligatorio)
+                    return;
+                }
+                if (modalGeneralesActivo) cerrarModalGenerales();
+                else if (modalDesbloqueoActivo) cerrarDesbloqueo();
                 else if (modalDetrasActivo) cerrarDetrasCamara();
                 else if (modalQrGeneralActivo) cerrarQrGeneral();
                 else if (modalResultadoActivo) cerrarResultado();
@@ -4981,7 +5607,7 @@
                 else cerrarLangMenu();
             }
 
-            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo || modalDesbloqueoActivo) return;
+            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo || modalDesbloqueoActivo || modalNombreActivo || modalGeneralesActivo) return;
 
             if (e.key === "ArrowLeft") navegarFoto(-1);
             if (e.key === "ArrowRight") navegarFoto(1);
@@ -5005,6 +5631,10 @@
 
         document.getElementById('modalDetras').addEventListener('click', (e) => {
             if (e.target.id === 'modalDetras') cerrarDetrasCamara();
+        });
+
+        document.getElementById('modalGenerales').addEventListener('click', (e) => {
+            if (e.target.id === 'modalGenerales') cerrarModalGenerales();
         });
 
         // ==========================================
