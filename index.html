@@ -3807,9 +3807,11 @@
                     if (fotosRecienLlegadas.length > 0) {
                         lanzarConfeti();
                         mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
-                        guardarFotosVistas(fotosVistas);
                     }
                 }
+
+                // 🔥 Guardar siempre las fotos vistas (no solo cuando hay nuevas)
+                guardarFotosVistas(fotosVistas);
 
                 actualizarEstado();
                 actualizarBotonPrincipal();
@@ -3821,28 +3823,27 @@
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
+
+                // 🔥 Reintentar en 30s
+                clearTimeout(window._pollTimer);
+                window._pollTimer = setTimeout(cargarFotos, 30000);
+                cargando = false;
+                return;
             }
 
             cargando = false;
 
             // 🔥 Programar próximo poll
-            // En emergencia, poleamos más seguido para detectar la reconexión
+            // El jitter ya lo hace el server (calcularIntervaloPoll).
+            // Solo agregamos un piso mínimo de seguridad y pausa por visibilidad.
             let segundos = 60;
-            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
+            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg > 0) {
                 segundos = window._ultimoPoll.intervaloBaseSeg;
-            }
-
-            if (window._primerPollHecho) {
-                const variacion = segundos * 0.15;
-                segundos = segundos + (Math.random() * variacion * 2) - variacion;
-            } else {
-                window._primerPollHecho = true;
             }
 
             if (document.hidden) {
                 segundos = segundos * 3;
             }
-
 
             if (segundos < 30) segundos = 30;
 
