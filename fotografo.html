@@ -1868,7 +1868,19 @@
                 `;
             }
 
-
+            let aforoHtml = '';
+            if (estado && estado.aforo && estado.aforo.excedido) {
+                const a = estado.aforo;
+                aforoHtml = `
+                    <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
+                        <span class="emoji">👥</span>
+                        <div>
+                            <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
+                            El cliente puede ver el detalle desde su panel.
+                        </div>
+                    </div>
+                `;
+            }
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
@@ -1894,6 +1906,7 @@
 
                         ${avisoTiempoHtml}
                         ${contadoresHtml}
+                        ${aforoHtml}
                         ${mensajeHtml}
 
                         <div class="acciones-grid">
