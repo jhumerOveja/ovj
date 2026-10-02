@@ -3147,10 +3147,6 @@
             return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
         }
 
-        function getClaveMinijuegoNotificado() {
-            return 'ovj_minijuego_notificado_' + (EVENTO_ID || 'default');
-        }
-
         // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
@@ -3180,8 +3176,7 @@
 
         let tipsMostrados = {
             primeraEntrada: false,
-            primeraDescarga: false,
-            primerReceso: false
+            primeraDescarga: false
         };
 
         // ==========================================
@@ -3235,7 +3230,6 @@
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 tipIG: "💡 Una vez que nos sigas, toca 'Ya lo hice'",
-                tipMinijuegoGanaste: "🎉 ¡Ganaste! Reset de sesión + descargas completas",
                 mensajeTitulo: "📢 Mensaje del fotógrafo",
                 detrasBoton: "Detrás de cámara",
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
@@ -3294,7 +3288,6 @@
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 tipIG: "💡 Once you follow us, tap 'Done'",
-                tipMinijuegoGanaste: "🎉 You won! Session reset + full downloads",
                 mensajeTitulo: "📢 Photographer's message",
                 detrasBoton: "Behind the scenes",
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
@@ -3353,7 +3346,6 @@
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 tipIG: "💡 关注后，点击 '已完成'",
-                tipMinijuegoGanaste: "🎉 你赢了！重置会话 + 完整下载次数",
                 mensajeTitulo: "📢 摄影师消息",
                 detrasBoton: "幕后花絮",
                 detrasVacio: "摄影师还没有上传幕后照片。",
@@ -3772,7 +3764,6 @@
 
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
-                procesarMinijuego(data.minijuego);
 
                 // 🔥 Combinar fotos normales + fotos de emergencia si estamos en emergencia
                 const nuevasFotos = data.fotos || [];
@@ -3857,37 +3848,6 @@
 
             clearTimeout(window._pollTimer);
             window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
-        }
-
-        // ==========================================
-        // MINIJUEGO
-        // ==========================================
-        function procesarMinijuego(minijuego) {
-            if (!minijuego || !minijuego.finalizado) return;
-
-            const aplicadoEn = minijuego.aplicadoEn;
-            const clave = getClaveMinijuegoNotificado();
-            const yaNotificado = localStorage.getItem(clave);
-
-            if (yaNotificado === String(aplicadoEn)) return;
-
-            if (minijuego.ganadorDeviceId === getDispositivoId()) {
-                lanzarConfeti();
-                lanzarConfeti();
-                mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
-
-                if (sesionGeneral) {
-                    sesionGeneral.descargasSesion = 0;
-                }
-
-                localStorage.setItem(clave, String(aplicadoEn));
-
-                actualizarBadgeRol();
-                actualizarBotonPrincipal();
-                renderizarGaleria();
-            } else {
-                localStorage.setItem(clave, String(aplicadoEn));
-            }
         }
 
         // ==========================================
