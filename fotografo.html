@@ -2671,6 +2671,11 @@
             if (subidaEnProceso) return;
 
             subidaEnProceso = true;
+            // 🔥 Pausar el refresh automático mientras subimos
+            if (intervalRefresh) {
+                clearInterval(intervalRefresh);
+                intervalRefresh = null;
+            }
             $('btnCerrarSubir').disabled = true;
             $('btnCerrarSubir').textContent = 'Subiendo...';
 
@@ -2697,6 +2702,11 @@
                 $('btnCerrarSubir').disabled = false;
                 $('btnCerrarSubir').textContent = 'Cerrar';
                 renderizarListaSubidas();
+
+                // 🔥 Reanudar el refresh automático
+                if (!intervalRefresh) {
+                    intervalRefresh = setInterval(cargarTodo, INTERVALO_REFRESH_MS);
+                }
             }
         }
 
