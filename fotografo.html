@@ -2760,29 +2760,24 @@
         }
 
         async function subirArchivoAB2(archivo, nombreOriginal, tipo) {
-            const dataPedido = await apiFetch('/subir_url', {
-                method: 'POST',
-                body: JSON.stringify({
-                    f: nombreFotografoActual,
-                    e: eventoActivo.id,
-                    nombreOriginal: nombreOriginal,
-                    tipo: tipo
-                })
-            });
+            const t0 = performance.now();
+            const dataPedido = await apiFetch('/subir_url', { ...});
+            const t1 = performance.now();
+            console.log(`[/subir_url ${tipo}] ${(t1 - t0).toFixed(0)} ms`);
 
-            if (!dataPedido.ok || !dataPedido.url) {
-                throw new Error(dataPedido.error || 'URL inválida');
-            }
-
-            // ⏱️ TEST: sin Content-Length explícito
+            const t2 = performance.now();
             const resp = await fetch(dataPedido.url, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'image/jpeg' },
                 body: archivo
             });
+            const t3 = performance.now();
 
-            if (!resp.ok) {
-                throw new Error(`HTTP ${resp.status}`);
+            // 🔥 Esto es lo importante:
+            const entries = performance.getEntriesByName(dataPedido.url);
+            const e = entries[entries.length - 1];
+            if (e) {
+                console.log(`[PUT ${tipo}] total=${(t3 - t2).toFixed(0)}ms | dns=${(e.domainLookupEnd - e.domainLookupStart).toFixed(0)}ms | tcp=${(e.connectEnd - e.connectStart).toFixed(0)}ms | tls=${(e.secureConnectionStart > 0 ? e.connectEnd - e.secureConnectionStart : 0).toFixed(0)}ms | ttfb=${(e.responseStart - e.requestStart).toFixed(0)}ms | transfer=${(e.responseEnd - e.responseStart).toFixed(0)}ms`);
             }
 
             return dataPedido.key;
