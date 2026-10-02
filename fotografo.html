@@ -1718,6 +1718,9 @@
         // CARGA DE DATOS
         // ==========================================
         async function cargarTodo() {
+            // 🔥 No consultar mientras se suben fotos (deja el túnel libre)
+            if (subidaEnProceso) return;
+
             try {
                 marcarServidor('cargando');
 
