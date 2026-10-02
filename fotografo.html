@@ -2760,12 +2760,19 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
+            const headers = { 'Content-Type': 'image/jpeg' };
+
+            // 🔥 Mandar Content-Length explícito
+            const tamano = archivo.size || archivo.byteLength || 0;
+            if (tamano > 0) {
+                headers['Content-Length'] = String(tamano);
+            }
+
             const resp = await fetch(dataPedido.url, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'image/jpeg' },
+                headers: headers,
                 body: archivo
             });
-
             if (!resp.ok) {
                 throw new Error(`HTTP ${resp.status}`);
             }
@@ -2789,11 +2796,8 @@
             subida.estado = 'subiendo';
             renderizarListaSubidas();
 
-            // 🔥 Subir original y preview EN PARALELO
-            const [keyOriginal, keyPreview] = await Promise.all([
-                subirArchivoAB2(archivo, nombreOriginal, 'original'),
-                subirArchivoAB2(previewBlob, nombrePreview, 'preview')
-            ]);
+            const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
+            const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
 
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
