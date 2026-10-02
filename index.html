@@ -3051,11 +3051,6 @@
             opacity: 0.6;
         }
 
-        .item-general.expulsado {
-            opacity: 0.4;
-            border-color: rgba(248, 113, 113, 0.3);
-        }
-
         .item-general .avatar {
             width: 38px;
             height: 38px;
@@ -3109,39 +3104,89 @@
             color: var(--aviso);
         }
 
-        .item-general .meta .estado.expulsado {
-            background: rgba(248, 113, 113, 0.15);
-            color: var(--error);
-        }
-
-        .item-general .btn-expulsar {
-            background: rgba(248, 113, 113, 0.1);
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            color: var(--error);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            flex-shrink: 0;
-        }
-
-        .item-general .btn-expulsar:hover {
-            background: rgba(248, 113, 113, 0.2);
-        }
-
-        .item-general .btn-expulsar:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
         .cargando-generales {
             text-align: center;
             color: var(--texto-tenue);
             font-size: 0.8rem;
             padding: 40px 20px;
+        }
+
+        /* ===== 🔥 PUNTO 14: MÉTRICAS DEL EVENTO ===== */
+        .metricas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .metrica-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--borde);
+            border-radius: 14px;
+            padding: 18px 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metrica-card.activos {
+            border-color: rgba(74, 222, 128, 0.25);
+        }
+
+        .metrica-card.totales {
+            border-color: rgba(96, 165, 250, 0.25);
+        }
+
+        .metrica-card .emoji {
+            font-size: 1.6rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .metrica-card .valor {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .metrica-card.activos .valor {
+            color: #4ade80;
+        }
+
+        .metrica-card.totales .valor {
+            color: #93c5fd;
+        }
+
+        .metrica-card .etiqueta {
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .aviso-aforo {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.78rem;
+            color: var(--aviso);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .aviso-aforo strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .aviso-aforo.ok {
+            background: rgba(74, 222, 128, 0.08);
+            border-color: rgba(74, 222, 128, 0.25);
+            color: #4ade80;
         }
     </style>
 </head>
@@ -3386,19 +3431,30 @@
         </div>
     </div>
 
-    <!-- 🔥 PUNTO 14: Modal de generales activos -->
+    <!-- 🔥 PUNTO 14: Modal de métricas del evento -->
     <div class="modal-generales" id="modalGenerales">
         <div class="modal-generales-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarModalGenerales()">✕</button>
-            <span class="emoji-grande">👥</span>
-            <div class="titulo">Generales activos</div>
+            <span class="emoji-grande">📊</span>
+            <div class="titulo">Métricas del evento</div>
             <div class="subtitulo" id="generalesSubtitulo">
                 Cargando...
             </div>
 
-            <div class="lista-generales" id="listaGenerales">
-                <div class="cargando-generales">Cargando...</div>
+            <div class="metricas-grid" id="metricasGrid">
+                <div class="metrica-card activos">
+                    <span class="emoji">🟢</span>
+                    <div class="valor" id="metricaActivos">—</div>
+                    <div class="etiqueta">Activos ahora</div>
+                </div>
+                <div class="metrica-card totales">
+                    <span class="emoji">👥</span>
+                    <div class="valor" id="metricaTotales">—</div>
+                    <div class="etiqueta">Total generales</div>
+                </div>
             </div>
+
+            <div class="aviso-aforo" id="avisoAforo" style="display:none;"></div>
 
             <button class="btn-accion btn-secundario" onclick="cerrarModalGenerales()"
                 style="width:100%; padding:12px 18px; border-radius:12px; border:none; background:rgba(255,255,255,0.06); color:var(--texto-suave); font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
@@ -3540,7 +3596,6 @@
 
         // 🔥 PUNTO 14: aforo y expulsión manual
         let aforoActual = null;
-        let generalesActivos = [];
         let contadorAforoPoll = 0;
 
         // ==========================================
@@ -4134,9 +4189,6 @@
             }
         });
 
-        // ==========================================
-        // 🔥 PUNTO 14: AFORO PARA EL CLIENTE
-        // ==========================================
         async function cargarAforoAdmin() {
             if (!sesion || sesion.tipo !== 'admin') return;
 
@@ -4151,7 +4203,6 @@
                 if (!resp.ok || !data.ok) return;
 
                 aforoActual = data.aforo;
-                generalesActivos = data.generales || [];
 
                 actualizarAvisoAforo();
             } catch (e) {
@@ -4169,23 +4220,21 @@
                 return;
             }
 
-            // Solo crear si no existe
             if (!document.getElementById('bannerAforo')) {
                 cont.innerHTML = `
                     <div class="banner-aforo" id="bannerAforo" onclick="abrirModalGenerales()">
                         <span class="icono">⚠️</span>
                         <div class="info">
                             <strong>${aforoActual.activos} generales activos</strong>
-                            <span>Contrataste ${aforoActual.limite}. Toca para ver la lista.</span>
+                            <span>Contrataste ${aforoActual.limite}. Toca para ver detalles.</span>
                         </div>
                         <span class="flecha">›</span>
                     </div>
                 `;
             } else {
-                // Actualizar valores si ya existe
                 const banner = document.getElementById('bannerAforo');
                 banner.querySelector('.info strong').textContent = `${aforoActual.activos} generales activos`;
-                banner.querySelector('.info span').textContent = `Contrataste ${aforoActual.limite}. Toca para ver la lista.`;
+                banner.querySelector('.info span').textContent = `Contrataste ${aforoActual.limite}. Toca para ver detalles.`;
             }
         }
 
@@ -4199,10 +4248,15 @@
         }
 
         async function cargarListaGenerales() {
-            const cont = document.getElementById('listaGenerales');
             const subtitulo = document.getElementById('generalesSubtitulo');
+            const metricaActivos = document.getElementById('metricaActivos');
+            const metricaTotales = document.getElementById('metricaTotales');
+            const avisoAforo = document.getElementById('avisoAforo');
 
-            cont.innerHTML = '<div class="cargando-generales">Cargando...</div>';
+            subtitulo.textContent = 'Cargando...';
+            metricaActivos.textContent = '—';
+            metricaTotales.textContent = '—';
+            avisoAforo.style.display = 'none';
 
             try {
                 const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -4213,97 +4267,41 @@
                 const data = await resp.json();
 
                 if (!resp.ok || !data.ok) {
-                    cont.innerHTML = '<div class="cargando-generales">Error al cargar</div>';
+                    subtitulo.textContent = 'Error al cargar';
                     return;
                 }
 
-                const generales = data.generales || [];
                 const aforo = data.aforo || {};
+                const totalGenerales = data.totalGenerales || 0;
 
                 aforoActual = aforo;
-                generalesActivos = generales;
 
+                // Actualizar contadores
+                metricaActivos.textContent = aforo.activos || 0;
+                metricaTotales.textContent = totalGenerales;
+
+                // Subtítulo
                 subtitulo.innerHTML = aforo.excedido
                     ? `<strong style="color:var(--aviso);">${aforo.activos} activos</strong> · Límite contratado: ${aforo.limite}`
                     : `${aforo.activos || 0} activos · Límite contratado: ${aforo.limite || 20}`;
 
-                if (generales.length === 0) {
-                    cont.innerHTML = '<div class="cargando-generales">No hay generales todavía</div>';
-                    return;
-                }
-
-                let html = '';
-                generales.forEach(g => {
-                    const inicial = (g.nombre || '?').charAt(0).toUpperCase();
-                    const tiempo = tiempoRelativo(g.ultimaActividad);
-
-                    let estadoClase = 'activo';
-                    let estadoTexto = 'Activo';
-                    if (g.expulsadoManualmente) {
-                        estadoClase = 'expulsado';
-                        estadoTexto = 'Expulsado';
-                    } else if (g.enReceso) {
-                        estadoClase = 'receso';
-                        estadoTexto = 'Receso';
-                    }
-
-                    const puedeExpulsar = !g.expulsadoManualmente && (g.sesionActiva || g.enReceso);
-
-                    html += `
-                        <div class="item-general ${g.sesionActiva ? 'activo' : ''} ${g.enReceso ? 'en-receso' : ''} ${g.expulsadoManualmente ? 'expulsado' : ''}">
-                            <div class="avatar">${inicial}</div>
-                            <div class="info">
-                                <div class="nombre">${escapeHtml(g.nombre)}</div>
-                                <div class="meta">
-                                    <span class="estado ${estadoClase}">${estadoTexto}</span>
-                                    <span>📥 ${g.descargasSesion}/${g.descargasPorSesion}</span>
-                                    <span>🕐 ${tiempo}</span>
-                                </div>
-                            </div>
-                            ${puedeExpulsar ? `
-                                <button class="btn-expulsar" onclick="expulsarGeneral('${g.id}', '${escapeHtml(g.nombre)}')">
-                                    Expulsar
-                                </button>
-                            ` : ''}
-                        </div>
+                // Aviso de exceso
+                if (aforo.excedido) {
+                    avisoAforo.className = 'aviso-aforo';
+                    avisoAforo.style.display = 'block';
+                    avisoAforo.innerHTML = `
+                        ⚠️ Has superado el límite contratado por <strong>${aforo.extras}</strong>.<br>
+                        El sistema sigue funcionando normalmente.
                     `;
-                });
-
-                cont.innerHTML = html;
-
-            } catch (e) {
-                console.error('Error:', e);
-                cont.innerHTML = '<div class="cargando-generales">Error de conexión</div>';
-            }
-        }
-
-        async function expulsarGeneral(id, nombre) {
-            if (!confirm(`¿Expulsar a "${nombre}"?\n\nSeguirá viendo fotos, pero no podrá descargar hasta que pase el descanso.`)) {
-                return;
-            }
-
-            try {
-                const url = `${URL_CLOUDFLARE}/admin/generales/${encodeURIComponent(id)}/expulsar` +
-                    `?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url, { method: 'POST' });
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    mostrarToast('Error: ' + (data.error || 'Desconocido'), 'warning');
-                    return;
+                } else {
+                    avisoAforo.className = 'aviso-aforo ok';
+                    avisoAforo.style.display = 'block';
+                    avisoAforo.innerHTML = `✓ Dentro del límite contratado`;
                 }
 
-                mostrarToast(`🚪 ${nombre} expulsado`, 'success');
-
-                await cargarListaGenerales();
-                await cargarAforoAdmin();  // actualizar banner
-
             } catch (e) {
                 console.error('Error:', e);
-                mostrarToast('Error de conexión', 'warning');
+                subtitulo.textContent = 'Error de conexión';
             }
         }
 
