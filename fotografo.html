@@ -462,6 +462,40 @@
             color: var(--verde);
         }
 
+        /* Minijuego */
+        .card-minijuego {
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.1), rgba(232, 196, 122, 0.02));
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-minijuego .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .card-minijuego .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-minijuego .titulo {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 3px;
+        }
+
+        .card-minijuego .detalle {
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+        }
+
         /* Mensaje activo */
         .card-mensaje {
             background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(52, 152, 219, 0.02));
@@ -564,6 +598,16 @@
 
         .btn-qr:hover:not(:disabled) {
             background: rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-minijuego {
+            background: linear-gradient(135deg, #e8c47a, #d4a94a);
+            color: #0a0a0a;
+            box-shadow: 0 4px 20px rgba(232, 196, 122, 0.25);
+        }
+
+        .btn-minijuego:hover:not(:disabled) {
+            box-shadow: 0 8px 30px rgba(232, 196, 122, 0.4);
         }
 
         .btn-mensaje {
@@ -1391,6 +1435,22 @@
         </div>
     </div>
 
+    <!-- ===== MODAL MINIJUEGO ===== -->
+    <div class="modal" id="modalMinijuego">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarMinijuego()">✕</button>
+            <div class="titulo">🎁 Sorteo sorpresa</div>
+            <div class="subtitulo">
+                El sistema elegirá <strong>1 invitado activo al azar</strong>.<br>
+                El ganador recibirá <strong>reset de sesión</strong> (tiempo + descargas completas).<br><br>
+                Se necesitan al menos 5 invitados activos.
+            </div>
+
+            <button class="btn-primario" onclick="activarMinijuego()">🎲 Sortear ahora</button>
+            <button class="btn-secundario" onclick="cerrarMinijuego()">Cancelar</button>
+        </div>
+    </div>
+
     <!-- ===== MODAL MENSAJE EN VIVO ===== -->
     <div class="modal" id="modalMensaje">
         <div class="modal-contenido">
@@ -1401,10 +1461,8 @@
                 Dura 10 minutos o hasta que lo borres.
             </div>
 
-            <textarea id="inputMensajeFotografo" placeholder="Ej: Subo el bloque de la torta en 5 min"
-                maxlength="200"></textarea>
-            <div class="ayuda"
-                style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
+            <textarea id="inputMensajeFotografo" placeholder="Ej: Subo el bloque de la torta en 5 min" maxlength="200"></textarea>
+            <div class="ayuda" style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
                 Máximo 200 caracteres.
             </div>
 
@@ -1440,23 +1498,19 @@
                 onchange="manejarSeleccionDetras(event)" />
 
             <div class="campo-mensaje" style="margin-bottom:12px;">
-                <label
-                    style="display:block; font-size:0.72rem; color:var(--texto-suave); margin-bottom:6px; padding-left:4px;">
+                <label style="display:block; font-size:0.72rem; color:var(--texto-suave); margin-bottom:6px; padding-left:4px;">
                     📝 Texto para la publicación (opcional)
                 </label>
-                <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas"
-                    maxlength="200" autocomplete="off"
-                    style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#fff; font-size:0.9rem; outline:none; font-family:inherit;" />
-                <div style="font-size:0.65rem; color:var(--texto-tenue); margin-top:5px; padding-left:4px;">Máximo 200
-                    caracteres.</div>
+                <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas" maxlength="200"
+                    autocomplete="off" style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#fff; font-size:0.9rem; outline:none; font-family:inherit;" />
+                <div style="font-size:0.65rem; color:var(--texto-tenue); margin-top:5px; padding-left:4px;">Máximo 200 caracteres.</div>
             </div>
 
             <button class="btn-primario" id="btnSubirDetras" onclick="subirDetrasCamara()" disabled>
                 📤 Publicar
             </button>
 
-            <div class="seccion-titulo" style="margin-top:20px;">Publicaciones (<span id="contadorDetras">0</span>)
-            </div>
+            <div class="seccion-titulo" style="margin-top:20px;">Publicaciones (<span id="contadorDetras">0</span>)</div>
             <div class="lista-detras" id="listaDetras">
                 <div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">
                     Cargando...
@@ -1500,6 +1554,7 @@
         let eventoActivo = null;
         let contadores = null;
         let tiempoEvento = null;
+        let minijuegoInfo = null;
         let mensajeInfo = null;
         let detrasCamaraInfo = null;
 
@@ -1535,21 +1590,6 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
         }
-
-        function generarNombreFoto() {
-            // Slug del evento: MAYÚSCULAS, solo A-Z, 0-9 y guiones
-            const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
-                .toUpperCase()
-                .replace(/[^A-Z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .slice(0, 30) || 'EVENTO';
-
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 6);
-
-            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
-        }
-
 
         function formatearFecha(fechaStr) {
             if (!fechaStr) return '';
@@ -1719,9 +1759,6 @@
         // CARGA DE DATOS
         // ==========================================
         async function cargarTodo() {
-            // 🔥 No consultar mientras se suben fotos (deja el túnel libre)
-            if (subidaEnProceso) return;
-
             try {
                 marcarServidor('cargando');
 
@@ -1733,6 +1770,7 @@
                 eventoActivo = estado.activo;
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
+                minijuegoInfo = estado.minijuego || null;
                 mensajeInfo = estado.mensajeFotografo || null;
                 detrasCamaraInfo = estado.detrasCamara || null;
 
@@ -1868,19 +1906,22 @@
                 `;
             }
 
-            let aforoHtml = '';
-            if (estado && estado.aforo && estado.aforo.excedido) {
-                const a = estado.aforo;
-                aforoHtml = `
-                    <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
-                        <span class="emoji">👥</span>
-                        <div>
-                            <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
-                            El cliente puede ver el detalle desde su panel.
+            let minijuegoHtml = '';
+            if (minijuegoInfo && minijuegoInfo.finalizado) {
+                minijuegoHtml = `
+                    <div class="card-minijuego">
+                        <span class="emoji">🎉</span>
+                        <div class="info">
+                            <div class="titulo">Sorteo realizado</div>
+                            <div class="detalle">
+                                Ganador: <strong>${escapeHtml(minijuegoInfo.ganadorNombre)}</strong><br>
+                                ${minijuegoInfo.totalParticipantes || 0} participantes · ${minijuegoInfo.aplicadoEn ? formatearHora(new Date(minijuegoInfo.aplicadoEn).toISOString()) : ''}
+                            </div>
                         </div>
                     </div>
                 `;
             }
+
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
@@ -1894,6 +1935,9 @@
                 `;
             }
 
+            const puedeMinijuego = detrasCamaraInfo?.puedeUsarMinijuego !== false;
+            const minInv = detrasCamaraInfo?.minimoInvitados || 5;
+
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="seccion-titulo">Evento activo</div>
@@ -1906,12 +1950,15 @@
 
                         ${avisoTiempoHtml}
                         ${contadoresHtml}
-                        ${aforoHtml}
+                        ${minijuegoHtml}
                         ${mensajeHtml}
 
                         <div class="acciones-grid">
                             <button class="btn-accion btn-subir full" onclick="abrirSubir()">
                                 📤 Subir fotos
+                            </button>
+                            <button class="btn-accion btn-minijuego" onclick="abrirMinijuego()" ${!puedeMinijuego ? 'disabled title="Se necesitan al menos ' + minInv + ' invitados activos"' : ''}>
+                                🎁 Sorteo
                             </button>
                             <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                                 💬 Mensaje
@@ -1929,7 +1976,6 @@
                                 🏁 Finalizar evento
                             </button>
                         </div>
-
                     </div>
                 </div>
             `;
@@ -2346,6 +2392,35 @@
         }
 
         // ==========================================
+        // MINIJUEGO (Sorteo)
+        // ==========================================
+        function abrirMinijuego() {
+            $('modalMinijuego').classList.add('activo');
+        }
+
+        function cerrarMinijuego() {
+            $('modalMinijuego').classList.remove('activo');
+        }
+
+        async function activarMinijuego() {
+            if (!confirm('¿Sortear un ganador al azar entre los invitados activos?')) return;
+
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/minijuego/activar', { method: 'POST' });
+
+                cerrarMinijuego();
+                toast(`🎉 Ganador: ${data.ganador.nombre} (${data.totalParticipantes} participantes)`, 'ok');
+                await cargarTodo();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        // ==========================================
         // MENSAJE EN VIVO
         // ==========================================
         function abrirMensaje() {
@@ -2446,12 +2521,9 @@
             $('btnSubirDetras').disabled = true;
 
             try {
-                const nombreBaseDetras = `${generarNombreFoto()}_detras`;
-                const nombreArchivoDetras = `${nombreBaseDetras}.jpg`;
-
                 const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
                     method: 'POST',
-                    body: JSON.stringify({ nombreArchivo: nombreArchivoDetras })
+                    body: JSON.stringify({ nombreArchivo: archivoDetrasSeleccionado.name })
                 });
 
                 if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
@@ -2537,7 +2609,6 @@
                 toast('Error: ' + e.message, 'error');
             }
         }
-
 
         // ==========================================
         // FINALIZAR
@@ -2671,13 +2742,6 @@
             if (subidaEnProceso) return;
 
             subidaEnProceso = true;
-
-            // 🔥 Pausar el refresh automático para no saturar la cola del navegador
-            if (intervalRefresh) {
-                clearInterval(intervalRefresh);
-                intervalRefresh = null;
-            }
-
             $('btnCerrarSubir').disabled = true;
             $('btnCerrarSubir').textContent = 'Subiendo...';
 
@@ -2695,22 +2759,15 @@
                         subida.estado = 'error';
                     }
                     renderizarListaSubidas();
-
-                    // 🔥 Pausa entre fotos para que el navegador descongestione
-                    await new Promise(r => setTimeout(r, 300));
                 }
 
                 setTimeout(() => cargarTodo(), 2000);
+
             } finally {
                 subidaEnProceso = false;
                 $('btnCerrarSubir').disabled = false;
                 $('btnCerrarSubir').textContent = 'Cerrar';
                 renderizarListaSubidas();
-
-                // 🔥 Reanudar el refresh automático
-                if (!intervalRefresh) {
-                    intervalRefresh = setInterval(cargarTodo, INTERVALO_REFRESH_MS);
-                }
             }
         }
 
@@ -2774,22 +2831,13 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            const headers = { 'Content-Type': 'image/jpeg' };
-
-            // 🔥 Mandar Content-Length explícito
-            const tamano = archivo.size || archivo.byteLength || 0;
-            if (tamano > 0) {
-                headers['Content-Length'] = String(tamano);
-            }
-
             const resp = await fetch(dataPedido.url, {
                 method: 'PUT',
-                headers: headers,
+                headers: { 'Content-Type': 'image/jpeg' },
                 body: archivo
             });
-            if (!resp.ok) {
-                throw new Error(`HTTP ${resp.status}`);
-            }
+
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
             return dataPedido.key;
         }
@@ -2802,8 +2850,9 @@
 
             const previewBlob = await generarPreview(archivo);
 
-            // 🔥 Naming profesional
-            const baseNombre = generarNombreFoto();
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8);
+            const baseNombre = `foto-${timestamp}-${random}`;
             const nombreOriginal = `${baseNombre}.jpg`;
             const nombrePreview = `${baseNombre}_web.jpg`;
 
@@ -2847,15 +2896,6 @@
         });
         $('inputPin').addEventListener('input', e => {
             e.target.value = e.target.value.replace(/[^0-9]/g, '');
-        });
-
-        // 🔥 Avisar si el fotógrafo intenta cerrar mientras hay subidas en curso
-        window.addEventListener('beforeunload', (e) => {
-            if (subidaEnProceso) {
-                e.preventDefault();
-                e.returnValue = '';
-                return '';
-            }
         });
 
         inicializar();
