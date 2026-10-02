@@ -2743,38 +2743,17 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            // 🔥 Reintentos con backoff para el PUT a B2
-            const MAX_INTENTOS = 3;
-            const ESPERAS_MS = [0, 2000, 5000];
-            let ultimoError = null;
+            const resp = await fetch(dataPedido.url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'image/jpeg' },
+                body: archivo
+            });
 
-            for (let intento = 1; intento <= MAX_INTENTOS; intento++) {
-                if (ESPERAS_MS[intento - 1] > 0) {
-                    await new Promise(r => setTimeout(r, ESPERAS_MS[intento - 1]));
-                }
-
-                try {
-                    const resp = await fetch(dataPedido.url, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'image/jpeg' },
-                        body: archivo
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error(`HTTP ${resp.status}`);
-                    }
-
-                    return dataPedido.key;
-
-                } catch (error) {
-                    ultimoError = error.message;
-                    if (intento < MAX_INTENTOS) {
-                        console.warn(`⚠️ Intento ${intento}/${MAX_INTENTOS} falló (${error.message}). Reintentando...`);
-                    }
-                }
+            if (!resp.ok) {
+                throw new Error(`HTTP ${resp.status}`);
             }
 
-            throw new Error(`Subida falló tras ${MAX_INTENTOS} intentos: ${ultimoError}`);
+            return dataPedido.key;
         }
 
         async function subirUnaFoto(subida) {
