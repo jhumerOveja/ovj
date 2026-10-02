@@ -2789,8 +2789,11 @@
             subida.estado = 'subiendo';
             renderizarListaSubidas();
 
-            const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
-            const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
+            // 🔥 Subir original y preview EN PARALELO
+            const [keyOriginal, keyPreview] = await Promise.all([
+                subirArchivoAB2(archivo, nombreOriginal, 'original'),
+                subirArchivoAB2(previewBlob, nombrePreview, 'preview')
+            ]);
 
             await apiFetch('/confirmar_subida', {
                 method: 'POST',
