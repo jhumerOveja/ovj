@@ -2774,19 +2774,13 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            //const headers = { 'Content-Type': 'image/jpeg' };
-
-            // 🔥 Mandar Content-Length explícito
-            const tamano = archivo.size || archivo.byteLength || 0;
-            if (tamano > 0) {
-                headers['Content-Length'] = String(tamano);
-            }
-
+            // ⏱️ TEST: sin Content-Length explícito
             const resp = await fetch(dataPedido.url, {
                 method: 'PUT',
-                headers: headers,
+                headers: { 'Content-Type': 'image/jpeg' },
                 body: archivo
             });
+
             if (!resp.ok) {
                 throw new Error(`HTTP ${resp.status}`);
             }
