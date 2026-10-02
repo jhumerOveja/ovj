@@ -1844,21 +1844,6 @@
                         <div class="ayuda">Límite duro: si se supera, se expulsa al más antiguo sin descargas.</div>
                     </div>
                 </div>
-                
-                                <div class="seccion-titulo-form">👤 Nombre del invitado</div>
-
-                <div class="config-sugerida" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
-                    💡 Si lo activas, los invitados escribirán su nombre al entrar.<br>
-                    El cliente verá la lista de quiénes entraron.
-                </div>
-
-                <div class="campo">
-                    <label>Pedir nombre al entrar</label>
-                    <select id="inputPedirNombre">
-                        <option value="false">No (recomendado para eventos grandes)</option>
-                        <option value="true">Sí (recomendado para eventos chicos)</option>
-                    </select>
-                </div>
 
                 <div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
 
@@ -1901,8 +1886,7 @@
                 descansoMin: parseInt($('inputDescanso').value, 10),
                 maxGeneralesSimultaneos: parseInt($('inputMaxGenerales').value, 10),
                 desbloqueoSocialActivo: $('inputDesbloqueoSocialActivo').value === 'true',
-                desbloqueoSocialDescargas: parseInt($('inputDesbloqueoSocialDescargas').value, 10) || 3,
-                pedirNombreAlEntrar: $('inputPedirNombre').value === 'true'
+                desbloqueoSocialDescargas: parseInt($('inputDesbloqueoSocialDescargas').value, 10) || 3
             };
 
             if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
