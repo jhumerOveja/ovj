@@ -155,6 +155,94 @@
             opacity: 0.5;
         }
 
+        .bloqueo .countdown {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            animation: pulsoCountdown 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoCountdown {
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .pub-receso {
+            margin-top: 28px;
+            padding: 20px 18px;
+            background: linear-gradient(135deg,
+                    rgba(232, 196, 122, 0.08),
+                    rgba(232, 196, 122, 0.02));
+            border: 1px solid rgba(232, 196, 122, 0.2);
+            border-radius: 16px;
+            text-align: center;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: entradaPubReceso 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes entradaPubReceso {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pub-receso .emoji {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .pub-receso .texto {
+            font-size: 0.78rem;
+            color: var(--texto-suave);
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .pub-receso .texto strong {
+            color: var(--champagne);
+            font-weight: 700;
+        }
+
+        .pub-receso .btn-cotizar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a0a;
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.2);
+        }
+
+        .pub-receso .btn-cotizar:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
+        }
 
         #app {
             display: none;
@@ -229,7 +317,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
             gap: 8px;
         }
 
@@ -237,8 +325,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-shrink: 0;
-            min-width: 0;
         }
 
         .header-left .ovj-studio {
@@ -280,9 +366,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: nowrap;
-            justify-content: flex-end;
-            min-width: 0;
+            flex-wrap: wrap;
         }
 
         .badge-rol {
@@ -521,6 +605,31 @@
             font-weight: 600;
         }
 
+        .badge-en-vivo {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--error);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            padding: 4px 10px 4px 8px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            border: 1px solid rgba(248, 113, 113, 0.15);
+            user-select: none;
+        }
+
+        .badge-en-vivo .punto {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background: var(--error);
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+        }
 
         @keyframes pulse {
             0% {
@@ -694,7 +803,6 @@
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
         }
-
 
         #estado {
             text-align: center;
@@ -1439,8 +1547,6 @@
                 transform: scale(1) translateY(0);
             }
         }
-
-
 
         .modal-desbloqueo-contenido .btn-cerrar-desbloqueo {
             position: absolute;
@@ -2551,643 +2657,6 @@
                 transition-duration: 0.01ms !important;
             }
         }
-
-        /* ===== BOTÓN DETRÁS DE CÁMARA ===== */
-        .btn-detras-camara {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 14px 7px 12px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            color: #fff;
-            isolation: isolate;
-            overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease;
-            box-shadow: 0 4px 18px rgba(155, 89, 182, 0.3);
-            animation: brilloDetras 4s ease-in-out infinite;
-        }
-
-        /* Fondo con gradiente animado */
-        .btn-detras-camara::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50px;
-            background: linear-gradient(120deg,
-                    #9b59b6 0%,
-                    #c13584 35%,
-                    #e1306c 55%,
-                    #c13584 75%,
-                    #9b59b6 100%);
-            background-size: 300% 300%;
-            z-index: -2;
-            animation: gradienteDetras 8s ease infinite;
-        }
-
-        /* Capa de brillo sutil */
-        .btn-detras-camara::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50px;
-            background: radial-gradient(circle at 30% 30%,
-                    rgba(255, 255, 255, 0.25),
-                    transparent 60%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        @keyframes gradienteDetras {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        @keyframes brilloDetras {
-
-            0%,
-            100% {
-                box-shadow: 0 4px 18px rgba(155, 89, 182, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 6px 24px rgba(225, 48, 108, 0.45);
-            }
-        }
-
-        .btn-detras-camara:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 8px 28px rgba(225, 48, 108, 0.55);
-        }
-
-        .btn-detras-camara:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .btn-detras-icono {
-            font-size: 0.95rem;
-            line-height: 1;
-            animation: balanceoCamara 3s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes balanceoCamara {
-
-            0%,
-            100% {
-                transform: rotate(-6deg);
-            }
-
-            50% {
-                transform: rotate(6deg);
-            }
-        }
-
-        .btn-detras-texto {
-            white-space: nowrap;
-        }
-
-        .btn-detras-contador {
-            background: rgba(255, 255, 255, 0.95);
-            color: #9b59b6;
-            font-size: 0.62rem;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 50px;
-            line-height: 1.4;
-            min-width: 18px;
-            text-align: center;
-        }
-
-        .btn-detras-punto {
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            width: 12px;
-            height: 12px;
-            background: var(--champagne);
-            border-radius: 50%;
-            border: 2px solid var(--bg);
-            animation: pulsoNovedadDetras 1.5s ease-in-out infinite;
-            box-shadow: 0 0 10px var(--champagne-glow);
-        }
-
-        @keyframes pulsoNovedadDetras {
-
-            0%,
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 10px var(--champagne-glow);
-            }
-
-            50% {
-                transform: scale(1.3);
-                box-shadow: 0 0 18px var(--champagne-glow);
-            }
-        }
-
-        /* Responsive: en móvil achicamos el texto */
-        @media (max-width: 600px) {
-            .btn-detras-camara {
-                padding: 6px 11px 6px 10px;
-                font-size: 0.68rem;
-                gap: 5px;
-            }
-
-            .btn-detras-icono {
-                font-size: 0.9rem;
-            }
-
-            .btn-detras-texto {
-                max-width: 62px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .btn-detras-contador {
-                font-size: 0.58rem;
-                padding: 1px 6px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .btn-detras-texto {
-                display: none;
-            }
-
-            .btn-detras-camara {
-                padding: 7px 10px;
-            }
-        }
-
-        /* ===== INDICADOR EN VIVO FLOTANTE ===== */
-        .indicador-vivo {
-            position: fixed;
-            bottom: 18px;
-            left: 18px;
-            z-index: 200;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 14px 7px 12px;
-            background: rgba(20, 20, 23, 0.85);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(248, 113, 113, 0.35);
-            border-radius: 50px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(248, 113, 113, 0.1) inset;
-            user-select: none;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .indicador-vivo-punto {
-            position: relative;
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--error);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
-        }
-
-        .indicador-vivo-punto::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: rgba(248, 113, 113, 0.5);
-            animation: pulsoIndicadorVivo 1.8s ease-out infinite;
-        }
-
-        @keyframes pulsoIndicadorVivo {
-            0% {
-                transform: scale(0.6);
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: scale(2.2);
-                opacity: 0;
-            }
-        }
-
-        .indicador-vivo-texto {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #fca5a5;
-            white-space: nowrap;
-        }
-
-        /* Ajuste responsive en móvil */
-        @media (max-width: 600px) {
-            .indicador-vivo {
-                bottom: 14px;
-                left: 14px;
-                padding: 6px 12px 6px 10px;
-            }
-
-            .indicador-vivo-texto {
-                font-size: 0.62rem;
-                letter-spacing: 1.2px;
-            }
-
-            .indicador-vivo-punto {
-                width: 7px;
-                height: 7px;
-            }
-        }
-
-        /* Ocultar texto de botones admin en móvil muy chico */
-        @media (max-width: 420px) {
-            .btn-admin-texto {
-                display: none;
-            }
-        }
-
-        /* ===== 🔥 PUNTO 14: BANNER DE AFORO ===== */
-        .banner-aforo {
-            max-width: 700px;
-            margin: 0 auto 14px;
-            padding: 12px 18px;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.02));
-            border: 1px solid rgba(251, 191, 36, 0.35);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .banner-aforo:hover {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.05));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
-        }
-
-        .banner-aforo .icono {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .banner-aforo .info {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .banner-aforo .info strong {
-            font-size: 0.85rem;
-            color: var(--aviso);
-            font-weight: 700;
-        }
-
-        .banner-aforo .info span {
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-        }
-
-        .banner-aforo .flecha {
-            font-size: 1.3rem;
-            color: var(--aviso);
-            opacity: 0.6;
-            flex-shrink: 0;
-        }
-
-        /* ===== 🔥 PUNTO 14: MODAL NOMBRE ===== */
-        .modal-nombre {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 2600;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(16px);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-nombre.activo {
-            display: flex;
-        }
-
-        .modal-nombre-contenido {
-            background: linear-gradient(135deg, var(--bg-card), #1a1a1e);
-            border: 1px solid rgba(232, 196, 122, 0.3);
-            border-radius: 24px;
-            padding: 40px 28px 32px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            animation: entradaDesbloqueo 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-nombre-contenido .emoji-grande {
-            font-size: 3.5rem;
-            display: block;
-            margin-bottom: 16px;
-        }
-
-        .modal-nombre-contenido .titulo {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--champagne);
-            margin-bottom: 8px;
-        }
-
-        .modal-nombre-contenido .subtitulo {
-            font-size: 0.85rem;
-            color: var(--texto-suave);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        .modal-nombre-contenido input {
-            width: 100%;
-            padding: 16px 18px;
-            border-radius: 14px;
-            border: 1px solid var(--borde);
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            font-family: inherit;
-            margin-bottom: 14px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .modal-nombre-contenido input:focus {
-            border-color: rgba(232, 196, 122, 0.5);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 4px rgba(232, 196, 122, 0.08);
-        }
-
-        .modal-nombre-contenido .btn-confirmar-nombre {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 14px;
-            border: none;
-            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
-            color: #0a0a0a;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 25px rgba(232, 196, 122, 0.25);
-        }
-
-        .modal-nombre-contenido .btn-confirmar-nombre:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 10px 35px rgba(232, 196, 122, 0.4);
-        }
-
-        .modal-nombre-contenido .btn-confirmar-nombre:disabled {
-            opacity: 0.5;
-            cursor: wait;
-            pointer-events: none;
-        }
-
-        /* ===== 🔥 PUNTO 14: MODAL GENERALES ===== */
-        .modal-generales {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 2600;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(16px);
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .modal-generales.activo {
-            display: flex;
-        }
-
-        .modal-generales-contenido {
-            background: var(--bg-card);
-            border: 1px solid var(--borde-hover);
-            border-radius: 20px;
-            padding: 28px 22px 22px;
-            max-width: 480px;
-            width: 100%;
-            margin: 20px auto;
-            animation: entradaCinematografica 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: var(--sombra-fuerte);
-            position: relative;
-        }
-
-        .modal-generales-contenido .emoji-grande {
-            font-size: 2.5rem;
-            display: block;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .modal-generales-contenido .titulo {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #93c5fd;
-            margin-bottom: 6px;
-            text-align: center;
-        }
-
-        .modal-generales-contenido .subtitulo {
-            font-size: 0.8rem;
-            color: var(--texto-suave);
-            margin-bottom: 18px;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .lista-generales {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 14px;
-        }
-
-        .item-general {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--borde);
-            border-radius: 12px;
-            margin-bottom: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .item-general.activo {
-            border-color: rgba(74, 222, 128, 0.3);
-        }
-
-        .item-general.en-receso {
-            opacity: 0.6;
-        }
-
-        .item-general .avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
-            color: #0a0a0a;
-            font-weight: 800;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .item-general .info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-general .nombre {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .item-general .meta {
-            font-size: 0.68rem;
-            color: var(--texto-tenue);
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .item-general .meta .estado {
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .item-general .meta .estado.activo {
-            background: rgba(74, 222, 128, 0.15);
-            color: #4ade80;
-        }
-
-        .item-general .meta .estado.receso {
-            background: rgba(251, 191, 36, 0.15);
-            color: var(--aviso);
-        }
-
-        .cargando-generales {
-            text-align: center;
-            color: var(--texto-tenue);
-            font-size: 0.8rem;
-            padding: 40px 20px;
-        }
-
-        /* ===== 🔥 PUNTO 14: MÉTRICAS DEL EVENTO ===== */
-        .metricas-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        .metrica-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--borde);
-            border-radius: 14px;
-            padding: 18px 14px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .metrica-card.activos {
-            border-color: rgba(74, 222, 128, 0.25);
-        }
-
-        .metrica-card.totales {
-            border-color: rgba(96, 165, 250, 0.25);
-        }
-
-        .metrica-card .emoji {
-            font-size: 1.6rem;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .metrica-card .valor {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #fff;
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-
-        .metrica-card.activos .valor {
-            color: #4ade80;
-        }
-
-        .metrica-card.totales .valor {
-            color: #93c5fd;
-        }
-
-        .metrica-card .etiqueta {
-            font-size: 0.68rem;
-            color: var(--texto-tenue);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-        }
-
-        .aviso-aforo {
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: 12px;
-            padding: 12px 14px;
-            font-size: 0.78rem;
-            color: var(--aviso);
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 14px;
-        }
-
-        .aviso-aforo strong {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .aviso-aforo.ok {
-            background: rgba(74, 222, 128, 0.08);
-            border-color: rgba(74, 222, 128, 0.25);
-            color: #4ade80;
-        }
     </style>
 </head>
 
@@ -3200,7 +2669,19 @@
                 Este es un evento exclusivo.<br>
                 Necesitas una invitación para acceder.
             </div>
+            <div class="countdown" id="bloqueoCountdown" style="display:none;"></div>
             <div class="marca">OVJ STUDIO</div>
+
+            <div class="pub-receso" id="pubReceso" style="display:none;">
+                <span class="emoji">✨</span>
+                <div class="texto">
+                    ¿Te gusta esta web?<br>
+                    <strong>Lleva esta misma tecnología a tu evento.</strong>
+                </div>
+                <button class="btn-cotizar" onclick="abrirWhatsAppPublicidad()">
+                    💬 Cotizar por WhatsApp
+                </button>
+            </div>
         </div>
     </div>
 
@@ -3212,21 +2693,19 @@
                     <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
-                    <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
+                    <button class="btn-admin-mini detras" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
                         style="display: none;">
-                        <span class="btn-detras-icono">📸</span>
-                        <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
-                        <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
-                        <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
+                        📸 <span id="textoDetras">Detrás</span>
+                        <span class="badge-novedad" id="badgeNovedadDetras" style="display: none;"></span>
                     </button>
 
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()"
                         style="display: none;">
-                        ✨ <span class="btn-admin-texto">Invitar</span>
+                        ✨ Invitar
                     </button>
                     <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()"
                         style="display: none;">
-                        🎫 <span class="btn-admin-texto">QR</span>
+                        🎫 QR
                     </button>
 
                     <div class="lang-selector" id="langSelector">
@@ -3250,6 +2729,11 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="badge-en-vivo">
+                        <span class="punto"></span>
+                        <span id="badgeEnVivo">En vivo</span>
+                    </div>
                 </div>
             </div>
             <div class="header-bottom">
@@ -3257,7 +2741,6 @@
             </div>
         </div>
 
-        <div id="bannerAforoContainer"></div>
         <div id="bannerMensajeContainer"></div>
 
         <div id="estado">Cargando...</div>
@@ -3266,7 +2749,6 @@
 
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
-
 
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
@@ -3416,59 +2898,8 @@
         </div>
     </div>
 
-    <!-- 🔥 PUNTO 14: Modal de nombre -->
-    <div class="modal-nombre" id="modalNombre">
-        <div class="modal-nombre-contenido">
-            <span class="emoji-grande">👋</span>
-            <div class="titulo">¿Cómo te llamas?</div>
-            <div class="subtitulo">
-                Para que el anfitrión sepa quién está en la galería.
-            </div>
-            <input type="text" id="inputNombreGeneral" placeholder="Tu nombre" maxlength="50" autocomplete="off" />
-            <button class="btn-confirmar-nombre" id="btnConfirmarNombre" onclick="confirmarNombreGeneral()">
-                Entrar a la galería
-            </button>
-        </div>
-    </div>
-
-    <!-- 🔥 PUNTO 14: Modal de métricas del evento -->
-    <div class="modal-generales" id="modalGenerales">
-        <div class="modal-generales-contenido">
-            <button class="btn-cerrar-instr" onclick="cerrarModalGenerales()">✕</button>
-            <span class="emoji-grande">📊</span>
-            <div class="titulo">Métricas del evento</div>
-            <div class="subtitulo" id="generalesSubtitulo">
-                Cargando...
-            </div>
-
-            <div class="metricas-grid" id="metricasGrid">
-                <div class="metrica-card activos">
-                    <span class="emoji">🟢</span>
-                    <div class="valor" id="metricaActivos">—</div>
-                    <div class="etiqueta">Activos ahora</div>
-                </div>
-                <div class="metrica-card totales">
-                    <span class="emoji">👥</span>
-                    <div class="valor" id="metricaTotales">—</div>
-                    <div class="etiqueta">Total generales</div>
-                </div>
-            </div>
-
-            <div class="aviso-aforo" id="avisoAforo" style="display:none;"></div>
-
-            <button class="btn-accion btn-secundario" onclick="cerrarModalGenerales()"
-                style="width:100%; padding:12px 18px; border-radius:12px; border:none; background:rgba(255,255,255,0.06); color:var(--texto-suave); font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
-                Cerrar
-            </button>
-        </div>
-    </div>
-
     <div class="toast-container" id="toastContainer"></div>
-    <!-- 🔴 Indicador EN VIVO flotante -->
-    <div class="indicador-vivo" id="indicadorVivo">
-        <span class="indicador-vivo-punto"></span>
-        <span class="indicador-vivo-texto" id="indicadorVivoTexto">En vivo</span>
-    </div>
+
     <script src="qrcode.min.js"></script>
     <script src="config.js"></script>
 
@@ -3480,9 +2911,6 @@
         const URL_CLOUDFLARE = _esLocalhost
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
-
-        // 🔥 Worker base (para /api/fotos y descargas en modo emergencia)
-        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || URL_CLOUDFLARE;
 
         const WHATSAPP_PUBLICIDAD = window.OVJ_CONFIG?.whatsappPublicidad || '59160004962';
         const CODIGO_PAIS_DEFECTO = "591";
@@ -3562,6 +2990,10 @@
             return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
         }
 
+        function getClaveMinijuegoNotificado() {
+            return 'ovj_minijuego_notificado_' + (EVENTO_ID || 'default');
+        }
+
         // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
@@ -3575,6 +3007,7 @@
         let tituloEsDefault = true;
 
         let invitacionGenerada = null;
+        let countdownInterval = null;
         let urlQrGeneralActual = null;
 
         let fotosVistas = new Set();
@@ -3591,12 +3024,9 @@
 
         let tipsMostrados = {
             primeraEntrada: false,
-            primeraDescarga: false
+            primeraDescarga: false,
+            primerReceso: false
         };
-
-        // 🔥 PUNTO 14: aforo y expulsión manual
-        let aforoActual = null;
-        let contadorAforoPoll = 0;
 
         // ==========================================
         // IDIOMA
@@ -3649,8 +3079,9 @@
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 tipIG: "💡 Una vez que nos sigas, toca 'Ya lo hice'",
+                tipMinijuegoGanaste: "🎉 ¡Ganaste! Reset de sesión + descargas completas",
                 mensajeTitulo: "📢 Mensaje del fotógrafo",
-                detrasBoton: "Detrás de cámara",
+                detrasBoton: "Detrás",
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
@@ -3707,8 +3138,9 @@
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 tipIG: "💡 Once you follow us, tap 'Done'",
+                tipMinijuegoGanaste: "🎉 You won! Session reset + full downloads",
                 mensajeTitulo: "📢 Photographer's message",
-                detrasBoton: "Behind the scenes",
+                detrasBoton: "Behind",
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
@@ -3765,8 +3197,9 @@
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 tipIG: "💡 关注后，点击 '已完成'",
+                tipMinijuegoGanaste: "🎉 你赢了！重置会话 + 完整下载次数",
                 mensajeTitulo: "📢 摄影师消息",
-                detrasBoton: "幕后花絮",
+                detrasBoton: "幕后",
                 detrasVacio: "摄影师还没有上传幕后照片。",
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
@@ -3804,7 +3237,7 @@
             document.documentElement.lang = idioma;
             document.title = t('tituloVentana');
 
-            document.getElementById('indicadorVivoTexto').textContent = t('enVivo');
+            document.getElementById('badgeEnVivo').textContent = t('enVivo');
             document.getElementById('langTextoActual').textContent = t('langTexto');
             document.getElementById('langBanderaActual').textContent = t('langBandera');
             document.getElementById('textoDetras').textContent = t('detrasBoton');
@@ -3920,13 +3353,26 @@
         // BLOQUEO / ACCESO
         // ==========================================
         function mostrarBloqueo(tipo, mensajeCustom) {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            document.getElementById('bloqueoCountdown').style.display = 'none';
+
+            const pubReceso = document.getElementById('pubReceso');
+            if (pubReceso && tipo !== 'receso') pubReceso.style.display = 'none';
+
             document.getElementById('bloqueo').classList.add('activo');
             document.getElementById('app').classList.remove('activo');
 
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
-                error: '❌'
+                reclamada: '⚠️',
+                error: '❌',
+                receso: '⏸️',
+                despedida: '👋',
+                saturacion: '⏸️'
             };
 
             document.getElementById('bloqueoIcono').textContent = iconos[tipo] || '🔒';
@@ -3934,6 +3380,46 @@
             if (mensajeCustom) {
                 document.getElementById('bloqueoMensaje').innerHTML = mensajeCustom;
             }
+        }
+
+        function mostrarReceso(minutos) {
+            mostrarBloqueo('receso', t('bloqueoReceso'));
+
+            const pubReceso = document.getElementById('pubReceso');
+            if (pubReceso) pubReceso.style.display = 'block';
+
+            if (!tipsMostrados.primerReceso) {
+                tipsMostrados.primerReceso = true;
+                setTimeout(() => mostrarToast(t('tipReceso'), 'tip'), 3000);
+            }
+
+            const el = document.getElementById('bloqueoCountdown');
+            el.style.display = 'block';
+
+            const finMs = Date.now() + minutos * 60 * 1000;
+
+            const actualizar = () => {
+                const restanteMs = finMs - Date.now();
+                if (restanteMs <= 0) {
+                    el.textContent = '0 min';
+                    if (countdownInterval) clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    return;
+                }
+                const m = Math.ceil(restanteMs / 60000);
+                el.textContent = t('bloqueoCountdown', m);
+            };
+
+            actualizar();
+            countdownInterval = setInterval(actualizar, 60000);
+        }
+
+        function mostrarDespedida() {
+            mostrarBloqueo('despedida', t('bloqueoDespedida'));
+        }
+
+        function mostrarSaturacion() {
+            mostrarBloqueo('saturacion', 'La web está en receso.<br>Vuelve en unos minutos.');
         }
 
         function cerrarSesionYBloquear() {
@@ -3994,6 +3480,20 @@
                     data
                 });
 
+                if (data.receso) {
+                    if (data.motivo === 'saturacion') {
+                        mostrarSaturacion();
+                    } else {
+                        mostrarReceso(data.reanudarEn || 30);
+                    }
+                    return false;
+                }
+
+                if (data.bloqueado) {
+                    mostrarDespedida();
+                    return false;
+                }
+
                 if (!respuesta.ok || !data.valido) {
                     console.log('❌ validarAcceso → BLOQUEADO:', {
                         ok: respuesta.ok,
@@ -4018,10 +3518,6 @@
 
                 if (data.tipo === 'general' && data.sesion) {
                     sesionGeneral = data.sesion;
-                    sesionGeneral.enReceso = !!data.enReceso;
-                    sesionGeneral.reanudarEn = data.enReceso
-                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
-                        : 0;
 
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
@@ -4040,11 +3536,6 @@
                     nombre: sesion.nombre,
                     id: sesion.id
                 });
-
-                // 🔥 PUNTO 14: si el server pide nombre, abrir modal
-                if (data.tipo === 'general' && data.requiereNombre) {
-                    setTimeout(() => abrirModalNombre(), 800);
-                }
 
                 return true;
 
@@ -4065,9 +3556,6 @@
             if (sesion.tipo === 'admin') {
                 btnInvitar.style.display = 'inline-flex';
                 btnQrGeneral.style.display = 'inline-flex';
-
-                // 🔥 PUNTO 14: cargar aforo si es admin
-                setTimeout(cargarAforoAdmin, 1500);
             } else {
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
@@ -4095,16 +3583,6 @@
                 el.textContent = t('contadorAdmin');
                 el.className = 'badge-rol admin';
             } else if (sesion.tipo === 'general' && sesionGeneral) {
-                if (sesionGeneral.enReceso) {
-                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
-                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
-                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
-
-                    el.textContent = `⏸️ Receso · ${min} min`;
-                    el.className = 'badge-rol agotado pulso';
-                    return;
-                }
-
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4125,187 +3603,6 @@
         }
 
         // ==========================================
-        // 🔥 PUNTO 14: REGISTRO DE NOMBRE
-        // ==========================================
-        let nombrePendiente = false;
-
-        function abrirModalNombre() {
-            nombrePendiente = true;
-            document.getElementById('modalNombre').classList.add('activo');
-            document.getElementById('inputNombreGeneral').value = '';
-            setTimeout(() => document.getElementById('inputNombreGeneral').focus(), 300);
-        }
-
-        async function confirmarNombreGeneral() {
-            const nombre = document.getElementById('inputNombreGeneral').value.trim();
-
-            if (nombre.length < 2) {
-                mostrarToast('Escribe tu nombre (mínimo 2 letras)', 'warning');
-                return;
-            }
-
-            const btn = document.getElementById('btnConfirmarNombre');
-            btn.disabled = true;
-            btn.textContent = 'Guardando...';
-
-            try {
-                const url = `${URL_CLOUDFLARE}/general/registrar-nombre?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre })
-                });
-
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    throw new Error(data.error || 'Error');
-                }
-
-                sesion.nombre = data.nombre;
-                nombrePendiente = false;
-                document.getElementById('modalNombre').classList.remove('activo');
-
-                actualizarBadgeRol();
-                mostrarToast(`👋 ¡Bienvenido, ${data.nombre}!`, 'success');
-
-            } catch (e) {
-                console.error('Error registrando nombre:', e);
-                mostrarToast('Error al guardar. Intenta de nuevo.', 'warning');
-                btn.disabled = false;
-                btn.textContent = 'Entrar a la galería';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const inputNombre = document.getElementById('inputNombreGeneral');
-            if (inputNombre) {
-                inputNombre.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') confirmarNombreGeneral();
-                });
-            }
-        });
-
-        async function cargarAforoAdmin() {
-            if (!sesion || sesion.tipo !== 'admin') return;
-
-            try {
-                const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url);
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) return;
-
-                aforoActual = data.aforo;
-
-                actualizarAvisoAforo();
-            } catch (e) {
-                console.error('Error cargando aforo:', e);
-            }
-        }
-
-        function actualizarAvisoAforo() {
-            if (!aforoActual || !sesion || sesion.tipo !== 'admin') return;
-
-            const cont = document.getElementById('bannerAforoContainer');
-
-            if (!aforoActual.excedido) {
-                cont.innerHTML = '';
-                return;
-            }
-
-            if (!document.getElementById('bannerAforo')) {
-                cont.innerHTML = `
-                    <div class="banner-aforo" id="bannerAforo" onclick="abrirModalGenerales()">
-                        <span class="icono">⚠️</span>
-                        <div class="info">
-                            <strong>${aforoActual.activos} generales activos</strong>
-                            <span>Contrataste ${aforoActual.limite}. Toca para ver detalles.</span>
-                        </div>
-                        <span class="flecha">›</span>
-                    </div>
-                `;
-            } else {
-                const banner = document.getElementById('bannerAforo');
-                banner.querySelector('.info strong').textContent = `${aforoActual.activos} generales activos`;
-                banner.querySelector('.info span').textContent = `Contrataste ${aforoActual.limite}. Toca para ver detalles.`;
-            }
-        }
-
-        async function abrirModalGenerales() {
-            document.getElementById('modalGenerales').classList.add('activo');
-            await cargarListaGenerales();
-        }
-
-        function cerrarModalGenerales() {
-            document.getElementById('modalGenerales').classList.remove('activo');
-        }
-
-        async function cargarListaGenerales() {
-            const subtitulo = document.getElementById('generalesSubtitulo');
-            const metricaActivos = document.getElementById('metricaActivos');
-            const metricaTotales = document.getElementById('metricaTotales');
-            const avisoAforo = document.getElementById('avisoAforo');
-
-            subtitulo.textContent = 'Cargando...';
-            metricaActivos.textContent = '—';
-            metricaTotales.textContent = '—';
-            avisoAforo.style.display = 'none';
-
-            try {
-                const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url);
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    subtitulo.textContent = 'Error al cargar';
-                    return;
-                }
-
-                const aforo = data.aforo || {};
-                const totalGenerales = data.totalGenerales || 0;
-
-                aforoActual = aforo;
-
-                // Actualizar contadores
-                metricaActivos.textContent = aforo.activos || 0;
-                metricaTotales.textContent = totalGenerales;
-
-                // Subtítulo
-                subtitulo.innerHTML = aforo.excedido
-                    ? `<strong style="color:var(--aviso);">${aforo.activos} activos</strong> · Límite contratado: ${aforo.limite}`
-                    : `${aforo.activos || 0} activos · Límite contratado: ${aforo.limite || 20}`;
-
-                // Aviso de exceso
-                if (aforo.excedido) {
-                    avisoAforo.className = 'aviso-aforo';
-                    avisoAforo.style.display = 'block';
-                    avisoAforo.innerHTML = `
-                        ⚠️ Has superado el límite contratado por <strong>${aforo.extras}</strong>.<br>
-                        El sistema sigue funcionando normalmente.
-                    `;
-                } else {
-                    avisoAforo.className = 'aviso-aforo ok';
-                    avisoAforo.style.display = 'block';
-                    avisoAforo.innerHTML = `✓ Dentro del límite contratado`;
-                }
-
-            } catch (e) {
-                console.error('Error:', e);
-                subtitulo.textContent = 'Error de conexión';
-            }
-        }
-
-        // ==========================================
         // GALERÍA
         // ==========================================
         async function cargarFotos() {
@@ -4318,10 +3615,11 @@
                 estado.innerHTML = t('cargando');
                 estado.className = "cargando";
 
-                // 🔥 Va al Worker (con cache de 15s)
-                const url = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                // 🔥 TIMESTAMP PARA EVITAR CACHÉ DEL NAVEGADOR
+                const url = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                    `&t=${encodeURIComponent(TOKEN || '')}`;
+                    `&t=${encodeURIComponent(TOKEN || '')}` +
+                    `&_=${Date.now()}`;
 
                 const respuesta = await fetch(url, { cache: 'no-store' });
 
@@ -4329,6 +3627,19 @@
                     cerrarSesionYBloquear();
                     cargando = false;
                     return;
+                }
+
+                if (respuesta.status === 429) {
+                    const data = await respuesta.json();
+                    if (data.receso) {
+                        if (data.motivo === 'saturacion') {
+                            mostrarSaturacion();
+                        } else {
+                            mostrarReceso(data.reanudarEn || 30);
+                        }
+                        cargando = false;
+                        return;
+                    }
                 }
 
                 if (!respuesta.ok)
@@ -4358,22 +3669,10 @@
                     window._ultimoPoll = data.poll;
                 }
 
-                // 🔥 Actualizar estado de receso según lo que diga el server
-                if (sesionGeneral) {
-                    if (data.enReceso) {
-                        sesionGeneral.enReceso = true;
-                        sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
-                    } else if (sesionGeneral.enReceso) {
-                        // El server ya no reporta receso → terminó
-                        sesionGeneral.enReceso = false;
-                        sesionGeneral.reanudarEn = 0;
-                    }
-                }
-
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
+                procesarMinijuego(data.minijuego);
 
-                // 🔥 Combinar fotos normales + fotos de emergencia si estamos en emergencia
                 const nuevasFotos = data.fotos || [];
 
                 const ahora = Date.now();
@@ -4383,8 +3682,6 @@
                     if (!fotosVistas.has(f.nombre)) {
                         fotosRecienLlegadas.push(f);
                         fotosNuevasMap.set(f.nombre, ahora);
-                        // 🔥 Marcar como vista apenas llega, para que no reaparezca al recargar
-                        fotosVistas.add(f.nombre);
                     }
                 });
 
@@ -4418,54 +3715,73 @@
                     }
                 }
 
-                // 🔥 Guardar siempre las fotos vistas (no solo cuando hay nuevas)
-                guardarFotosVistas(fotosVistas);
-
                 actualizarEstado();
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
 
                 verificarMostrarDesbloqueo();
 
-                // 🔥 PUNTO 14: refrescar aforo cada ~5 polls si es admin
-                if (sesion.tipo === 'admin') {
-                    contadorAforoPoll++;
-                    if (contadorAforoPoll >= 5) {
-                        contadorAforoPoll = 0;
-                        cargarAforoAdmin();
-                    }
-                }
-
             } catch (error) {
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
-
-                // 🔥 Reintentar en 30s
-                clearTimeout(window._pollTimer);
-                window._pollTimer = setTimeout(cargarFotos, 30000);
-                cargando = false;
-                return;
             }
 
             cargando = false;
 
-            // 🔥 Programar próximo poll
-            // El jitter ya lo hace el server (calcularIntervaloPoll).
-            // Solo agregamos un piso mínimo de seguridad y pausa por visibilidad.
-            let segundos = 60;
-            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg > 0) {
-                segundos = window._ultimoPoll.intervaloBaseSeg;
+            if (servidorOnline) {
+                let segundos = 60;
+                if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
+                    segundos = window._ultimoPoll.intervaloBaseSeg;
+                }
+
+                if (window._primerPollHecho) {
+                    const variacion = segundos * 0.15;
+                    segundos = segundos + (Math.random() * variacion * 2) - variacion;
+                } else {
+                    window._primerPollHecho = true;
+                }
+
+                if (document.hidden) {
+                    segundos = segundos * 3;
+                }
+
+                if (segundos < 30) segundos = 30;
+
+                clearTimeout(window._pollTimer);
+                window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
             }
+        }
 
-            if (document.hidden) {
-                segundos = segundos * 3;
+        // ==========================================
+        // MINIJUEGO
+        // ==========================================
+        function procesarMinijuego(minijuego) {
+            if (!minijuego || !minijuego.finalizado) return;
+
+            const aplicadoEn = minijuego.aplicadoEn;
+            const clave = getClaveMinijuegoNotificado();
+            const yaNotificado = localStorage.getItem(clave);
+
+            if (yaNotificado === String(aplicadoEn)) return;
+
+            if (minijuego.ganadorDeviceId === getDispositivoId()) {
+                lanzarConfeti();
+                lanzarConfeti();
+                mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
+
+                if (sesionGeneral) {
+                    sesionGeneral.descargasSesion = 0;
+                }
+
+                localStorage.setItem(clave, String(aplicadoEn));
+
+                actualizarBadgeRol();
+                actualizarBotonPrincipal();
+                renderizarGaleria();
+            } else {
+                localStorage.setItem(clave, String(aplicadoEn));
             }
-
-            if (segundos < 30) segundos = 30;
-
-            clearTimeout(window._pollTimer);
-            window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
         }
 
         // ==========================================
@@ -4522,16 +3838,9 @@
         function procesarDetrasCamara(total, ultima) {
             const btnDetras = document.getElementById('btnDetrasCamara');
             const badgeNovedad = document.getElementById('badgeNovedadDetras');
-            const contador = document.getElementById('contadorDetrasBtn');
 
             if (total > 0) {
                 btnDetras.style.display = 'inline-flex';
-
-                // Actualizar contador
-                if (contador) {
-                    contador.textContent = String(total);
-                    contador.style.display = 'inline-block';
-                }
 
                 const ultimaVista = localStorage.getItem(getClaveDetrasVisto());
 
@@ -4634,7 +3943,6 @@
         // ==========================================
         function verificarMostrarDesbloqueo() {
             if (!sesion || sesion.tipo !== 'general' || !sesionGeneral) return;
-            if (sesionGeneral.enReceso) return;
             if (sesionGeneral.desbloqueoSocialUsado) return;
             if (sesionGeneral.desbloqueoSocialActivo === false) return;
             if (desbloqueoCerradoEnEstaSesion) return;
@@ -4770,17 +4078,6 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
-                if (sesionGeneral.enReceso) {
-                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
-                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
-                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
-
-                    btn.classList.add('agotado');
-                    icono.textContent = "⏸️";
-                    texto.textContent = `Descargas disponibles en ${min} min`;
-                    return;
-                }
-
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4788,7 +4085,7 @@
                 if (restantes <= 0) {
                     btn.classList.add('agotado');
                     icono.textContent = "⏸️";
-                    texto.textContent = "Descargas disponibles pronto";
+                    texto.textContent = t('sinCreditos');
                 } else {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
@@ -4815,10 +4112,7 @@
 
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
-                // 🔥 Fallback: si no viene url (ej: viene del status.json de B2),
-                // construirla desde el nombre
-                const urlImagen = foto.url
-                    || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+                const urlImagen = foto.url;
                 const esNueva = fotosNuevasMap.has(foto.nombre);
                 const esReciente = !!foto.esReciente && !esNueva;
 
@@ -4953,11 +4247,9 @@
                 const i = index + offset;
                 if (i >= 0 && i < fotosCache.length) {
                     const foto = fotosCache[i];
-                    if (foto && foto.nombre) {
-                        const urlImagen = foto.url
-                            || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+                    if (foto && foto.url) {
                         const img = new Image();
-                        img.src = urlImagen;
+                        img.src = foto.url;
                     }
                 }
             }
@@ -5019,7 +4311,7 @@
             if (index < 0) return;
 
             const foto = fotosCache[index];
-            if (!foto || !foto.nombre) return;
+            if (!foto || !foto.nombre || !foto.url) return;
 
             fotoSeleccionadaIndex = index;
 
@@ -5029,9 +4321,7 @@
             const fondo = document.getElementById("modalFondo");
             const modalImagen = document.getElementById("modalImagen");
 
-            const urlImagen = foto.url
-                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
-            modalImagen.src = urlImagen;
+            modalImagen.src = foto.url;
             modalImagen.alt = `Foto ${index + 1}`;
 
             modal.classList.add("activo");
@@ -5064,9 +4354,7 @@
 
             marcarFotoComoVista(foto.nombre);
 
-            const urlImagen = foto.url
-                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
-            document.getElementById("modalImagen").src = urlImagen;
+            document.getElementById("modalImagen").src = foto.url;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
             actualizarFlechas();
@@ -5095,12 +4383,6 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
-                if (sesionGeneral.enReceso) {
-                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
-                    mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
-                    return;
-                }
-
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 if (usadas >= total) {
@@ -5123,13 +4405,6 @@
             const foto = fotosCache[fotoSeleccionadaIndex];
             if (!foto || !foto.nombre) return;
 
-            // 🔥 Guard: si está en receso, no descargar
-            if (sesion && sesion.tipo === 'general' && sesionGeneral && sesionGeneral.enReceso) {
-                const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
-                mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
-                return;
-            }
-
             if (!FOTOGRAFO_ID || !EVENTO_ID || !TOKEN) {
                 alert('Faltan datos de acceso. Recargá la página.');
                 return;
@@ -5143,7 +4418,6 @@
             texto.textContent = t('descargando');
 
             try {
-                // ── FLUJO NORMAL ──
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
@@ -5171,14 +4445,18 @@
                     if (data.receso) {
                         btn.classList.remove('cargando-btn');
                         texto.textContent = textoOriginal;
-
-                        // Actualizar estado local
-                        if (sesionGeneral) {
-                            sesionGeneral.enReceso = true;
-                            sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
-                            actualizarBadgeRol();
-                            actualizarBotonPrincipal();
+                        if (data.motivo === 'saturacion') {
+                            mostrarSaturacion();
+                        } else {
+                            mostrarReceso(data.reanudarEn || 30);
                         }
+                        return;
+                    }
+
+                    if (data.bloqueado) {
+                        btn.classList.remove('cargando-btn');
+                        texto.textContent = textoOriginal;
+                        mostrarDespedida();
                         return;
                     }
                 }
@@ -5587,16 +4865,9 @@
             const modalQrGeneralActivo = document.getElementById('modalQrGeneral').classList.contains('activo');
             const modalDetrasActivo = document.getElementById('modalDetras').classList.contains('activo');
             const modalDesbloqueoActivo = document.getElementById('modalDesbloqueo').classList.contains('activo');
-            const modalNombreActivo = document.getElementById('modalNombre').classList.contains('activo');
-            const modalGeneralesActivo = document.getElementById('modalGenerales').classList.contains('activo');
 
             if (e.key === "Escape") {
-                if (modalNombreActivo) {
-                    // No cerrar el modal de nombre con ESC (es obligatorio)
-                    return;
-                }
-                if (modalGeneralesActivo) cerrarModalGenerales();
-                else if (modalDesbloqueoActivo) cerrarDesbloqueo();
+                if (modalDesbloqueoActivo) cerrarDesbloqueo();
                 else if (modalDetrasActivo) cerrarDetrasCamara();
                 else if (modalQrGeneralActivo) cerrarQrGeneral();
                 else if (modalResultadoActivo) cerrarResultado();
@@ -5605,7 +4876,7 @@
                 else cerrarLangMenu();
             }
 
-            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo || modalDesbloqueoActivo || modalNombreActivo || modalGeneralesActivo) return;
+            if (modalInvitarActivo || modalResultadoActivo || modalQrGeneralActivo || modalDetrasActivo || modalDesbloqueoActivo) return;
 
             if (e.key === "ArrowLeft") navegarFoto(-1);
             if (e.key === "ArrowRight") navegarFoto(1);
@@ -5629,10 +4900,6 @@
 
         document.getElementById('modalDetras').addEventListener('click', (e) => {
             if (e.target.id === 'modalDetras') cerrarDetrasCamara();
-        });
-
-        document.getElementById('modalGenerales').addEventListener('click', (e) => {
-            if (e.target.id === 'modalGenerales') cerrarModalGenerales();
         });
 
         // ==========================================
@@ -5685,19 +4952,6 @@
 
             cargarFotos();
             iniciarAvisosRotativos();
-
-            // 🔥 Countdown en vivo del receso (actualiza badge y botón cada 30s)
-            setInterval(() => {
-                if (sesionGeneral && sesionGeneral.enReceso) {
-                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
-                    if (reanudarEn > 0 && Date.now() >= reanudarEn) {
-                        sesionGeneral.enReceso = false;
-                        sesionGeneral.reanudarEn = 0;
-                    }
-                    actualizarBadgeRol();
-                    actualizarBotonPrincipal();
-                }
-            }, 30000);
         }
 
         inicializar();
