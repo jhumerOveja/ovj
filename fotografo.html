@@ -462,40 +462,6 @@
             color: var(--verde);
         }
 
-        /* Minijuego */
-        .card-minijuego {
-            background: linear-gradient(135deg, rgba(232, 196, 122, 0.1), rgba(232, 196, 122, 0.02));
-            border: 1px solid rgba(232, 196, 122, 0.3);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-minijuego .emoji {
-            font-size: 1.8rem;
-            flex-shrink: 0;
-        }
-
-        .card-minijuego .info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .card-minijuego .titulo {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--champagne);
-            margin-bottom: 3px;
-        }
-
-        .card-minijuego .detalle {
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-        }
-
         /* Mensaje activo */
         .card-mensaje {
             background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(52, 152, 219, 0.02));
@@ -598,16 +564,6 @@
 
         .btn-qr:hover:not(:disabled) {
             background: rgba(52, 152, 219, 0.2);
-        }
-
-        .btn-minijuego {
-            background: linear-gradient(135deg, #e8c47a, #d4a94a);
-            color: #0a0a0a;
-            box-shadow: 0 4px 20px rgba(232, 196, 122, 0.25);
-        }
-
-        .btn-minijuego:hover:not(:disabled) {
-            box-shadow: 0 8px 30px rgba(232, 196, 122, 0.4);
         }
 
         .btn-mensaje {
@@ -1435,22 +1391,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL MINIJUEGO ===== -->
-    <div class="modal" id="modalMinijuego">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarMinijuego()">✕</button>
-            <div class="titulo">🎁 Sorteo sorpresa</div>
-            <div class="subtitulo">
-                El sistema elegirá <strong>1 invitado activo al azar</strong>.<br>
-                El ganador recibirá <strong>reset de sesión</strong> (tiempo + descargas completas).<br><br>
-                Se necesitan al menos 5 invitados activos.
-            </div>
-
-            <button class="btn-primario" onclick="activarMinijuego()">🎲 Sortear ahora</button>
-            <button class="btn-secundario" onclick="cerrarMinijuego()">Cancelar</button>
-        </div>
-    </div>
-
     <!-- ===== MODAL MENSAJE EN VIVO ===== -->
     <div class="modal" id="modalMensaje">
         <div class="modal-contenido">
@@ -1560,7 +1500,6 @@
         let eventoActivo = null;
         let contadores = null;
         let tiempoEvento = null;
-        let minijuegoInfo = null;
         let mensajeInfo = null;
         let detrasCamaraInfo = null;
 
@@ -1776,7 +1715,6 @@
                 eventoActivo = estado.activo;
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
-                minijuegoInfo = estado.minijuego || null;
                 mensajeInfo = estado.mensajeFotografo || null;
                 detrasCamaraInfo = estado.detrasCamara || null;
 
@@ -1912,21 +1850,6 @@
                 `;
             }
 
-            let minijuegoHtml = '';
-            if (minijuegoInfo && minijuegoInfo.finalizado) {
-                minijuegoHtml = `
-                    <div class="card-minijuego">
-                        <span class="emoji">🎉</span>
-                        <div class="info">
-                            <div class="titulo">Sorteo realizado</div>
-                            <div class="detalle">
-                                Ganador: <strong>${escapeHtml(minijuegoInfo.ganadorNombre)}</strong><br>
-                                ${minijuegoInfo.totalParticipantes || 0} participantes · ${minijuegoInfo.aplicadoEn ? formatearHora(new Date(minijuegoInfo.aplicadoEn).toISOString()) : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
 
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
@@ -1941,9 +1864,6 @@
                 `;
             }
 
-            const puedeMinijuego = detrasCamaraInfo?.puedeUsarMinijuego !== false;
-            const minInv = detrasCamaraInfo?.minimoInvitados || 5;
-
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="seccion-titulo">Evento activo</div>
@@ -1956,15 +1876,11 @@
 
                         ${avisoTiempoHtml}
                         ${contadoresHtml}
-                        ${minijuegoHtml}
                         ${mensajeHtml}
 
                         <div class="acciones-grid">
                             <button class="btn-accion btn-subir full" onclick="abrirSubir()">
                                 📤 Subir fotos
-                            </button>
-                            <button class="btn-accion btn-minijuego" onclick="abrirMinijuego()" ${!puedeMinijuego ? 'disabled title="Se necesitan al menos ' + minInv + ' invitados activos"' : ''}>
-                                🎁 Sorteo
                             </button>
                             <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                                 💬 Mensaje
@@ -2395,35 +2311,6 @@
             } catch (error) {
                 console.error('Error generando QR grande:', error);
                 alert('No se pudo generar el QR.');
-            }
-        }
-
-        // ==========================================
-        // MINIJUEGO (Sorteo)
-        // ==========================================
-        function abrirMinijuego() {
-            $('modalMinijuego').classList.add('activo');
-        }
-
-        function cerrarMinijuego() {
-            $('modalMinijuego').classList.remove('activo');
-        }
-
-        async function activarMinijuego() {
-            if (!confirm('¿Sortear un ganador al azar entre los invitados activos?')) return;
-
-            loader(true);
-            try {
-                const data = await apiFetch('/fotografo/minijuego/activar', { method: 'POST' });
-
-                cerrarMinijuego();
-                toast(`🎉 Ganador: ${data.ganador.nombre} (${data.totalParticipantes} participantes)`, 'ok');
-                await cargarTodo();
-
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
             }
         }
 
