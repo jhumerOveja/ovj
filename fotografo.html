@@ -2671,11 +2671,13 @@
             if (subidaEnProceso) return;
 
             subidaEnProceso = true;
-            // 🔥 Pausar el refresh automático mientras subimos
+
+            // 🔥 Pausar el refresh automático para no saturar la cola del navegador
             if (intervalRefresh) {
                 clearInterval(intervalRefresh);
                 intervalRefresh = null;
             }
+
             $('btnCerrarSubir').disabled = true;
             $('btnCerrarSubir').textContent = 'Subiendo...';
 
@@ -2693,10 +2695,12 @@
                         subida.estado = 'error';
                     }
                     renderizarListaSubidas();
+
+                    // 🔥 Pausa entre fotos para que el navegador descongestione
+                    await new Promise(r => setTimeout(r, 300));
                 }
 
                 setTimeout(() => cargarTodo(), 2000);
-
             } finally {
                 subidaEnProceso = false;
                 $('btnCerrarSubir').disabled = false;
