@@ -155,94 +155,6 @@
             opacity: 0.5;
         }
 
-        .bloqueo .countdown {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--champagne);
-            margin-top: 20px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            animation: pulsoCountdown 2s ease-in-out infinite;
-        }
-
-        @keyframes pulsoCountdown {
-
-            0%,
-            100% {
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .pub-receso {
-            margin-top: 28px;
-            padding: 20px 18px;
-            background: linear-gradient(135deg,
-                    rgba(232, 196, 122, 0.08),
-                    rgba(232, 196, 122, 0.02));
-            border: 1px solid rgba(232, 196, 122, 0.2);
-            border-radius: 16px;
-            text-align: center;
-            max-width: 360px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: entradaPubReceso 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes entradaPubReceso {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .pub-receso .emoji {
-            font-size: 1.8rem;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .pub-receso .texto {
-            font-size: 0.78rem;
-            color: var(--texto-suave);
-            line-height: 1.5;
-            margin-bottom: 14px;
-        }
-
-        .pub-receso .texto strong {
-            color: var(--champagne);
-            font-weight: 700;
-        }
-
-        .pub-receso .btn-cotizar {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: #0a0a0a;
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: none;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-family: inherit;
-            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.2);
-        }
-
-        .pub-receso .btn-cotizar:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
-        }
 
         #app {
             display: none;
@@ -317,7 +229,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 8px;
         }
 
@@ -325,6 +237,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-shrink: 0;
+            min-width: 0;
         }
 
         .header-left .ovj-studio {
@@ -366,7 +280,9 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            min-width: 0;
         }
 
         .badge-rol {
@@ -605,31 +521,6 @@
             font-weight: 600;
         }
 
-        .badge-en-vivo {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(248, 113, 113, 0.1);
-            color: var(--error);
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            padding: 4px 10px 4px 8px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            border: 1px solid rgba(248, 113, 113, 0.15);
-            user-select: none;
-        }
-
-        .badge-en-vivo .punto {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            background: var(--error);
-            border-radius: 50%;
-            animation: pulse 1.8s infinite;
-            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
-        }
 
         @keyframes pulse {
             0% {
@@ -1548,6 +1439,8 @@
                 transform: scale(1) translateY(0);
             }
         }
+
+
 
         .modal-desbloqueo-contenido .btn-cerrar-desbloqueo {
             position: absolute;
@@ -2658,6 +2551,276 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ===== BOTÓN DETRÁS DE CÁMARA ===== */
+        .btn-detras-camara {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px 7px 12px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #fff;
+            isolation: isolate;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+            box-shadow: 0 4px 18px rgba(155, 89, 182, 0.3);
+            animation: brilloDetras 4s ease-in-out infinite;
+        }
+
+        /* Fondo con gradiente animado */
+        .btn-detras-camara::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: linear-gradient(120deg,
+                    #9b59b6 0%,
+                    #c13584 35%,
+                    #e1306c 55%,
+                    #c13584 75%,
+                    #9b59b6 100%);
+            background-size: 300% 300%;
+            z-index: -2;
+            animation: gradienteDetras 8s ease infinite;
+        }
+
+        /* Capa de brillo sutil */
+        .btn-detras-camara::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: radial-gradient(circle at 30% 30%,
+                    rgba(255, 255, 255, 0.25),
+                    transparent 60%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes gradienteDetras {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes brilloDetras {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 18px rgba(155, 89, 182, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 6px 24px rgba(225, 48, 108, 0.45);
+            }
+        }
+
+        .btn-detras-camara:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 28px rgba(225, 48, 108, 0.55);
+        }
+
+        .btn-detras-camara:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-detras-icono {
+            font-size: 0.95rem;
+            line-height: 1;
+            animation: balanceoCamara 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes balanceoCamara {
+
+            0%,
+            100% {
+                transform: rotate(-6deg);
+            }
+
+            50% {
+                transform: rotate(6deg);
+            }
+        }
+
+        .btn-detras-texto {
+            white-space: nowrap;
+        }
+
+        .btn-detras-contador {
+            background: rgba(255, 255, 255, 0.95);
+            color: #9b59b6;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 50px;
+            line-height: 1.4;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .btn-detras-punto {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 12px;
+            height: 12px;
+            background: var(--champagne);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+            animation: pulsoNovedadDetras 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--champagne-glow);
+        }
+
+        @keyframes pulsoNovedadDetras {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px var(--champagne-glow);
+            }
+
+            50% {
+                transform: scale(1.3);
+                box-shadow: 0 0 18px var(--champagne-glow);
+            }
+        }
+
+        /* Responsive: en móvil achicamos el texto */
+        @media (max-width: 600px) {
+            .btn-detras-camara {
+                padding: 6px 11px 6px 10px;
+                font-size: 0.68rem;
+                gap: 5px;
+            }
+
+            .btn-detras-icono {
+                font-size: 0.9rem;
+            }
+
+            .btn-detras-texto {
+                max-width: 62px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .btn-detras-contador {
+                font-size: 0.58rem;
+                padding: 1px 6px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .btn-detras-texto {
+                display: none;
+            }
+
+            .btn-detras-camara {
+                padding: 7px 10px;
+            }
+        }
+
+        /* ===== INDICADOR EN VIVO FLOTANTE ===== */
+        .indicador-vivo {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px 7px 12px;
+            background: rgba(20, 20, 23, 0.85);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            border-radius: 50px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(248, 113, 113, 0.1) inset;
+            user-select: none;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .indicador-vivo-punto {
+            position: relative;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
+        }
+
+        .indicador-vivo-punto::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(248, 113, 113, 0.5);
+            animation: pulsoIndicadorVivo 1.8s ease-out infinite;
+        }
+
+        @keyframes pulsoIndicadorVivo {
+            0% {
+                transform: scale(0.6);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        .indicador-vivo-texto {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fca5a5;
+            white-space: nowrap;
+        }
+
+        /* Ajuste responsive en móvil */
+        @media (max-width: 600px) {
+            .indicador-vivo {
+                bottom: 14px;
+                left: 14px;
+                padding: 6px 12px 6px 10px;
+            }
+
+            .indicador-vivo-texto {
+                font-size: 0.62rem;
+                letter-spacing: 1.2px;
+            }
+
+            .indicador-vivo-punto {
+                width: 7px;
+                height: 7px;
+            }
+        }
+
+        /* Ocultar texto de botones admin en móvil muy chico */
+        @media (max-width: 420px) {
+            .btn-admin-texto {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -2670,19 +2833,7 @@
                 Este es un evento exclusivo.<br>
                 Necesitas una invitación para acceder.
             </div>
-            <div class="countdown" id="bloqueoCountdown" style="display:none;"></div>
             <div class="marca">OVJ STUDIO</div>
-
-            <div class="pub-receso" id="pubReceso" style="display:none;">
-                <span class="emoji">✨</span>
-                <div class="texto">
-                    ¿Te gusta esta web?<br>
-                    <strong>Lleva esta misma tecnología a tu evento.</strong>
-                </div>
-                <button class="btn-cotizar" onclick="abrirWhatsAppPublicidad()">
-                    💬 Cotizar por WhatsApp
-                </button>
-            </div>
         </div>
     </div>
 
@@ -2694,19 +2845,21 @@
                     <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
-                    <button class="btn-admin-mini detras" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
+                    <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
                         style="display: none;">
-                        📸 <span id="textoDetras">Detrás</span>
-                        <span class="badge-novedad" id="badgeNovedadDetras" style="display: none;"></span>
+                        <span class="btn-detras-icono">📸</span>
+                        <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
+                        <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
+                        <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
                     </button>
 
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()"
                         style="display: none;">
-                        ✨ Invitar
+                        ✨ <span class="btn-admin-texto">Invitar</span>
                     </button>
                     <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()"
                         style="display: none;">
-                        🎫 QR
+                        🎫 <span class="btn-admin-texto">QR</span>
                     </button>
 
                     <div class="lang-selector" id="langSelector">
@@ -2730,11 +2883,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="badge-en-vivo">
-                        <span class="punto"></span>
-                        <span id="badgeEnVivo">En vivo</span>
-                    </div>
                 </div>
             </div>
             <div class="header-bottom">
@@ -2750,6 +2898,7 @@
 
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
+
 
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
@@ -2900,7 +3049,11 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-
+    <!-- 🔴 Indicador EN VIVO flotante -->
+    <div class="indicador-vivo" id="indicadorVivo">
+        <span class="indicador-vivo-punto"></span>
+        <span class="indicador-vivo-texto" id="indicadorVivoTexto">En vivo</span>
+    </div>
     <script src="qrcode.min.js"></script>
     <script src="config.js"></script>
 
@@ -2994,10 +3147,6 @@
             return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
         }
 
-        function getClaveMinijuegoNotificado() {
-            return 'ovj_minijuego_notificado_' + (EVENTO_ID || 'default');
-        }
-
         // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
@@ -3011,7 +3160,6 @@
         let tituloEsDefault = true;
 
         let invitacionGenerada = null;
-        let countdownInterval = null;
         let urlQrGeneralActual = null;
 
         let fotosVistas = new Set();
@@ -3028,8 +3176,7 @@
 
         let tipsMostrados = {
             primeraEntrada: false,
-            primeraDescarga: false,
-            primerReceso: false
+            primeraDescarga: false
         };
 
         // ==========================================
@@ -3083,9 +3230,8 @@
                 tipRecarga: "💡 Recargar no acelera las fotos. Se actualizan solas",
                 tipReceso: "💡 Vuelve en un rato para más fotos",
                 tipIG: "💡 Una vez que nos sigas, toca 'Ya lo hice'",
-                tipMinijuegoGanaste: "🎉 ¡Ganaste! Reset de sesión + descargas completas",
                 mensajeTitulo: "📢 Mensaje del fotógrafo",
-                detrasBoton: "Detrás",
+                detrasBoton: "Detrás de cámara",
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
@@ -3142,9 +3288,8 @@
                 tipRecarga: "💡 Refreshing won't speed up photos. They update automatically",
                 tipReceso: "💡 Come back in a while for more photos",
                 tipIG: "💡 Once you follow us, tap 'Done'",
-                tipMinijuegoGanaste: "🎉 You won! Session reset + full downloads",
                 mensajeTitulo: "📢 Photographer's message",
-                detrasBoton: "Behind",
+                detrasBoton: "Behind the scenes",
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
@@ -3201,9 +3346,8 @@
                 tipRecarga: "💡 刷新不会加快照片更新，它们会自动更新",
                 tipReceso: "💡 稍后再来查看更多照片",
                 tipIG: "💡 关注后，点击 '已完成'",
-                tipMinijuegoGanaste: "🎉 你赢了！重置会话 + 完整下载次数",
                 mensajeTitulo: "📢 摄影师消息",
-                detrasBoton: "幕后",
+                detrasBoton: "幕后花絮",
                 detrasVacio: "摄影师还没有上传幕后照片。",
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
@@ -3241,7 +3385,7 @@
             document.documentElement.lang = idioma;
             document.title = t('tituloVentana');
 
-            document.getElementById('badgeEnVivo').textContent = t('enVivo');
+            document.getElementById('indicadorVivoTexto').textContent = t('enVivo');
             document.getElementById('langTextoActual').textContent = t('langTexto');
             document.getElementById('langBanderaActual').textContent = t('langBandera');
             document.getElementById('textoDetras').textContent = t('detrasBoton');
@@ -3357,26 +3501,13 @@
         // BLOQUEO / ACCESO
         // ==========================================
         function mostrarBloqueo(tipo, mensajeCustom) {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
-            document.getElementById('bloqueoCountdown').style.display = 'none';
-
-            const pubReceso = document.getElementById('pubReceso');
-            if (pubReceso && tipo !== 'receso') pubReceso.style.display = 'none';
-
             document.getElementById('bloqueo').classList.add('activo');
             document.getElementById('app').classList.remove('activo');
 
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
-                reclamada: '⚠️',
-                error: '❌',
-                receso: '⏸️',
-                despedida: '👋',
-                saturacion: '⏸️'
+                error: '❌'
             };
 
             document.getElementById('bloqueoIcono').textContent = iconos[tipo] || '🔒';
@@ -3384,46 +3515,6 @@
             if (mensajeCustom) {
                 document.getElementById('bloqueoMensaje').innerHTML = mensajeCustom;
             }
-        }
-
-        function mostrarReceso(minutos) {
-            mostrarBloqueo('receso', t('bloqueoReceso'));
-
-            const pubReceso = document.getElementById('pubReceso');
-            if (pubReceso) pubReceso.style.display = 'block';
-
-            if (!tipsMostrados.primerReceso) {
-                tipsMostrados.primerReceso = true;
-                setTimeout(() => mostrarToast(t('tipReceso'), 'tip'), 3000);
-            }
-
-            const el = document.getElementById('bloqueoCountdown');
-            el.style.display = 'block';
-
-            const finMs = Date.now() + minutos * 60 * 1000;
-
-            const actualizar = () => {
-                const restanteMs = finMs - Date.now();
-                if (restanteMs <= 0) {
-                    el.textContent = '0 min';
-                    if (countdownInterval) clearInterval(countdownInterval);
-                    countdownInterval = null;
-                    return;
-                }
-                const m = Math.ceil(restanteMs / 60000);
-                el.textContent = t('bloqueoCountdown', m);
-            };
-
-            actualizar();
-            countdownInterval = setInterval(actualizar, 60000);
-        }
-
-        function mostrarDespedida() {
-            mostrarBloqueo('despedida', t('bloqueoDespedida'));
-        }
-
-        function mostrarSaturacion() {
-            mostrarBloqueo('saturacion', 'La web está en receso.<br>Vuelve en unos minutos.');
         }
 
         function cerrarSesionYBloquear() {
@@ -3484,20 +3575,6 @@
                     data
                 });
 
-                if (data.receso) {
-                    if (data.motivo === 'saturacion') {
-                        mostrarSaturacion();
-                    } else {
-                        mostrarReceso(data.reanudarEn || 30);
-                    }
-                    return false;
-                }
-
-                if (data.bloqueado) {
-                    mostrarDespedida();
-                    return false;
-                }
-
                 if (!respuesta.ok || !data.valido) {
                     console.log('❌ validarAcceso → BLOQUEADO:', {
                         ok: respuesta.ok,
@@ -3522,6 +3599,10 @@
 
                 if (data.tipo === 'general' && data.sesion) {
                     sesionGeneral = data.sesion;
+                    sesionGeneral.enReceso = !!data.enReceso;
+                    sesionGeneral.reanudarEn = data.enReceso
+                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
+                        : 0;
 
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
@@ -3587,6 +3668,16 @@
                 el.textContent = t('contadorAdmin');
                 el.className = 'badge-rol admin';
             } else if (sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
+                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
+
+                    el.textContent = `⏸️ Receso · ${min} min`;
+                    el.className = 'badge-rol agotado pulso';
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -3632,19 +3723,6 @@
                     return;
                 }
 
-                if (respuesta.status === 429) {
-                    const data = await respuesta.json();
-                    if (data.receso) {
-                        if (data.motivo === 'saturacion') {
-                            mostrarSaturacion();
-                        } else {
-                            mostrarReceso(data.reanudarEn || 30);
-                        }
-                        cargando = false;
-                        return;
-                    }
-                }
-
                 if (!respuesta.ok)
                     throw new Error(`HTTP ${respuesta.status}`);
 
@@ -3672,9 +3750,20 @@
                     window._ultimoPoll = data.poll;
                 }
 
+                // 🔥 Actualizar estado de receso según lo que diga el server
+                if (sesionGeneral) {
+                    if (data.enReceso) {
+                        sesionGeneral.enReceso = true;
+                        sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                    } else if (sesionGeneral.enReceso) {
+                        // El server ya no reporta receso → terminó
+                        sesionGeneral.enReceso = false;
+                        sesionGeneral.reanudarEn = 0;
+                    }
+                }
+
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
-                procesarMinijuego(data.minijuego);
 
                 // 🔥 Combinar fotos normales + fotos de emergencia si estamos en emergencia
                 const nuevasFotos = data.fotos || [];
@@ -3686,6 +3775,8 @@
                     if (!fotosVistas.has(f.nombre)) {
                         fotosRecienLlegadas.push(f);
                         fotosNuevasMap.set(f.nombre, ahora);
+                        // 🔥 Marcar como vista apenas llega, para que no reaparezca al recargar
+                        fotosVistas.add(f.nombre);
                     }
                 });
 
@@ -3719,6 +3810,9 @@
                     }
                 }
 
+                // 🔥 Guardar siempre las fotos vistas (no solo cuando hay nuevas)
+                guardarFotosVistas(fotosVistas);
+
                 actualizarEstado();
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
@@ -3729,64 +3823,32 @@
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
+
+                // 🔥 Reintentar en 30s
+                clearTimeout(window._pollTimer);
+                window._pollTimer = setTimeout(cargarFotos, 30000);
+                cargando = false;
+                return;
             }
 
             cargando = false;
 
             // 🔥 Programar próximo poll
-            // En emergencia, poleamos más seguido para detectar la reconexión
+            // El jitter ya lo hace el server (calcularIntervaloPoll).
+            // Solo agregamos un piso mínimo de seguridad y pausa por visibilidad.
             let segundos = 60;
-            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg) {
+            if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg > 0) {
                 segundos = window._ultimoPoll.intervaloBaseSeg;
-            }
-
-            if (window._primerPollHecho) {
-                const variacion = segundos * 0.15;
-                segundos = segundos + (Math.random() * variacion * 2) - variacion;
-            } else {
-                window._primerPollHecho = true;
             }
 
             if (document.hidden) {
                 segundos = segundos * 3;
             }
 
-
             if (segundos < 30) segundos = 30;
 
             clearTimeout(window._pollTimer);
             window._pollTimer = setTimeout(cargarFotos, segundos * 1000);
-        }
-
-        // ==========================================
-        // MINIJUEGO
-        // ==========================================
-        function procesarMinijuego(minijuego) {
-            if (!minijuego || !minijuego.finalizado) return;
-
-            const aplicadoEn = minijuego.aplicadoEn;
-            const clave = getClaveMinijuegoNotificado();
-            const yaNotificado = localStorage.getItem(clave);
-
-            if (yaNotificado === String(aplicadoEn)) return;
-
-            if (minijuego.ganadorDeviceId === getDispositivoId()) {
-                lanzarConfeti();
-                lanzarConfeti();
-                mostrarToast(t('tipMinijuegoGanaste'), 'success', 10000);
-
-                if (sesionGeneral) {
-                    sesionGeneral.descargasSesion = 0;
-                }
-
-                localStorage.setItem(clave, String(aplicadoEn));
-
-                actualizarBadgeRol();
-                actualizarBotonPrincipal();
-                renderizarGaleria();
-            } else {
-                localStorage.setItem(clave, String(aplicadoEn));
-            }
         }
 
         // ==========================================
@@ -3843,9 +3905,16 @@
         function procesarDetrasCamara(total, ultima) {
             const btnDetras = document.getElementById('btnDetrasCamara');
             const badgeNovedad = document.getElementById('badgeNovedadDetras');
+            const contador = document.getElementById('contadorDetrasBtn');
 
             if (total > 0) {
                 btnDetras.style.display = 'inline-flex';
+
+                // Actualizar contador
+                if (contador) {
+                    contador.textContent = String(total);
+                    contador.style.display = 'inline-block';
+                }
 
                 const ultimaVista = localStorage.getItem(getClaveDetrasVisto());
 
@@ -3948,6 +4017,7 @@
         // ==========================================
         function verificarMostrarDesbloqueo() {
             if (!sesion || sesion.tipo !== 'general' || !sesionGeneral) return;
+            if (sesionGeneral.enReceso) return;
             if (sesionGeneral.desbloqueoSocialUsado) return;
             if (sesionGeneral.desbloqueoSocialActivo === false) return;
             if (desbloqueoCerradoEnEstaSesion) return;
@@ -4083,6 +4153,17 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
+                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
+
+                    btn.classList.add('agotado');
+                    icono.textContent = "⏸️";
+                    texto.textContent = `Descargas disponibles en ${min} min`;
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
@@ -4090,7 +4171,7 @@
                 if (restantes <= 0) {
                     btn.classList.add('agotado');
                     icono.textContent = "⏸️";
-                    texto.textContent = t('sinCreditos');
+                    texto.textContent = "Descargas disponibles pronto";
                 } else {
                     btn.classList.remove('agotado');
                     icono.textContent = "⬇️";
@@ -4397,6 +4478,12 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                if (sesionGeneral.enReceso) {
+                    const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                    mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
+                    return;
+                }
+
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 if (usadas >= total) {
@@ -4418,6 +4505,13 @@
 
             const foto = fotosCache[fotoSeleccionadaIndex];
             if (!foto || !foto.nombre) return;
+
+            // 🔥 Guard: si está en receso, no descargar
+            if (sesion && sesion.tipo === 'general' && sesionGeneral && sesionGeneral.enReceso) {
+                const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
+                mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
+                return;
+            }
 
             if (!FOTOGRAFO_ID || !EVENTO_ID || !TOKEN) {
                 alert('Faltan datos de acceso. Recargá la página.');
@@ -4460,18 +4554,14 @@
                     if (data.receso) {
                         btn.classList.remove('cargando-btn');
                         texto.textContent = textoOriginal;
-                        if (data.motivo === 'saturacion') {
-                            mostrarSaturacion();
-                        } else {
-                            mostrarReceso(data.reanudarEn || 30);
-                        }
-                        return;
-                    }
 
-                    if (data.bloqueado) {
-                        btn.classList.remove('cargando-btn');
-                        texto.textContent = textoOriginal;
-                        mostrarDespedida();
+                        // Actualizar estado local
+                        if (sesionGeneral) {
+                            sesionGeneral.enReceso = true;
+                            sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                            actualizarBadgeRol();
+                            actualizarBotonPrincipal();
+                        }
                         return;
                     }
                 }
@@ -4967,6 +5057,19 @@
 
             cargarFotos();
             iniciarAvisosRotativos();
+
+            // 🔥 Countdown en vivo del receso (actualiza badge y botón cada 30s)
+            setInterval(() => {
+                if (sesionGeneral && sesionGeneral.enReceso) {
+                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+                    if (reanudarEn > 0 && Date.now() >= reanudarEn) {
+                        sesionGeneral.enReceso = false;
+                        sesionGeneral.reanudarEn = 0;
+                    }
+                    actualizarBadgeRol();
+                    actualizarBotonPrincipal();
+                }
+            }, 30000);
         }
 
         inicializar();
