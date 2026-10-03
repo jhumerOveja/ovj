@@ -1910,8 +1910,8 @@
                         ${mensajeHtml}
 
                         <div class="acciones-grid">
-                            <button class="btn-accion btn-subir full" onclick="abrirSubir()">
-                                📤 Subir fotos
+                            <button class="btn-accion btn-subir full" onclick="abrirTelegram()">
+                                📤 Subir fotos desde Telegram
                             </button>
                             <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                                 💬 Mensaje
@@ -2665,6 +2665,14 @@
             }
 
             cont.innerHTML = html;
+        }
+
+        // ==========================================
+        // 🔥 MIGRACIÓN A TELEGRAM
+        // ==========================================
+        function abrirTelegram() {
+            // Abrir el bot en Telegram
+            window.open('https://t.me/ovj_foto_bot', '_blank');
         }
 
         async function procesarColaSubidas() {
