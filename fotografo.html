@@ -1,18 +1,25 @@
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>OVJ Studio · Panel Fotógrafo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         :root {
             --oro: #f39c12;
             --oro-claro: #f1c40f;
+            --champagne: #e8c47a;
             --verde: #2ecc71;
             --rojo: #e74c3c;
             --azul: #3498db;
+            --violeta: #9b59b6;
             --bg: #0a0a0a;
             --card: #141414;
             --card-borde: rgba(255, 215, 0, 0.15);
@@ -38,7 +45,10 @@
             align-items: center;
             padding: 20px;
         }
-        #pantallaLogin.activo { display: flex; }
+
+        #pantallaLogin.activo {
+            display: flex;
+        }
 
         .login-card {
             background: var(--card);
@@ -49,21 +59,25 @@
             width: 100%;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
         }
+
         .login-card .marca {
             text-align: center;
             margin-bottom: 24px;
         }
+
         .login-card .marca .ovj {
             font-size: 1.6rem;
             font-weight: 300;
             letter-spacing: 1px;
         }
+
         .login-card .marca .ovj span {
             font-weight: 700;
             background: linear-gradient(135deg, #f9d976, #f39c12);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .login-card .marca .rol {
             font-size: 0.75rem;
             color: var(--texto-tenue);
@@ -71,6 +85,7 @@
             margin-top: 4px;
             text-transform: uppercase;
         }
+
         .login-card label {
             display: block;
             font-size: 0.72rem;
@@ -79,6 +94,7 @@
             padding-left: 4px;
             letter-spacing: 0.3px;
         }
+
         .login-card input {
             width: 100%;
             padding: 14px 16px;
@@ -92,16 +108,19 @@
             margin-bottom: 16px;
             transition: all 0.2s;
         }
+
         .login-card input:focus {
             border-color: rgba(255, 215, 0, 0.4);
             background: rgba(255, 255, 255, 0.06);
         }
+
         .login-card input#inputPin {
             letter-spacing: 8px;
             text-align: center;
             font-size: 1.4rem;
             font-weight: 600;
         }
+
         .login-card .btn-login {
             width: 100%;
             padding: 15px 20px;
@@ -115,15 +134,18 @@
             transition: all 0.25s ease;
             font-family: inherit;
         }
+
         .login-card .btn-login:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
         }
+
         .login-card .btn-login:disabled {
             opacity: 0.5;
             cursor: wait;
             pointer-events: none;
         }
+
         .login-card .error-login {
             display: none;
             margin-top: 14px;
@@ -136,11 +158,19 @@
             text-align: center;
             line-height: 1.4;
         }
-        .login-card .error-login.activo { display: block; }
+
+        .login-card .error-login.activo {
+            display: block;
+        }
 
         /* ===== PANEL ===== */
-        #pantallaPanel { display: none; }
-        #pantallaPanel.activo { display: block; }
+        #pantallaPanel {
+            display: none;
+        }
+
+        #pantallaPanel.activo {
+            display: block;
+        }
 
         .header {
             display: flex;
@@ -153,27 +183,32 @@
             margin-left: auto;
             margin-right: auto;
         }
+
         .header-left .ovj {
             font-size: 1.3rem;
             font-weight: 300;
             letter-spacing: 1px;
         }
+
         .header-left .ovj span {
             font-weight: 700;
             background: linear-gradient(135deg, #f9d976, #f39c12);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .header-left .saludo {
             font-size: 0.72rem;
             color: var(--texto-tenue);
             margin-top: 2px;
             letter-spacing: 0.3px;
         }
+
         .header-left .saludo strong {
             color: var(--oro);
             font-weight: 600;
         }
+
         .header-right .btn-salir {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -186,6 +221,7 @@
             font-family: inherit;
             transition: all 0.2s;
         }
+
         .header-right .btn-salir:hover {
             background: rgba(231, 76, 60, 0.15);
             border-color: rgba(231, 76, 60, 0.3);
@@ -211,6 +247,7 @@
             color: var(--texto-suave);
             flex-wrap: wrap;
         }
+
         .barra-sistema .punto {
             display: inline-block;
             width: 7px;
@@ -220,17 +257,43 @@
             margin-right: 4px;
             vertical-align: middle;
         }
-        .barra-sistema .punto.ok { background: var(--verde); box-shadow: 0 0 8px rgba(46, 204, 113, 0.5); }
-        .barra-sistema .punto.error { background: var(--rojo); box-shadow: 0 0 8px rgba(231, 76, 60, 0.5); }
-        .barra-sistema .punto.cargando { background: var(--oro); animation: pulse 1.5s infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+
+        .barra-sistema .punto.ok {
+            background: var(--verde);
+            box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
         }
-        .barra-sistema .separador { color: #333; }
+
+        .barra-sistema .punto.error {
+            background: var(--rojo);
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+        }
+
+        .barra-sistema .punto.cargando {
+            background: var(--oro);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .barra-sistema .separador {
+            color: #333;
+        }
 
         /* ===== SECCIONES ===== */
-        .seccion { margin-bottom: 16px; }
+        .seccion {
+            margin-bottom: 16px;
+        }
+
         .seccion-titulo {
             font-size: 0.68rem;
             color: var(--texto-tenue);
@@ -249,10 +312,12 @@
             padding: 22px 20px;
             margin-bottom: 16px;
         }
+
         .card-activo.modo-libre {
             background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
             border-color: rgba(243, 156, 18, 0.3);
         }
+
         .card-activo .badge {
             display: inline-flex;
             align-items: center;
@@ -267,10 +332,12 @@
             text-transform: uppercase;
             margin-bottom: 12px;
         }
+
         .card-activo.modo-libre .badge {
             background: rgba(243, 156, 18, 0.15);
             color: var(--oro);
         }
+
         .card-activo .titulo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -280,12 +347,14 @@
             margin-bottom: 14px;
             word-break: break-word;
         }
+
         .card-activo .meta {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px 14px;
             margin-bottom: 18px;
         }
+
         .card-activo .meta-item {
             display: flex;
             align-items: center;
@@ -293,18 +362,55 @@
             font-size: 0.8rem;
             color: var(--texto-suave);
         }
+
         .card-activo .meta-item .emoji {
             font-size: 1rem;
             flex-shrink: 0;
         }
+
         .card-activo .meta-item strong {
             color: #fff;
             font-weight: 600;
         }
-        .card-activo .meta-item .creditos-bajo { color: var(--rojo); }
-        .card-activo .meta-item .creditos-ok { color: var(--verde); }
 
-        /* ===== CONTADORES ===== */
+        /* Tiempo restante */
+        .aviso-tiempo {
+            background: rgba(52, 152, 219, 0.08);
+            border: 1px solid rgba(52, 152, 219, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            font-size: 0.78rem;
+            color: #5dade2;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .aviso-tiempo .emoji {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .aviso-tiempo strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .aviso-tiempo.urgente {
+            background: rgba(243, 156, 18, 0.08);
+            border-color: rgba(243, 156, 18, 0.3);
+            color: var(--oro);
+        }
+
+        .aviso-tiempo.terminado {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: var(--rojo);
+        }
+
+        /* Contadores */
         .contadores-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -315,6 +421,7 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px;
         }
+
         .contador-item {
             display: flex;
             align-items: center;
@@ -322,44 +429,74 @@
             font-size: 0.78rem;
             color: var(--texto-suave);
         }
+
         .contador-item .emoji {
             font-size: 1.2rem;
             flex-shrink: 0;
         }
+
         .contador-item .info {
             flex: 1;
             min-width: 0;
         }
+
         .contador-item .valor {
             font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
             line-height: 1;
         }
+
         .contador-item .etiqueta {
             font-size: 0.65rem;
             color: var(--texto-tenue);
             margin-top: 2px;
             letter-spacing: 0.3px;
         }
-        .contador-item .valor.alerta { color: var(--rojo); }
-        .contador-item .valor.ok { color: var(--verde); }
 
-        /* Aviso de receso */
-        .aviso-receso {
-            background: rgba(231, 76, 60, 0.08);
-            border: 1px solid rgba(231, 76, 60, 0.25);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-            font-size: 0.8rem;
-            color: #e74c3c;
-            line-height: 1.5;
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .contador-item .valor.alerta {
+            color: var(--rojo);
         }
-        .aviso-receso .emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+        .contador-item .valor.ok {
+            color: var(--verde);
+        }
+
+        /* Mensaje activo */
+        .card-mensaje {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(52, 152, 219, 0.02));
+            border: 1px solid rgba(52, 152, 219, 0.25);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-mensaje .emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-mensaje .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-mensaje .titulo {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #5dade2;
+            margin-bottom: 4px;
+        }
+
+        .card-mensaje .texto {
+            font-size: 0.8rem;
+            color: #fff;
+            line-height: 1.4;
+            word-break: break-word;
+        }
 
         /* Botones de acciones */
         .acciones-grid {
@@ -367,7 +504,10 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        .acciones-grid .full { grid-column: 1 / -1; }
+
+        .acciones-grid .full {
+            grid-column: 1 / -1;
+        }
 
         .btn-accion {
             display: inline-flex;
@@ -385,51 +525,76 @@
             text-align: center;
             line-height: 1.2;
         }
+
         .btn-accion:disabled {
             opacity: 0.4;
             cursor: not-allowed;
             pointer-events: none;
         }
-        .btn-accion:hover:not(:disabled) { transform: scale(1.02); }
+
+        .btn-accion:hover:not(:disabled) {
+            transform: scale(1.02);
+        }
 
         .btn-subir {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: #0a0a0a;
             box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
         }
+
         .btn-subir:hover:not(:disabled) {
             box-shadow: 0 8px 30px rgba(46, 204, 113, 0.35);
         }
+
         .btn-admin {
             background: rgba(243, 156, 18, 0.12);
             border: 1px solid rgba(243, 156, 18, 0.35);
             color: var(--oro);
         }
-        .btn-admin:hover:not(:disabled) { background: rgba(243, 156, 18, 0.2); }
+
+        .btn-admin:hover:not(:disabled) {
+            background: rgba(243, 156, 18, 0.2);
+        }
+
         .btn-qr {
             background: rgba(52, 152, 219, 0.12);
             border: 1px solid rgba(52, 152, 219, 0.35);
             color: #5dade2;
         }
-        .btn-qr:hover:not(:disabled) { background: rgba(52, 152, 219, 0.2); }
-        .btn-ampliar {
-            background: rgba(155, 89, 182, 0.12);
-            border: 1px solid rgba(155, 89, 182, 0.35);
-            color: #bb8fce;
+
+        .btn-qr:hover:not(:disabled) {
+            background: rgba(52, 152, 219, 0.2);
         }
-        .btn-ampliar:hover:not(:disabled) { background: rgba(155, 89, 182, 0.2); }
-        .btn-creditos {
-            background: rgba(241, 196, 15, 0.12);
-            border: 1px solid rgba(241, 196, 15, 0.35);
-            color: var(--oro-claro);
+
+        .btn-mensaje {
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.4);
+            color: #5dade2;
         }
-        .btn-creditos:hover:not(:disabled) { background: rgba(241, 196, 15, 0.2); }
+
+        .btn-mensaje:hover:not(:disabled) {
+            background: rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-detras {
+            background: rgba(155, 89, 182, 0.15);
+            border: 1px solid rgba(155, 89, 182, 0.4);
+            color: #b794f4;
+        }
+
+        .btn-detras:hover:not(:disabled) {
+            background: rgba(155, 89, 182, 0.25);
+        }
+
         .btn-finalizar {
             background: rgba(231, 76, 60, 0.12);
             border: 1px solid rgba(231, 76, 60, 0.35);
             color: var(--rojo);
         }
-        .btn-finalizar:hover:not(:disabled) { background: rgba(231, 76, 60, 0.2); }
+
+        .btn-finalizar:hover:not(:disabled) {
+            background: rgba(231, 76, 60, 0.2);
+        }
 
         /* ===== CARD EVENTO AGENDADO ===== */
         .card-agendado {
@@ -440,11 +605,16 @@
             margin-bottom: 12px;
             transition: all 0.2s;
         }
-        .card-agendado:hover { border-color: rgba(243, 156, 18, 0.25); }
+
+        .card-agendado:hover {
+            border-color: rgba(243, 156, 18, 0.25);
+        }
+
         .card-agendado.vencido {
             opacity: 0.5;
             border-color: rgba(231, 76, 60, 0.2);
         }
+
         .card-agendado .titulo {
             font-size: 1.1rem;
             font-weight: 700;
@@ -453,20 +623,24 @@
             margin-bottom: 8px;
             word-break: break-word;
         }
+
         .card-agendado .fecha {
             font-size: 0.8rem;
             color: var(--texto-suave);
             margin-bottom: 4px;
         }
+
         .card-agendado .fecha strong {
             color: var(--oro);
             font-weight: 600;
         }
+
         .card-agendado .whatsapp {
             font-size: 0.72rem;
             color: var(--texto-tenue);
             margin-bottom: 12px;
         }
+
         .card-agendado .btn-activar {
             width: 100%;
             padding: 12px 16px;
@@ -480,24 +654,30 @@
             font-family: inherit;
             transition: all 0.2s;
         }
+
         .card-agendado .btn-activar:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 25px rgba(46, 204, 113, 0.25);
         }
+
         .card-agendado .btn-activar:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
         }
+
         .card-agendado .aviso-ventana {
             font-size: 0.7rem;
             color: var(--texto-tenue);
             margin-top: 8px;
             text-align: center;
         }
-        .card-agendado .aviso-ventana.no-puede { color: var(--rojo); }
 
-        /* ===== CARD VACÍO ===== */
+        .card-agendado .aviso-ventana.no-puede {
+            color: var(--rojo);
+        }
+
+        /* ===== CARD MODO LIBRE ===== */
         .card-vacio {
             background: var(--card);
             border: 1px dashed rgba(255, 255, 255, 0.08);
@@ -505,23 +685,27 @@
             padding: 30px 20px;
             text-align: center;
         }
+
         .card-vacio .emoji {
             font-size: 2rem;
             display: block;
             margin-bottom: 10px;
             opacity: 0.6;
         }
+
         .card-vacio .titulo {
             font-size: 0.95rem;
             color: var(--texto-suave);
             margin-bottom: 6px;
         }
+
         .card-vacio .subtitulo {
             font-size: 0.75rem;
             color: var(--texto-tenue);
             line-height: 1.5;
             margin-bottom: 16px;
         }
+
         .btn-modo-libre {
             width: 100%;
             padding: 14px 20px;
@@ -535,9 +719,27 @@
             font-family: inherit;
             transition: all 0.25s;
         }
+
         .btn-modo-libre:hover {
             background: rgba(243, 156, 18, 0.2);
             transform: scale(1.02);
+        }
+
+        .aviso-modo-libre {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 0.75rem;
+            color: #e74c3c;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .aviso-modo-libre strong {
+            color: #fff;
+            font-weight: 600;
         }
 
         /* ===== MODALES ===== */
@@ -545,15 +747,20 @@
             display: none;
             position: fixed;
             z-index: 1000;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             justify-content: center;
             align-items: center;
             padding: 20px;
             background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(12px);
         }
-        .modal.activo { display: flex; }
+
+        .modal.activo {
+            display: flex;
+        }
 
         .modal-contenido {
             background: var(--card);
@@ -568,10 +775,23 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
             position: relative;
         }
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+
+        .modal-contenido.grande {
+            max-width: 560px;
         }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         .modal-contenido .btn-cerrar {
             position: absolute;
             top: 12px;
@@ -590,10 +810,12 @@
             z-index: 10;
             font-family: inherit;
         }
+
         .modal-contenido .btn-cerrar:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
         }
+
         .modal-contenido .titulo {
             font-size: 1.15rem;
             font-weight: 700;
@@ -601,6 +823,7 @@
             margin-bottom: 6px;
             text-align: center;
         }
+
         .modal-contenido .subtitulo {
             font-size: 0.78rem;
             color: var(--texto-suave);
@@ -609,7 +832,9 @@
             line-height: 1.5;
         }
 
-        .modal-contenido input[type="text"] {
+        .modal-contenido input[type="text"],
+        .modal-contenido input[type="number"],
+        .modal-contenido textarea {
             width: 100%;
             padding: 14px 16px;
             border-radius: 12px;
@@ -620,8 +845,16 @@
             outline: none;
             font-family: inherit;
             margin-bottom: 16px;
+            resize: none;
         }
-        .modal-contenido input[type="text"]:focus {
+
+        .modal-contenido textarea {
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .modal-contenido input:focus,
+        .modal-contenido textarea:focus {
             border-color: rgba(255, 215, 0, 0.3);
         }
 
@@ -638,12 +871,17 @@
             font-family: inherit;
             transition: all 0.2s;
         }
-        .modal-contenido .btn-primario:hover { transform: scale(1.02); }
+
+        .modal-contenido .btn-primario:hover {
+            transform: scale(1.02);
+        }
+
         .modal-contenido .btn-primario:disabled {
             opacity: 0.5;
             cursor: wait;
             pointer-events: none;
         }
+
         .modal-contenido .btn-secundario {
             width: 100%;
             padding: 12px 20px;
@@ -657,9 +895,29 @@
             font-family: inherit;
             margin-top: 10px;
         }
+
         .modal-contenido .btn-secundario:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+        }
+
+        .modal-contenido .btn-peligro {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            background: rgba(231, 76, 60, 0.12);
+            color: var(--rojo);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .modal-contenido .btn-peligro:hover {
+            background: rgba(231, 76, 60, 0.2);
         }
 
         /* QR */
@@ -674,12 +932,14 @@
             width: 240px;
             height: 240px;
         }
+
         .qr-wrapper img {
             display: block;
             width: 220px;
             height: 220px;
             border-radius: 4px;
         }
+
         .url-box {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -696,80 +956,6 @@
             line-height: 1.4;
         }
 
-        /* Paquetes ampliación */
-        .paquete {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            width: 100%;
-            text-align: left;
-            color: inherit;
-        }
-        .paquete:hover {
-            background: rgba(155, 89, 182, 0.1);
-            border-color: rgba(155, 89, 182, 0.35);
-        }
-        .paquete .emoji {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        .paquete .info {
-            flex: 1;
-            min-width: 0;
-        }
-        .paquete .nombre {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 3px;
-        }
-        .paquete .detalle {
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-            line-height: 1.4;
-        }
-        .paquete .precio {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--oro);
-            flex-shrink: 0;
-        }
-
-        /* Créditos */
-        .credito-opcion {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 18px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            width: 100%;
-            color: inherit;
-            font-size: 0.9rem;
-        }
-        .credito-opcion:hover {
-            background: rgba(241, 196, 15, 0.1);
-            border-color: rgba(241, 196, 15, 0.35);
-        }
-        .credito-opcion .monto {
-            font-weight: 700;
-            color: var(--oro-claro);
-            font-size: 1.05rem;
-        }
-
         /* Subir fotos */
         .zona-drop {
             border: 2px dashed rgba(46, 204, 113, 0.3);
@@ -781,30 +967,37 @@
             background: rgba(46, 204, 113, 0.03);
             margin-bottom: 16px;
         }
-        .zona-drop:hover, .zona-drop.arrastrando {
+
+        .zona-drop:hover,
+        .zona-drop.arrastrando {
             border-color: rgba(46, 204, 113, 0.6);
             background: rgba(46, 204, 113, 0.08);
         }
+
         .zona-drop .icono {
             font-size: 2.2rem;
             display: block;
             margin-bottom: 8px;
         }
+
         .zona-drop .texto {
             font-size: 0.85rem;
             color: #ccc;
             font-weight: 500;
         }
+
         .zona-drop .subtexto {
             font-size: 0.7rem;
             color: var(--texto-tenue);
             margin-top: 6px;
         }
+
         .lista-subidas {
             max-height: 220px;
             overflow-y: auto;
             margin-bottom: 14px;
         }
+
         .item-subida {
             display: flex;
             align-items: center;
@@ -816,6 +1009,7 @@
             margin-bottom: 8px;
             font-size: 0.75rem;
         }
+
         .item-subida .nombre {
             flex: 1;
             min-width: 0;
@@ -824,6 +1018,7 @@
             text-overflow: ellipsis;
             color: #ccc;
         }
+
         .item-subida .estado {
             flex-shrink: 0;
             font-size: 0.7rem;
@@ -831,10 +1026,136 @@
             padding: 3px 8px;
             border-radius: 50px;
         }
-        .item-subida .estado.pendiente { background: rgba(255, 255, 255, 0.06); color: #888; }
-        .item-subida .estado.subiendo { background: rgba(243, 156, 18, 0.15); color: var(--oro); }
-        .item-subida .estado.ok { background: rgba(46, 204, 113, 0.15); color: var(--verde); }
-        .item-subida .estado.error { background: rgba(231, 76, 60, 0.15); color: var(--rojo); }
+
+        .item-subida .estado.pendiente {
+            background: rgba(255, 255, 255, 0.06);
+            color: #888;
+        }
+
+        .item-subida .estado.preparando {
+            background: rgba(52, 152, 219, 0.15);
+            color: #5dade2;
+        }
+
+        .item-subida .estado.subiendo {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--oro);
+        }
+
+        .item-subida .estado.ok {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+        }
+
+        .item-subida .estado.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
+        /* Lista detrás de cámara */
+        .lista-detras {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 4px;
+            margin-bottom: 14px;
+        }
+
+        .item-detras {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .item-detras-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px 8px;
+        }
+
+        .item-detras-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .item-detras-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-detras-nombre {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .item-detras-tiempo {
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+        }
+
+        .item-detras-texto {
+            font-size: 0.82rem;
+            color: #ddd;
+            padding: 0 14px 12px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .item-detras-imagen {
+            width: 100%;
+            display: block;
+            cursor: pointer;
+        }
+
+        .item-detras .btn-eliminar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 2;
+            font-family: inherit;
+        }
+
+        .item-detras .btn-eliminar:hover {
+            background: rgba(231, 76, 60, 0.8);
+        }
+
+        .aviso-detras {
+            background: rgba(155, 89, 182, 0.08);
+            border: 1px solid rgba(155, 89, 182, 0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.72rem;
+            color: #b794f4;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            text-align: center;
+        }
 
         /* Loader */
         .loader-overlay {
@@ -847,7 +1168,11 @@
             justify-content: center;
             align-items: center;
         }
-        .loader-overlay.activo { display: flex; }
+
+        .loader-overlay.activo {
+            display: flex;
+        }
+
         .loader-spinner {
             width: 40px;
             height: 40px;
@@ -856,7 +1181,12 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         .toast {
             position: fixed;
@@ -878,21 +1208,40 @@
             text-align: center;
             pointer-events: none;
         }
+
         .toast.activo {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
-        .toast.ok { border-color: rgba(46, 204, 113, 0.4); }
-        .toast.error { border-color: rgba(231, 76, 60, 0.4); }
+
+        .toast.ok {
+            border-color: rgba(46, 204, 113, 0.4);
+        }
+
+        .toast.error {
+            border-color: rgba(231, 76, 60, 0.4);
+        }
 
         @media (max-width: 500px) {
-            .card-activo .meta { grid-template-columns: 1fr; }
-            .card-activo .titulo { font-size: 1.25rem; }
-            .acciones-grid { grid-template-columns: 1fr; }
-            .contadores-grid { grid-template-columns: 1fr; }
+            .card-activo .meta {
+                grid-template-columns: 1fr;
+            }
+
+            .card-activo .titulo {
+                font-size: 1.25rem;
+            }
+
+            .acciones-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contadores-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ===== LOGIN ===== -->
@@ -904,24 +1253,12 @@
             </div>
 
             <label for="inputNombre">Nombre de usuario</label>
-            <input
-                type="text"
-                id="inputNombre"
-                placeholder="ej: jhumer"
-                autocomplete="username"
-                autocapitalize="none"
-            />
+            <input type="text" id="inputNombre" placeholder="ej: jhumer" autocomplete="username"
+                autocapitalize="none" />
 
             <label for="inputPin">PIN</label>
-            <input
-                type="tel"
-                id="inputPin"
-                placeholder="••••"
-                maxlength="4"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                autocomplete="current-password"
-            />
+            <input type="tel" id="inputPin" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+                autocomplete="current-password" />
 
             <button class="btn-login" id="btnLogin" onclick="hacerLogin()">Entrar</button>
 
@@ -955,7 +1292,7 @@
             <!-- Sección: Agendados -->
             <div id="seccionAgendados"></div>
 
-            <!-- Sección: Sin eventos -->
+            <!-- Sección: Modo Libre (siempre visible) -->
             <div id="seccionVacio"></div>
 
             <!-- Sección: Finalizados hoy -->
@@ -978,14 +1315,8 @@
                 <div class="texto">Toca aquí para elegir fotos</div>
                 <div class="subtexto">Máximo 15 MB por foto · JPG</div>
             </div>
-            <input
-                type="file"
-                id="inputFotos"
-                accept="image/jpeg,image/jpg"
-                multiple
-                style="display:none"
-                onchange="manejarSeleccionFotos(event)"
-            />
+            <input type="file" id="inputFotos" accept="image/jpeg,image/jpg" multiple style="display:none"
+                onchange="manejarSeleccionFotos(event)" />
 
             <div class="lista-subidas" id="listaSubidas"></div>
 
@@ -993,19 +1324,20 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LINK ADMIN ===== -->
+    <!-- ===== MODAL LINK DEL CLIENTE ===== -->
     <div class="modal" id="modalLinkAdmin">
         <div class="modal-contenido">
             <button class="btn-cerrar" onclick="cerrarLinkAdmin()">✕</button>
-            <div class="titulo">🔗 Tu Link Admin</div>
+            <div class="titulo">🔗 Link del Cliente</div>
             <div class="subtitulo" id="linkAdminSubtitulo">
-                Abre este link en tu celular para gestionar el evento.
+                Compartile este link al cliente del evento. Él lo abrirá desde su celular.
             </div>
 
             <div class="qr-wrapper" id="qrLinkAdmin"></div>
             <div class="url-box" id="urlLinkAdmin"></div>
 
             <button class="btn-primario" onclick="copiarLinkAdmin()">📋 Copiar link</button>
+            <button class="btn-peligro" onclick="regenerarLinkCliente()">♻️ Regenerar link del cliente</button>
             <button class="btn-secundario" onclick="cerrarLinkAdmin()">Cerrar</button>
         </div>
     </div>
@@ -1029,74 +1361,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL AMPLIAR ===== -->
-    <div class="modal" id="modalAmpliar">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarAmpliar()">✕</button>
-            <div class="titulo">➕ Ampliar Evento</div>
-            <div class="subtitulo">
-                Suma tiempo y créditos al evento activo.<br>
-                Avisá al cliente del costo adicional.
-            </div>
-
-            <button class="paquete" onclick="aplicarAmpliacion('basico')">
-                <span class="emoji">⚡</span>
-                <div class="info">
-                    <div class="nombre">Básico</div>
-                    <div class="detalle">+30 min · +50 créditos</div>
-                </div>
-                <div class="precio">Bs. 80</div>
-            </button>
-
-            <button class="paquete" onclick="aplicarAmpliacion('estandar')">
-                <span class="emoji">🎯</span>
-                <div class="info">
-                    <div class="nombre">Estándar</div>
-                    <div class="detalle">+1 hora · +100 créditos</div>
-                </div>
-                <div class="precio">Bs. 150</div>
-            </button>
-
-            <button class="paquete" onclick="aplicarAmpliacion('premium')">
-                <span class="emoji">👑</span>
-                <div class="info">
-                    <div class="nombre">Premium</div>
-                    <div class="detalle">+2 horas · +500 créditos</div>
-                </div>
-                <div class="precio">Bs. 350</div>
-            </button>
-
-            <button class="btn-secundario" onclick="cerrarAmpliar()">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- ===== MODAL CRÉDITOS ===== -->
-    <div class="modal" id="modalCreditos">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarCreditos()">✕</button>
-            <div class="titulo">💰 Agregar Créditos</div>
-            <div class="subtitulo">
-                Suma créditos al pozo del evento.<br>
-                El cliente podrá descargar más fotos.
-            </div>
-
-            <button class="credito-opcion" onclick="agregarCreditos(25)">
-                <span>Agregar créditos</span>
-                <span class="monto">+25</span>
-            </button>
-            <button class="credito-opcion" onclick="agregarCreditos(80)">
-                <span>Agregar créditos</span>
-                <span class="monto">+80</span>
-            </button>
-            <button class="credito-opcion" onclick="agregarCreditos(200)">
-                <span>Agregar créditos</span>
-                <span class="monto">+200</span>
-            </button>
-
-            <button class="btn-secundario" onclick="cerrarCreditos()">Cancelar</button>
-        </div>
-    </div>
-
     <!-- ===== MODAL MODO LIBRE ===== -->
     <div class="modal" id="modalModoLibre">
         <div class="modal-contenido">
@@ -1107,14 +1371,8 @@
                 El admin será notificado y se cobrará después.
             </div>
 
-            <input
-                type="text"
-                id="inputNombreModoLibre"
-                placeholder="Nombre del evento"
-                maxlength="50"
-                autocomplete="off"
-                style="text-transform:uppercase"
-            />
+            <input type="text" id="inputNombreModoLibre" placeholder="Nombre del evento" maxlength="50"
+                autocomplete="off" style="text-transform:uppercase" />
 
             <button class="btn-primario" id="btnConfirmarModoLibre" onclick="activarModoLibre()">
                 Activar Modo Libre
@@ -1133,16 +1391,93 @@
         </div>
     </div>
 
-    <!-- Loader y toast -->
-    <div class="loader-overlay" id="loader"><div class="loader-spinner"></div></div>
-    <div class="toast" id="toast"></div>
+    <!-- ===== MODAL MENSAJE EN VIVO ===== -->
+    <div class="modal" id="modalMensaje">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarMensaje()">✕</button>
+            <div class="titulo">💬 Mensaje en vivo</div>
+            <div class="subtitulo">
+                Aparece como banner en la galería de los invitados.<br>
+                Dura 10 minutos o hasta que lo borres.
+            </div>
 
-    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
+            <textarea id="inputMensajeFotografo" placeholder="Ej: Subo el bloque de la torta en 5 min"
+                maxlength="200"></textarea>
+            <div class="ayuda"
+                style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
+                Máximo 200 caracteres.
+            </div>
+
+            <button class="btn-primario" onclick="enviarMensaje()">Enviar mensaje</button>
+            <button class="btn-peligro" id="btnBorrarMensaje" onclick="borrarMensaje()" style="display:none;">
+                🗑️ Borrar mensaje activo
+            </button>
+            <button class="btn-secundario" onclick="cerrarMensaje()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
+    <div class="modal" id="modalDetrasCamara">
+        <div class="modal-contenido grande">
+            <button class="btn-cerrar" onclick="cerrarDetrasCamara()">✕</button>
+            <div class="titulo">📸 Detrás de cámara</div>
+            <div class="subtitulo">
+                Publicá fotos casuales tipo red social.<br>
+                Los invitados las ven en un feed vertical.
+            </div>
+
+            <div class="aviso-detras">
+                💡 Subí fotos de tu llegada, del equipo, de la comida, etc.<br>
+                Texto corto con cada foto (opcional).
+            </div>
+
+            <div class="zona-drop" id="zonaDropDetras" onclick="document.getElementById('inputDetrasCamara').click()">
+                <span class="icono">📸</span>
+                <div class="texto">Toca aquí para elegir una foto</div>
+                <div class="subtexto">Máximo 15 MB · JPG</div>
+            </div>
+            <input type="file" id="inputDetrasCamara" accept="image/jpeg,image/jpg" style="display:none"
+                onchange="manejarSeleccionDetras(event)" />
+
+            <div class="campo-mensaje" style="margin-bottom:12px;">
+                <label
+                    style="display:block; font-size:0.72rem; color:var(--texto-suave); margin-bottom:6px; padding-left:4px;">
+                    📝 Texto para la publicación (opcional)
+                </label>
+                <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas"
+                    maxlength="200" autocomplete="off"
+                    style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#fff; font-size:0.9rem; outline:none; font-family:inherit;" />
+                <div style="font-size:0.65rem; color:var(--texto-tenue); margin-top:5px; padding-left:4px;">Máximo 200
+                    caracteres.</div>
+            </div>
+
+            <button class="btn-primario" id="btnSubirDetras" onclick="subirDetrasCamara()" disabled>
+                📤 Publicar
+            </button>
+
+            <div class="seccion-titulo" style="margin-top:20px;">Publicaciones (<span id="contadorDetras">0</span>)
+            </div>
+            <div class="lista-detras" id="listaDetras">
+                <div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">
+                    Cargando...
+                </div>
+            </div>
+
+            <button class="btn-secundario" onclick="cerrarDetrasCamara()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Loader y toast -->
+    <div class="loader-overlay" id="loader">
+        <div class="loader-spinner"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="qrcode.min.js"></script>
     <script src="config.js"></script>
 
     <script>
         // ==========================================
-        // ⚙️ CONFIGURACIÓN
+        // CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
         const URL_API = _esLocalhost
@@ -1150,26 +1485,33 @@
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
         const TAMANO_MAX_FOTO = 15 * 1024 * 1024;
-        const REINTENTOS_SUBIDA = 3;
         const INTERVALO_REFRESH_MS = 30000;
 
+        const PREVIEW_MAX_ANCHO = 900;
+        const PREVIEW_CALIDAD = 0.8;
+
+        const UMBRAL_AVISO_MIN = 15;
+
         // ==========================================
-        // 🔑 ESTADO GLOBAL
+        // ESTADO GLOBAL
         // ==========================================
         let tokenSesion = null;
         let nombreFotografoActual = null;
         let eventoActivo = null;
-        let creditosActuales = null;
         let contadores = null;
-        let tokenGeneralActual = null;
+        let tiempoEvento = null;
+        let mensajeInfo = null;
+        let detrasCamaraInfo = null;
 
         let colaSubidas = [];
         let subidaEnProceso = false;
 
         let intervalRefresh = null;
 
+        let archivoDetrasSeleccionado = null;
+
         // ==========================================
-        // 🛠️ UTILIDADES
+        // UTILIDADES
         // ==========================================
         function $(id) { return document.getElementById(id); }
 
@@ -1194,6 +1536,21 @@
                 .replace(/'/g, '&#039;');
         }
 
+        function generarNombreFoto() {
+            // Slug del evento: MAYÚSCULAS, solo A-Z, 0-9 y guiones
+            const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 30) || 'EVENTO';
+
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 6);
+
+            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
+        }
+
+
         function formatearFecha(fechaStr) {
             if (!fechaStr) return '';
             const [y, m, d] = fechaStr.split('-');
@@ -1203,7 +1560,26 @@
         function formatearHora(fechaISO) {
             if (!fechaISO) return '';
             const d = new Date(fechaISO);
-            return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleTimeString('es-BO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+
+        function tiempoRelativo(fechaISO) {
+            if (!fechaISO) return '';
+            const ahora = Date.now();
+            const fecha = new Date(fechaISO).getTime();
+            const diff = Math.floor((ahora - fecha) / 1000);
+
+            if (diff < 60) return 'hace unos segundos';
+            if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
+            if (diff < 86400) return `hace ${Math.floor(diff / 3600)} h`;
+            if (diff < 604800) return `hace ${Math.floor(diff / 86400)} d`;
+
+            const d = new Date(fechaISO);
+            return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
         }
 
         async function apiFetch(ruta, opciones = {}) {
@@ -1227,7 +1603,7 @@
         }
 
         // ==========================================
-        // 🔐 SESIÓN
+        // SESIÓN
         // ==========================================
         function guardarSesion(token, nombre, expiraEn) {
             localStorage.setItem('ovj_fotografo_token', token);
@@ -1315,13 +1691,13 @@
         async function hacerLogout() {
             try {
                 await apiFetch('/fotografo/logout', { method: 'POST' });
-            } catch (e) {}
+            } catch (e) { }
             cerrarSesionLocal();
             mostrarLogin();
         }
 
         // ==========================================
-        // 🖥️ PANTALLAS
+        // PANTALLAS
         // ==========================================
         function mostrarLogin() {
             $('pantallaLogin').classList.add('activo');
@@ -1340,9 +1716,12 @@
         }
 
         // ==========================================
-        // 📊 CARGA DE DATOS
+        // CARGA DE DATOS
         // ==========================================
         async function cargarTodo() {
+            // 🔥 No consultar mientras se suben fotos (deja el túnel libre)
+            if (subidaEnProceso) return;
+
             try {
                 marcarServidor('cargando');
 
@@ -1352,13 +1731,15 @@
                 ]);
 
                 eventoActivo = estado.activo;
-                creditosActuales = estado.creditos;
                 contadores = estado.contadores || null;
+                tiempoEvento = estado.tiempo || null;
+                mensajeInfo = estado.mensajeFotografo || null;
+                detrasCamaraInfo = estado.detrasCamara || null;
 
-                renderActivo(eventoActivo, creditosActuales, estado);
-                const info = renderAgendados(eventos.agendados || []);
+                renderActivo(eventoActivo, estado);
+                renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
-                renderVacio(info.activables, eventoActivo);
+                renderModoLibre(eventoActivo);
 
                 marcarServidor('ok');
 
@@ -1375,7 +1756,11 @@
             punto.className = 'punto ' + estado;
 
             if (estado === 'ok') {
-                const hora = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+                const hora = new Date().toLocaleTimeString('es-BO', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
                 texto.textContent = 'Actualizado ' + hora;
             } else if (estado === 'error') {
                 texto.textContent = 'Sin conexión';
@@ -1385,9 +1770,9 @@
         }
 
         // ==========================================
-        // 🎨 RENDER
+        // RENDER
         // ==========================================
-        function renderActivo(activo, creditos, estado) {
+        function renderActivo(activo, estado) {
             const cont = $('seccionActivo');
 
             if (!activo) {
@@ -1396,9 +1781,6 @@
             }
 
             const esLibre = activo.modo === 'libre';
-            const creditosRestantes = creditos ? creditos.restantes : 0;
-            const creditosTotal = creditos ? creditos.total : 0;
-            const claseCreditos = creditosRestantes <= 5 ? 'creditos-bajo' : 'creditos-ok';
 
             let metaHtml = '';
             metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
@@ -1407,23 +1789,58 @@
                 metaHtml += `<div class="meta-item"><span class="emoji">⏹️</span>Fin aprox: <strong>${activo.horaFin}</strong></div>`;
             }
 
-            metaHtml += `<div class="meta-item"><span class="emoji">💳</span>Créditos: <strong class="${claseCreditos}">${creditosRestantes} / ${creditosTotal}</strong></div>`;
-            metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong> · ⏳ Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
+            metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
+            metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
-            // Contadores del pool
+            let avisoTiempoHtml = '';
+            if (tiempoEvento) {
+                if (tiempoEvento.yaTermino) {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo terminado">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>El tiempo programado ya se agotó.</strong><br>
+                                Finalizá el evento cuando corresponda.
+                            </div>
+                        </div>
+                    `;
+                } else if (tiempoEvento.tiempoRestanteMin <= UMBRAL_AVISO_MIN) {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo urgente">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    avisoTiempoHtml = `
+                        <div class="aviso-tiempo">
+                            <span class="emoji">⏱️</span>
+                            <div>
+                                Tiempo restante: <strong>${tiempoEvento.tiempoRestanteMin} min</strong>
+                                · Fin aprox: <strong>${tiempoEvento.horaFinFormateada}</strong>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
             let contadoresHtml = '';
             if (contadores) {
                 const generalesActivos = contadores.generalesActivos || 0;
                 const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
                 const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
+                const descSesion = contadores.descargasPorSesion || 5;
+                const desbloqueos = contadores.desbloqueosSociales || 0;
 
                 contadoresHtml = `
                     <div class="contadores-grid">
                         <div class="contador-item">
-                            <span class="emoji">⭐</span>
+                            <span class="emoji">📥</span>
                             <div class="info">
-                                <div class="valor">${contadores.vips} / ${contadores.limiteVips}</div>
-                                <div class="etiqueta">VIPs (${contadores.limiteVips} máx)</div>
+                                <div class="valor">${descSesion}</div>
+                                <div class="etiqueta">Descargas / sesión</div>
                             </div>
                         </div>
                         <div class="contador-item">
@@ -1437,15 +1854,41 @@
                             <span class="emoji">🟢</span>
                             <div class="info">
                                 <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
-                                <div class="etiqueta">Generales activos ahora</div>
+                                <div class="etiqueta">Generales activos</div>
                             </div>
                         </div>
                         <div class="contador-item">
-                            <span class="emoji">⏸️</span>
+                            <span class="emoji">🎁</span>
                             <div class="info">
-                                <div class="valor" style="font-size:0.85rem;">${generalesActivos >= maxGenerales ? 'WEB EN RECESO' : 'WEB ACTIVA'}</div>
-                                <div class="etiqueta">Estado</div>
+                                <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
+                                <div class="etiqueta">Desbloqueos sociales usados</div>
                             </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let aforoHtml = '';
+            if (estado && estado.aforo && estado.aforo.excedido) {
+                const a = estado.aforo;
+                aforoHtml = `
+                    <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
+                        <span class="emoji">👥</span>
+                        <div>
+                            <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
+                            El cliente puede ver el detalle desde su panel.
+                        </div>
+                    </div>
+                `;
+            }
+            let mensajeHtml = '';
+            if (mensajeInfo && mensajeInfo.activo) {
+                mensajeHtml = `
+                    <div class="card-mensaje">
+                        <span class="emoji">💬</span>
+                        <div class="info">
+                            <div class="titulo">Mensaje en vivo</div>
+                            <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
                         </div>
                     </div>
                 `;
@@ -1461,30 +1904,32 @@
                         <div class="titulo">${escapeHtml(activo.evento)}</div>
                         <div class="meta">${metaHtml}</div>
 
+                        ${avisoTiempoHtml}
                         ${contadoresHtml}
+                        ${aforoHtml}
+                        ${mensajeHtml}
 
                         <div class="acciones-grid">
                             <button class="btn-accion btn-subir full" onclick="abrirSubir()">
                                 📤 Subir fotos
                             </button>
+                            <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+                                💬 Mensaje
+                            </button>
+                            <button class="btn-accion btn-detras" onclick="abrirDetrasCamara()">
+                                📸 Detrás de cámara
+                            </button>
                             <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                                🔗 Link Admin
+                                🔗 Link Cliente
                             </button>
                             <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
                                 🎫 QR General
-                            </button>
-                            ${!esLibre ? `
-                            <button class="btn-accion btn-ampliar" onclick="abrirAmpliar()">
-                                ➕ Ampliar
-                            </button>
-                            ` : ''}
-                            <button class="btn-accion btn-creditos" onclick="abrirCreditos()">
-                                💰 Créditos
                             </button>
                             <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
                                 🏁 Finalizar evento
                             </button>
                         </div>
+
                     </div>
                 </div>
             `;
@@ -1495,7 +1940,7 @@
 
             if (!agendados || agendados.length === 0) {
                 cont.innerHTML = '';
-                return { activables: 0, huerfanos: 0 };
+                return;
             }
 
             agendados.sort((a, b) => {
@@ -1528,7 +1973,7 @@
                     const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
                     const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
                     const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
                     const inicioVentana = new Date(inicio.getTime() - 60 * 60 * 1000);
                     const finVentana = new Date(inicio.getTime() + 30 * 60 * 1000);
@@ -1539,7 +1984,7 @@
 
                     if (!puedeActivar) {
                         if (ahora < inicioVentana) {
-                            avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                            avisoVentana = `Podrás activar a las ${inicioVentana.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
                         }
                         btnDisabled = 'disabled';
                     }
@@ -1565,7 +2010,7 @@
                     const duracion = evt.duracionTotalProgramada || evt.duracionProgramada;
                     const inicio = new Date(`${evt.fechaProgramada}T${evt.horaInicio}:00`);
                     const fin = new Date(inicio.getTime() + duracion * 60 * 60 * 1000);
-                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' })}`;
+                    const rango = `${evt.horaInicio} → ${fin.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
                     html += `
                         <div class="card-agendado vencido">
@@ -1578,11 +2023,6 @@
             }
 
             cont.innerHTML = html;
-
-            return {
-                activables: activables.length,
-                huerfanos: huerfanos.length
-            };
         }
 
         function renderFinalizados(finalizados) {
@@ -1596,10 +2036,11 @@
             let html = `<div class="seccion"><div class="seccion-titulo">Finalizados hoy</div>`;
 
             finalizados.forEach(evt => {
+                const horaFin = evt.finReal ? formatearHora(evt.finReal) : '';
                 html += `
                     <div class="card-agendado" style="opacity:0.6;">
                         <div class="titulo">${escapeHtml(evt.evento)}</div>
-                        <div class="fecha">✔️ Finalizado</div>
+                        <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''}</div>
                     </div>
                 `;
             });
@@ -1608,23 +2049,33 @@
             cont.innerHTML = html;
         }
 
-        function renderVacio(cantidadAgendadosActivos, activo) {
+        function renderModoLibre(activo) {
             const cont = $('seccionVacio');
 
-            if (activo || cantidadAgendadosActivos > 0) {
-                cont.innerHTML = '';
-                return;
+            const hayActivo = !!activo;
+            const nombreActivo = hayActivo ? activo.evento : '';
+
+            let aviso = '';
+            if (hayActivo) {
+                aviso = `
+                    <div class="aviso-modo-libre">
+                        ⚠️ Ya tenés un evento activo: <strong>${escapeHtml(nombreActivo)}</strong>.<br>
+                        Si necesitás activar Modo Libre, primero finalizá el evento actual.
+                    </div>
+                `;
             }
 
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="card-vacio">
-                        <span class="emoji">📅</span>
-                        <div class="titulo">No tienes eventos activos</div>
+                        <span class="emoji">🆘</span>
+                        <div class="titulo">Modo Libre</div>
                         <div class="subtitulo">
-                            Si tienes un evento de urgencia,<br>activa el modo libre.
+                            Para eventos de urgencia fuera de agenda.<br>
+                            ${hayActivo ? 'No disponible mientras haya un evento activo.' : 'El admin será notificado y se cobrará después.'}
                         </div>
-                        <button class="btn-modo-libre" onclick="abrirModoLibre()">
+                        ${aviso}
+                        <button class="btn-modo-libre" onclick="abrirModoLibre(${hayActivo})">
                             🆘 Activar Modo Libre
                         </button>
                     </div>
@@ -1633,7 +2084,7 @@
         }
 
         // ==========================================
-        // ✅ ACTIVAR EVENTO
+        // ACTIVAR EVENTO
         // ==========================================
         async function activarEvento(eventoId) {
             loader(true);
@@ -1646,11 +2097,6 @@
                 toast('✅ Evento activado', 'ok');
                 await cargarTodo();
 
-                // Guardar token general si vino
-                if (data.tokenGeneral) {
-                    tokenGeneralActual = data.tokenGeneral;
-                }
-
                 setTimeout(() => abrirLinkAdmin(), 400);
 
             } catch (e) {
@@ -1661,9 +2107,13 @@
         }
 
         // ==========================================
-        // 🆘 MODO LIBRE
+        // MODO LIBRE
         // ==========================================
-        function abrirModoLibre() {
+        function abrirModoLibre(hayActivo = false) {
+            if (hayActivo) {
+                toast('⚠️ Ya tenés un evento activo. Finalizalo primero.', 'error');
+                return;
+            }
             $('inputNombreModoLibre').value = '';
             $('modalModoLibre').classList.add('activo');
         }
@@ -1691,10 +2141,6 @@
                 toast('🆘 Modo libre activado', 'ok');
                 await cargarTodo();
 
-                if (data.tokenGeneral) {
-                    tokenGeneralActual = data.tokenGeneral;
-                }
-
                 setTimeout(() => abrirLinkAdmin(), 400);
 
             } catch (e) {
@@ -1706,7 +2152,7 @@
         }
 
         // ==========================================
-        // 🔗 LINK ADMIN
+        // LINK DEL CLIENTE
         // ==========================================
         let urlAdminActual = null;
 
@@ -1718,12 +2164,28 @@
 
                 $('urlLinkAdmin').textContent = data.urlAdmin;
 
-                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data.urlAdmin);
-                $('qrLinkAdmin').innerHTML = `<img src="${qrUrl}" alt="QR" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+                try {
+                    const qr = window.qrcode(0, 'M');
+                    qr.addData(data.urlAdmin);
+                    qr.make();
 
-                $('linkAdminSubtitulo').textContent = data.reclamada
-                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si necesitas acceso desde otro, contacta al admin.'
-                    : 'Abre este link en tu celular para gestionar el evento (invitar, ver butacas, etc.).';
+                    const contenedor = $('qrLinkAdmin');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
+
+                $('linkAdminSubtitulo').innerHTML = data.reclamada
+                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si el cliente necesita acceso desde otro, usá "Regenerar link del cliente".'
+                    : 'Compartile este link al cliente. Él podrá invitar administradores.';
 
                 $('modalLinkAdmin').classList.add('activo');
 
@@ -1753,15 +2215,51 @@
             });
         }
 
+        async function regenerarLinkCliente() {
+            if (!confirm('¿Regenerar el link del cliente? El link viejo quedará inválido.')) return;
+
+            loader(true);
+            try {
+                const data = await apiFetch('/fotografo/regenerar-admin', { method: 'POST' });
+                urlAdminActual = data.urlAdmin;
+
+                $('urlLinkAdmin').textContent = data.urlAdmin;
+
+                try {
+                    const qr = window.qrcode(0, 'M');
+                    qr.addData(data.urlAdmin);
+                    qr.make();
+
+                    const contenedor = $('qrLinkAdmin');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
+
+                toast('✅ Link del cliente regenerado', 'ok');
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
         // ==========================================
-        // 🎫 TOKEN GENERAL (QR)
+        // TOKEN GENERAL (QR)
         // ==========================================
         let urlTokenGeneralActual = null;
 
         async function abrirTokenGeneral() {
             loader(true);
             try {
-                // Pedir al backend
                 const data = await apiFetch('/fotografo/token-general');
 
                 if (!data.ok || !data.tokenGeneral) {
@@ -1770,14 +2268,29 @@
                     return;
                 }
 
-                // Construir URL general
                 const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(data.eventoId)}&t=${encodeURIComponent(data.tokenGeneral)}`;
                 urlTokenGeneralActual = urlGeneral;
 
                 $('urlTokenGeneral').textContent = urlGeneral;
 
-                const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(urlGeneral);
-                $('qrTokenGeneral').innerHTML = `<img src="${qrUrl}" alt="QR Token General" onerror="this.parentElement.innerHTML='<div style=&quot;color:#333;font-size:0.75rem;text-align:center;padding:20px;&quot;>QR no disponible.<br>Usa el botón copiar.</div>'">`;
+                try {
+                    const qr = window.qrcode(0, 'M');
+                    qr.addData(urlGeneral);
+                    qr.make();
+
+                    const contenedor = $('qrTokenGeneral');
+                    contenedor.innerHTML = qr.createImgTag(6, 12);
+                    const img = contenedor.querySelector('img');
+                    if (img) {
+                        img.style.width = '220px';
+                        img.style.height = '220px';
+                        img.style.borderRadius = '4px';
+                        img.alt = 'QR Token General';
+                    }
+                } catch (error) {
+                    console.error('Error generando QR local:', error);
+                    $('qrTokenGeneral').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                }
 
                 $('modalTokenGeneral').classList.add('activo');
 
@@ -1809,29 +2322,75 @@
 
         function abrirQRGrande() {
             if (!urlTokenGeneralActual) return;
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(urlTokenGeneralActual);
-            window.open(qrUrl, '_blank');
-        }
 
-        // ==========================================
-        // ➕ AMPLIAR
-        // ==========================================
-        function abrirAmpliar() {
-            $('modalAmpliar').classList.add('activo');
-        }
-        function cerrarAmpliar() {
-            $('modalAmpliar').classList.remove('activo');
-        }
-
-        async function aplicarAmpliacion(paquete) {
-            loader(true);
-            cerrarAmpliar();
             try {
-                const data = await apiFetch('/fotografo/ampliar', {
+                const qr = window.qrcode(0, 'M');
+                qr.addData(urlTokenGeneralActual);
+                qr.make();
+
+                const imgTag = qr.createImgTag(10, 20);
+
+                const w = window.open('', '_blank');
+                w.document.write(`<html><head><title>QR</title></head><body style="background:#fff;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;">${imgTag}</body></html>`);
+                w.document.close();
+
+                const img = w.document.querySelector('img');
+                if (img) {
+                    img.style.width = '600px';
+                    img.style.height = '600px';
+                }
+            } catch (error) {
+                console.error('Error generando QR grande:', error);
+                alert('No se pudo generar el QR.');
+            }
+        }
+
+        // ==========================================
+        // MENSAJE EN VIVO
+        // ==========================================
+        function abrirMensaje() {
+            $('inputMensajeFotografo').value = '';
+            $('btnBorrarMensaje').style.display = (mensajeInfo && mensajeInfo.activo) ? 'block' : 'none';
+            $('modalMensaje').classList.add('activo');
+        }
+
+        function cerrarMensaje() {
+            $('modalMensaje').classList.remove('activo');
+        }
+
+        async function enviarMensaje() {
+            const texto = $('inputMensajeFotografo').value.trim();
+            if (texto.length < 2) {
+                toast('Mensaje muy corto', 'error');
+                return;
+            }
+
+            loader(true);
+            try {
+                await apiFetch('/fotografo/mensaje', {
                     method: 'POST',
-                    body: JSON.stringify({ paquete })
+                    body: JSON.stringify({ texto })
                 });
-                toast('✅ Ampliación aplicada · Bs.' + data.paquete.precio, 'ok');
+
+                cerrarMensaje();
+                toast('💬 Mensaje enviado', 'ok');
+                await cargarTodo();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function borrarMensaje() {
+            if (!confirm('¿Borrar el mensaje activo?')) return;
+
+            loader(true);
+            try {
+                await apiFetch('/fotografo/mensaje', { method: 'DELETE' });
+                cerrarMensaje();
+                toast('🗑️ Mensaje borrado', 'ok');
                 await cargarTodo();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -1841,41 +2400,155 @@
         }
 
         // ==========================================
-        // 💰 CRÉDITOS
+        // DETRÁS DE CÁMARA
         // ==========================================
-        function abrirCreditos() {
-            $('modalCreditos').classList.add('activo');
-        }
-        function cerrarCreditos() {
-            $('modalCreditos').classList.remove('activo');
+        function abrirDetrasCamara() {
+            archivoDetrasSeleccionado = null;
+            $('inputTextoDetras').value = '';
+            $('inputDetrasCamara').value = '';
+            $('btnSubirDetras').disabled = true;
+            $('modalDetrasCamara').classList.add('activo');
+            cargarListaDetras();
         }
 
-        async function agregarCreditos(monto) {
+        function cerrarDetrasCamara() {
+            $('modalDetrasCamara').classList.remove('activo');
+        }
+
+        function manejarSeleccionDetras(event) {
+            const archivos = Array.from(event.target.files || []);
+            if (archivos.length === 0) return;
+
+            const archivo = archivos[0];
+
+            if (!archivo.type.startsWith('image/jpeg')) {
+                toast('Solo JPG', 'error');
+                return;
+            }
+            if (archivo.size > TAMANO_MAX_FOTO) {
+                toast('Supera 15 MB', 'error');
+                return;
+            }
+
+            archivoDetrasSeleccionado = archivo;
+            $('btnSubirDetras').disabled = false;
+            toast('📸 Foto lista para publicar', 'ok');
+
+            event.target.value = '';
+        }
+
+        async function subirDetrasCamara() {
+            if (!archivoDetrasSeleccionado) return;
+
+            const texto = $('inputTextoDetras').value.trim();
+
             loader(true);
-            cerrarCreditos();
+            $('btnSubirDetras').disabled = true;
+
             try {
-                const data = await apiFetch('/fotografo/creditos', {
+                const nombreBaseDetras = `${generarNombreFoto()}_detras`;
+                const nombreArchivoDetras = `${nombreBaseDetras}.jpg`;
+
+                const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
                     method: 'POST',
-                    body: JSON.stringify({ monto })
+                    body: JSON.stringify({ nombreArchivo: nombreArchivoDetras })
                 });
-                toast(`💰 +${monto} créditos agregados`, 'ok');
-                await cargarTodo();
+
+                if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
+
+                const resp = await fetch(dataUrl.url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'image/jpeg' },
+                    body: archivoDetrasSeleccionado
+                });
+
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+                await apiFetch('/fotografo/detras-camara/confirmar', {
+                    method: 'POST',
+                    body: JSON.stringify({ key: dataUrl.key, texto })
+                });
+
+                toast('✅ Publicación subida', 'ok');
+                archivoDetrasSeleccionado = null;
+                $('inputTextoDetras').value = '';
+                $('btnSubirDetras').disabled = true;
+                cargarListaDetras();
+
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
+                $('btnSubirDetras').disabled = false;
             } finally {
                 loader(false);
             }
         }
 
+        async function cargarListaDetras() {
+            const cont = $('listaDetras');
+            cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">Cargando...</div>';
+
+            try {
+                const data = await apiFetch('/fotografo/detras-camara');
+                const items = data.items || [];
+
+                $('contadorDetras').textContent = items.length;
+
+                if (items.length === 0) {
+                    cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">No hay publicaciones todavía</div>';
+                    return;
+                }
+
+                let html = '';
+                items.slice().reverse().forEach(item => {
+                    const nombre = item.fotografoNombre || nombreFotografoActual || 'Fotógrafo';
+                    const inicial = nombre.charAt(0).toUpperCase();
+                    const tiempo = tiempoRelativo(item.subidoEn);
+
+                    html += `
+                        <div class="item-detras">
+                            <button class="btn-eliminar" onclick="eliminarDetras('${item.id}')">✕</button>
+                            <div class="item-detras-header">
+                                <div class="item-detras-avatar">${inicial}</div>
+                                <div class="item-detras-info">
+                                    <div class="item-detras-nombre">${escapeHtml(nombre)}</div>
+                                    <div class="item-detras-tiempo">${tiempo}</div>
+                                </div>
+                            </div>
+                            ${item.texto ? `<div class="item-detras-texto">${escapeHtml(item.texto)}</div>` : ''}
+                            <img class="item-detras-imagen" src="${item.url}" alt="Publicación" loading="lazy" onclick="window.open('${item.url}', '_blank')" />
+                        </div>
+                    `;
+                });
+                cont.innerHTML = html;
+
+            } catch (e) {
+                cont.innerHTML = '<div style="text-align:center; color:#e74c3c; padding:20px; font-size:0.8rem;">Error cargando</div>';
+            }
+        }
+
+        async function eliminarDetras(id) {
+            if (!confirm('¿Eliminar esta publicación?')) return;
+
+            try {
+                await apiFetch('/fotografo/detras-camara/' + encodeURIComponent(id), { method: 'DELETE' });
+                toast('🗑️ Publicación eliminada', 'ok');
+                cargarListaDetras();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            }
+        }
+
+
         // ==========================================
-        // 🏁 FINALIZAR
+        // FINALIZAR
         // ==========================================
         let confirmarCallback = null;
 
         function confirmarFinalizar() {
             $('confirmarTitulo').textContent = '🏁 Finalizar evento';
             $('confirmarMensaje').innerHTML =
-                'Esto borrará TODAS las fotos locales y de B2, y cerrará el evento.<br><br>' +
+                'Se cerrará el evento y se borrarán los accesos (invitaciones).<br><br>' +
+                'Las fotos en la nube se limpian aparte desde el panel de administración.<br><br>' +
                 '<strong>Esta acción no se puede deshacer.</strong>';
             confirmarCallback = ejecutarFinalizar;
             $('modalConfirmar').classList.add('activo');
@@ -1890,7 +2563,8 @@
                 const horas = Math.floor(data.duracionHoras);
                 const mins = Math.round((data.duracionHoras - horas) * 60);
 
-                toast(`✅ Evento finalizado · ${horas}h ${mins}min`, 'ok');
+                let msg = `✅ Evento finalizado · ${horas}h ${mins}min`;
+                toast(msg, 'ok');
                 await cargarTodo();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
@@ -1914,7 +2588,7 @@
         });
 
         // ==========================================
-        // 📤 SUBIR FOTOS
+        // SUBIR FOTOS
         // ==========================================
         function abrirSubir() {
             colaSubidas = [];
@@ -1943,7 +2617,10 @@
                     toast('Supera 15 MB: ' + archivo.name, 'error');
                     continue;
                 }
-                colaSubidas.push({ archivo, estado: 'pendiente' });
+                colaSubidas.push({
+                    archivo,
+                    estado: 'pendiente'
+                });
             }
 
             event.target.value = '';
@@ -1965,6 +2642,7 @@
             colaSubidas.forEach(s => {
                 const estados = {
                     pendiente: ['En espera', 'pendiente'],
+                    preparando: ['Preparando preview...', 'preparando'],
                     subiendo: ['Subiendo...', 'subiendo'],
                     ok: ['✓ Subida', 'ok'],
                     error: ['✗ Error', 'error']
@@ -1993,6 +2671,13 @@
             if (subidaEnProceso) return;
 
             subidaEnProceso = true;
+
+            // 🔥 Pausar el refresh automático para no saturar la cola del navegador
+            if (intervalRefresh) {
+                clearInterval(intervalRefresh);
+                intervalRefresh = null;
+            }
+
             $('btnCerrarSubir').disabled = true;
             $('btnCerrarSubir').textContent = 'Subiendo...';
 
@@ -2010,27 +2695,78 @@
                         subida.estado = 'error';
                     }
                     renderizarListaSubidas();
+
+                    // 🔥 Pausa entre fotos para que el navegador descongestione
+                    await new Promise(r => setTimeout(r, 300));
                 }
 
                 setTimeout(() => cargarTodo(), 2000);
-
             } finally {
                 subidaEnProceso = false;
                 $('btnCerrarSubir').disabled = false;
                 $('btnCerrarSubir').textContent = 'Cerrar';
                 renderizarListaSubidas();
+
+                // 🔥 Reanudar el refresh automático
+                if (!intervalRefresh) {
+                    intervalRefresh = setInterval(cargarTodo, INTERVALO_REFRESH_MS);
+                }
             }
         }
 
-        async function subirUnaFoto(subida) {
-            const { archivo } = subida;
+        async function generarPreview(archivo) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            let ancho = img.width;
+                            let alto = img.height;
 
+                            if (ancho > PREVIEW_MAX_ANCHO) {
+                                alto = Math.round(alto * (PREVIEW_MAX_ANCHO / ancho));
+                                ancho = PREVIEW_MAX_ANCHO;
+                            }
+
+                            canvas.width = ancho;
+                            canvas.height = alto;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, ancho, alto);
+
+                            canvas.toBlob(
+                                (blob) => {
+                                    if (!blob) {
+                                        reject(new Error('No se pudo generar el preview'));
+                                        return;
+                                    }
+                                    resolve(blob);
+                                },
+                                'image/jpeg',
+                                PREVIEW_CALIDAD
+                            );
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
+                    img.onerror = () => reject(new Error('Error cargando la imagen'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('Error leyendo el archivo'));
+                reader.readAsDataURL(archivo);
+            });
+        }
+
+        async function subirArchivoAB2(archivo, nombreOriginal, tipo) {
             const dataPedido = await apiFetch('/subir_url', {
                 method: 'POST',
                 body: JSON.stringify({
                     f: nombreFotografoActual,
                     e: eventoActivo.id,
-                    nombreOriginal: archivo.name
+                    nombreOriginal: nombreOriginal,
+                    tipo: tipo
                 })
             });
 
@@ -2038,45 +2774,60 @@
                 throw new Error(dataPedido.error || 'URL inválida');
             }
 
-            let ultimoError = null;
-            for (let intento = 1; intento <= REINTENTOS_SUBIDA; intento++) {
-                try {
-                    const resp = await fetch(dataPedido.url, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'image/jpeg' },
-                        body: archivo
-                    });
+            const headers = { 'Content-Type': 'image/jpeg' };
 
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-                    try {
-                        await apiFetch('/confirmar_subida', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                f: nombreFotografoActual,
-                                e: eventoActivo.id,
-                                key: dataPedido.key
-                            })
-                        });
-                    } catch (e) {
-                        console.warn('Confirmación fallida (no crítico):', e.message);
-                    }
-
-                    return;
-
-                } catch (e) {
-                    ultimoError = e;
-                    if (intento < REINTENTOS_SUBIDA) {
-                        await new Promise(r => setTimeout(r, 1000 * intento));
-                    }
-                }
+            // 🔥 Mandar Content-Length explícito
+            const tamano = archivo.size || archivo.byteLength || 0;
+            if (tamano > 0) {
+                headers['Content-Length'] = String(tamano);
             }
 
-            throw new Error(ultimoError ? ultimoError.message : 'Error desconocido');
+            const resp = await fetch(dataPedido.url, {
+                method: 'PUT',
+                headers: headers,
+                body: archivo
+            });
+            if (!resp.ok) {
+                throw new Error(`HTTP ${resp.status}`);
+            }
+
+            return dataPedido.key;
+        }
+
+        async function subirUnaFoto(subida) {
+            const { archivo } = subida;
+
+            subida.estado = 'preparando';
+            renderizarListaSubidas();
+
+            const previewBlob = await generarPreview(archivo);
+
+            // 🔥 Naming profesional
+            const baseNombre = generarNombreFoto();
+            const nombreOriginal = `${baseNombre}.jpg`;
+            const nombrePreview = `${baseNombre}_web.jpg`;
+
+            subida.estado = 'subiendo';
+            renderizarListaSubidas();
+
+            const keyOriginal = await subirArchivoAB2(archivo, nombreOriginal, 'original');
+            const keyPreview = await subirArchivoAB2(previewBlob, nombrePreview, 'preview');
+
+            await apiFetch('/confirmar_subida', {
+                method: 'POST',
+                body: JSON.stringify({
+                    f: nombreFotografoActual,
+                    e: eventoActivo.id,
+                    keyOriginal: keyOriginal,
+                    keyPreview: keyPreview
+                })
+            });
+
+            return true;
         }
 
         // ==========================================
-        // 🚀 INICIALIZACIÓN
+        // INICIALIZACIÓN
         // ==========================================
         async function inicializar() {
             if (cargarSesionLocal()) {
@@ -2098,7 +2849,17 @@
             e.target.value = e.target.value.replace(/[^0-9]/g, '');
         });
 
+        // 🔥 Avisar si el fotógrafo intenta cerrar mientras hay subidas en curso
+        window.addEventListener('beforeunload', (e) => {
+            if (subidaEnProceso) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+
         inicializar();
     </script>
 </body>
+
 </html>
