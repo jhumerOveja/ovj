@@ -18,7 +18,7 @@
 window.OVJ_CONFIG = {
     
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://colors-colours-tactics-omissions.trycloudflare.com',
+    urlTunel: 'https://creator-suspension-magnificent-reconstruction.trycloudflare.com',
     workerUrl: 'https://ovj-b2-proxy.jhumerali2.workers.dev',
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
