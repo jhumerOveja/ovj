@@ -4015,11 +4015,6 @@
                 localStorage.setItem('ovj_rol_nombre', data.nombre || '');
                 localStorage.setItem('ovj_rol_id', data.id || '');
 
-                console.log('✅ validarAcceso → OK:', {
-                    tipo: sesion.tipo,
-                    nombre: sesion.nombre,
-                    id: sesion.id
-                });
 
                 // 🔥 PUNTO 14: si el server pide nombre, abrir modal
                 if (data.tipo === 'general' && data.requiereNombre) {
@@ -4795,9 +4790,9 @@
 
             for (let i = 0; i < visibles; i++) {
                 const foto = fotosCache[i];
-                // 🔥 Fallback: si no viene url (ej: viene del status.json de B2),
-                // construirla desde el nombre
-                const urlImagen = foto.urlBlob;
+                const urlImagen = foto.url;
+
+                const esNueva = fotosNuevasMap.has(foto.nombre);
                 const esReciente = !!foto.esReciente && !esNueva;
 
                 const clases = [
@@ -4811,40 +4806,40 @@
                 if (esReciente && !esNueva) badges += '<div class="badge-reciente">🔥 RECIÉN SUBIDA</div>';
 
                 html += `
-                    <div class="${clases}"
-                         data-index="${i}"
-                         data-nombre="${foto.nombre}"
-                         style="animation-delay: ${Math.min(i * 50, 500)}ms"
-                         onclick="abrirModal('${foto.nombre}')">
-                        <div class="skeleton"></div>
-                        ${badges}
-                        <img src="${urlImagen}" alt="Foto ${i + 1}"
-                             data-src="${urlImagen}"
-                             onload="this.classList.add('cargada')"
-                             onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
-                    </div>
-                `;
+            <div class="${clases}"
+                 data-index="${i}"
+                 data-nombre="${foto.nombre}"
+                 style="animation-delay: ${Math.min(i * 50, 500)}ms"
+                 onclick="abrirModal('${foto.nombre}')">
+                <div class="skeleton"></div>
+                ${badges}
+                <img src="${urlImagen}" alt="Foto ${i + 1}"
+                     data-src="${urlImagen}"
+                     onload="this.classList.add('cargada')"
+                     onerror="console.error('Error cargando:', '${urlImagen}'); this.style.opacity='0.3';">
+            </div>
+        `;
             }
 
             if (visibles < fotosCache.length) {
                 const restantes = fotosCache.length - visibles;
                 const textoRestantes = restantes === 1 ? t('fotoMas') : t('fotosMas');
                 html += `
-                    <div class="ver-mas-wrapper">
-                        <button class="btn-ver-mas" onclick="mostrarMasFotos()">
-                            ${t('verMas')}
-                        </button>
-                        <div class="info-restantes">
-                            <strong>${restantes}</strong> ${textoRestantes} ${t('porDescubrir')}
-                        </div>
-                    </div>
-                `;
+            <div class="ver-mas-wrapper">
+                <button class="btn-ver-mas" onclick="mostrarMasFotos()">
+                    ${t('verMas')}
+                </button>
+                <div class="info-restantes">
+                    <strong>${restantes}</strong> ${textoRestantes} ${t('porDescubrir')}
+                </div>
+            </div>
+        `;
             } else if (fotosCache.length > FOTOS_POR_CARGA) {
                 html += `
-                    <div class="ver-mas-wrapper">
-                        <div class="info-restantes">${t('hasVistoTodo')}</div>
-                    </div>
-                `;
+            <div class="ver-mas-wrapper">
+                <div class="info-restantes">${t('hasVistoTodo')}</div>
+            </div>
+        `;
             }
 
             galeria.innerHTML = html;
