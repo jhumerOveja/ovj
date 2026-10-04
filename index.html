@@ -3977,35 +3977,15 @@
                     `&t=${encodeURIComponent(TOKEN)}` +
                     `&d=${encodeURIComponent(dispositivoId)}`;
 
-                console.log('🔍 validarAcceso → REQUEST:', {
-                    url,
-                    FOTOGRAFO_ID,
-                    EVENTO_ID,
-                    TOKEN_que_se_envia: TOKEN,
-                    dispositivoId
-                });
-
                 const respuesta = await fetch(url);
                 const data = await respuesta.json();
 
-                console.log('🔍 validarAcceso → RESPONSE:', {
-                    status: respuesta.status,
-                    ok: respuesta.ok,
-                    data
-                });
-
                 if (!respuesta.ok || !data.valido) {
-                    console.log('❌ validarAcceso → BLOQUEADO:', {
-                        ok: respuesta.ok,
-                        valido: data.valido,
-                        error: data.error
-                    });
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
 
                 if (data.tokenPersonal) {
-                    console.log('🔄 validarAcceso → tokenPersonal recibido, cambiando TOKEN:', data.tokenPersonal);
                     TOKEN = data.tokenPersonal;
                     localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
                 }
@@ -4453,7 +4433,7 @@
             // 🔥 Programar próximo poll
             // El jitter ya lo hace el server (calcularIntervaloPoll).
             // Solo agregamos un piso mínimo de seguridad y pausa por visibilidad.
-                        let segundos = 20;
+            let segundos = 20;
             if (window._ultimoPoll && window._ultimoPoll.intervaloBaseSeg > 0) {
                 segundos = window._ultimoPoll.intervaloBaseSeg;
             }
@@ -4817,9 +4797,7 @@
                 const foto = fotosCache[i];
                 // 🔥 Fallback: si no viene url (ej: viene del status.json de B2),
                 // construirla desde el nombre
-                const urlImagen = foto.url
-                    || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
-                const esNueva = fotosNuevasMap.has(foto.nombre);
+                const urlImagen = foto.urlBlob;
                 const esReciente = !!foto.esReciente && !esNueva;
 
                 const clases = [
@@ -4954,8 +4932,7 @@
                 if (i >= 0 && i < fotosCache.length) {
                     const foto = fotosCache[i];
                     if (foto && foto.nombre) {
-                        const urlImagen = foto.url
-                            || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+                        const urlImagen = foto.url;
                         const img = new Image();
                         img.src = urlImagen;
                     }
@@ -5029,8 +5006,7 @@
             const fondo = document.getElementById("modalFondo");
             const modalImagen = document.getElementById("modalImagen");
 
-            const urlImagen = foto.url
-                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+            const urlImagen = foto.url;
             modalImagen.src = urlImagen;
             modalImagen.alt = `Foto ${index + 1}`;
 
@@ -5064,8 +5040,7 @@
 
             marcarFotoComoVista(foto.nombre);
 
-            const urlImagen = foto.url
-                || `${WORKER_BASE}/eventos/${encodeURIComponent(FOTOGRAFO_ID)}/${encodeURIComponent(EVENTO_ID)}/${encodeURIComponent(foto.nombre)}`;
+            const urlImagen = foto.url;
             document.getElementById("modalImagen").src = urlImagen;
             document.getElementById("modalImagen").alt = `Foto ${nuevoIndex + 1}`;
 
