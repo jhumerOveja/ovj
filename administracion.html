@@ -1841,11 +1841,11 @@
                     <div class="campo">
                         <label>Generales simultáneos</label>
                         <input type="number" id="inputMaxGenerales" value="20" min="1" max="200" />
-                        <div class="ayuda">Límite duro: si se supera, se expulsa al más antiguo sin descargas.</div>
+                        <div class="ayuda">Límite referencial. Si se supera, se avisa al cliente pero no se expulsa a nadie.</div>
                     </div>
                 </div>
                 
-                                <div class="seccion-titulo-form">👤 Nombre del invitado</div>
+                <div class="seccion-titulo-form">👤 Nombre del invitado</div>
 
                 <div class="config-sugerida" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
                     💡 Si lo activas, los invitados escribirán su nombre al entrar.<br>
@@ -2204,7 +2204,7 @@
                 <div class="titulo">🏁 Cerrar modo libre</div>
                 <div class="subtitulo">
                     ¿Forzar cierre de <strong>${escapeHtml(evento)}</strong> (${escapeHtml(fotografo)})?<br><br>
-                    Se borrarán las fotos locales y de B2, y se archivará en el historial.
+                    Se borrarán los JSONs locales (invitaciones, goteo, detrás). Las fotos en B2 se limpian aparte desde Sistema → Limpiar B2.
                 </div>
                 <button class="btn-peligro" onclick="cerrarModoLibre('${escapeHtml(id)}')">Sí, cerrar</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
