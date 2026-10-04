@@ -1052,110 +1052,6 @@
             color: var(--rojo);
         }
 
-        /* Lista detrás de cámara */
-        .lista-detras {
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 4px;
-            margin-bottom: 14px;
-        }
-
-        .item-detras {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 14px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 12px;
-        }
-
-        .item-detras-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px 8px;
-        }
-
-        .item-detras-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
-            color: #0a0a0a;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .item-detras-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-detras-nombre {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-
-        .item-detras-tiempo {
-            font-size: 0.68rem;
-            color: var(--texto-tenue);
-        }
-
-        .item-detras-texto {
-            font-size: 0.82rem;
-            color: #ddd;
-            padding: 0 14px 12px;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-
-        .item-detras-imagen {
-            width: 100%;
-            display: block;
-            cursor: pointer;
-        }
-
-        .item-detras .btn-eliminar {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            z-index: 2;
-            font-family: inherit;
-        }
-
-        .item-detras .btn-eliminar:hover {
-            background: rgba(231, 76, 60, 0.8);
-        }
-
-        .aviso-detras {
-            background: rgba(155, 89, 182, 0.08);
-            border: 1px solid rgba(155, 89, 182, 0.25);
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.72rem;
-            color: #b794f4;
-            line-height: 1.5;
-            margin-bottom: 14px;
-            text-align: center;
-        }
 
         /* Loader */
         .loader-overlay {
@@ -1392,57 +1288,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
-    <div class="modal" id="modalDetrasCamara">
-        <div class="modal-contenido grande">
-            <button class="btn-cerrar" onclick="cerrarDetrasCamara()">✕</button>
-            <div class="titulo">📸 Detrás de cámara</div>
-            <div class="subtitulo">
-                Publicá fotos casuales tipo red social.<br>
-                Los invitados las ven en un feed vertical.
-            </div>
-
-            <div class="aviso-detras">
-                💡 Subí fotos de tu llegada, del equipo, de la comida, etc.<br>
-                Texto corto con cada foto (opcional).
-            </div>
-
-            <div class="zona-drop" id="zonaDropDetras" onclick="document.getElementById('inputDetrasCamara').click()">
-                <span class="icono">📸</span>
-                <div class="texto">Toca aquí para elegir una foto</div>
-                <div class="subtexto">Máximo 15 MB · JPG</div>
-            </div>
-            <input type="file" id="inputDetrasCamara" accept="image/jpeg,image/jpg" style="display:none"
-                onchange="manejarSeleccionDetras(event)" />
-
-            <div class="campo-mensaje" style="margin-bottom:12px;">
-                <label
-                    style="display:block; font-size:0.72rem; color:var(--texto-suave); margin-bottom:6px; padding-left:4px;">
-                    📝 Texto para la publicación (opcional)
-                </label>
-                <input type="text" id="inputTextoDetras" placeholder="Ej: Las empanadas de afuera son deliciosas"
-                    maxlength="200" autocomplete="off"
-                    style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#fff; font-size:0.9rem; outline:none; font-family:inherit;" />
-                <div style="font-size:0.65rem; color:var(--texto-tenue); margin-top:5px; padding-left:4px;">Máximo 200
-                    caracteres.</div>
-            </div>
-
-            <button class="btn-primario" id="btnSubirDetras" onclick="subirDetrasCamara()" disabled>
-                📤 Publicar
-            </button>
-
-            <div class="seccion-titulo" style="margin-top:20px;">Publicaciones (<span id="contadorDetras">0</span>)
-            </div>
-            <div class="lista-detras" id="listaDetras">
-                <div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">
-                    Cargando...
-                </div>
-            </div>
-
-            <button class="btn-secundario" onclick="cerrarDetrasCamara()">Cerrar</button>
-        </div>
-    </div>
-
     <!-- Loader y toast -->
     <div class="loader-overlay" id="loader">
         <div class="loader-spinner"></div>
@@ -1474,11 +1319,8 @@
         let contadores = null;
         let tiempoEvento = null;
         let mensajeInfo = null;
-        let detrasCamaraInfo = null;
 
         let intervalRefresh = null;
-
-        let archivoDetrasSeleccionado = null;
 
         // ==========================================
         // UTILIDADES
@@ -1702,7 +1544,6 @@
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
                 mensajeInfo = estado.mensajeFotografo || null;
-                detrasCamaraInfo = estado.detrasCamara || null;
 
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
@@ -1883,9 +1724,6 @@
                             </button>
                             <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                                 💬 Mensaje
-                            </button>
-                            <button class="btn-accion btn-detras" onclick="abrirDetrasCamara()">
-                                📸 Detrás de cámara
                             </button>
                             <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
                                 🔗 Link Cliente
@@ -2366,146 +2204,6 @@
                 loader(false);
             }
         }
-
-        // ==========================================
-        // DETRÁS DE CÁMARA
-        // ==========================================
-        function abrirDetrasCamara() {
-            archivoDetrasSeleccionado = null;
-            $('inputTextoDetras').value = '';
-            $('inputDetrasCamara').value = '';
-            $('btnSubirDetras').disabled = true;
-            $('modalDetrasCamara').classList.add('activo');
-            cargarListaDetras();
-        }
-
-        function cerrarDetrasCamara() {
-            $('modalDetrasCamara').classList.remove('activo');
-        }
-
-        function manejarSeleccionDetras(event) {
-            const archivos = Array.from(event.target.files || []);
-            if (archivos.length === 0) return;
-
-            const archivo = archivos[0];
-
-            if (!archivo.type.startsWith('image/jpeg')) {
-                toast('Solo JPG', 'error');
-                return;
-            }
-            if (archivo.size > TAMANO_MAX_FOTO) {
-                toast('Supera 15 MB', 'error');
-                return;
-            }
-
-            archivoDetrasSeleccionado = archivo;
-            $('btnSubirDetras').disabled = false;
-            toast('📸 Foto lista para publicar', 'ok');
-
-            event.target.value = '';
-        }
-
-        async function subirDetrasCamara() {
-            if (!archivoDetrasSeleccionado) return;
-
-            const texto = $('inputTextoDetras').value.trim();
-
-            loader(true);
-            $('btnSubirDetras').disabled = true;
-
-            try {
-                const nombreBaseDetras = `${generarNombreFoto()}_detras`;
-                const nombreArchivoDetras = `${nombreBaseDetras}.jpg`;
-
-                const dataUrl = await apiFetch('/fotografo/detras-camara/url', {
-                    method: 'POST',
-                    body: JSON.stringify({ nombreArchivo: nombreArchivoDetras })
-                });
-
-                if (!dataUrl.ok) throw new Error('No se pudo obtener URL');
-
-                const resp = await fetch(dataUrl.url, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'image/jpeg' },
-                    body: archivoDetrasSeleccionado
-                });
-
-                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-                await apiFetch('/fotografo/detras-camara/confirmar', {
-                    method: 'POST',
-                    body: JSON.stringify({ key: dataUrl.key, texto })
-                });
-
-                toast('✅ Publicación subida', 'ok');
-                archivoDetrasSeleccionado = null;
-                $('inputTextoDetras').value = '';
-                $('btnSubirDetras').disabled = true;
-                cargarListaDetras();
-
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-                $('btnSubirDetras').disabled = false;
-            } finally {
-                loader(false);
-            }
-        }
-
-        async function cargarListaDetras() {
-            const cont = $('listaDetras');
-            cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">Cargando...</div>';
-
-            try {
-                const data = await apiFetch('/fotografo/detras-camara');
-                const items = data.items || [];
-
-                $('contadorDetras').textContent = items.length;
-
-                if (items.length === 0) {
-                    cont.innerHTML = '<div style="text-align:center; color:#666; padding:20px; font-size:0.8rem;">No hay publicaciones todavía</div>';
-                    return;
-                }
-
-                let html = '';
-                items.slice().reverse().forEach(item => {
-                    const nombre = item.fotografoNombre || nombreFotografoActual || 'Fotógrafo';
-                    const inicial = nombre.charAt(0).toUpperCase();
-                    const tiempo = tiempoRelativo(item.subidoEn);
-
-                    html += `
-                        <div class="item-detras">
-                            <button class="btn-eliminar" onclick="eliminarDetras('${item.id}')">✕</button>
-                            <div class="item-detras-header">
-                                <div class="item-detras-avatar">${inicial}</div>
-                                <div class="item-detras-info">
-                                    <div class="item-detras-nombre">${escapeHtml(nombre)}</div>
-                                    <div class="item-detras-tiempo">${tiempo}</div>
-                                </div>
-                            </div>
-                            ${item.texto ? `<div class="item-detras-texto">${escapeHtml(item.texto)}</div>` : ''}
-                            <img class="item-detras-imagen" src="${item.url}" alt="Publicación" loading="lazy" onclick="window.open('${item.url}', '_blank')" />
-                        </div>
-                    `;
-                });
-                cont.innerHTML = html;
-
-            } catch (e) {
-                cont.innerHTML = '<div style="text-align:center; color:#e74c3c; padding:20px; font-size:0.8rem;">Error cargando</div>';
-            }
-        }
-
-        async function eliminarDetras(id) {
-            if (!confirm('¿Eliminar esta publicación?')) return;
-
-            try {
-                await apiFetch('/fotografo/detras-camara/' + encodeURIComponent(id), { method: 'DELETE' });
-                toast('🗑️ Publicación eliminada', 'ok');
-                cargarListaDetras();
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            }
-        }
-
 
         // ==========================================
         // FINALIZAR
