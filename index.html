@@ -3222,7 +3222,7 @@
 
                     <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()"
                         style="display: none;">
-                        ✨ <span class="btn-admin-texto">Invitar</span>
+                        ✨ <span class="btn-admin-texto">Invitar VIP</span>
                     </button>
                     <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()"
                         style="display: none;">
@@ -3316,11 +3316,13 @@
     <div class="modal-invitar" id="modalInvitar">
         <div class="modal-invitar-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarInvitar()">✕</button>
-            <div class="titulo">👑 Invitar Administrador</div>
-            <div class="subtitulo">Máximo 3 administradores por evento</div>
+            <div class="titulo">👑 Invitar VIP</div>
+            <div class="subtitulo" id="subtituloInvitarVip">
+                Los VIP tienen descargas ilimitadas, sin receso.
+            </div>
 
             <div class="input-group">
-                <label>Nombre (obligatorio)</label>
+                <label>Nombre del invitado (opcional)</label>
                 <input type="text" id="inputNombreInvitacion" placeholder="Ej: Familia Pérez" maxlength="40"
                     autocomplete="off" />
             </div>
@@ -3335,10 +3337,15 @@
                 <div class="input-ayuda">Solo tu número local. El código de país (+591) se añade automáticamente.</div>
             </div>
 
+            <div style="text-align:center; padding: 6px 4px 0; color: #666; font-size: 0.68rem; line-height: 1.4;">
+                💡 Si no sabés el número, generá el pase igual.<br>
+                El QR y el link quedan en pantalla.
+            </div>
+
             <div class="aviso-limite" id="avisoLimiteVips" style="display:none;"></div>
 
             <button class="btn-generar" id="btnGenerarInvitacion" onclick="generarInvitacion()">
-                Generar Invitación
+                Generar Pase VIP
             </button>
             <button class="btn-cancelar" onclick="cerrarInvitar()">Cancelar</button>
         </div>
@@ -3630,6 +3637,8 @@
                 bloqueoInvalido: "Tu invitación no es válida o ya fue usada.<br>Contacta al anfitrión del evento.",
                 bloqueoReceso: "Estamos atendiendo a otros invitados.<br>Vuelve en un momento.",
                 bloqueoDespedida: "Has completado tus sesiones.<br>Gracias por ser parte.",
+                bloqueoVipUsado: "Este pase VIP ya fue usado.<br>Pedile uno nuevo al anfitrión del evento.",
+                bloqueoVipNoValido: "Este pase no es válido para este evento.<br>Contactá al anfitrión.",
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
@@ -3688,6 +3697,8 @@
                 bloqueoInvalido: "Your invitation is not valid or was already used.<br>Contact the event host.",
                 bloqueoReceso: "We're attending other guests.<br>Come back in a moment.",
                 bloqueoDespedida: "You've completed your sessions.<br>Thanks for being part of it.",
+                bloqueoVipUsado: "This VIP pass has already been used.<br>Ask the event host for a new one.",
+                bloqueoVipNoValido: "This pass is not valid for this event.<br>Contact the host.",
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
@@ -3746,6 +3757,8 @@
                 bloqueoInvalido: "你的邀请无效或已被使用。<br>请联系主办方。",
                 bloqueoReceso: "我们正在接待其他嘉宾。<br>请稍后再来。",
                 bloqueoDespedida: "你已完成所有会话。<br>感谢参与。",
+                bloqueoVipUsado: "此 VIP 通行证已被使用。<br>请向活动主办方索取新的通行证。",
+                bloqueoVipNoValido: "此通行证不适用于本次活动。<br>请联系主办方。",
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
@@ -3926,6 +3939,8 @@
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
+                vipUsado: '👑',      // 🔥 FASE 3: pase VIP ya reclamado
+                vipNoValido: '🎫',   // 🔥 FASE 3: pase VIP de otro evento
                 error: '❌'
             };
 
@@ -3951,6 +3966,7 @@
             sesionGeneral = null;
             fotosCache = [];
             fotoSeleccionadaIndex = -1;
+            aforoActual = null;
 
             mostrarBloqueo('invalido', 'Tu acceso expiró.<br>Vuelve a entrar con tu link o QR.');
         }
@@ -3981,6 +3997,24 @@
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.valido) {
+                    // 🔥 FASE 3: distinguir el motivo del bloqueo
+                    const motivo = data?.motivo;
+
+                    if (motivo === 'vip_reclamado') {
+                        mostrarBloqueo('vipUsado', t('bloqueoVipUsado'));
+                        return false;
+                    }
+
+                    // Si el token parecía un VIP (por el formato de URL) pero el server
+                    // dice "pase no válido para este evento" (porque el evento cambió a Modo A),
+                    // mostramos un mensaje específico.
+                    // El server devuelve este caso con 403 y sin `motivo`, pero con un error distinto.
+                    if (respuesta.status === 403 && typeof data?.error === 'string'
+                        && data.error.toLowerCase().includes('pase no válido')) {
+                        mostrarBloqueo('vipNoValido', t('bloqueoVipNoValido'));
+                        return false;
+                    }
+
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
@@ -3993,8 +4027,17 @@
                 sesion = {
                     tipo: data.tipo,
                     nombre: data.nombre,
-                    id: data.id
+                    id: data.id,
+                    ilimitado: data.ilimitado === true,
+                    modoEvento: data.modoEvento || 'B',   // 🔥 FASE 3
+                    maxVips: data.maxVips || 0             // 🔥 FASE 3 (lo llenamos al pedirlo)
                 };
+
+                // 🔥 FASE 3: VIP = como admin, sin sesión, sin receso
+                if (data.tipo === 'vip') {
+                    sesion.ilimitado = true;
+                    // No seteamos sesionGeneral (no aplica)
+                }
 
                 if (data.tipo === 'general' && data.sesion) {
                     sesionGeneral = data.sesion;
@@ -4038,10 +4081,15 @@
             const btnQrGeneral = document.getElementById('btnQrGeneral');
 
             if (sesion.tipo === 'admin') {
-                btnInvitar.style.display = 'inline-flex';
+                // 🔥 FASE 3: el botón Invitar VIP solo aparece en Modo B
+                if (sesion.modoEvento === 'A') {
+                    btnInvitar.style.display = 'none';
+                } else {
+                    btnInvitar.style.display = 'inline-flex';
+                }
+
                 btnQrGeneral.style.display = 'inline-flex';
 
-                // 🔥 PUNTO 14: cargar aforo si es admin
                 setTimeout(cargarAforoAdmin, 1500);
             } else {
                 btnInvitar.style.display = 'none';
@@ -4050,7 +4098,12 @@
 
             actualizarBadgeRol();
 
-            if (!tipsMostrados.primeraEntrada) {
+            // 🔥 FASE 3: toast de bienvenida al VIP
+            if (sesion.tipo === 'vip') {
+                setTimeout(() => {
+                    mostrarToast(`👑 ¡Bienvenido, ${sesion.nombre || 'VIP'}! Descargas ilimitadas.`, 'success', 6000);
+                }, 1500);
+            } else if (!tipsMostrados.primeraEntrada) {
                 tipsMostrados.primeraEntrada = true;
                 setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 2000);
             }
@@ -4069,6 +4122,10 @@
             if (sesion.tipo === 'admin') {
                 el.textContent = t('contadorAdmin');
                 el.className = 'badge-rol admin';
+            } else if (sesion.tipo === 'vip') {
+                // 🔥 FASE 3: VIP tiene su propio badge
+                el.textContent = '👑 VIP';
+                el.className = 'badge-rol admin';  // reusa el estilo champagne
             } else if (sesion.tipo === 'general' && sesionGeneral) {
                 if (sesionGeneral.enReceso) {
                     const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
@@ -4178,6 +4235,11 @@
                 if (!resp.ok || !data.ok) return;
 
                 aforoActual = data.aforo;
+
+                // 🔥 FASE 3: guardar info de VIPs para mostrarla
+                if (data.vips) {
+                    sesion.vipsInfo = data.vips;
+                }
 
                 actualizarAvisoAforo();
             } catch (e) {
@@ -4737,7 +4799,7 @@
             const icono = document.getElementById('btnIcono');
             const texto = document.getElementById('btnPedirTexto');
 
-            if (sesion && sesion.tipo === 'admin') {
+            if (sesion && (sesion.tipo === 'admin' || sesion.tipo === 'vip')) {
                 btn.classList.remove('agotado');
                 icono.textContent = "⬇️";
                 texto.textContent = t('descargarFoto');
@@ -5210,11 +5272,52 @@
         // ==========================================
         // INVITAR
         // ==========================================
-        function abrirInvitar() {
+        async function abrirInvitar() {
+            // 🔥 FASE 3: si es Modo A, no se puede invitar VIP
+            if (sesion.modoEvento === 'A') {
+                mostrarToast('Este evento es Modo Íntimo. Todos ya son VIP.', 'tip');
+                return;
+            }
+
             document.getElementById('modalInvitar').classList.add('activo');
             document.getElementById('inputNombreInvitacion').value = '';
             document.getElementById('inputWhatsAppInvitacion').value = '';
             document.getElementById('avisoLimiteVips').style.display = 'none';
+            document.getElementById('btnGenerarInvitacion').disabled = false;
+            document.getElementById('btnGenerarInvitacion').textContent = 'Generar Pase VIP';
+
+            // 🔥 FASE 3: pedir estado de VIPs al server
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/vips?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    document.getElementById('subtituloInvitarVip').textContent = 'Los VIP tienen descargas ilimitadas.';
+                    return;
+                }
+
+                const usados = data.vipsUsados || 0;
+                const limite = data.limiteVips || 0;
+                const restantes = Math.max(0, limite - usados);
+
+                document.getElementById('subtituloInvitarVip').innerHTML =
+                    `Los VIP tienen descargas ilimitadas, sin receso.<br>` +
+                    `<strong style="color:#e8c47a;">${usados} / ${limite} generados</strong> · ${restantes} disponibles`;
+
+                if (restantes === 0) {
+                    const aviso = document.getElementById('avisoLimiteVips');
+                    aviso.textContent = `Límite de VIPs alcanzado (${usados}/${limite}). No podés generar más.`;
+                    aviso.style.display = 'block';
+                    document.getElementById('btnGenerarInvitacion').disabled = true;
+                }
+
+            } catch (e) {
+                console.error('Error consultando VIPs:', e);
+            }
         }
 
         function cerrarInvitar() {
@@ -5240,39 +5343,34 @@
                 }
             }
 
-            if (!nombre) {
-                alert('El nombre es obligatorio');
-                btn.disabled = false;
-                btn.textContent = 'Generar Invitación';
-                return;
-            }
+            // 🔥 FASE 3: el nombre ahora es opcional
+            const nombreFinal = nombre || 'VIP';
 
             try {
-                const url = `${URL_CLOUDFLARE}/invitar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                const url = `${URL_CLOUDFLARE}/invitar-vip?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
                     `&t=${encodeURIComponent(TOKEN)}`;
 
                 const respuesta = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        tipo: 'admin',
-                        nombre: nombre
-                    })
+                    body: JSON.stringify({ nombre: nombreFinal })
                 });
 
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.ok) {
-                    if (respuesta.status === 409 && data.limiteAdmins) {
+                    if (respuesta.status === 409 && data.limiteVips) {
                         document.getElementById('avisoLimiteVips').textContent =
-                            `Límite de administradores alcanzado (${data.adminsActuales}/${data.limiteAdmins}).`;
+                            `Límite de VIPs alcanzado (${data.vipsUsados}/${data.limiteVips}).`;
                         document.getElementById('avisoLimiteVips').style.display = 'block';
+                    } else if (respuesta.status === 400 && data.modoEvento === 'A') {
+                        alert('Este evento es Modo Íntimo. Todos los invitados ya son VIP automáticamente.');
                     } else {
-                        alert('Error al generar la invitación: ' + (data.error || 'Desconocido'));
+                        alert('Error al generar el pase VIP: ' + (data.error || 'Desconocido'));
                     }
                     btn.disabled = false;
-                    btn.textContent = 'Generar Invitación';
+                    btn.textContent = 'Generar Pase VIP';
                     return;
                 }
 
@@ -5283,12 +5381,12 @@
                 mostrarResultado();
 
             } catch (error) {
-                console.error('Error generando invitación:', error);
+                console.error('Error generando pase VIP:', error);
                 alert('Error de conexión');
             }
 
             btn.disabled = false;
-            btn.textContent = 'Generar Invitación';
+            btn.textContent = 'Generar Pase VIP';
         }
 
         // ==========================================
@@ -5323,9 +5421,12 @@
         function mostrarResultado() {
             const modal = document.getElementById('modalResultado');
 
+            // 🔥 FASE 3: pase VIP
             document.getElementById('resultadoEmoji').textContent = '👑';
-            document.getElementById('resultadoTitulo').textContent = '¡Admin generado!';
-            document.getElementById('resultadoSubtitulo').textContent = 'Este usuario tendrá control total del evento';
+            document.getElementById('resultadoTitulo').textContent = '¡Pase VIP generado!';
+            document.getElementById('resultadoSubtitulo').innerHTML =
+                'Este invitado tendrá <strong>descargas ilimitadas</strong>.<br>' +
+                'El pase es de <strong>un solo uso</strong>.';
 
             document.getElementById('resultadoUrl').textContent = invitacionGenerada.url;
 
@@ -5351,7 +5452,11 @@
             if (!invitacionGenerada || !invitacionGenerada.whatsapp) return;
 
             const numeroLimpio = invitacionGenerada.whatsapp.replace(/[^0-9]/g, '');
-            const mensaje = `¡Hola! Te invito a la galería del evento.\n\n${invitacionGenerada.url}\n\nEntra desde tu celular para ver las fotos.`;
+            const mensaje =
+                `¡Hola! Te paso tu pase VIP para la galería del evento.\n\n` +
+                `${invitacionGenerada.url}\n\n` +
+                `Entrá desde tu celular. Vas a poder ver y descargar las fotos sin límite.\n\n` +
+                `⚠️ Este pase es de un solo uso.`;
 
             window.open(`https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`, "_blank");
         }
