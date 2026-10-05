@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>OVJ Studio · Emergencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --oro: #f39c12;
+            --verde: #2ecc71;
+            --rojo: #e74c3c;
+            --bg: #0a0a0a;
+            --card: #141414;
+            --texto: #fff;
+            --texto-suave: #aaa;
+            --texto-tenue: #666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--texto);
+            min-height: 100vh;
+            padding: 16px 14px 40px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.15);
+            margin-bottom: 18px;
+        }
+
+        .header .ovj {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .header .ovj span {
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .modo {
+            font-size: 0.7rem;
+            color: var(--oro);
+            letter-spacing: 3px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid rgba(243, 156, 18, 0.15);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 0.75rem;
+            color: var(--texto-suave);
+            line-height: 1.5;
+        }
+
+        .info-card strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .info-card .fila {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 3px 0;
+        }
+
+        .info-card .fila .label {
+            color: var(--texto-tenue);
+        }
+
+        .info-card.error {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .info-card.ok {
+            background: rgba(46, 204, 113, 0.06);
+            border-color: rgba(46, 204, 113, 0.25);
+            color: #4ade80;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(243, 156, 18, 0.4);
+            border-radius: 14px;
+            padding: 32px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(243, 156, 18, 0.03);
+            margin-bottom: 16px;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.arrastrando {
+            border-color: rgba(243, 156, 18, 0.7);
+            background: rgba(243, 156, 18, 0.08);
+        }
+
+        .drop-zone .icono {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone .texto {
+            font-size: 0.9rem;
+            color: #ccc;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone .subtexto {
+            font-size: 0.72rem;
+            color: var(--texto-tenue);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .acciones-top {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 13px 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-primario {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+            color: #0a0a0a;
+        }
+
+        .btn-primario:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-secundario {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ccc;
+        }
+
+        .btn-secundario:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .progreso-global {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .progreso-global.activo {
+            display: block;
+        }
+
+        .progreso-barra {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progreso-barra-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #f1c40f);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .lista-fotos {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-foto {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .item-foto.ok {
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        .item-foto.error {
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        .item-foto.procesando {
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+
+        .item-foto .thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+        .item-foto .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-foto .nombre {
+            font-size: 0.72rem;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .item-foto .estado {
+            font-size: 0.65rem;
+            color: var(--texto-tenue);
+        }
+
+        .item-foto .badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .item-foto .badge.pendiente {
+            background: rgba(255, 255, 255, 0.06);
+            color: #888;
+        }
+
+        .item-foto .badge.procesando {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--oro);
+        }
+
+        .item-foto .badge.subiendo {
+            background: rgba(52, 152, 219, 0.15);
+            color: #5dade2;
+        }
+
+        .item-foto .badge.ok {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+        }
+
+        .item-foto .badge.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
+        .item-foto .btn-quitar {
+            background: transparent;
+            border: none;
+            color: var(--texto-tenue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .item-foto .btn-quitar:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
+        .vacio {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--texto-tenue);
+            font-size: 0.8rem;
+        }
+
+        .vacio .emoji {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--card);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            z-index: 3000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 90vw;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .toast.activo {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.ok {
+            border-color: rgba(46, 204, 113, 0.4);
+        }
+
+        .toast.error {
+            border-color: rgba(231, 76, 60, 0.4);
+        }
+
+        .footer-info {
+            text-align: center;
+            padding: 24px 10px 0;
+            font-size: 0.65rem;
+            color: var(--texto-tenue);
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="ovj">OVJ <span>Studio</span></div>
+        <div class="modo">Modo Emergencia</div>
+    </div>
+
+    <div class="info-card" id="infoCard">
+        Cargando...
+    </div>
+
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('inputArchivos').click()">
+        <span class="icono">📸</span>
+        <div class="texto">Seleccionar fotos</div>
+        <div class="subtexto">Podés elegir varias de una vez</div>
+    </div>
+
+    <input type="file" id="inputArchivos" accept="image/*" multiple />
+
+    <div class="progreso-global" id="progresoGlobal">
+        <div id="progresoTexto">Subiendo...</div>
+        <div class="progreso-barra">
+            <div class="progreso-barra-fill" id="progresoFill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="acciones-top" id="accionesTop" style="display: none;">
+        <button class="btn btn-primario" id="btnSubirTodo" onclick="subirTodas()">
+            🚀 Subir todas
+        </button>
+        <button class="btn btn-secundario" onclick="limpiarLista()">
+            🗑️ Limpiar
+        </button>
+    </div>
+
+    <div class="lista-fotos" id="listaFotos">
+        <div class="vacio">
+            <span class="emoji">📥</span>
+            Todavía no seleccionaste fotos
+        </div>
+    </div>
+
+    <div class="footer-info">OVJ STUDIO · MODO EMERGENCIA</div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==========================================
+        // CONFIG
+        // ==========================================
+        const WORKER_BASE = 'https://ovj-b2-proxy.jhumerali2.workers.dev';
+
+        const MAX_ORIGINAL_MB = 15;
+        const MAX_PREVIEW_MB = 2;
+        const PREVIEW_WIDTH = 900;
+        const PREVIEW_JPEG_QUALITY = 0.8;
+
+        // ==========================================
+        // ESTADO
+        // ==========================================
+        let config = {
+            token: null,
+            eventoId: null,
+            fotografo: null
+        };
+
+        let fotos = [];   // { id, file, thumbUrl, estado, error, nombreOriginal, nombrePreview }
+        let subiendo = false;
+
+        // ==========================================
+        // UTILIDADES
+        // ==========================================
+        function $(id) { return document.getElementById(id); }
+
+        function toast(mensaje, tipo = '') {
+            const el = $('toast');
+            el.textContent = mensaje;
+            el.className = 'toast activo ' + tipo;
+            setTimeout(() => el.classList.remove('activo'), 3500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatearBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
+        function inicializar() {
+            const params = new URLSearchParams(window.location.search);
+
+            const token = params.get('token');
+            const eventoId = params.get('e');
+            const fotografo = params.get('f');
+
+            // Si están en la URL, guardarlos
+            if (token && eventoId && fotografo) {
+                localStorage.setItem('ovj_emergencia_token', token);
+                localStorage.setItem('ovj_emergencia_evento', eventoId);
+                localStorage.setItem('ovj_emergencia_fotografo', fotografo);
+
+                config.token = token;
+                config.eventoId = eventoId;
+                config.fotografo = fotografo;
+
+                // Limpiar la URL (para que no quede el token en el historial)
+                window.history.replaceState({}, '', 'emergencia.html');
+            } else {
+                // Leer de localStorage
+                config.token = localStorage.getItem('ovj_emergencia_token');
+                config.eventoId = localStorage.getItem('ovj_emergencia_evento');
+                config.fotografo = localStorage.getItem('ovj_emergencia_fotografo');
+            }
+
+            if (!config.token || !config.eventoId || !config.fotografo) {
+                $('infoCard').className = 'info-card error';
+                $('infoCard').innerHTML =
+                    `⚠️ <strong>No hay configuración guardada</strong><br>` +
+                    `Abrí esta página desde el link que te dio el sistema.<br>` +
+                    `Si ya lo hiciste antes, volvé a abrirlo desde el link original.`;
+                $('dropZone').style.display = 'none';
+                return;
+            }
+
+            $('infoCard').className = 'info-card ok';
+            $('infoCard').innerHTML =
+                `<div class="fila"><span class="label">Fotógrafo:</span><strong>${escapeHtml(config.fotografo)}</strong></div>` +
+                `<div class="fila"><span class="label">Evento:</span><strong>${escapeHtml(config.eventoId)}</strong></div>` +
+                `<div class="fila" style="margin-top:6px; font-size:0.7rem;"><span>✅ Conectado al sistema de emergencia</span></div>`;
+
+            // Escuchar input de archivos
+            $('inputArchivos').addEventListener('change', manejarSeleccion);
+
+            console.log('✅ Config:', config);
+        }
+
+        // ==========================================
+        // SELECCIÓN DE FOTOS
+        // ==========================================
+        function manejarSeleccion(e) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const thumbUrl = URL.createObjectURL(file);
+
+                fotos.push({
+                    id: 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                    file,
+                    thumbUrl,
+                    estado: 'pendiente',
+                    error: null,
+                    nombreOriginal: null,
+                    nombrePreview: null,
+                    pesoOriginal: file.size
+                });
+            });
+
+            // Resetear input para permitir seleccionar el mismo archivo dos veces
+            e.target.value = '';
+
+            renderizarLista();
+        }
+
+        // ==========================================
+        // RENDERIZAR
+        // ==========================================
+        function renderizarLista() {
+            const cont = $('listaFotos');
+
+            if (fotos.length === 0) {
+                cont.innerHTML = `
+                    <div class="vacio">
+                        <span class="emoji">📥</span>
+                        Todavía no seleccionaste fotos
+                    </div>
+                `;
+                $('accionesTop').style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            fotos.forEach((foto, idx) => {
+                const badgeClass = foto.estado;
+                const badgeTexto = {
+                    pendiente: 'Pendiente',
+                    procesando: 'Procesando',
+                    subiendo: 'Subiendo',
+                    ok: '✓ Subida',
+                    error: '✗ Error'
+                }[foto.estado] || foto.estado;
+
+                html += `
+                    <div class="item-foto ${foto.estado}">
+                        <img class="thumb" src="${foto.thumbUrl}" alt="" />
+                        <div class="info">
+                            <div class="nombre">${escapeHtml(foto.file.name)}</div>
+                            <div class="estado">
+                                ${formatearBytes(foto.pesoOriginal)}
+                                ${foto.error ? ' · ' + escapeHtml(foto.error) : ''}
+                            </div>
+                        </div>
+                        <span class="badge ${badgeClass}">${badgeTexto}</span>
+                        ${foto.estado === 'pendiente' || foto.estado === 'error'
+                        ? `<button class="btn-quitar" onclick="quitarFoto('${foto.id}')">✕</button>`
+                        : ''}
+                    </div>
+                `;
+            });
+
+            cont.innerHTML = html;
+
+            // Mostrar acciones si hay fotos pendientes
+            const hayPendientes = fotos.some(f => f.estado === 'pendiente' || f.estado === 'error');
+            $('accionesTop').style.display = (hayPendientes && !subiendo) ? 'flex' : 'none';
+        }
+
+        function quitarFoto(id) {
+            fotos = fotos.filter(f => f.id !== id);
+            renderizarLista();
+        }
+
+        function limpiarLista() {
+            if (subiendo) return;
+            if (!confirm('¿Quitar todas las fotos de la lista?')) return;
+
+            fotos.forEach(f => {
+                try { URL.revokeObjectURL(f.thumbUrl); } catch (e) { }
+            });
+            fotos = [];
+            renderizarLista();
+        }
+
+        // ==========================================
+        // PROCESAMIENTO DE IMAGEN (Canvas)
+        // ==========================================
+        async function procesarImagen(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+
+                    // Calcular preview
+                    const ratio = img.width > PREVIEW_WIDTH
+                        ? PREVIEW_WIDTH / img.width
+                        : 1;
+
+                    const w = Math.round(img.width * ratio);
+                    const h = Math.round(img.height * ratio);
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('No se pudo generar la preview'));
+                            return;
+                        }
+                        resolve({ previewBlob: blob, anchoPreview: w, altoPreview: h });
+                    }, 'image/jpeg', PREVIEW_JPEG_QUALITY);
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('No se pudo leer la imagen'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        // ==========================================
+        // GENERAR NOMBRE
+        // ==========================================
+        function generarNombreFoto() {
+            // Usa el eventoId como base del slug
+            const eventoSlug = String(config.eventoId || 'EVENTO')
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(-30) || 'EVENTO';
+
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 6);
+
+            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
+        }
+
+        // ==========================================
+        // SUBIR TODAS
+        // ==========================================
+        async function subirTodas() {
+            if (subiendo) return;
+
+            const pendientes = fotos.filter(f => f.estado === 'pendiente' || f.estado === 'error');
+            if (pendientes.length === 0) {
+                toast('No hay fotos para subir', 'error');
+                return;
+            }
+
+            subiendo = true;
+            $('btnSubirTodo').disabled = true;
+            $('progresoGlobal').classList.add('activo');
+
+            let ok = 0;
+            let errores = 0;
+            const total = pendientes.length;
+
+            for (let i = 0; i < total; i++) {
+                const foto = pendientes[i];
+                foto.estado = 'procesando';
+                foto.error = null;
+                renderizarLista();
+                actualizarProgreso(i, total, `Procesando ${i + 1} / ${total}`);
+
+                try {
+                    // 1. Procesar con Canvas
+                    const { previewBlob } = await procesarImagen(foto.file);
+
+                    // 2. Verificar tamaño de la preview
+                    if (previewBlob.size > MAX_PREVIEW_MB * 1024 * 1024) {
+                        throw new Error(`Preview muy grande (${formatearBytes(previewBlob.size)})`);
+                    }
+
+                    // 3. Verificar tamaño del original
+                    if (foto.file.size > MAX_ORIGINAL_MB * 1024 * 1024) {
+                        throw new Error(`Original muy grande (${formatearBytes(foto.file.size)})`);
+                    }
+
+                    // 4. Generar nombres
+                    const base = generarNombreFoto();
+                    const nombreOriginal = `${base}.jpg`;
+                    const nombrePreview = `${base}_web.jpg`;
+
+                    foto.nombreOriginal = nombreOriginal;
+                    foto.nombrePreview = nombrePreview;
+
+                    // 5. Subir al Worker
+                    foto.estado = 'subiendo';
+                    renderizarLista();
+                    actualizarProgreso(i, total, `Subiendo ${i + 1} / ${total}`);
+
+                    await subirParAlWorker(foto.file, previewBlob, nombreOriginal, nombrePreview);
+
+                    foto.estado = 'ok';
+                    ok++;
+
+                } catch (e) {
+                    console.error('Error con', foto.file.name, e);
+                    foto.estado = 'error';
+                    foto.error = e.message || 'Error desconocido';
+                    errores++;
+                }
+
+                renderizarLista();
+                actualizarProgreso(i + 1, total, `Procesadas ${i + 1} / ${total}`);
+            }
+
+            $('progresoGlobal').classList.remove('activo');
+            subiendo = false;
+            renderizarLista();
+
+            if (errores === 0) {
+                toast(`✅ ${ok} foto${ok === 1 ? '' : 's'} subida${ok === 1 ? '' : 's'}`, 'ok');
+            } else {
+                toast(`⚠️ ${ok} OK · ${errores} con error`, 'error');
+            }
+        }
+
+        function actualizarProgreso(actual, total, texto) {
+            const pct = Math.round((actual / total) * 100);
+            $('progresoFill').style.width = pct + '%';
+            $('progresoTexto').textContent = texto;
+        }
+
+        // ==========================================
+        // SUBIR AL WORKER
+        // ==========================================
+        async function subirParAlWorker(originalFile, previewBlob, nombreOriginal, nombrePreview) {
+            const formData = new FormData();
+            formData.append('original', originalFile, nombreOriginal);
+            formData.append('preview', previewBlob, nombrePreview);
+            formData.append('nombreOriginal', nombreOriginal);
+            formData.append('nombrePreview', nombrePreview);
+
+            const resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
+                method: 'POST',
+                headers: {
+                    'X-Token': config.token,
+                    'X-Evento-Id': config.eventoId,
+                    'X-Fotografo': config.fotografo
+                },
+                body: formData
+            });
+
+            let data = {};
+            try {
+                data = await resp.json();
+            } catch (e) { }
+
+            if (!resp.ok || !data.ok) {
+                throw new Error(data.error || `HTTP ${resp.status}`);
+            }
+
+            return data;
+        }
+
+        // ==========================================
+        // INICIAR
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', inicializar);
+
+        // Antes de cerrar, avisar si hay fotos sin subir
+        window.addEventListener('beforeunload', (e) => {
+            if (subiendo) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Evitar que se recargue accidentalmente si se está subiendo
+        window.addEventListener('dragstart', (e) => e.preventDefault());
+    </script>
+</body>
+
+</html>
