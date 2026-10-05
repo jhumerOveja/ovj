@@ -780,6 +780,129 @@
             max-width: 560px;
         }
 
+        /* Item de admin en el modal */
+        .admin-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 14px 14px 12px;
+            margin-bottom: 12px;
+        }
+
+        .admin-item.reclamado {
+            border-color: rgba(74, 222, 128, 0.25);
+            background: rgba(74, 222, 128, 0.04);
+        }
+
+        .admin-item .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .admin-item .admin-nombre {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .admin-item .admin-badge {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 9px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .admin-item .admin-badge.libre {
+            background: rgba(52, 152, 219, 0.15);
+            color: #5dade2;
+        }
+
+        .admin-item .admin-badge.reclamado {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+
+        .admin-item .admin-qr {
+            background: #fff;
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 10px;
+        }
+
+        .admin-item .admin-qr img {
+            display: block;
+            width: 164px;
+            height: 164px;
+            border-radius: 4px;
+        }
+
+        .admin-item .admin-url {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.65rem;
+            color: #888;
+            word-break: break-all;
+            font-family: monospace;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .admin-item .admin-acciones {
+            display: flex;
+            gap: 6px;
+        }
+
+        .admin-item .admin-acciones button {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 9px;
+            border: none;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .admin-item .btn-copiar {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ccc;
+        }
+
+        .admin-item .btn-copiar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .admin-item .btn-regenerar {
+            background: rgba(231, 76, 60, 0.12);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: var(--rojo);
+        }
+
+        .admin-item .btn-regenerar:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .modal-contenido.grande {
+            max-width: 560px;
+        }
+
         @keyframes zoomIn {
             from {
                 transform: scale(0.9);
@@ -1197,20 +1320,27 @@
     </div>
 
     <!-- ===== MODAL LINK DEL CLIENTE ===== -->
+    <!-- ===== MODAL LINK DEL CLIENTE (con 2 admins) ===== -->
     <div class="modal" id="modalLinkAdmin">
-        <div class="modal-contenido">
+        <div class="modal-contenido grande">
             <button class="btn-cerrar" onclick="cerrarLinkAdmin()">✕</button>
-            <div class="titulo">🔗 Link del Cliente</div>
+            <div class="titulo">🔗 Links de Administrador</div>
             <div class="subtitulo" id="linkAdminSubtitulo">
-                Compartile este link al cliente del evento. Él lo abrirá desde su celular.
+                Cargando...
             </div>
 
-            <div class="qr-wrapper" id="qrLinkAdmin"></div>
-            <div class="url-box" id="urlLinkAdmin"></div>
+            <div id="listaAdminsContainer">
+                <div class="feed-vacio">Cargando...</div>
+            </div>
 
-            <button class="btn-primario" onclick="copiarLinkAdmin()">📋 Copiar link</button>
-            <button class="btn-peligro" onclick="regenerarLinkCliente()">♻️ Regenerar link del cliente</button>
-            <button class="btn-secundario" onclick="cerrarLinkAdmin()">Cerrar</button>
+            <button class="btn-secundario" id="btnGenerarRespaldo" onclick="generarAdminRespaldo()"
+                style="display:none;">
+                ➕ Generar admin de respaldo
+            </button>
+
+            <button class="btn-secundario" onclick="cerrarLinkAdmin()" style="margin-top:10px;">
+                Cerrar
+            </button>
         </div>
     </div>
 
@@ -2004,43 +2134,92 @@
         // ==========================================
         // LINK DEL CLIENTE
         // ==========================================
-        let urlAdminActual = null;
-
         async function abrirLinkAdmin() {
             loader(true);
+            $('modalLinkAdmin').classList.add('activo');
+            $('listaAdminsContainer').innerHTML = '<div class="feed-vacio">Cargando...</div>';
+            $('btnGenerarRespaldo').style.display = 'none';
+
             try {
                 const data = await apiFetch('/fotografo/link-admin');
-                urlAdminActual = data.urlAdmin;
 
-                $('urlLinkAdmin').textContent = data.urlAdmin;
+                const admins = data.admins || [];
+                const limite = data.limite || 2;
+                const usados = admins.length;
 
-                try {
-                    const qr = window.qrcode(0, 'M');
-                    qr.addData(data.urlAdmin);
-                    qr.make();
+                $('linkAdminSubtitulo').innerHTML =
+                    `Cada link es de <strong>un solo uso</strong>.<br>` +
+                    `<strong style="color:#e8c47a;">${usados} / ${limite} admins creados</strong>`;
 
-                    const contenedor = $('qrLinkAdmin');
-                    contenedor.innerHTML = qr.createImgTag(6, 12);
-                    const img = contenedor.querySelector('img');
-                    if (img) {
-                        img.style.width = '220px';
-                        img.style.height = '220px';
-                        img.style.borderRadius = '4px';
-                        img.alt = 'QR';
+                // Renderizar cada admin
+                let html = '';
+
+                admins.forEach((admin, idx) => {
+                    const badge = admin.reclamada
+                        ? `<span class="admin-badge reclamado">✓ En uso</span>`
+                        : `<span class="admin-badge libre">○ Disponible</span>`;
+
+                    html += `
+                        <div class="admin-item ${admin.reclamada ? 'reclamado' : ''}">
+                            <div class="admin-header">
+                                <div class="admin-nombre">👑 ${escapeHtml(admin.nombre)}</div>
+                                ${badge}
+                            </div>
+
+                            <div class="admin-qr" id="qrAdmin_${idx}"></div>
+
+                            <div class="admin-url" id="urlAdmin_${idx}"></div>
+
+                            <div class="admin-acciones">
+                                <button class="btn-copiar" onclick="copiarUrlAdmin('${idx}')">📋 Copiar</button>
+                                <button class="btn-regenerar" onclick="regenerarAdmin('${escapeHtml(admin.id)}', '${escapeHtml(admin.nombre)}')">♻️ Regenerar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                $('listaAdminsContainer').innerHTML = html;
+
+                // Guardar URLs para copiar
+                window._urlsAdmins = {};
+                window._qrTextosAdmins = {};
+
+                admins.forEach((admin, idx) => {
+                    window._urlsAdmins[idx] = admin.url;
+                    window._qrTextosAdmins[idx] = admin.url;
+
+                    $('urlAdmin_' + idx).textContent = admin.url;
+
+                    // Generar QR
+                    try {
+                        const qr = window.qrcode(0, 'M');
+                        qr.addData(admin.url);
+                        qr.make();
+
+                        const contenedor = $('qrAdmin_' + idx);
+                        contenedor.innerHTML = qr.createImgTag(6, 12);
+                        const img = contenedor.querySelector('img');
+                        if (img) {
+                            img.style.width = '164px';
+                            img.style.height = '164px';
+                            img.style.borderRadius = '4px';
+                            img.alt = 'QR ' + admin.nombre;
+                        }
+                    } catch (err) {
+                        console.error('Error generando QR local:', err);
+                        $('qrAdmin_' + idx).innerHTML = '<div style="color:#333;font-size:0.7rem;text-align:center;padding:20px;">QR no disponible.</div>';
                     }
-                } catch (error) {
-                    console.error('Error generando QR local:', error);
-                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                });
+
+                // Si hay menos de 2 admins, mostrar botón de generar
+                if (usados < limite) {
+                    $('btnGenerarRespaldo').style.display = 'block';
+                    $('btnGenerarRespaldo').textContent = `➕ Generar admin de respaldo (${usados}/${limite})`;
                 }
 
-                $('linkAdminSubtitulo').innerHTML = data.reclamada
-                    ? '⚠️ Este link ya fue usado en otro dispositivo. Si el cliente necesita acceso desde otro, usá "Regenerar link del cliente".'
-                    : 'Compartile este link al cliente. Él podrá invitar administradores.';
-
-                $('modalLinkAdmin').classList.add('activo');
-
             } catch (e) {
-                toast('Error: ' + e.message, 'error');
+                $('listaAdminsContainer').innerHTML =
+                    `<div class="feed-vacio">Error: ${escapeHtml(e.message)}</div>`;
             } finally {
                 loader(false);
             }
@@ -2050,13 +2229,17 @@
             $('modalLinkAdmin').classList.remove('activo');
         }
 
-        function copiarLinkAdmin() {
-            if (!urlAdminActual) return;
-            navigator.clipboard.writeText(urlAdminActual).then(() => {
+        function copiarUrlAdmin(idx) {
+            const url = window._urlsAdmins && window._urlsAdmins[idx];
+            if (!url) {
+                toast('URL no disponible', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(url).then(() => {
                 toast('✅ Link copiado', 'ok');
             }).catch(() => {
                 const ta = document.createElement('textarea');
-                ta.value = urlAdminActual;
+                ta.value = url;
                 document.body.appendChild(ta);
                 ta.select();
                 document.execCommand('copy');
@@ -2065,38 +2248,53 @@
             });
         }
 
-        async function regenerarLinkCliente() {
-            if (!confirm('¿Regenerar el link del cliente? El link viejo quedará inválido.')) return;
+        async function regenerarAdmin(adminId, nombreAdmin) {
+            const nombre = nombreAdmin || 'este admin';
+            if (!confirm(`¿Regenerar el link de "${nombre}"?\n\nEl link viejo quedará inválido y este quedará libre para usar en otro dispositivo.`)) return;
 
             loader(true);
             try {
-                const data = await apiFetch('/fotografo/regenerar-admin', { method: 'POST' });
-                urlAdminActual = data.urlAdmin;
+                await apiFetch('/fotografo/regenerar-admin', {
+                    method: 'POST',
+                    body: JSON.stringify({ adminId })
+                });
 
-                $('urlLinkAdmin').textContent = data.urlAdmin;
+                toast('♻️ Link regenerado', 'ok');
 
-                try {
-                    const qr = window.qrcode(0, 'M');
-                    qr.addData(data.urlAdmin);
-                    qr.make();
-
-                    const contenedor = $('qrLinkAdmin');
-                    contenedor.innerHTML = qr.createImgTag(6, 12);
-                    const img = contenedor.querySelector('img');
-                    if (img) {
-                        img.style.width = '220px';
-                        img.style.height = '220px';
-                        img.style.borderRadius = '4px';
-                        img.alt = 'QR';
-                    }
-                } catch (error) {
-                    console.error('Error generando QR local:', error);
-                    $('qrLinkAdmin').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
-                }
-
-                toast('✅ Link del cliente regenerado', 'ok');
+                // Refrescar la lista
+                await abrirLinkAdmin();
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function generarAdminRespaldo() {
+            if (!confirm('¿Generar un admin de respaldo?\n\nEs el 2do y último admin permitido por evento.')) return;
+
+            loader(true);
+            try {
+                const data = await apiFetch('/invitar', {
+                    method: 'POST',
+                    body: JSON.stringify({ nombreAdmin: 'Respaldo' })
+                });
+
+                if (!data.ok) {
+                    toast('Error: ' + (data.error || 'Desconocido'), 'error');
+                    return;
+                }
+
+                toast('👑 Admin de respaldo generado', 'ok');
+
+                // Refrescar la lista
+                await abrirLinkAdmin();
+            } catch (e) {
+                if (e.message.includes('Límite')) {
+                    toast('⚠️ Ya hay 2 admins para este evento', 'error');
+                } else {
+                    toast('Error: ' + e.message, 'error');
+                }
             } finally {
                 loader(false);
             }
