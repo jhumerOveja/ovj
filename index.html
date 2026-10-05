@@ -5183,56 +5183,83 @@
             btn.classList.add('cargando-btn');
             texto.textContent = t('descargando');
 
-            try {
+                        try {
                 // ── FLUJO NORMAL ──
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
                     `&t=${encodeURIComponent(TOKEN)}`;
 
-                const respuesta = await fetch(url);
+                let urlDescargaFinal = null;
+                let dataServer = null;
+                let usarFallbackEmergencia = false;
 
-                if (respuesta.status === 429 || respuesta.status === 403 || respuesta.status === 410) {
-                    const data = await respuesta.json().catch(() => ({}));
+                try {
+                    const respuesta = await fetch(url);
 
-                    if (data.error === 'Token inválido' || data.valido === false) {
-                        btn.classList.remove('cargando-btn');
-                        texto.textContent = textoOriginal;
-                        cerrarSesionYBloquear();
-                        return;
-                    }
+                    if (respuesta.status === 429 || respuesta.status === 403 || respuesta.status === 410) {
+                        const data = await respuesta.json().catch(() => ({}));
 
-                    if (respuesta.status === 410) {
-                        btn.classList.remove('cargando-btn');
-                        texto.textContent = textoOriginal;
-                        mostrarBloqueo('error', 'Este evento ya no está activo.<br>Vuelve a escanear el QR del evento actual.');
-                        return;
-                    }
-
-                    if (data.receso) {
-                        btn.classList.remove('cargando-btn');
-                        texto.textContent = textoOriginal;
-
-                        // Actualizar estado local
-                        if (sesionGeneral) {
-                            sesionGeneral.enReceso = true;
-                            sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
-                            actualizarBadgeRol();
-                            actualizarBotonPrincipal();
+                        if (data.error === 'Token inválido' || data.valido === false) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+                            cerrarSesionYBloquear();
+                            return;
                         }
-                        return;
+
+                        if (respuesta.status === 410) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+                            mostrarBloqueo('error', 'Este evento ya no está activo.<br>Vuelve a escanear el QR del evento actual.');
+                            return;
+                        }
+
+                        if (data.receso) {
+                            btn.classList.remove('cargando-btn');
+                            texto.textContent = textoOriginal;
+
+                            if (sesionGeneral) {
+                                sesionGeneral.enReceso = true;
+                                sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                                actualizarBadgeRol();
+                                actualizarBotonPrincipal();
+                            }
+                            return;
+                        }
+                    }
+
+                    if (respuesta.ok) {
+                        dataServer = await respuesta.json();
+                        urlDescargaFinal = dataServer.url;
+                    } else if (respuesta.status === 404) {
+                        // 🔥 FASE 7: foto subida por emergencia, no está en el mapping del server
+                        usarFallbackEmergencia = true;
+                    } else {
+                        throw new Error(`HTTP ${respuesta.status}`);
+                    }
+                } catch (e) {
+                    // 🔥 FASE 7: si el server está caído o la foto no está, usar el Worker directo
+                    if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) {
+                        usarFallbackEmergencia = true;
+                    } else if (e.message && e.message.startsWith('HTTP 5')) {
+                        usarFallbackEmergencia = true;
+                    } else {
+                        throw e;
                     }
                 }
 
-                if (!respuesta.ok) {
-                    throw new Error(`HTTP ${respuesta.status}`);
+                // 🔥 FASE 7: fallback — construir URL del Worker directamente
+                if (usarFallbackEmergencia) {
+                    if (!foto.url) {
+                        throw new Error('Foto sin URL disponible');
+                    }
+                    urlDescargaFinal = foto.url;
+                    console.log('🔑 Descarga vía Worker (modo emergencia):', urlDescargaFinal);
                 }
 
-                const data = await respuesta.json();
+                if (!urlDescargaFinal) throw new Error('Sin URL');
 
-                if (!data.url) throw new Error('Sin URL');
-
-                const respuestaArchivo = await fetch(data.url + '?dl=1');
+                const respuestaArchivo = await fetch(urlDescargaFinal + '?dl=1');
 
                 if (!respuestaArchivo.ok) {
                     throw new Error(`HTTP ${respuestaArchivo.status}`);
@@ -5254,9 +5281,9 @@
                     window.URL.revokeObjectURL(urlBlob);
                 }, 100);
 
-                if (data.tipo === 'general' && sesionGeneral) {
-                    sesionGeneral.descargasSesion = data.descargasSesion || sesionGeneral.descargasSesion;
-                    sesionGeneral.descargasPorSesion = data.descargasPorSesion || sesionGeneral.descargasPorSesion;
+                if (dataServer && dataServer.tipo === 'general' && sesionGeneral) {
+                    sesionGeneral.descargasSesion = dataServer.descargasSesion || sesionGeneral.descargasSesion;
+                    sesionGeneral.descargasPorSesion = dataServer.descargasPorSesion || sesionGeneral.descargasPorSesion;
                     actualizarBadgeRol();
                     actualizarBotonPrincipal();
                     renderizarGaleria();
