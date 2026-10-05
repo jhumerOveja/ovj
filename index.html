@@ -3639,6 +3639,7 @@
                 bloqueoDespedida: "Has completado tus sesiones.<br>Gracias por ser parte.",
                 bloqueoVipUsado: "Este pase VIP ya fue usado.<br>Pedile uno nuevo al anfitrión del evento.",
                 bloqueoVipNoValido: "Este pase no es válido para este evento.<br>Contactá al anfitrión.",
+                bloqueoAdminReclamado: "Este link de administrador ya fue usado en otro dispositivo.<br>Por seguridad, cada link es de un solo uso.",
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
@@ -3699,6 +3700,7 @@
                 bloqueoDespedida: "You've completed your sessions.<br>Thanks for being part of it.",
                 bloqueoVipUsado: "This VIP pass has already been used.<br>Ask the event host for a new one.",
                 bloqueoVipNoValido: "This pass is not valid for this event.<br>Contact the host.",
+                bloqueoAdminReclamado: "This admin link has already been used on another device.<br>For security, each link is single-use.",
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
@@ -3759,6 +3761,7 @@
                 bloqueoDespedida: "你已完成所有会话。<br>感谢参与。",
                 bloqueoVipUsado: "此 VIP 通行证已被使用。<br>请向活动主办方索取新的通行证。",
                 bloqueoVipNoValido: "此通行证不适用于本次活动。<br>请联系主办方。",
+                bloqueoAdminReclamado: "此管理员链接已在另一台设备上使用。<br>出于安全考虑，每个链接仅限一次使用。",
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
@@ -3939,8 +3942,9 @@
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
-                vipUsado: '👑',      // 🔥 FASE 3: pase VIP ya reclamado
-                vipNoValido: '🎫',   // 🔥 FASE 3: pase VIP de otro evento
+                vipUsado: '👑',           // 🔥 FASE 3: pase VIP ya reclamado
+                vipNoValido: '🎫',        // 🔥 FASE 3: pase VIP de otro evento
+                adminReclamado: '📱',     // 🔥 FASE 5: link de admin ya usado
                 error: '❌'
             };
 
@@ -3997,7 +4001,7 @@
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.valido) {
-                    // 🔥 FASE 3: distinguir el motivo del bloqueo
+                    // 🔥 FASE 3 + 5: distinguir el motivo del bloqueo
                     const motivo = data?.motivo;
 
                     if (motivo === 'vip_reclamado') {
@@ -4005,10 +4009,15 @@
                         return false;
                     }
 
+                    // 🔥 FASE 5: link de admin ya usado en otro dispositivo
+                    if (motivo === 'admin_reclamado') {
+                        mostrarBloqueo('adminReclamado', t('bloqueoAdminReclamado'));
+                        return false;
+                    }
+
                     // Si el token parecía un VIP (por el formato de URL) pero el server
                     // dice "pase no válido para este evento" (porque el evento cambió a Modo A),
                     // mostramos un mensaje específico.
-                    // El server devuelve este caso con 403 y sin `motivo`, pero con un error distinto.
                     if (respuesta.status === 403 && typeof data?.error === 'string'
                         && data.error.toLowerCase().includes('pase no válido')) {
                         mostrarBloqueo('vipNoValido', t('bloqueoVipNoValido'));
