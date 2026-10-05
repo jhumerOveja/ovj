@@ -1387,13 +1387,21 @@
                     html += `<div class="grid grid-2">`;
                     status.fotografos.forEach(f => {
                         const activo = f.eventoActivo;
+                        const modoEvento = activo ? (activo.modoEvento || 'B') : null;
+
+                        let etiquetaModo = '';
+                        if (activo) {
+                            if (activo.modo === 'libre') etiquetaModo = ' · 🆘 Libre';
+                            else if (modoEvento === 'A') etiquetaModo = ' · 🎪 Íntimo';
+                            else etiquetaModo = ' · 🎪 Masivo';
+                        }
 
                         html += `
                             <div class="card">
                                 <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:1.05rem; font-weight:700; color:#fff;">${escapeHtml(f.nombre)}</div>
-                                        ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${activo.modo === 'libre' ? ' (libre)' : ''}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
+                                        ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${etiquetaModo}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
                                     </div>
                                     ${activo ? `<span class="badge activo">${activo.modo === 'libre' ? '🆘 Libre' : '● Activo'}</span>` : `<span class="badge finalizado">Inactivo</span>`}
                                 </div>
@@ -1698,6 +1706,8 @@
             const badgeClase = e.modo === 'libre' ? 'libre' : (e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado');
             const badgeTexto = e.modo === 'libre' ? '🆘 Libre' : (e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado');
 
+            const modoEvento = e.modoEvento || 'B';
+
             let meta = '';
             if (e.modo === 'libre') {
                 meta += `<div class="fila">🆘 Modo libre</div>`;
@@ -1706,10 +1716,20 @@
                 meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
                 meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
             }
+
+            // 🔥 FASE 2: mostrar modo y VIPs
+            if (e.modo === 'libre') {
+                meta += `<div class="fila" style="color:#f39c12;">🎪 Modo: <strong>Masivo</strong> (modo libre)</div>`;
+            } else if (modoEvento === 'A') {
+                meta += `<div class="fila" style="color:#e8c47a;">🎪 Modo: <strong>Íntimo</strong> (todos VIP)</div>`;
+            } else {
+                meta += `<div class="fila" style="color:#5dade2;">🎪 Modo: <strong>Masivo</strong> · VIPs: ${e.maxVips || 0}</div>`;
+            }
+
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
 
             // Pool general
-            if (e.poolGeneral) {
+            if (e.poolGeneral && modoEvento === 'B') {
                 meta += `<div class="fila" style="color:#5dade2;">📥 ${e.poolGeneral.descargasPorSesion} desc/sesión · ${e.poolGeneral.maxGeneralesSimultaneos || 20} simultáneos</div>`;
 
                 // 🔥 Desbloqueo social
@@ -1735,12 +1755,12 @@
             let acciones = '';
             if (e.estado === 'agendado') {
                 acciones = `
-                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
                     <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
                 `;
             } else if (e.estado === 'activo') {
                 acciones = `
-                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
                 `;
             }
 
@@ -1776,7 +1796,28 @@
                 <div class="titulo">➕ Agendar Evento</div>
                 <div class="subtitulo">Completa los datos del evento.</div>
 
-                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">Datos básicos</div>
+                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">🎪 Modo del evento</div>
+
+                <div class="config-sugerida" id="avisoModoTexto" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
+                    💡 <strong>Modo Masivo:</strong> ideal para eventos con muchos invitados.<br>
+                    El cliente genera QRs VIP de un solo uso y el resto entra por el QR general con límites.
+                </div>
+
+                <div class="campo">
+                    <label>Modo del evento</label>
+                    <select id="inputModoEvento" onchange="alCambiarModoEvento()">
+                        <option value="B">B — Masivo (recomendado)</option>
+                        <option value="A">A — Íntimo</option>
+                    </select>
+                </div>
+
+                <div class="campo" id="campoMaxVips">
+                    <label>Máximo de VIPs</label>
+                    <input type="number" id="inputMaxVips" value="5" min="0" max="50" />
+                    <div class="ayuda">Cantidad de QRs VIP que el cliente podrá generar. Queda fijo para el evento.</div>
+                </div>
+
+                <div class="seccion-titulo-form">Datos básicos</div>
 
                 <div class="campo">
                     <label>Fotógrafo</label>
@@ -1811,72 +1852,74 @@
                     <div class="ayuda">Solo dígitos, con código de país.</div>
                 </div>
 
-                <div class="seccion-titulo-form">Configuración del pool general</div>
+                <div id="bloquePoolGeneral">
+                    <div class="seccion-titulo-form">Configuración del pool general</div>
 
-                <div class="config-sugerida" id="textoSugerencia">
-                    💡 Según la duración del evento, te sugiero:
-                    <strong id="sugerenciaTexto">5 descargas/sesión · 60 min sesión · 60 min descanso</strong>
-                </div>
-
-                <button class="btn-sugerir" onclick="aplicarSugerencia()">
-                    💡 Aplicar valores sugeridos
-                </button>
-
-                <div class="campo-fila">
-                    <div class="campo">
-                        <label>Descargas por sesión</label>
-                        <input type="number" id="inputDescargasPorSesion" value="5" min="1" max="50" />
+                    <div class="config-sugerida" id="textoSugerencia">
+                        💡 Según la duración del evento, te sugiero:
+                        <strong id="sugerenciaTexto">5 descargas/sesión · 60 min sesión · 60 min descanso</strong>
                     </div>
-                    <div class="campo">
-                        <label>Duración sesión (min)</label>
-                        <input type="number" id="inputDuracionSesion" value="60" min="10" max="240" />
+
+                    <button class="btn-sugerir" onclick="aplicarSugerencia()">
+                        💡 Aplicar valores sugeridos
+                    </button>
+
+                    <div class="campo-fila">
+                        <div class="campo">
+                            <label>Descargas por sesión</label>
+                            <input type="number" id="inputDescargasPorSesion" value="5" min="1" max="50" />
+                        </div>
+                        <div class="campo">
+                            <label>Duración sesión (min)</label>
+                            <input type="number" id="inputDuracionSesion" value="60" min="10" max="240" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="campo-fila">
-                    <div class="campo">
-                        <label>Descanso (min)</label>
-                        <input type="number" id="inputDescanso" value="60" min="10" max="240" />
+                    <div class="campo-fila">
+                        <div class="campo">
+                            <label>Descanso (min)</label>
+                            <input type="number" id="inputDescanso" value="60" min="10" max="240" />
+                        </div>
+                        <div class="campo">
+                            <label>Generales simultáneos</label>
+                            <input type="number" id="inputMaxGenerales" value="20" min="1" max="200" />
+                            <div class="ayuda">Límite referencial. Si se supera, se avisa al cliente pero no se expulsa a nadie.</div>
+                        </div>
                     </div>
-                    <div class="campo">
-                        <label>Generales simultáneos</label>
-                        <input type="number" id="inputMaxGenerales" value="20" min="1" max="200" />
-                        <div class="ayuda">Límite referencial. Si se supera, se avisa al cliente pero no se expulsa a nadie.</div>
+
+                    <div class="seccion-titulo-form">👤 Nombre del invitado</div>
+
+                    <div class="config-sugerida" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
+                        💡 Si lo activas, los invitados escribirán su nombre al entrar.<br>
+                        El cliente verá la lista de quiénes entraron.
                     </div>
-                </div>
-                
-                <div class="seccion-titulo-form">👤 Nombre del invitado</div>
 
-                <div class="config-sugerida" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
-                    💡 Si lo activas, los invitados escribirán su nombre al entrar.<br>
-                    El cliente verá la lista de quiénes entraron.
-                </div>
-
-                <div class="campo">
-                    <label>Pedir nombre al entrar</label>
-                    <select id="inputPedirNombre">
-                        <option value="false">No (recomendado para eventos grandes)</option>
-                        <option value="true">Sí (recomendado para eventos chicos)</option>
-                    </select>
-                </div>
-
-                <div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
-
-                <div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
-                    💡 El invitado sigue a OVJ en Instagram y obtiene descargas extra. Solo se puede usar <strong style="color:#e8c47a;">1 vez por cliente</strong>.
-                </div>
-
-                <div class="campo-fila">
                     <div class="campo">
-                        <label>Desbloqueo social activo</label>
-                        <select id="inputDesbloqueoSocialActivo">
-                            <option value="true">Sí, activado</option>
-                            <option value="false">No, desactivado</option>
+                        <label>Pedir nombre al entrar</label>
+                        <select id="inputPedirNombre">
+                            <option value="false">No (recomendado para eventos grandes)</option>
+                            <option value="true">Sí (recomendado para eventos chicos)</option>
                         </select>
                     </div>
-                    <div class="campo">
-                        <label>Descargas extra</label>
-                        <input type="number" id="inputDesbloqueoSocialDescargas" value="3" min="1" max="20" />
+
+                    <div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
+
+                    <div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
+                        💡 El invitado sigue a OVJ en Instagram y obtiene descargas extra. Solo se puede usar <strong style="color:#e8c47a;">1 vez por cliente</strong>.
+                    </div>
+
+                    <div class="campo-fila">
+                        <div class="campo">
+                            <label>Desbloqueo social activo</label>
+                            <select id="inputDesbloqueoSocialActivo">
+                                <option value="true">Sí, activado</option>
+                                <option value="false">No, desactivado</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>Descargas extra</label>
+                            <input type="number" id="inputDesbloqueoSocialDescargas" value="3" min="1" max="20" />
+                        </div>
                     </div>
                 </div>
 
@@ -1885,6 +1928,35 @@
             `);
 
             actualizarSugerencia();
+            alCambiarModoEvento();
+        }
+
+        // 🔥 FASE 2: cambio de modo en el form
+        function alCambiarModoEvento() {
+            const modo = $('inputModoEvento')?.value || 'B';
+            const campoMaxVips = $('campoMaxVips');
+            const bloquePool = $('bloquePoolGeneral');
+            const avisoModo = $('avisoModoTexto');
+
+            if (!campoMaxVips || !bloquePool || !avisoModo) return;
+
+            if (modo === 'A') {
+                campoMaxVips.style.display = 'none';
+                bloquePool.style.display = 'none';
+                avisoModo.innerHTML =
+                    '💡 <strong>Modo Íntimo:</strong> todos los invitados son VIP automáticamente.<br>' +
+                    'Descargas ilimitadas, sin receso, sin desbloqueo social. Ideal para eventos chicos.';
+                avisoModo.style.background = 'rgba(232,196,122,0.06)';
+                avisoModo.style.borderColor = 'rgba(232,196,122,0.3)';
+            } else {
+                campoMaxVips.style.display = 'block';
+                bloquePool.style.display = 'block';
+                avisoModo.innerHTML =
+                    '💡 <strong>Modo Masivo:</strong> ideal para eventos con muchos invitados.<br>' +
+                    'El cliente genera QRs VIP de un solo uso y el resto entra por el QR general con límites.';
+                avisoModo.style.background = 'rgba(96,165,250,0.06)';
+                avisoModo.style.borderColor = 'rgba(96,165,250,0.3)';
+            }
         }
 
         async function crearEvento() {
@@ -1895,15 +1967,26 @@
             const duracion = parseInt($('inputEventoDuracion').value, 10);
             const whatsapp = $('inputEventoWhatsapp').value.replace(/[^0-9]/g, '');
 
+            // 🔥 FASE 2: modo del evento
+            const modoEvento = $('inputModoEvento')?.value || 'B';
+
             const poolGeneral = {
-                descargasPorSesion: parseInt($('inputDescargasPorSesion').value, 10),
-                duracionSesionMin: parseInt($('inputDuracionSesion').value, 10),
-                descansoMin: parseInt($('inputDescanso').value, 10),
-                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales').value, 10),
-                desbloqueoSocialActivo: $('inputDesbloqueoSocialActivo').value === 'true',
-                desbloqueoSocialDescargas: parseInt($('inputDesbloqueoSocialDescargas').value, 10) || 3,
-                pedirNombreAlEntrar: $('inputPedirNombre').value === 'true'
+                descargasPorSesion: parseInt($('inputDescargasPorSesion')?.value, 10) || 5,
+                duracionSesionMin: parseInt($('inputDuracionSesion')?.value, 10) || 60,
+                descansoMin: parseInt($('inputDescanso')?.value, 10) || 60,
+                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales')?.value, 10) || 20,
+                desbloqueoSocialActivo: modoEvento === 'B'
+                    ? $('inputDesbloqueoSocialActivo')?.value === 'true'
+                    : false,
+                desbloqueoSocialDescargas: parseInt($('inputDesbloqueoSocialDescargas')?.value, 10) || 3,
+                pedirNombreAlEntrar: modoEvento === 'B'
+                    ? $('inputPedirNombre')?.value === 'true'
+                    : false
             };
+
+            const maxVips = modoEvento === 'B'
+                ? (parseInt($('inputMaxVips')?.value, 10) || 5)
+                : 0;
 
             if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
             if (!fecha || !hora) { toast('Fecha y hora obligatorias', 'error'); return; }
@@ -1922,6 +2005,8 @@
                         hora,
                         duracion,
                         whatsappCliente: whatsapp || null,
+                        modoEvento,
+                        maxVips,
                         poolGeneral
                     })
                 });
@@ -1933,7 +2018,8 @@
                         data.evento.evento,
                         data.tokenGeneral,
                         fotografo,
-                        data.evento.id
+                        data.evento.id,
+                        data.evento.modoEvento || 'B'
                     ), 300);
                 } else {
                     toast('✅ Evento agendado', 'ok');
@@ -2003,32 +2089,47 @@
         // ==========================================
         // 🎫 TOKEN GENERAL: MODAL CON QR
         // ==========================================
-        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId) {
+        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId, modoEvento = 'B') {
             const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
 
+            const bloqueModo = modoEvento === 'A' ? `
+                <div style="background:rgba(232,196,122,0.08); border:1px solid rgba(232,196,122,0.3); border-radius:12px; padding:12px 14px; margin-bottom:16px; font-size:0.78rem; color:#e8c47a; line-height:1.5; text-align:center;">
+                    🎪 <strong>Modo Íntimo</strong><br>
+                    Todos los que escaneen este QR serán VIP automáticamente.
+                </div>
+            ` : `
+                <div style="background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.3); border-radius:12px; padding:12px 14px; margin-bottom:16px; font-size:0.78rem; color:#93c5fd; line-height:1.5; text-align:center;">
+                    🎪 <strong>Modo Masivo</strong><br>
+                    Este es el QR general (invitados comunes).<br>
+                    El cliente generará los QRs VIP desde su link.
+                </div>
+            `;
+
             abrirModal(`
-        <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
-        <div class="titulo">🎫 Token General</div>
-        <div class="subtitulo">
-            <strong>${escapeHtml(nombreEvento)}</strong><br><br>
-            Este es el QR que tus invitados generales van a escanear.<br>
-            Imprimilo y pegalo en el evento.
-        </div>
+                <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
+                <div class="titulo">🎫 Token General</div>
+                <div class="subtitulo">
+                    <strong>${escapeHtml(nombreEvento)}</strong><br><br>
+                    Este es el QR que tus invitados generales van a escanear.<br>
+                    Imprimilo y pegalo en el evento.
+                </div>
 
-        <div class="qr-token-wrapper" id="qrTokenWrapper"></div>
+                ${bloqueModo}
 
-        <div class="token-box" id="tokenBox"></div>
+                <div class="qr-token-wrapper" id="qrTokenWrapper"></div>
 
-        <button class="btn-primario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
-            📋 Copiar URL del QR
-        </button>
-        <button class="btn-secundario" onclick="descargarQR('${escapeHtml(urlGeneral)}')">
-            💾 Abrir QR en pestaña nueva
-        </button>
-        <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
-            Listo
-        </button>
-    `);
+                <div class="token-box" id="tokenBox"></div>
+
+                <button class="btn-primario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
+                    📋 Copiar URL del QR
+                </button>
+                <button class="btn-secundario" onclick="descargarQR('${escapeHtml(urlGeneral)}')">
+                    💾 Abrir QR en pestaña nueva
+                </button>
+                <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
+                    Listo
+                </button>
+            `);
 
             try {
                 const qr = window.qrcode(0, 'M');
@@ -2086,12 +2187,12 @@
         // ==========================================
         // 🔍 VER TOKEN DE UN EVENTO EXISTENTE
         // ==========================================
-        async function verTokenGeneral(idEvento, nombreEvento, fotografo) {
+        async function verTokenGeneral(idEvento, nombreEvento, fotografo, modoEvento) {
             loader(true);
             try {
                 const data = await apiFetch('/admin/token-general?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(idEvento));
                 if (data.ok && data.tokenGeneral) {
-                    mostrarTokenGeneral(nombreEvento, data.tokenGeneral, fotografo, idEvento);
+                    mostrarTokenGeneral(nombreEvento, data.tokenGeneral, fotografo, idEvento, modoEvento || 'B');
                 } else {
                     toast('Token no encontrado', 'error');
                 }
