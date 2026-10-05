@@ -1637,44 +1637,74 @@
 
             let contadoresHtml = '';
             if (contadores) {
-                const generalesActivos = contadores.generalesActivos || 0;
-                const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
-                const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
-                const descSesion = contadores.descargasPorSesion || 5;
-                const desbloqueos = contadores.desbloqueosSociales || 0;
+                const modoEvento = contadores.modoEvento || 'B';
 
-                contadoresHtml = `
-                    <div class="contadores-grid">
-                        <div class="contador-item">
-                            <span class="emoji">📥</span>
-                            <div class="info">
-                                <div class="valor">${descSesion}</div>
-                                <div class="etiqueta">Descargas / sesión</div>
-                            </div>
-                        </div>
-                        <div class="contador-item">
-                            <span class="emoji">🎟️</span>
-                            <div class="info">
-                                <div class="valor">${contadores.generalesTotal}</div>
-                                <div class="etiqueta">Generales totales</div>
-                            </div>
-                        </div>
-                        <div class="contador-item">
-                            <span class="emoji">🟢</span>
-                            <div class="info">
-                                <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
-                                <div class="etiqueta">Generales activos</div>
-                            </div>
-                        </div>
-                        <div class="contador-item">
-                            <span class="emoji">🎁</span>
-                            <div class="info">
-                                <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
-                                <div class="etiqueta">Desbloqueos sociales usados</div>
-                            </div>
-                        </div>
+                // 🔥 FASE 4: bloque de modo del evento
+                let modoBadge = '';
+                if (modoEvento === 'A') {
+                    modoBadge = `
+            <div style="background:rgba(232,196,122,0.08); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:0.75rem; color:#e8c47a; line-height:1.5; text-align:center;">
+                🎪 <strong>Modo Íntimo</strong> · Todos los invitados son VIP automáticamente
+            </div>
+        `;
+                } else {
+                    const vipsTotal = contadores.vipsTotal || 0;
+                    const vipsUsados = contadores.vipsUsados || 0;
+                    const limiteVips = contadores.limiteVips || 0;
+                    const restantes = Math.max(0, limiteVips - vipsUsados);
+
+                    modoBadge = `
+            <div style="background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.3); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:0.75rem; color:#93c5fd; line-height:1.5; text-align:center;">
+                🎪 <strong>Modo Masivo</strong> · VIPs: <strong>${vipsUsados} / ${limiteVips}</strong>${restantes > 0 ? ` · ${restantes} disponibles` : ' · completo'}
+            </div>
+        `;
+                }
+
+                // Los contadores de generales solo aplican en Modo B
+                if (modoEvento === 'B') {
+                    const generalesActivos = contadores.generalesActivos || 0;
+                    const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
+                    const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
+                    const descSesion = contadores.descargasPorSesion || 5;
+                    const desbloqueos = contadores.desbloqueosSociales || 0;
+
+                    contadoresHtml = `
+            ${modoBadge}
+            <div class="contadores-grid">
+                <div class="contador-item">
+                    <span class="emoji">📥</span>
+                    <div class="info">
+                        <div class="valor">${descSesion}</div>
+                        <div class="etiqueta">Descargas / sesión</div>
                     </div>
-                `;
+                </div>
+                <div class="contador-item">
+                    <span class="emoji">🎟️</span>
+                    <div class="info">
+                        <div class="valor">${contadores.generalesTotal}</div>
+                        <div class="etiqueta">Generales totales</div>
+                    </div>
+                </div>
+                <div class="contador-item">
+                    <span class="emoji">🟢</span>
+                    <div class="info">
+                        <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
+                        <div class="etiqueta">Generales activos</div>
+                    </div>
+                </div>
+                <div class="contador-item">
+                    <span class="emoji">🎁</span>
+                    <div class="info">
+                        <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
+                        <div class="etiqueta">Desbloqueos sociales usados</div>
+                    </div>
+                </div>
+            </div>
+        `;
+                } else {
+                    // Modo A: solo el badge, sin contadores de generales
+                    contadoresHtml = modoBadge;
+                }
             }
 
             let aforoHtml = '';
@@ -1795,17 +1825,28 @@
                         btnDisabled = 'disabled';
                     }
 
+                    // 🔥 FASE 4: modo del evento agendado
+                    const modoEvento = evt.modoEvento || 'B';
+                    let etiquetaModo = '';
+                    if (modoEvento === 'A') {
+                        etiquetaModo = `<div class="fecha" style="color:#e8c47a;">🎪 Modo Íntimo · Todos VIP</div>`;
+                    } else {
+                        const maxVips = evt.maxVips || 0;
+                        etiquetaModo = `<div class="fecha" style="color:#5dade2;">🎪 Modo Masivo · ${maxVips} VIPs máx.</div>`;
+                    }
+
                     html += `
-                        <div class="card-agendado">
-                            <div class="titulo">${escapeHtml(evt.evento)}</div>
-                            <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
-                            ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
-                            <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
-                                ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
-                            </button>
-                            ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
-                        </div>
-                    `;
+    <div class="card-agendado">
+        <div class="titulo">${escapeHtml(evt.evento)}</div>
+        <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
+        ${etiquetaModo}
+        ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
+        <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
+            ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
+        </button>
+        ${avisoVentana ? `<div class="aviso-ventana ${btnDisabled ? 'no-puede' : ''}">${avisoVentana}</div>` : ''}
+    </div>
+`;
                 });
             }
 
@@ -1843,12 +1884,15 @@
 
             finalizados.forEach(evt => {
                 const horaFin = evt.finReal ? formatearHora(evt.finReal) : '';
+                const modoEvento = evt.modoEvento || 'B';
+                const etiquetaModo = modoEvento === 'A' ? '🎪 Íntimo' : '🎪 Masivo';
+
                 html += `
-                    <div class="card-agendado" style="opacity:0.6;">
-                        <div class="titulo">${escapeHtml(evt.evento)}</div>
-                        <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''}</div>
-                    </div>
-                `;
+            <div class="card-agendado" style="opacity:0.6;">
+                <div class="titulo">${escapeHtml(evt.evento)}</div>
+                <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''} · ${etiquetaModo}</div>
+            </div>
+        `;
             });
 
             html += `</div>`;
