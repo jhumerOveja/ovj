@@ -889,16 +889,6 @@
             color: #fff;
         }
 
-        .admin-item .btn-regenerar {
-            background: rgba(231, 76, 60, 0.12);
-            border: 1px solid rgba(231, 76, 60, 0.3);
-            color: var(--rojo);
-        }
-
-        .admin-item .btn-regenerar:hover {
-            background: rgba(231, 76, 60, 0.2);
-        }
-
         .modal-contenido.grande {
             max-width: 560px;
         }
@@ -2172,7 +2162,6 @@
 
                             <div class="admin-acciones">
                                 <button class="btn-copiar" onclick="copiarUrlAdmin('${idx}')">📋 Copiar</button>
-                                <button class="btn-regenerar" onclick="regenerarAdmin('${escapeHtml(admin.id)}', '${escapeHtml(admin.nombre)}')">♻️ Regenerar</button>
                             </div>
                         </div>
                     `;
@@ -2246,28 +2235,6 @@
                 document.body.removeChild(ta);
                 toast('✅ Link copiado', 'ok');
             });
-        }
-
-        async function regenerarAdmin(adminId, nombreAdmin) {
-            const nombre = nombreAdmin || 'este admin';
-            if (!confirm(`¿Regenerar el link de "${nombre}"?\n\nEl link viejo quedará inválido y este quedará libre para usar en otro dispositivo.`)) return;
-
-            loader(true);
-            try {
-                await apiFetch('/fotografo/regenerar-admin', {
-                    method: 'POST',
-                    body: JSON.stringify({ adminId })
-                });
-
-                toast('♻️ Link regenerado', 'ok');
-
-                // Refrescar la lista
-                await abrirLinkAdmin();
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-            }
         }
 
         async function generarAdminRespaldo() {
