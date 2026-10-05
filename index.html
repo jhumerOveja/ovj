@@ -5249,11 +5249,21 @@
                 }
 
                 // 🔥 FASE 7: fallback — construir URL del Worker directamente
+                                // 🔥 FASE 7: fallback — construir URL del original desde la URL de la preview
                 if (usarFallbackEmergencia) {
                     if (!foto.url) {
                         throw new Error('Foto sin URL disponible');
                     }
-                    urlDescargaFinal = foto.url;
+
+                    // foto.url apunta a la preview (_web.jpg).
+                    // El original está en el mismo path sin el sufijo _web.
+                    if (foto.url.endsWith('_web.jpg')) {
+                        urlDescargaFinal = foto.url.replace('_web.jpg', '.jpg');
+                    } else {
+                        // Si por algún motivo ya es el original, la usamos tal cual
+                        urlDescargaFinal = foto.url;
+                    }
+
                     console.log('🔑 Descarga vía Worker (modo emergencia):', urlDescargaFinal);
                 }
 
