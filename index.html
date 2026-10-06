@@ -991,6 +991,87 @@
             padding: 20px 0 10px;
         }
 
+        /* 🔥 Barra de goteo — "Preparando nuevas fotos..." */
+        .barra-goteo {
+            max-width: 700px;
+            margin: 0 auto 14px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.06), transparent);
+            border: 1px solid rgba(232, 196, 122, 0.2);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: entradaBanner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .barra-goteo .mensaje {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: var(--champagne);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .barra-goteo .mensaje .emoji {
+            font-size: 1.1rem;
+            animation: pulsoEmojiGoteo 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoEmojiGoteo {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        .barra-goteo .barra-fondo {
+            height: 6px;
+            background: rgba(232, 196, 122, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .barra-goteo .barra-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--champagne), var(--champagne-suave));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s linear;
+            box-shadow: 0 0 12px rgba(232, 196, 122, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .barra-goteo .barra-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: brilloBarra 2s ease-in-out infinite;
+        }
+
+        @keyframes brilloBarra {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
         .btn-ver-mas {
             background: linear-gradient(135deg, rgba(232, 196, 122, 0.15), rgba(232, 196, 122, 0.05));
             border: 1.5px solid rgba(232, 196, 122, 0.5);
@@ -3313,7 +3394,7 @@
 
         <div id="bannerAforoContainer"></div>
         <div id="bannerMensajeContainer"></div>
-
+        <div id="barraGoteoContainer"></div>
         <div id="estado">Cargando...</div>
 
         <div class="galeria" id="galeria"></div>
@@ -4496,6 +4577,91 @@
         }
 
         // ==========================================
+        // 🔥 BARRA DE GOTEO
+        // ==========================================
+        let barraGoteoTimer = null;
+        let barraGoteoProgreso = 0;
+        let barraGoteoDuracionMs = 60000;
+        let barraGoteoUltimoCambio = 0;
+
+        function actualizarBarraGoteo(goteo, intervaloPollSeg) {
+            const cont = document.getElementById('barraGoteoContainer');
+            if (!cont) return;
+
+            // ── Caso 1: no hay goteo activo ──
+            if (!goteo || !goteo.activo) {
+                cont.innerHTML = '';
+                if (barraGoteoTimer) {
+                    clearInterval(barraGoteoTimer);
+                    barraGoteoTimer = null;
+                }
+                return;
+            }
+
+            // ── Caso 2: goteo activo pero sin pendientes ──
+            if (goteo.pendientes === 0) {
+                const htmlNuevo = `
+                    <div class="barra-goteo">
+                        <div class="mensaje">
+                            <span class="emoji">📸</span>
+                            <span>El fotógrafo está trabajando...</span>
+                        </div>
+                    </div>
+                `;
+                if (cont.innerHTML.indexOf('El fotógrafo está trabajando') === -1) {
+                    cont.innerHTML = htmlNuevo;
+                }
+                if (barraGoteoTimer) {
+                    clearInterval(barraGoteoTimer);
+                    barraGoteoTimer = null;
+                }
+                return;
+            }
+
+            // ── Caso 3: hay pendientes → barra animada ──
+            const hayBarraDibujada = !!document.getElementById('barraGoteoFill');
+
+            if (!hayBarraDibujada) {
+                cont.innerHTML = `
+                    <div class="barra-goteo">
+                        <div class="mensaje">
+                            <span class="emoji">✨</span>
+                            <span>Preparando nuevas fotos...</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-fill" id="barraGoteoFill"></div>
+                        </div>
+                    </div>
+                `;
+                barraGoteoProgreso = 0;
+                barraGoteoDuracionMs = Math.max(15000, (intervaloPollSeg || 60) * 1000);
+                barraGoteoUltimoCambio = Date.now();
+
+                if (barraGoteoTimer) clearInterval(barraGoteoTimer);
+
+                barraGoteoTimer = setInterval(() => {
+                    const transcurrido = Date.now() - barraGoteoUltimoCambio;
+                    barraGoteoProgreso = Math.min(100, (transcurrido / barraGoteoDuracionMs) * 100);
+
+                    const fill = document.getElementById('barraGoteoFill');
+                    if (fill) fill.style.width = barraGoteoProgreso + '%';
+
+                    // Si llega al 100%, se queda ahí esperando el próximo poll
+                }, 200);
+
+                return;
+            }
+
+            // ── Caso 4: ya hay barra dibujada, reseteamos porque llegó poll nuevo ──
+            barraGoteoProgreso = 0;
+            barraGoteoDuracionMs = Math.max(15000, (intervaloPollSeg || 60) * 1000);
+            barraGoteoUltimoCambio = Date.now();
+
+            const fill = document.getElementById('barraGoteoFill');
+            if (fill) fill.style.width = '0%';
+        }
+
+        // ==========================================
         // GALERÍA
         // ==========================================
         async function cargarFotos() {
@@ -4612,7 +4778,9 @@
 
                 // 🔥 Guardar siempre las fotos vistas (no solo cuando hay nuevas)
                 guardarFotosVistas(fotosVistas);
-
+                // 🔥 Barra de goteo
+                const intervaloSeg = window._ultimoPoll?.intervaloBaseSeg || 60;
+                actualizarBarraGoteo(data.goteo, intervaloSeg);
                 actualizarEstado();
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
@@ -4632,6 +4800,14 @@
                 console.error("Error:", error);
                 servidorOnline = false;
                 mostrarOffline();
+
+                // 🔥 Ocultar la barra de goteo si hay error
+                const contBarra = document.getElementById('barraGoteoContainer');
+                if (contBarra) contBarra.innerHTML = '';
+                if (barraGoteoTimer) {
+                    clearInterval(barraGoteoTimer);
+                    barraGoteoTimer = null;
+                }
 
                 // 🔥 Reintentar en 30s
                 clearTimeout(window._pollTimer);
