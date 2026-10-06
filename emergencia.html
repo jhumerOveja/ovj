@@ -33,6 +33,50 @@
             -webkit-font-smoothing: antialiased;
         }
 
+                /* 🔥 FASE 9: Banner de estado del server */
+        .banner-server {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 5000;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: entrarBanner 0.4s ease-out;
+            font-family: inherit;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #0a0a0a;
+        }
+
+        .banner-server .icono {
+            font-size: 1.1rem;
+        }
+
+        @keyframes entrarBanner {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Ajuste para que el contenido no quede tapado por el banner */
+        body.con-banner {
+            padding-top: 48px;
+        }
+
         .header {
             text-align: center;
             padding-bottom: 16px;
@@ -393,6 +437,11 @@
 </head>
 
 <body>
+        <!-- 🔥 FASE 9: Banner de estado del server -->
+    <div class="banner-server" id="bannerServer" style="display: none;">
+        <span class="icono" id="bannerServerIcono">✅</span>
+        <span class="texto" id="bannerServerTexto">Server recuperado. Podés volver a Telegram.</span>
+    </div>
 
     <div class="header">
         <div class="ovj">OVJ <span>Studio</span></div>
@@ -437,8 +486,48 @@
     <div class="footer-info">OVJ STUDIO · MODO EMERGENCIA</div>
 
     <div class="toast" id="toast"></div>
-
+    <script src="config.js"></script>
     <script>
+
+        // ==========================================
+        // 🔥 FASE 9: URL del server local (para ping)
+        // ==========================================
+        const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+        const URL_API = _esLocalhost
+            ? 'http://localhost:3000'
+            : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+
+        let _serverVuelto = false;
+
+        async function verificarServerVuelto() {
+            if (_serverVuelto) return;
+
+            try {
+                const url = `${URL_API}/ping?_=${Date.now()}`;
+                const resp = await fetch(url, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (resp.ok) {
+                    const data = await resp.json().catch(() => ({}));
+                    if (data && data.ok) {
+                        _serverVuelto = true;
+
+                        $('bannerServerIcono').textContent = '✅';
+                        $('bannerServerTexto').textContent = 'Server recuperado. Podés volver a Telegram.';
+                        $('bannerServer').style.display = 'flex';
+                        document.body.classList.add('con-banner');
+
+                        console.log('✅ Server recuperado. Emergencia puede volver a Telegram.');
+                    }
+                }
+            } catch (e) {
+        // Sin respuesta. Seguimos en emergencia.
+            }
+        }
+
         // ==========================================
         // CONFIG
         // ==========================================
@@ -538,6 +627,10 @@
             $('inputArchivos').addEventListener('change', manejarSeleccion);
 
             console.log('✅ Config:', config);
+                        // 🔥 FASE 9: chequear si el server vuelve cada 30s
+            setInterval(verificarServerVuelto, 30 * 1000);
+            // Primera verificación a los 5s
+            setTimeout(verificarServerVuelto, 5000);
         }
 
         // ==========================================
@@ -837,4 +930,4 @@
     </script>
 </body>
 
-</html>
+    </html>
