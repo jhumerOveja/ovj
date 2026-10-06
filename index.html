@@ -303,6 +303,40 @@
             overflow: hidden;
         }
 
+        .badge-receso {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: #fbbf24;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+            user-select: none;
+            animation: pulsoReceso 2s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        .badge-receso .icono {
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
+        @keyframes pulsoReceso {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(251, 191, 36, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+            }
+        }
+
         .badge-rol::before {
             content: '';
             position: absolute;
@@ -2744,6 +2778,16 @@
             .post-texto {
                 padding: 0 14px 12px;
             }
+
+            .badge-receso {
+                font-size: 0.62rem;
+                padding: 4px 8px;
+                gap: 4px;
+            }
+
+            .badge-receso .icono {
+                font-size: 0.75rem;
+            }
         }
 
         @media (max-width: 400px) {
@@ -3467,7 +3511,10 @@
                         style="display: none;">
                         🎫 <span class="btn-admin-texto">QR</span>
                     </button>
-
+                    <div class="badge-receso" id="badgeReceso" style="display: none;">
+                        <span class="icono">⏸️</span>
+                        <span class="texto" id="badgeRecesoTexto">Receso</span>
+                    </div>
                     <div class="lang-selector" id="langSelector">
                         <div class="lang-btn" onclick="toggleLangMenu()">
                             <span class="bandera" id="langBanderaActual">🇧🇴</span>
@@ -4458,49 +4505,88 @@
 
         function actualizarBadgeRol() {
             const el = document.getElementById('badgeRol');
+            const elReceso = document.getElementById('badgeReceso');
 
             if (!sesion) {
                 el.style.display = 'none';
+                if (elReceso) elReceso.style.display = 'none';
                 return;
             }
 
             el.style.display = 'inline-flex';
 
+            // ── Admin ──
             if (sesion.tipo === 'admin') {
                 el.textContent = t('contadorAdmin');
                 el.className = 'badge-rol admin';
-            } else if (sesion.tipo === 'vip') {
-                // 🔥 FASE 3: VIP tiene su propio badge
+                if (elReceso) elReceso.style.display = 'none';
+                return;
+            }
+
+            // ── VIP ──
+            if (sesion.tipo === 'vip') {
                 el.textContent = '👑 VIP';
-                el.className = 'badge-rol admin';  // reusa el estilo champagne
-            } else if (sesion.tipo === 'general' && sesionGeneral) {
-                if (sesionGeneral.enReceso) {
-                    const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
-                    const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
-                    const min = Math.max(1, Math.ceil(restanteMs / 60000));
+                el.className = 'badge-rol admin';
+                if (elReceso) elReceso.style.display = 'none';
+                return;
+            }
 
-                    el.textContent = `⏸️ Receso · ${min} min`;
-                    el.className = 'badge-rol agotado pulso';
-                    return;
-                }
-
+            // ── General ──
+            if (sesion.tipo === 'general' && sesionGeneral) {
                 const usadas = sesionGeneral.descargasSesion || 0;
                 const total = sesionGeneral.descargasPorSesion || 5;
                 const restantes = total - usadas;
 
+                // Badge de descargas: siempre visible con la cantidad actual
+                el.textContent = t('contadorSesion', usadas, total);
+                el.className = 'badge-rol';
+
                 if (restantes <= 0) {
-                    el.textContent = t('contadorAgotado');
-                    el.className = 'badge-rol agotado';
-                } else {
-                    el.textContent = t('contadorSesion', usadas, total);
-                    el.className = 'badge-rol';
-                    if (restantes <= 2) {
-                        el.classList.add('pulso');
-                    }
+                    el.classList.add('agotado');
+                } else if (restantes <= 2) {
+                    el.classList.add('pulso');
                 }
-            } else {
-                el.style.display = 'none';
+
+                // Badge de receso: separado, con countdown en vivo
+                if (sesionGeneral.enReceso) {
+                    if (elReceso) {
+                        elReceso.style.display = 'inline-flex';
+                        actualizarTextoReceso();
+                    }
+                } else {
+                    if (elReceso) elReceso.style.display = 'none';
+                }
+                return;
             }
+
+            // Fallback
+            el.style.display = 'none';
+            if (elReceso) elReceso.style.display = 'none';
+        }
+
+        // 🔥 Función separada para el countdown en vivo del receso
+        function actualizarTextoReceso() {
+            if (!sesionGeneral || !sesionGeneral.enReceso) return;
+
+            const elReceso = document.getElementById('badgeRecesoTexto');
+            if (!elReceso) return;
+
+            const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+            const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
+
+            if (restanteMs <= 0) {
+                // El receso terminó
+                sesionGeneral.enReceso = false;
+                sesionGeneral.reanudarEn = 0;
+                const badgeReceso = document.getElementById('badgeReceso');
+                if (badgeReceso) badgeReceso.style.display = 'none';
+                return;
+            }
+
+            const minutos = Math.floor(restanteMs / 60000);
+            const segundos = Math.floor((restanteMs % 60000) / 1000);
+
+            elReceso.textContent = `Receso · ${minutos}:${String(segundos).padStart(2, '0')}`;
         }
 
         // ==========================================
@@ -6205,18 +6291,26 @@
             cargarFotos();
             iniciarAvisosRotativos();
 
-            // 🔥 Countdown en vivo del receso (actualiza badge y botón cada 30s)
+            // 🔥 Countdown en vivo del receso (actualiza cada segundo)
             setInterval(() => {
                 if (sesionGeneral && sesionGeneral.enReceso) {
                     const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
+
                     if (reanudarEn > 0 && Date.now() >= reanudarEn) {
+                        // El receso terminó
                         sesionGeneral.enReceso = false;
                         sesionGeneral.reanudarEn = 0;
+
+                        // Volver a consultar el estado al server para actualizar las descargas
+                        if (typeof cargarFotos === 'function') {
+                            cargarFotos();
+                        }
                     }
-                    actualizarBadgeRol();
+
+                    actualizarTextoReceso();
                     actualizarBotonPrincipal();
                 }
-            }, 30000);
+            }, 1000);
         }
 
         inicializar();
