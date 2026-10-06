@@ -37,6 +37,60 @@
             -webkit-font-smoothing: antialiased;
         }
 
+                /* 🔥 FASE 9: Banner de estado del server */
+        .banner-server {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 5000;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: entrarBanner 0.4s ease-out;
+            font-family: inherit;
+        }
+
+        .banner-server.caido {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+        }
+
+        .banner-server.activo {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #0a0a0a;
+        }
+
+        .banner-server .icono {
+            font-size: 1.1rem;
+        }
+
+        @keyframes entrarBanner {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Ajuste para que el contenido no quede tapado por el banner */
+        body.con-banner {
+            padding-top: 40px;
+        }
+
+
+
         /* ===== LOGIN ===== */
         #pantallaLogin {
             display: none;
@@ -1316,7 +1370,11 @@
 </head>
 
 <body>
-
+        <!-- 🔥 FASE 9: Banner de estado del server -->
+    <div class="banner-server" id="bannerServer" style="display: none;">
+        <span class="icono" id="bannerServerIcono">⚠️</span>
+        <span class="texto" id="bannerServerTexto">Server caído. Usá Modo Emergencia.</span>
+    </div>
     <!-- ===== LOGIN ===== -->
     <div id="pantallaLogin">
         <div class="login-card">
@@ -1757,6 +1815,35 @@
             }
         }
 
+                // ==========================================
+        // 🔥 FASE 9: Avisos de estado del server
+        // ==========================================
+        function mostrarBannerServer(estado, textoCustom) {
+            const banner = $('bannerServer');
+            const icono = $('bannerServerIcono');
+            const texto = $('bannerServerTexto');
+
+            if (estado === 'oculto') {
+                banner.style.display = 'none';
+                document.body.classList.remove('con-banner');
+                return;
+            }
+
+            banner.style.display = 'flex';
+            banner.className = 'banner-server ' + estado;
+
+            if (estado === 'caido') {
+                icono.textContent = '⚠️';
+                texto.textContent = textoCustom || 'Server caído. Usá Modo Emergencia.';
+            } else if (estado === 'activo') {
+                icono.textContent = '✅';
+                texto.textContent = textoCustom || 'Server activo.';
+            }
+
+            // Ajustar padding del body para que no tape contenido
+            document.body.classList.add('con-banner');
+        }
+
         function marcarServidor(estado) {
             const punto = $('puntoServer');
             const texto = $('textoUltimaAct');
@@ -1770,8 +1857,16 @@
                     hour12: false
                 });
                 texto.textContent = 'Actualizado ' + hora;
+
+                // 🔥 FASE 9: server OK → ocultar banner
+                mostrarBannerServer('oculto');
+
             } else if (estado === 'error') {
                 texto.textContent = 'Sin conexión';
+
+                // 🔥 FASE 9: server caído → mostrar banner
+                mostrarBannerServer('caido', '⚠️ Server caído. Usá Modo Emergencia.');
+
             } else {
                 texto.textContent = 'Actualizando...';
             }
