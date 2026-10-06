@@ -768,6 +768,27 @@
             border-color: var(--champagne);
             box-shadow: 0 0 24px var(--champagne-tenue),
                 0 0 48px rgba(232, 196, 122, 0.08);
+            animation: destelloNueva 2s ease-out;
+        }
+
+        @keyframes destelloNueva {
+            0% {
+                box-shadow: 0 0 24px var(--champagne-tenue),
+                    0 0 48px rgba(232, 196, 122, 0.08),
+                    0 0 0 0 rgba(232, 196, 122, 0.8);
+            }
+
+            50% {
+                box-shadow: 0 0 24px var(--champagne-tenue),
+                    0 0 48px rgba(232, 196, 122, 0.3),
+                    0 0 0 12px rgba(232, 196, 122, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 24px var(--champagne-tenue),
+                    0 0 48px rgba(232, 196, 122, 0.08),
+                    0 0 0 0 rgba(232, 196, 122, 0);
+            }
         }
 
         .foto.nueva::before {
@@ -1331,6 +1352,33 @@
             font-family: inherit;
             position: relative;
             overflow: hidden;
+            animation: brilloPublicidad 4s ease-in-out infinite;
+        }
+
+        @keyframes brilloPublicidad {
+
+            0%,
+            100% {
+                border-color: rgba(232, 196, 122, 0.3);
+                box-shadow: 0 0 0 rgba(232, 196, 122, 0);
+            }
+
+            50% {
+                border-color: rgba(232, 196, 122, 0.6);
+                box-shadow: 0 0 20px rgba(232, 196, 122, 0.3);
+            }
+        }
+
+        .publicidad-wrapper .pub-btn:active {
+            transform: scale(0.95);
+        }
+
+        .publicidad-wrapper .pub-btn .icono {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .publicidad-wrapper .pub-btn:hover .icono {
+            transform: rotate(20deg) scale(1.2);
         }
 
         .publicidad-wrapper .pub-btn::before {
@@ -1373,6 +1421,59 @@
             box-shadow: 0 4px 25px rgba(74, 222, 128, 0.2);
             position: relative;
             overflow: hidden;
+            animation: respiracionBoton 3s ease-in-out infinite;
+        }
+
+        @keyframes respiracionBoton {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 25px rgba(74, 222, 128, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 6px 35px rgba(74, 222, 128, 0.4);
+            }
+        }
+
+        .btn-pedir:active:not(.agotado):not(.cargando-btn) {
+            transform: scale(0.96);
+            box-shadow: 0 2px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .btn-pedir .icono-whatsapp {
+            font-size: 1.3rem;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-pedir:hover:not(.agotado):not(.cargando-btn) .icono-whatsapp {
+            transform: translateY(3px) scale(1.1);
+        }
+
+        /* Efecto de descarga completada */
+        .btn-pedir.descarga-ok {
+            animation: descargaCompletada 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes descargaCompletada {
+            0% {
+                transform: scale(1);
+            }
+
+            30% {
+                transform: scale(0.92);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            60% {
+                transform: scale(1.08);
+                box-shadow: 0 0 0 20px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
         }
 
         .btn-pedir::before {
@@ -2320,6 +2421,72 @@
             max-width: 420px;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            animation: shimmerToast 2.5s ease-in-out infinite;
+        }
+
+        @keyframes shimmerToast {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .toast-item.success {
+            border-color: rgba(232, 196, 122, 0.4);
+            animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                pulsoSuccess 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoSuccess {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7),
+                    0 0 0 1px rgba(232, 196, 122, 0.3) inset;
+            }
+
+            50% {
+                box-shadow: 0 10px 50px rgba(232, 196, 122, 0.4),
+                    0 0 0 1px rgba(232, 196, 122, 0.6) inset;
+            }
+        }
+
+        .toast-item.warning {
+            border-color: rgba(248, 113, 113, 0.4);
+            animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                sacudidaToast 0.5s ease-in-out;
+        }
+
+        @keyframes sacudidaToast {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
         }
 
         .toast-item::before {
@@ -2796,6 +2963,21 @@
             user-select: none;
             pointer-events: none;
             transition: opacity 0.4s ease, transform 0.4s ease;
+            animation: latidoIndicador 2s ease-in-out infinite;
+        }
+
+        @keyframes latidoIndicador {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: scale(1.03);
+                opacity: 1;
+            }
         }
 
         .indicador-vivo-punto {
@@ -5122,19 +5304,38 @@
         }
 
         function mostrarMasFotos() {
+            const fotosAntes = fotosVisibles;
             fotosVisibles += FOTOS_POR_CARGA;
             renderizarGaleria();
             actualizarEstado();
 
+            // 🔥 Efecto visual: las nuevas fotos entran con animación
             setTimeout(() => {
                 const fotos = document.querySelectorAll('.foto');
-                if (fotos.length > 0) {
-                    const ultimaFotoAnterior = fotos[Math.min(fotosVisibles - FOTOS_POR_CARGA - 1, fotos.length - 1)];
-                    if (ultimaFotoAnterior) {
-                        ultimaFotoAnterior.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Animar solo las nuevas
+                for (let i = fotosAntes; i < Math.min(fotosVisibles, fotos.length); i++) {
+                    const el = fotos[i];
+                    if (el) {
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(30px) scale(0.95)';
+
+                        setTimeout(() => {
+                            el.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                            el.style.opacity = '1';
+                            el.style.transform = 'translateY(0) scale(1)';
+                        }, (i - fotosAntes) * 80);
                     }
                 }
-            }, 100);
+
+                // Scroll suave hacia la primera foto nueva
+                const primeraNueva = fotos[fotosAntes];
+                if (primeraNueva) {
+                    setTimeout(() => {
+                        primeraNueva.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 200);
+                }
+            }, 50);
         }
 
         function precargarAdyacentes(index) {
@@ -5445,6 +5646,10 @@
 
                     setTimeout(() => verificarMostrarDesbloqueo(), 500);
                 }
+
+                // 🔥 Efecto visual de descarga completada
+                btn.classList.add('descarga-ok');
+                setTimeout(() => btn.classList.remove('descarga-ok'), 900);
 
                 if (!tipsMostrados.primeraDescarga) {
                     tipsMostrados.primeraDescarga = true;
