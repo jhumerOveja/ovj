@@ -992,19 +992,38 @@
         }
 
         .btn-ver-mas {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--borde);
-            color: var(--acento);
-            padding: 14px 38px;
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.15), rgba(232, 196, 122, 0.05));
+            border: 1.5px solid rgba(232, 196, 122, 0.5);
+            color: var(--champagne);
+            padding: 15px 42px;
             border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.5px;
             backdrop-filter: blur(4px);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(232, 196, 122, 0.15),
+                0 0 0 1px rgba(232, 196, 122, 0.1) inset;
+            animation: pulsoVerMas 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsoVerMas {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(232, 196, 122, 0.15),
+                    0 0 0 1px rgba(232, 196, 122, 0.1) inset;
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 6px 30px rgba(232, 196, 122, 0.35),
+                    0 0 0 1px rgba(232, 196, 122, 0.25) inset;
+                transform: scale(1.02);
+            }
         }
 
         .btn-ver-mas::before {
@@ -1014,8 +1033,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 212, 216, 0.15), transparent);
-            transition: left 0.6s ease;
+            background: linear-gradient(90deg, transparent, rgba(232, 196, 122, 0.4), transparent);
+            transition: left 0.7s ease;
         }
 
         .btn-ver-mas:hover::before {
@@ -1023,17 +1042,40 @@
         }
 
         .btn-ver-mas:hover {
-            background: var(--acento-tenue);
-            border-color: rgba(212, 212, 216, 0.3);
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 35px rgba(212, 212, 216, 0.15);
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.25), rgba(232, 196, 122, 0.1));
+            border-color: var(--champagne);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 35px rgba(232, 196, 122, 0.5),
+                0 0 0 1px rgba(232, 196, 122, 0.4) inset;
+            animation: none;
+        }
+
+        .btn-ver-mas:active {
+            transform: translateY(0) scale(0.98);
         }
 
         .info-restantes {
-            font-size: 0.7rem;
-            color: var(--texto-tenue);
-            font-weight: 300;
+            font-size: 0.78rem;
+            color: var(--texto-suave);
+            font-weight: 400;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-restantes .restantes-numero {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 3px 12px;
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(232, 196, 122, 0.3);
+            min-width: 28px;
         }
 
         .info-restantes strong {
@@ -5000,15 +5042,15 @@
                 const restantes = fotosCache.length - visibles;
                 const textoRestantes = restantes === 1 ? t('fotoMas') : t('fotosMas');
                 html += `
-            <div class="ver-mas-wrapper">
-                <button class="btn-ver-mas" onclick="mostrarMasFotos()">
-                    ${t('verMas')}
-                </button>
-                <div class="info-restantes">
-                    <strong>${restantes}</strong> ${textoRestantes} ${t('porDescubrir')}
-                </div>
-            </div>
-        `;
+                    <div class="ver-mas-wrapper">
+                        <button class="btn-ver-mas" onclick="mostrarMasFotos()">
+                        ✨ ${t('verMas')}
+                        </button>
+                    <div class="info-restantes">
+            <span class="restantes-numero">${restantes}</span> ${textoRestantes} ${t('porDescubrir')}
+        </div>
+    </div>
+`;
             } else if (fotosCache.length > FOTOS_POR_CARGA) {
                 html += `
             <div class="ver-mas-wrapper">
