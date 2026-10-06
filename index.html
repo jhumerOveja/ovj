@@ -4835,7 +4835,8 @@
                     window._ultimoPoll = data.poll;
                 }
 
-                // 🔥 Actualizar estado de receso según lo que diga el server
+                // 🔥 Actualizar estado de receso según lo que diga el server\
+                /*
                 if (sesionGeneral) {
                     if (data.enReceso) {
                         sesionGeneral.enReceso = true;
@@ -4846,7 +4847,7 @@
                         sesionGeneral.reanudarEn = 0;
                     }
                 }
-
+                */
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
 
@@ -6301,16 +6302,56 @@
                         sesionGeneral.enReceso = false;
                         sesionGeneral.reanudarEn = 0;
 
-                        // Volver a consultar el estado al server para actualizar las descargas
-                        if (typeof cargarFotos === 'function') {
-                            cargarFotos();
-                        }
+                        // Refrescar sesión completa desde el server
+                        refrescarSesionDesdeServer();
                     }
 
                     actualizarTextoReceso();
                     actualizarBotonPrincipal();
                 }
             }, 1000);
+        }
+
+        async function refrescarSesionDesdeServer() {
+            if (!EVENTO_ID || !TOKEN) return;
+
+            try {
+                const dispositivoId = getDispositivoId();
+                const url = `${URL_CLOUDFLARE}/acceso?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}` +
+                    `&d=${encodeURIComponent(dispositivoId)}`;
+
+                const resp = await fetch(url);
+                if (!resp.ok) return;
+
+                const data = await resp.json();
+                if (!data.valido) return;
+
+                if (data.tokenPersonal) {
+                    TOKEN = data.tokenPersonal;
+                    localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
+                }
+
+                if (data.tipo === 'general' && data.sesion) {
+                    sesionGeneral = data.sesion;
+                    sesionGeneral.enReceso = !!data.enReceso;
+                    sesionGeneral.reanudarEn = data.enReceso
+                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
+                        : 0;
+
+                    if (data.desbloqueoSocial) {
+                        sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
+                        sesionGeneral.desbloqueoSocialDescargas = data.desbloqueoSocial.descargasExtra;
+                        sesionGeneral.desbloqueoSocialActivo = data.desbloqueoSocial.activo;
+                    }
+
+                    actualizarBadgeRol();
+                    actualizarBotonPrincipal();
+                }
+            } catch (e) {
+                // Silencioso. Si falla, no pasa nada.
+            }
         }
 
         inicializar();
