@@ -3875,6 +3875,7 @@
                 bloqueoVipUsado: "Este pase VIP ya fue usado.<br>Pedile uno nuevo al anfitrión del evento.",
                 bloqueoVipNoValido: "Este pase no es válido para este evento.<br>Contactá al anfitrión.",
                 bloqueoAdminReclamado: "Este link de administrador ya fue usado en otro dispositivo.<br>Por seguridad, cada link es de un solo uso.",
+                bloqueoEventoFinalizado: "Este evento ha finalizado.<br>Gracias por haber sido parte.",
                 bloqueoCountdown: (m) => `Vuelve en ${m} min`,
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
@@ -3936,6 +3937,7 @@
                 bloqueoVipUsado: "This VIP pass has already been used.<br>Ask the event host for a new one.",
                 bloqueoVipNoValido: "This pass is not valid for this event.<br>Contact the host.",
                 bloqueoAdminReclamado: "This admin link has already been used on another device.<br>For security, each link is single-use.",
+                bloqueoEventoFinalizado: "This event has ended.<br>Thanks for being part of it.",
                 bloqueoCountdown: (m) => `Come back in ${m} min`,
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
@@ -3997,6 +3999,7 @@
                 bloqueoVipUsado: "此 VIP 通行证已被使用。<br>请向活动主办方索取新的通行证。",
                 bloqueoVipNoValido: "此通行证不适用于本次活动。<br>请联系主办方。",
                 bloqueoAdminReclamado: "此管理员链接已在另一台设备上使用。<br>出于安全考虑，每个链接仅限一次使用。",
+                bloqueoEventoFinalizado: "本次活动已结束。<br>感谢您的参与。",
                 bloqueoCountdown: (m) => `${m} 分钟后回来`,
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
@@ -4177,9 +4180,10 @@
             const iconos = {
                 sinToken: '🔒',
                 invalido: '🚫',
-                vipUsado: '👑',           // 🔥 FASE 3: pase VIP ya reclamado
-                vipNoValido: '🎫',        // 🔥 FASE 3: pase VIP de otro evento
-                adminReclamado: '📱',     // 🔥 FASE 5: link de admin ya usado
+                vipUsado: '👑',
+                vipNoValido: '🎫',
+                adminReclamado: '📱',
+                eventoFinalizado: '🎬',
                 error: '❌'
             };
 
@@ -4187,6 +4191,12 @@
 
             if (mensajeCustom) {
                 document.getElementById('bloqueoMensaje').innerHTML = mensajeCustom;
+            } else if (tipo === 'eventoFinalizado') {
+                document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoEventoFinalizado');
+                document.getElementById('bloqueoTitulo').textContent = 'Evento finalizado';
+            } else {
+                document.getElementById('bloqueoTitulo').textContent = t('bloqueoTitulo');
+                document.getElementById('bloqueoMensaje').innerHTML = t('bloqueoMensaje');
             }
         }
 
@@ -4702,6 +4712,13 @@
                     return;
                 }
 
+                if (respuesta.status === 404) {
+                    // 🔥 El evento fue finalizado — el status.json ya no existe
+                    detenerTodoYMostrarCierre();
+                    cargando = false;
+                    return;
+                }
+
                 if (!respuesta.ok)
                     throw new Error(`HTTP ${respuesta.status}`);
 
@@ -5112,6 +5129,34 @@
                     <div class="mensaje">${t('offlineMensaje')}</div>
                 </div>
             `;
+        }
+
+        function detenerTodoYMostrarCierre() {
+            // Detener el polling
+            if (window._pollTimer) {
+                clearTimeout(window._pollTimer);
+                window._pollTimer = null;
+            }
+
+            // Limpiar la galería
+            const galeria = document.getElementById('galeria');
+            if (galeria) galeria.innerHTML = '';
+
+            // Limpiar banners
+            const bannerAforo = document.getElementById('bannerAforoContainer');
+            if (bannerAforo) bannerAforo.innerHTML = '';
+            const bannerMensaje = document.getElementById('bannerMensajeContainer');
+            if (bannerMensaje) bannerMensaje.innerHTML = '';
+
+            // Ocultar el indicador en vivo
+            const indicador = document.getElementById('indicadorVivo');
+            if (indicador) indicador.style.display = 'none';
+
+            // Ocultar la app
+            document.getElementById('app').classList.remove('activo');
+
+            // Mostrar pantalla de cierre
+            mostrarBloqueo('eventoFinalizado');
         }
 
         function actualizarEstado() {
