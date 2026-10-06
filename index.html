@@ -3188,6 +3188,18 @@
             border-color: rgba(74, 222, 128, 0.25);
             color: #4ade80;
         }
+
+        @keyframes pulseOffline {
+
+            0%,
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.03);
+            }
+        }
     </style>
 </head>
 
@@ -4001,7 +4013,6 @@
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.valido) {
-                    // 🔥 FASE 3 + 5: distinguir el motivo del bloqueo
                     const motivo = data?.motivo;
 
                     if (motivo === 'vip_reclamado') {
@@ -4009,15 +4020,11 @@
                         return false;
                     }
 
-                    // 🔥 FASE 5: link de admin ya usado en otro dispositivo
                     if (motivo === 'admin_reclamado') {
                         mostrarBloqueo('adminReclamado', t('bloqueoAdminReclamado'));
                         return false;
                     }
 
-                    // Si el token parecía un VIP (por el formato de URL) pero el server
-                    // dice "pase no válido para este evento" (porque el evento cambió a Modo A),
-                    // mostramos un mensaje específico.
                     if (respuesta.status === 403 && typeof data?.error === 'string'
                         && data.error.toLowerCase().includes('pase no válido')) {
                         mostrarBloqueo('vipNoValido', t('bloqueoVipNoValido'));
@@ -4038,14 +4045,12 @@
                     nombre: data.nombre,
                     id: data.id,
                     ilimitado: data.ilimitado === true,
-                    modoEvento: data.modoEvento || 'B',   // 🔥 FASE 3
-                    maxVips: data.maxVips || 0             // 🔥 FASE 3 (lo llenamos al pedirlo)
+                    modoEvento: data.modoEvento || 'B',
+                    maxVips: data.maxVips || 0
                 };
 
-                // 🔥 FASE 3: VIP = como admin, sin sesión, sin receso
                 if (data.tipo === 'vip') {
                     sesion.ilimitado = true;
-                    // No seteamos sesionGeneral (no aplica)
                 }
 
                 if (data.tipo === 'general' && data.sesion) {
@@ -4067,8 +4072,16 @@
                 localStorage.setItem('ovj_rol_nombre', data.nombre || '');
                 localStorage.setItem('ovj_rol_id', data.id || '');
 
+                window._modoOffline = false;
+                // 🔥 FASE 10: guardar sesión completa para poder restaurarla si el server cae
+                try {
+                    localStorage.setItem('ovj_sesion_cache_' + EVENTO_ID, JSON.stringify({
+                        sesion: sesion,
+                        sesionGeneral: sesionGeneral,
+                        guardadoEn: Date.now()
+                    }));
+                } catch (e) { }
 
-                // 🔥 PUNTO 14: si el server pide nombre, abrir modal
                 if (data.tipo === 'general' && data.requiereNombre) {
                     setTimeout(() => abrirModalNombre(), 800);
                 }
@@ -4076,8 +4089,60 @@
                 return true;
 
             } catch (error) {
-                console.error('❌ Error validando acceso:', error);
+                console.error('⚠️ Error de red validando acceso:', error);
+
+                // 🔥 FASE 10: si el server está caído, intentar restaurar desde cache
+                const restaurado = restaurarSesionDesdeCache();
+                if (restaurado) {
+                    console.log('✅ Sesión restaurada desde cache (server caído)');
+                    mostrarToast('📴 Server caído. Modo de lectura activo.', 'tip', 6000);
+                    return true;
+                }
+
                 mostrarBloqueo('error', t('offlineMensaje'));
+                return false;
+            }
+        }
+
+        // ==========================================
+        // 🔥 FASE 10: Restaurar sesión desde cache cuando el server está caído
+        // ==========================================
+        function restaurarSesionDesdeCache() {
+            try {
+                const raw = localStorage.getItem('ovj_sesion_cache_' + EVENTO_ID);
+                if (!raw) return false;
+
+                const cache = JSON.parse(raw);
+                if (!cache || !cache.sesion) return false;
+
+                // Cache válida por 24 horas
+                const UNA_HORA_MS = 24 * 60 * 60 * 1000;
+                if (cache.guardadoEn && (Date.now() - cache.guardadoEn) > UNA_HORA_MS) {
+                    console.warn('Cache de sesión muy vieja. Descartando.');
+                    localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
+                    return false;
+                }
+
+                sesion = cache.sesion;
+
+                if (cache.sesionGeneral) {
+                    sesionGeneral = cache.sesionGeneral;
+
+                    if (sesionGeneral.enReceso && sesionGeneral.reanudarEn) {
+                        if (Date.now() >= sesionGeneral.reanudarEn) {
+                            sesionGeneral.enReceso = false;
+                            sesionGeneral.reanudarEn = 0;
+                        }
+                    }
+                }
+
+                // Marcar como modo lectura
+                window._modoOffline = true;
+
+                return true;
+
+            } catch (e) {
+                console.warn('Error restaurando cache:', e);
                 return false;
             }
         }
@@ -4106,6 +4171,43 @@
             }
 
             actualizarBadgeRol();
+            // 🔥 FASE 10: si estamos en modo offline, mostrar indicador visual
+            if (window._modoOffline) {
+                // Si ya existe, no lo duplicamos
+                if (!document.getElementById('bannerOffline')) {
+                    const banner = document.createElement('div');
+                    banner.id = 'bannerOffline';
+                    banner.style.cssText = `
+                position: fixed;
+                bottom: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(243, 156, 18, 0.92);
+                color: #0a0a0a;
+                padding: 8px 18px;
+                border-radius: 50px;
+                font-size: 0.72rem;
+                font-weight: 700;
+                z-index: 250;
+                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.4);
+                animation: pulseOffline 3s ease-in-out infinite;
+                pointer-events: none;
+            `;
+                    banner.textContent = '📴 Modo lectura · Algunas acciones no disponibles';
+                    document.body.appendChild(banner);
+
+                    setTimeout(() => {
+                        if (banner) {
+                            banner.textContent = '📴 Modo lectura';
+                            banner.style.opacity = '0.6';
+                        }
+                    }, 8000);
+                }
+            } else {
+                // Si no estamos offline y el banner existe, lo quitamos
+                const existente = document.getElementById('bannerOffline');
+                if (existente) existente.remove();
+            }
 
             // 🔥 FASE 3: toast de bienvenida al VIP
             if (sesion.tipo === 'vip') {
@@ -5183,7 +5285,7 @@
             btn.classList.add('cargando-btn');
             texto.textContent = t('descargando');
 
-                        try {
+            try {
                 // ── FLUJO NORMAL ──
                 const url = `${URL_CLOUDFLARE}/descargar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&foto=${encodeURIComponent(foto.nombre)}` +
@@ -5249,7 +5351,7 @@
                 }
 
                 // 🔥 FASE 7: fallback — construir URL del Worker directamente
-                                // 🔥 FASE 7: fallback — construir URL del original desde la URL de la preview
+                // 🔥 FASE 7: fallback — construir URL del original desde la URL de la preview
                 if (usarFallbackEmergencia) {
                     if (!foto.url) {
                         throw new Error('Foto sin URL disponible');
