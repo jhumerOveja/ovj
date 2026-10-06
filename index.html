@@ -4549,10 +4549,12 @@
                     }
                 }
 
-                const huboCambio = JSON.stringify(nuevasFotos) !== JSON.stringify(fotosCache);
+                const fotosInvertidas = [...nuevasFotos].reverse();
+
+                const huboCambio = JSON.stringify(fotosInvertidas) !== JSON.stringify(fotosCache);
 
                 if (huboCambio) {
-                    fotosCache = nuevasFotos;
+                    fotosCache = fotosInvertidas;
 
                     if (fotoSeleccionadaIndex >= fotosCache.length) {
                         fotoSeleccionadaIndex = -1;
