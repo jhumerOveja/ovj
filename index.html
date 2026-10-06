@@ -4588,53 +4588,60 @@
             const cont = document.getElementById('barraGoteoContainer');
             if (!cont) return;
 
-            // ── Caso 1: no hay goteo activo ──
+            // ── Caso 1: no hay goteo activo → ocultar ──
             if (!goteo || !goteo.activo) {
                 cont.innerHTML = '';
                 if (barraGoteoTimer) {
                     clearInterval(barraGoteoTimer);
                     barraGoteoTimer = null;
                 }
+                barraGoteoPendientesActuales = 0;
                 return;
             }
 
-            // ── Caso 2: goteo activo pero sin pendientes ──
+            // ── Caso 2: goteo activo pero sin pendientes → mensaje neutro ──
             if (goteo.pendientes === 0) {
-                const htmlNuevo = `
-                    <div class="barra-goteo">
-                        <div class="mensaje">
-                            <span class="emoji">📸</span>
-                            <span>El fotógrafo está trabajando...</span>
-                        </div>
-                    </div>
-                `;
                 if (cont.innerHTML.indexOf('El fotógrafo está trabajando') === -1) {
-                    cont.innerHTML = htmlNuevo;
+                    cont.innerHTML = `
+                <div class="barra-goteo">
+                    <div class="mensaje">
+                        <span class="emoji">📸</span>
+                        <span>El fotógrafo está trabajando...</span>
+                    </div>
+                </div>
+            `;
                 }
                 if (barraGoteoTimer) {
                     clearInterval(barraGoteoTimer);
                     barraGoteoTimer = null;
                 }
+                barraGoteoPendientesActuales = 0;
                 return;
             }
 
             // ── Caso 3: hay pendientes → barra animada ──
+
+            // Actualizar el contador de pendientes (sin resetear la barra)
+            barraGoteoPendientesActuales = goteo.pendientes;
+
             const hayBarraDibujada = !!document.getElementById('barraGoteoFill');
 
+            // Si NO hay barra dibujada → crearla y arrancar el ciclo
             if (!hayBarraDibujada) {
                 cont.innerHTML = `
-                    <div class="barra-goteo">
-                        <div class="mensaje">
-                            <span class="emoji">✨</span>
-                            <span>Preparando nuevas fotos...</span>
-                        </div>
-                        <div class="barra-fondo">
-                            <div class="barra-fill" id="barraGoteoFill"></div>
-                        </div>
-                    </div>
-                `;
+            <div class="barra-goteo">
+                <div class="mensaje">
+                    <span class="emoji">✨</span>
+                    <span>Preparando nuevas fotos...</span>
+                </div>
+                <div class="barra-fondo">
+                    <div class="barra-fill" id="barraGoteoFill"></div>
+                </div>
+            </div>
+        `;
+
                 barraGoteoProgreso = 0;
-                barraGoteoDuracionMs = Math.max(15000, (intervaloPollSeg || 60) * 1000);
+                barraGoteoDuracionMs = Math.max(20000, (intervaloPollSeg || 60) * 1000);
                 barraGoteoUltimoCambio = Date.now();
 
                 if (barraGoteoTimer) clearInterval(barraGoteoTimer);
@@ -4646,19 +4653,17 @@
                     const fill = document.getElementById('barraGoteoFill');
                     if (fill) fill.style.width = barraGoteoProgreso + '%';
 
-                    // Si llega al 100%, se queda ahí esperando el próximo poll
+                    // Si llega al 100%, se queda ahí esperando el próximo reset.
+                    // El reset NO ocurre acá. Ocurre en cargarFotos() cuando
+                    // llegan fotos nuevas de verdad.
                 }, 200);
 
                 return;
             }
 
-            // ── Caso 4: ya hay barra dibujada, reseteamos porque llegó poll nuevo ──
-            barraGoteoProgreso = 0;
-            barraGoteoDuracionMs = Math.max(15000, (intervaloPollSeg || 60) * 1000);
-            barraGoteoUltimoCambio = Date.now();
-
-            const fill = document.getElementById('barraGoteoFill');
-            if (fill) fill.style.width = '0%';
+            // Si YA hay barra dibujada → NO hacer nada.
+            // Dejarla llenarse hasta el 100% y quedarse ahí.
+            // El reset se maneja desde cargarFotos() cuando hay fotos nuevas.
         }
 
         // ==========================================
@@ -4773,6 +4778,12 @@
                     if (fotosRecienLlegadas.length > 0) {
                         lanzarConfeti();
                         mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
+
+                        // 🔥 Resetear la barra cuando llegan fotos nuevas
+                        barraGoteoProgreso = 0;
+                        barraGoteoUltimoCambio = Date.now();
+                        const fill = document.getElementById('barraGoteoFill');
+                        if (fill) fill.style.width = '0%';
                     }
                 }
 
