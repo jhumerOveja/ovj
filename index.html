@@ -2985,6 +2985,10 @@
         }
 
         /* Responsive: en móvil achicamos el texto */
+        .btn-detras-texto-corto {
+            display: none;
+        }
+
         @media (max-width: 600px) {
             .btn-detras-camara {
                 padding: 6px 11px 6px 10px;
@@ -2997,9 +3001,12 @@
             }
 
             .btn-detras-texto {
-                max-width: 62px;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                display: none;
+            }
+
+            .btn-detras-texto-corto {
+                display: inline;
+                white-space: nowrap;
             }
 
             .btn-detras-contador {
@@ -3009,8 +3016,8 @@
         }
 
         @media (max-width: 380px) {
-            .btn-detras-texto {
-                display: none;
+            .btn-detras-texto-corto {
+                font-size: 0.62rem;
             }
 
             .btn-detras-camara {
@@ -3115,9 +3122,17 @@
         }
 
         /* Ocultar texto de botones admin en móvil muy chico */
-        @media (max-width: 420px) {
+        .btn-admin-texto-corto {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
             .btn-admin-texto {
                 display: none;
+            }
+
+            .btn-admin-texto-corto {
+                display: inline;
             }
         }
 
@@ -3557,14 +3572,15 @@
                     style="display: none;">
                     <span class="btn-detras-icono">📸</span>
                     <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
+                    <span class="btn-detras-texto-corto">Tras cámaras</span>
                     <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
                     <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
                 </button>
                 <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
-                    ✨ <span class="btn-admin-texto">Invitar VIP</span>
+                    ✨ <span class="btn-admin-texto">Invitar VIP</span><span class="btn-admin-texto-corto">VIP</span>
                 </button>
                 <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
-                    🎫 <span class="btn-admin-texto">QR</span>
+                    🎫 <span class="btn-admin-texto">QR</span><span class="btn-admin-texto-corto">QR</span>
                 </button>
             </div>
             <div class="header-bottom">
@@ -3959,7 +3975,7 @@
                 rolAdmin: "Administrador",
                 rolInvitado: "Invitado",
                 contadorAdmin: "👑 Admin",
-                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorSesion: (usadas, total) => `⬇️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Receso",
                 fotoNuevaLlegada: "¡Nueva foto disponible!",
                 desbloqueoSocialTitulo: "¡Desbloquea más descargas!",
@@ -4021,7 +4037,7 @@
                 rolAdmin: "Administrator",
                 rolInvitado: "Guest",
                 contadorAdmin: "👑 Admin",
-                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorSesion: (usadas, total) => `⬇️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ Break",
                 fotoNuevaLlegada: "New photo available!",
                 desbloqueoSocialTitulo: "Unlock more downloads!",
@@ -4083,7 +4099,7 @@
                 rolAdmin: "管理员",
                 rolInvitado: "嘉宾",
                 contadorAdmin: "👑 管理员",
-                contadorSesion: (usadas, total) => `🎟️ ${total - usadas}/${total}`,
+                contadorSesion: (usadas, total) => `⬇️ ${total - usadas}/${total}`,
                 contadorAgotado: "⏸️ 休息",
                 fotoNuevaLlegada: "新照片已上线！",
                 desbloqueoSocialTitulo: "解锁更多下载！",
