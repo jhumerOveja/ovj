@@ -3861,7 +3861,17 @@
         const PARAMS = getParametrosURL();
         const FOTOGRAFO_ID = PARAMS.fotografo;
         const EVENTO_ID = PARAMS.eventoId;
-        let TOKEN = PARAMS.token;
+
+        // 🔥 Al recargar, si ya hay un token personal guardado, usarlo en lugar del token de la URL.
+        // Esto evita que un VIP/admin que ya reclamó su pase quede bloqueado al recargar.
+        let TOKEN = (function () {
+            if (!EVENTO_ID) return PARAMS.token;
+            const tokenPersonal = localStorage.getItem('ovj_token_personal_' + EVENTO_ID);
+            if (tokenPersonal) {
+                return tokenPersonal;
+            }
+            return PARAMS.token;
+        })();
 
         function getDispositivoId() {
             let id = localStorage.getItem('ovj_dispositivo_id');
