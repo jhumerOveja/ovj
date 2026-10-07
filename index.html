@@ -3863,14 +3863,31 @@
         const EVENTO_ID = PARAMS.eventoId;
 
         // 🔥 Al recargar, si ya hay un token personal guardado, usarlo en lugar del token de la URL.
-        // Esto evita que un VIP/admin que ya reclamó su pase quede bloqueado al recargar.
+        // PERO: si el token de la URL es distinto al que originó el token personal,
+        // significa que el invitado escaneó un QR NUEVO → limpiar la sesión vieja.
+        // Si no hay token original guardado (versión anterior del frontend), limpiar por seguridad.
         let TOKEN = (function () {
             if (!EVENTO_ID) return PARAMS.token;
+
             const tokenPersonal = localStorage.getItem('ovj_token_personal_' + EVENTO_ID);
-            if (tokenPersonal) {
-                return tokenPersonal;
+            const tokenUrlOriginal = localStorage.getItem('ovj_token_url_original_' + EVENTO_ID);
+
+            // Primera vez: no hay token personal → usar el de la URL
+            if (!tokenPersonal) {
+                return PARAMS.token;
             }
-            return PARAMS.token;
+
+            // Si el token de la URL no coincide con el original, o si no hay original guardado
+            // → QR nuevo o versión vieja. Limpiar y usar el nuevo token.
+            if (PARAMS.token && (!tokenUrlOriginal || PARAMS.token !== tokenUrlOriginal)) {
+                localStorage.removeItem('ovj_token_personal_' + EVENTO_ID);
+                localStorage.removeItem('ovj_token_url_original_' + EVENTO_ID);
+                localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
+                return PARAMS.token;
+            }
+
+            // Misma sesión → usar el token personal
+            return tokenPersonal;
         })();
 
         function getDispositivoId() {
@@ -4387,8 +4404,11 @@
                 if (data.tokenPersonal) {
                     TOKEN = data.tokenPersonal;
                     localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
+                    // 🔥 Guardar el token de la URL que originó este token personal
+                    if (PARAMS.token) {
+                        localStorage.setItem('ovj_token_url_original_' + EVENTO_ID, PARAMS.token);
+                    }
                 }
-
                 sesion = {
                     tipo: data.tipo,
                     nombre: data.nombre,
@@ -6311,7 +6331,7 @@
         // DETECCIÓN CAMBIO URL
         // ==========================================
         (function () {
-            // 🔥 Comparar contra el token de la URL, no contra el TOKEN (que puede ser personal)
+            // 🔥 Comparar contra el token de la URL, no contra TOKEN (que puede ser personal)
             const eventoIdOriginal = EVENTO_ID;
             const tokenUrlOriginal = PARAMS.token;
 
@@ -6398,6 +6418,10 @@
                 if (data.tokenPersonal) {
                     TOKEN = data.tokenPersonal;
                     localStorage.setItem('ovj_token_personal_' + EVENTO_ID, data.tokenPersonal);
+                    // 🔥 Guardar el token de la URL que originó este token personal
+                    if (PARAMS.token) {
+                        localStorage.setItem('ovj_token_url_original_' + EVENTO_ID, PARAMS.token);
+                    }
                 }
 
                 if (data.tipo === 'general' && data.sesion) {
