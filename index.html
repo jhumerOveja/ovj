@@ -233,6 +233,21 @@
             gap: 8px;
         }
 
+        .header-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 8px;
+            margin-top: 4px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .header-badges:empty {
+            display: none;
+        }
+
         .header-left {
             display: flex;
             align-items: center;
@@ -2788,6 +2803,19 @@
             .badge-receso .icono {
                 font-size: 0.75rem;
             }
+
+            .header-badges {
+                gap: 6px;
+                padding-top: 6px;
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                scrollbar-width: none;
+            }
+
+            .header-badges::-webkit-scrollbar {
+                display: none;
+            }
         }
 
         @media (max-width: 400px) {
@@ -3492,29 +3520,8 @@
             <div class="header-top">
                 <div class="header-left">
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
-                    <div class="badge-rol" id="badgeRol" style="display:none;"></div>
                 </div>
                 <div class="header-right">
-                    <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
-                        style="display: none;">
-                        <span class="btn-detras-icono">📸</span>
-                        <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
-                        <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
-                        <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
-                    </button>
-
-                    <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()"
-                        style="display: none;">
-                        ✨ <span class="btn-admin-texto">Invitar VIP</span>
-                    </button>
-                    <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()"
-                        style="display: none;">
-                        🎫 <span class="btn-admin-texto">QR</span>
-                    </button>
-                    <div class="badge-receso" id="badgeReceso" style="display: none;">
-                        <span class="icono">⏸️</span>
-                        <span class="texto" id="badgeRecesoTexto">Receso</span>
-                    </div>
                     <div class="lang-selector" id="langSelector">
                         <div class="lang-btn" onclick="toggleLangMenu()">
                             <span class="bandera" id="langBanderaActual">🇧🇴</span>
@@ -3537,6 +3544,28 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- 🔥 Fila secundaria: badges y botones de acción -->
+            <div class="header-badges" id="headerBadges">
+                <div class="badge-rol" id="badgeRol" style="display:none;"></div>
+                <div class="badge-receso" id="badgeReceso" style="display:none;">
+                    <span class="icono">⏸️</span>
+                    <span class="texto" id="badgeRecesoTexto">Receso</span>
+                </div>
+                <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
+                    style="display: none;">
+                    <span class="btn-detras-icono">📸</span>
+                    <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
+                    <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
+                    <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
+                </button>
+                <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
+                    ✨ <span class="btn-admin-texto">Invitar VIP</span>
+                </button>
+                <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
+                    🎫 <span class="btn-admin-texto">QR</span>
+                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -4340,7 +4369,7 @@
                     sesionGeneral = data.sesion;
                     sesionGeneral.enReceso = !!data.enReceso;
                     sesionGeneral.reanudarEn = data.enReceso
-                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
+                        ? (data.reanudarEnMs || (Date.now() + (data.reanudarEn || 5) * 60 * 1000))
                         : 0;
 
                     if (data.desbloqueoSocial) {
@@ -5701,7 +5730,7 @@
 
                             if (sesionGeneral) {
                                 sesionGeneral.enReceso = true;
-                                sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
+                                sesionGeneral.reanudarEn = data.reanudarEnMs || (Date.now() + (data.reanudarEn || 5) * 60 * 1000);
                                 actualizarBadgeRol();
                                 actualizarBotonPrincipal();
                             }
@@ -6337,7 +6366,7 @@
                     sesionGeneral = data.sesion;
                     sesionGeneral.enReceso = !!data.enReceso;
                     sesionGeneral.reanudarEn = data.enReceso
-                        ? Date.now() + (data.reanudarEn || 5) * 60 * 1000
+                        ? (data.reanudarEnMs || (Date.now() + (data.reanudarEn || 5) * 60 * 1000))
                         : 0;
 
                     if (data.desbloqueoSocial) {
