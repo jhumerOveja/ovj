@@ -6311,15 +6311,16 @@
         // DETECCIÓN CAMBIO URL
         // ==========================================
         (function () {
+            // 🔥 Comparar contra el token de la URL, no contra el TOKEN (que puede ser personal)
             const eventoIdOriginal = EVENTO_ID;
-            const tokenOriginal = TOKEN;
+            const tokenUrlOriginal = PARAMS.token;
 
             function chequearCambioURL() {
                 const params = getParametrosURL();
                 const eventoIdNuevo = params.eventoId;
-                const tokenNuevo = params.token;
+                const tokenUrlNuevo = params.token;
 
-                if (eventoIdNuevo !== eventoIdOriginal || tokenNuevo !== tokenOriginal) {
+                if (eventoIdNuevo !== eventoIdOriginal || tokenUrlNuevo !== tokenUrlOriginal) {
                     window.location.reload();
                 }
             }
