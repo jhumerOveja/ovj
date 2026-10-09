@@ -1,0 +1,360 @@
+{
+  "objects": [
+    {
+      "id": "e8d43fe2-41a3-4044-bb96-e2aedf130bfa",
+      "name": "base",
+      "prompt": "a chest",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "directions": 1,
+      "view": "low top-down",
+      "rotations": {
+        "unknown": "rotations/a_chest.png"
+      },
+      "animations": {
+        "The_heavy_metal_lid_hinges_upward_with_a_deliberat": {
+          "directions": {
+            "unknown": {
+              "frames": [
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_000.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_001.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_002.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_003.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_004.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_005.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_006.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_007.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_008.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_009.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_010.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_011.png",
+                "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_012.png"
+              ],
+              "frame_count": 13
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "0ffa9d91-698c-45f7-b2b9-5de9e073af18",
+      "name": "base",
+      "prompt": "a chest",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "directions": 1,
+      "view": "low top-down",
+      "rotations": {
+        "unknown": "rotations/a_chest_2.png"
+      },
+      "animations": {
+        "The_heavy_wooden_lid_slowly_creaks_upward_on_its_r": {
+          "directions": {
+            "unknown": {
+              "frames": [
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_000.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_001.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_002.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_003.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_004.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_005.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_006.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_007.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_008.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_009.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_010.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_011.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_012.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_013.png",
+                "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_014.png"
+              ],
+              "frame_count": 15
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "03eec308-fa9f-407f-82d8-27673429a8b1",
+      "name": "base",
+      "prompt": "a chest",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "directions": 1,
+      "view": "low top-down",
+      "rotations": {
+        "unknown": "rotations/a_chest_3.png"
+      },
+      "animations": {
+        "The_heavy_wooden_lid_creaks_upward_with_a_delibera": {
+          "directions": {
+            "unknown": {
+              "frames": [
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_000.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_001.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_002.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_003.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_004.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_005.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_006.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_007.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_008.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_009.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_010.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_011.png",
+                "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_012.png"
+              ],
+              "frame_count": 13
+            }
+          }
+        },
+        "The_heavy_wooden_chest_rhythmically_sways_back_and": {
+          "directions": {
+            "unknown": {
+              "frames": [
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_000.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_001.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_002.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_003.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_004.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_005.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_006.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_007.png",
+                "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_008.png"
+              ],
+              "frame_count": 9
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "918d9924-0a7d-4883-ad05-803071d500e6",
+      "name": "base",
+      "prompt": "a chest",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "directions": 1,
+      "view": "low top-down",
+      "rotations": {
+        "unknown": "rotations/a_chest_4.png"
+      },
+      "animations": {
+        "The_heavy_lid_hinges_upward_with_a_sudden_mechani": {
+          "directions": {
+            "unknown": {
+              "frames": [
+                "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_000.png",
+                "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_001.png",
+                "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_002.png",
+                "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_003.png",
+                "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_004.png"
+              ],
+              "frame_count": 5
+            }
+          }
+        }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "14b0747d-a71b-4ef7-b8cc-9a44f85ba109",
+      "folder": "objects/a_chest",
+      "objects": [
+        {
+          "id": "e8d43fe2-41a3-4044-bb96-e2aedf130bfa",
+          "name": "base",
+          "prompt": "a chest",
+          "size": {
+            "width": 32,
+            "height": 32
+          },
+          "directions": 1,
+          "view": "low top-down",
+          "rotations": {
+            "unknown": "rotations/a_chest.png"
+          },
+          "animations": {
+            "The_heavy_metal_lid_hinges_upward_with_a_deliberat": {
+              "directions": {
+                "unknown": {
+                  "frames": [
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_000.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_001.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_002.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_003.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_004.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_005.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_006.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_007.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_008.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_009.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_010.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_011.png",
+                    "animations/The_heavy_metal_lid_hinges_upward_with_a_deliberat/unknown/frame_012.png"
+                  ],
+                  "frame_count": 13
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "dff890f4-464f-4a64-a21c-e5422fe9e27c",
+      "folder": "objects/a_chest_2",
+      "objects": [
+        {
+          "id": "0ffa9d91-698c-45f7-b2b9-5de9e073af18",
+          "name": "base",
+          "prompt": "a chest",
+          "size": {
+            "width": 32,
+            "height": 32
+          },
+          "directions": 1,
+          "view": "low top-down",
+          "rotations": {
+            "unknown": "rotations/a_chest_2.png"
+          },
+          "animations": {
+            "The_heavy_wooden_lid_slowly_creaks_upward_on_its_r": {
+              "directions": {
+                "unknown": {
+                  "frames": [
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_000.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_001.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_002.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_003.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_004.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_005.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_006.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_007.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_008.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_009.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_010.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_011.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_012.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_013.png",
+                    "animations/The_heavy_wooden_lid_slowly_creaks_upward_on_its_r/unknown/frame_014.png"
+                  ],
+                  "frame_count": 15
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "f2eca0f6-6ceb-4c34-bd9b-7a6de010e512",
+      "folder": "objects/a_chest_3",
+      "objects": [
+        {
+          "id": "03eec308-fa9f-407f-82d8-27673429a8b1",
+          "name": "base",
+          "prompt": "a chest",
+          "size": {
+            "width": 32,
+            "height": 32
+          },
+          "directions": 1,
+          "view": "low top-down",
+          "rotations": {
+            "unknown": "rotations/a_chest_3.png"
+          },
+          "animations": {
+            "The_heavy_wooden_lid_creaks_upward_with_a_delibera": {
+              "directions": {
+                "unknown": {
+                  "frames": [
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_000.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_001.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_002.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_003.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_004.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_005.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_006.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_007.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_008.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_009.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_010.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_011.png",
+                    "animations/The_heavy_wooden_lid_creaks_upward_with_a_delibera/unknown/frame_012.png"
+                  ],
+                  "frame_count": 13
+                }
+              }
+            },
+            "The_heavy_wooden_chest_rhythmically_sways_back_and": {
+              "directions": {
+                "unknown": {
+                  "frames": [
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_000.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_001.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_002.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_003.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_004.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_005.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_006.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_007.png",
+                    "animations/The_heavy_wooden_chest_rhythmically_sways_back_and/unknown/frame_008.png"
+                  ],
+                  "frame_count": 9
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "5d50375f-de0f-445e-8d08-fdf1a7912d01",
+      "folder": "objects/a_chest_4",
+      "objects": [
+        {
+          "id": "918d9924-0a7d-4883-ad05-803071d500e6",
+          "name": "base",
+          "prompt": "a chest",
+          "size": {
+            "width": 32,
+            "height": 32
+          },
+          "directions": 1,
+          "view": "low top-down",
+          "rotations": {
+            "unknown": "rotations/a_chest_4.png"
+          },
+          "animations": {
+            "The_heavy_lid_hinges_upward_with_a_sudden_mechani": {
+              "directions": {
+                "unknown": {
+                  "frames": [
+                    "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_000.png",
+                    "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_001.png",
+                    "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_002.png",
+                    "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_003.png",
+                    "animations/The_heavy_lid_hinges_upward_with_a_sudden_mechani/unknown/frame_004.png"
+                  ],
+                  "frame_count": 5
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "export_version": "1.1",
+  "export_date": "2026-10-04T12:54:02.727139"
+}
