@@ -1090,6 +1090,10 @@
                     <span class="emoji">⚙️</span>
                     <span class="texto-nav">Sistema</span>
                 </div>
+                <div class="nav-item" data-tab="tickets" onclick="cambiarTab('tickets')">
+                    <span class="emoji">🎁</span>
+                    <span class="texto-nav">Tickets</span>
+                </div>
             </nav>
 
             <div class="footer-sidebar">
@@ -1141,6 +1145,8 @@
         let cacheFotografos = [];
         let cacheEventos = [];
         let cacheModosLibres = [];
+        let cacheCatalogoPremios = [];
+        let ticketsEventoSeleccionado = null;
 
         // ==========================================
         // 🛠️ UTILIDADES
@@ -1304,6 +1310,7 @@
                 case 'fotografos': renderFotografos(); break;
                 case 'eventos': renderEventos(); break;
                 case 'modos': renderModosLibres(); break;
+                case 'tickets': renderTickets(); break;
                 case 'sistema': renderSistema(); break;
             }
         }
@@ -1779,10 +1786,20 @@
             `;
         }
 
-        function abrirNuevoEvento() {
+        async function abrirNuevoEvento() {
             if (cacheFotografos.length === 0) {
                 toast('Primero crea un fotógrafo', 'error');
                 return;
+            }
+
+            // 🔥 Cargar catálogo de premios (una vez)
+            if (cacheCatalogoPremios.length === 0) {
+                try {
+                    const dataPremios = await apiFetch('/admin/catalogo-premios');
+                    cacheCatalogoPremios = dataPremios.catalogo || [];
+                } catch (e) {
+                    cacheCatalogoPremios = [];
+                }
             }
 
             const opcionesFotografos = cacheFotografos.map(f =>
@@ -1920,15 +1937,56 @@
                             <label>Descargas extra</label>
                             <input type="number" id="inputDesbloqueoSocialDescargas" value="3" min="1" max="20" />
                         </div>
+                </div>
+            </div>
+
+            <div class="seccion-titulo-form destacado">🎁 Cofres-regalo</div>
+
+            <div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
+                💡 Al activar, cada invitado recibe un cofre con un regalo.<br>
+                Los tickets reales se entregan al azar entre los invitados presentes.<br>
+                El invitado reclama por WhatsApp con el token.
+            </div>
+
+            <div class="campo">
+                <label>Activar cofres</label>
+                <select id="inputCofresActivo">
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+
+            <div id="bloqueCofresConfig" style="display:none;">
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Cantidad de tickets reales</label>
+                        <input type="number" id="inputCofresCantidad" value="10" min="0" max="500" />
+                        <div class="ayuda">Cuántos invitados reciben un ticket real. El resto recibe simbólico.</div>
+                    </div>
+                    <div class="campo">
+                        <label>Hora de entrega</label>
+                        <input type="time" id="inputCofresHora" value="21:00" />
+                        <div class="ayuda">Hora exacta en que aparecen los cofres.</div>
                     </div>
                 </div>
 
-                <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
-                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
-            `);
+                <div class="campo">
+                    <label>Premios disponibles para este evento</label>
+                    <div class="ayuda" style="margin-bottom:8px;">Marcá los que querés que estén en juego. Al azar se elige uno para cada ganador.</div>
+                    <div id="listaPremiosCofres" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:220px; overflow-y:auto; padding:8px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:10px;">
+                        <!-- Se inyecta por JS -->
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primario" id="btnCrearEvento" onclick="crearEvento()">Agendar evento</button>
+            <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+        `);
 
             actualizarSugerencia();
             alCambiarModoEvento();
+            inicializarFormCofres();
+
         }
 
         // 🔥 FASE 2: cambio de modo en el form
@@ -1957,6 +2015,74 @@
                 avisoModo.style.background = 'rgba(96,165,250,0.06)';
                 avisoModo.style.borderColor = 'rgba(96,165,250,0.3)';
             }
+        }
+
+        // ==========================================
+        // 🎁 FORM DE COFRES
+        // ==========================================
+        function inicializarFormCofres() {
+            const select = $('inputCofresActivo');
+            const bloque = $('bloqueCofresConfig');
+            const lista = $('listaPremiosCofres');
+
+            if (!select || !bloque || !lista) return;
+
+            // Renderizar el catálogo
+            if (cacheCatalogoPremios.length === 0) {
+                lista.innerHTML = '<div style="color:#888; font-size:0.75rem; padding:10px;">No hay premios disponibles.</div>';
+            } else {
+                let html = '';
+                cacheCatalogoPremios.forEach(p => {
+                    const esJackpot = p.tipo === 'jackpot';
+                    const color = esJackpot ? '#e8c47a' : '#aaa';
+                    html += `
+                <label style="display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:8px; cursor:pointer; font-size:0.72rem; color:${color}; background:rgba(255,255,255,0.02); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                    <input type="checkbox" class="checkPremio" value="${p.key}" checked style="accent-color:#f39c12;" />
+                    <span>${escapeHtml(p.titulo)}</span>
+                </label>
+            `;
+                });
+                lista.innerHTML = html;
+            }
+
+            // Mostrar/ocultar config al cambiar el select
+            function actualizarVisibilidad() {
+                if (select.value === 'true') {
+                    bloque.style.display = 'block';
+                } else {
+                    bloque.style.display = 'none';
+                }
+            }
+
+            select.addEventListener('change', actualizarVisibilidad);
+            actualizarVisibilidad();
+        }
+
+        function getCofresDelForm() {
+            const select = $('inputCofresActivo');
+            if (!select || select.value !== 'true') {
+                return {
+                    activo: false,
+                    cantidadTickets: 0,
+                    horaEntrega: null,
+                    premios: []
+                };
+            }
+
+            const cantidadTickets = parseInt($('inputCofresCantidad')?.value, 10) || 0;
+            const horaEntrega = $('inputCofresHora')?.value || null;
+
+            const premios = [];
+            document.querySelectorAll('.checkPremio:checked').forEach(chk => {
+                premios.push(chk.value);
+            });
+
+            return {
+                activo: true,
+                cantidadTickets,
+                horaEntrega,
+                premios
+            };
         }
 
         async function crearEvento() {
@@ -1988,6 +2114,24 @@
                 ? (parseInt($('inputMaxVips')?.value, 10) || 5)
                 : 0;
 
+            // 🔥 COFRES
+            const cofres = getCofresDelForm();
+
+            if (cofres.activo && cofres.premios.length === 0) {
+                toast('Seleccioná al menos un premio para los cofres', 'error');
+                return;
+            }
+
+            if (cofres.activo && !cofres.horaEntrega) {
+                toast('Configurá la hora de entrega de los cofres', 'error');
+                return;
+            }
+
+            if (cofres.activo && cofres.cantidadTickets <= 0) {
+                toast('La cantidad de tickets debe ser mayor a 0', 'error');
+                return;
+            }
+
             if (!evento || evento.length < 2) { toast('Nombre de evento inválido', 'error'); return; }
             if (!fecha || !hora) { toast('Fecha y hora obligatorias', 'error'); return; }
             if (!duracion || duracion < 1 || duracion > 24) { toast('Duración inválida', 'error'); return; }
@@ -2007,7 +2151,8 @@
                         whatsappCliente: whatsapp || null,
                         modoEvento,
                         maxVips,
-                        poolGeneral
+                        poolGeneral,
+                        cofres
                     })
                 });
 
@@ -2319,6 +2464,328 @@
                 const data = await apiFetch('/admin/modos-libres/' + encodeURIComponent(id) + '/cerrar', { method: 'POST' });
                 toast(`✅ Cerrado · ${data.eliminados} archivos · B2: ${data.b2.eliminadas}`, 'ok');
                 renderModosLibres();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
+
+        // ==========================================
+        // 🎁 TICKETS
+        // ==========================================
+        async function renderTickets() {
+            $('contenidoPrincipal').innerHTML = `
+        <div class="page-header">
+            <div><h1>🎁 Tickets</h1><div class="subtitulo">Cofres-regalo emitidos por evento</div></div>
+            <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+        </div>
+        <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando eventos...</div></div>
+    `;
+
+            try {
+                const data = await apiFetch('/admin/eventos');
+                const eventos = data.eventos || [];
+
+                // Filtrar eventos que tengan cofres configurados
+                const conCofres = eventos.filter(e => e.cofres && e.cofres.activo === true);
+
+                if (conCofres.length === 0) {
+                    $('contenidoPrincipal').innerHTML = `
+                <div class="page-header">
+                    <div><h1>🎁 Tickets</h1><div class="subtitulo">Cofres-regalo emitidos por evento</div></div>
+                    <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+                </div>
+                <div class="vacio">
+                    <span class="emoji">🎁</span>
+                    <div class="titulo">No hay eventos con cofres activados</div>
+                    <div class="subtitulo">Al agendar un evento, activá los cofres para que los invitados puedan recibir tickets.</div>
+                </div>
+            `;
+                    return;
+                }
+
+                // Ordenar: activos primero, después por fecha descendente
+                conCofres.sort((a, b) => {
+                    const prioridad = (e) => e.estado === 'activo' ? 0 : (e.estado === 'agendado' ? 1 : 2);
+                    const pa = prioridad(a);
+                    const pb = prioridad(b);
+                    if (pa !== pb) return pa - pb;
+                    return new Date(b.fechaProgramada) - new Date(a.fechaProgramada);
+                });
+
+                let html = `
+            <div class="page-header">
+                <div><h1>🎁 Tickets</h1><div class="subtitulo">${conCofres.length} evento${conCofres.length === 1 ? '' : 's'} con cofres</div></div>
+                <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+            </div>
+            <div class="grid grid-2">
+        `;
+
+                conCofres.forEach(e => {
+                    html += renderCardEventoConCofres(e);
+                });
+
+                html += `</div>`;
+                $('contenidoPrincipal').innerHTML = html;
+
+            } catch (e) {
+                $('contenidoPrincipal').innerHTML = `
+            <div class="page-header"><div><h1>🎁 Tickets</h1></div></div>
+            <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+        `;
+            }
+        }
+
+        function renderCardEventoConCofres(e) {
+            const badgeClase = e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : 'finalizado';
+            const badgeTexto = e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : '✔ Finalizado';
+
+            const cofres = e.cofres || {};
+            const cantidadTickets = cofres.cantidadTickets || 0;
+            const horaEntrega = cofres.horaEntrega || '—';
+            const emitidosEn = cofres.emitidosEn;
+            const premios = Array.isArray(cofres.premios) ? cofres.premios : [];
+
+            let estadoEmision = '';
+            if (emitidosEn) {
+                estadoEmision = `<div class="fila" style="color:#4ade80;">✅ Emitidos: ${formatearHora(emitidosEn)}</div>`;
+            } else if (e.estado === 'activo') {
+                estadoEmision = `<div class="fila" style="color:#f39c12;">⏳ Pendiente: se emitirán a las ${horaEntrega}</div>`;
+            } else if (e.estado === 'agendado') {
+                estadoEmision = `<div class="fila" style="color:#5dade2;">📅 Se emitirán a las ${horaEntrega}</div>`;
+            } else {
+                estadoEmision = `<div class="fila" style="color:#888;">— No emitidos</div>`;
+            }
+
+            const etiquetasPremios = premios.map(p => {
+                const premio = {
+                    descuento_10: '10% off',
+                    descuento_15: '15% off',
+                    descuento_25: '25% off',
+                    media_hora_extra: '+30 min',
+                    hora_extra_1: '+1h',
+                    hora_extra_2: '+2h',
+                    sesion_familiar: 'Sesión familiar',
+                    album_digital: 'Álbum digital',
+                    album_impreso: 'Álbum impreso',
+                    jackpot_50: '🎰 50% off',
+                    jackpot_combo: '🎰 Combo'
+                }[p] || p;
+
+                const esJackpot = p.startsWith('jackpot');
+                return `<span style="display:inline-block; background:${esJackpot ? 'rgba(232,196,122,0.15)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${esJackpot ? 'rgba(232,196,122,0.4)' : 'rgba(255,255,255,0.1)'}; color:${esJackpot ? '#e8c47a' : '#aaa'}; font-size:0.62rem; padding:3px 8px; border-radius:50px; margin:2px 4px 2px 0;">${etiquetasPremios}</span>`;
+            }).join('');
+
+            return `
+        <div class="card card-evento">
+            <div class="cabecera">
+                <div>
+                    <div class="titulo">${escapeHtml(e.evento)}</div>
+                    <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
+                </div>
+                <span class="badge ${badgeClase}">${badgeTexto}</span>
+            </div>
+            <div class="meta">
+                <div class="fila">🎁 <strong>${cantidadTickets}</strong> ticket${cantidadTickets === 1 ? '' : 's'} reales</div>
+                <div class="fila">🕐 Hora de entrega: <strong>${horaEntrega}</strong></div>
+                ${estadoEmision}
+            </div>
+            ${premios.length > 0 ? `
+                <div style="margin-top:8px;">
+                    <div style="font-size:0.62rem; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Premios disponibles</div>
+                    <div>${etiquetasPremios}</div>
+                </div>
+            ` : ''}
+            <div class="acciones">
+                <button class="btn btn-chico btn-secundario" onclick="verTicketsEvento('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">
+                    🎁 Ver tickets
+                </button>
+            </div>
+        </div>
+    `;
+        }
+
+        // ==========================================
+        // 🎁 MODAL DE LISTA DE TICKETS
+        // ==========================================
+        async function verTicketsEvento(fotografo, eventoId, nombreEvento) {
+            ticketsEventoSeleccionado = { fotografo, eventoId, nombreEvento };
+
+            abrirModal(`
+        <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+        <div class="titulo">🎁 Tickets: ${escapeHtml(nombreEvento)}</div>
+        <div class="subtitulo">Cargando...</div>
+        <div id="listaTicketsContainer">
+            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
+        </div>
+    `);
+
+            await cargarListaTickets(fotografo, eventoId);
+        }
+
+        async function cargarListaTickets(fotografo, eventoId) {
+            const cont = $('listaTicketsContainer');
+            if (!cont) return;
+
+            try {
+                const data = await apiFetch('/admin/tickets?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId));
+                const tickets = data.tickets || [];
+
+                if (tickets.length === 0) {
+                    cont.innerHTML = `
+                <div class="vacio">
+                    <span class="emoji">📭</span>
+                    <div class="titulo">Sin tickets emitidos</div>
+                    <div class="subtitulo">Se emitirán automáticamente a la hora configurada.</div>
+                </div>
+            `;
+                    return;
+                }
+
+                // Separar por tipo
+                const reales = tickets.filter(t => t.tipo !== 'simbolico');
+                const simbolicos = tickets.filter(t => t.tipo === 'simbolico');
+
+                let html = '';
+
+                // Resumen
+                html += `
+            <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+                <div style="background:rgba(232,196,122,0.08); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:8px 12px; font-size:0.75rem;">
+                    <strong style="color:#e8c47a; font-size:1rem;">${reales.length}</strong>
+                    <span style="color:#aaa;"> tickets reales</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:8px 12px; font-size:0.75rem;">
+                    <strong style="color:#fff; font-size:1rem;">${simbolicos.length}</strong>
+                    <span style="color:#aaa;"> simbólicos</span>
+                </div>
+                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:8px 12px; font-size:0.75rem;">
+                    <strong style="color:#4ade80; font-size:1rem;">${reales.filter(t => t.cobrado).length}</strong>
+                    <span style="color:#aaa;"> cobrados</span>
+                </div>
+            </div>
+        `;
+
+                // Lista de tickets reales
+                if (reales.length > 0) {
+                    html += `<div style="font-size:0.68rem; color:#e8c47a; text-transform:uppercase; letter-spacing:1.5px; margin: 14px 0 8px;">Tickets reales</div>`;
+
+                    reales.forEach(t => {
+                        html += renderItemTicket(t);
+                    });
+                }
+
+                // Lista de simbólicos (colapsable)
+                if (simbolicos.length > 0) {
+                    html += `
+                <div style="font-size:0.68rem; color:#888; text-transform:uppercase; letter-spacing:1.5px; margin: 18px 0 8px; cursor:pointer; user-select:none;" onclick="toggleSimbolicosTickets()">
+                    <span id="toggleSimbolicosIcono">▶</span> Simbólicos (${simbolicos.length})
+                </div>
+                <div id="listaSimbolicosTickets" style="display:none;">
+            `;
+
+                    simbolicos.forEach(t => {
+                        html += renderItemTicket(t, true);
+                    });
+
+                    html += `</div>`;
+                }
+
+                cont.innerHTML = html;
+
+            } catch (e) {
+                cont.innerHTML = `
+            <div class="vacio">
+                <span class="emoji">❌</span>
+                <div class="titulo">Error</div>
+                <div class="subtitulo">${escapeHtml(e.message)}</div>
+            </div>
+        `;
+            }
+        }
+
+        function renderItemTicket(t, esSimbolico = false) {
+            const cobrado = !!t.cobrado;
+            const reclamado = !!t.reclamado;
+            const abierto = !!t.abierto;
+
+            const colorBorde = cobrado ? 'rgba(74,222,128,0.25)' : (esSimbolico ? 'rgba(255,255,255,0.06)' : 'rgba(232,196,122,0.25)');
+            const colorFondo = cobrado ? 'rgba(74,222,128,0.04)' : (esSimbolico ? 'rgba(255,255,255,0.02)' : 'rgba(232,196,122,0.03)');
+
+            let badges = '';
+            if (cobrado) badges += `<span style="background:rgba(74,222,128,0.15); color:#4ade80; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px;">COBRADO</span>`;
+            if (reclamado && !cobrado) badges += `<span style="background:rgba(96,165,250,0.15); color:#93c5fd; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px; margin-left:4px;">RECLAMADO</span>`;
+            if (abierto && !reclamado && !cobrado) badges += `<span style="background:rgba(255,255,255,0.06); color:#aaa; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px; margin-left:4px;">ABIERTO</span>`;
+
+            return `
+        <div style="background:${colorFondo}; border:1px solid ${colorBorde}; border-radius:12px; padding:12px 14px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:0.85rem; font-weight:700; color:#fff; word-break:break-word;">${escapeHtml(t.invitadoNombre || 'Invitado')}</div>
+                    <div style="font-size:0.62rem; color:#666; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px;">${escapeHtml(t.invitadoTipo || 'invitado')}</div>
+                </div>
+                <div>${badges}</div>
+            </div>
+
+            <div style="font-size:0.78rem; color:#e8c47a; margin-bottom:4px;">🎁 ${escapeHtml(t.titulo)}</div>
+            <div style="font-size:0.68rem; color:#888; margin-bottom:8px; line-height:1.4;">${escapeHtml(t.descripcion)}</div>
+
+            <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:6px 10px; margin-bottom:8px; font-family:monospace; font-size:0.68rem; color:#93c5fd; word-break:break-all;">
+                ${escapeHtml(t.token)}
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.62rem; color:#666;">
+                <span>Emitido: ${formatearHora(t.emitidoEn)}</span>
+                <span>Vence: ${new Date(t.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+            </div>
+
+            ${!cobrado && !esSimbolico ? `
+                <div style="margin-top:10px;">
+                    <button class="btn btn-chico btn-verde" onclick="cobrarTicket('${escapeHtml(t.id)}')" style="width:100%;">
+                        ✅ Marcar como cobrado
+                    </button>
+                </div>
+            ` : ''}
+
+            ${cobrado ? `
+                <div style="margin-top:8px; font-size:0.65rem; color:#4ade80; text-align:center;">
+                    ✅ Cobrado ${t.cobradoEn ? 'el ' + formatearHora(t.cobradoEn) : ''}
+                </div>
+            ` : ''}
+        </div>
+    `;
+        }
+
+        function toggleSimbolicosTickets() {
+            const cont = $('listaSimbolicosTickets');
+            const icono = $('toggleSimbolicosIcono');
+            if (!cont || !icono) return;
+
+            const visible = cont.style.display !== 'none';
+            cont.style.display = visible ? 'none' : 'block';
+            icono.textContent = visible ? '▶' : '▼';
+        }
+
+        async function cobrarTicket(ticketId) {
+            if (!ticketsEventoSeleccionado) return;
+
+            if (!confirm('¿Marcar este ticket como cobrado?\n\nDespués de esto no se puede deshacer.')) return;
+
+            loader(true);
+            try {
+                const { fotografo, eventoId } = ticketsEventoSeleccionado;
+
+                await apiFetch('/admin/tickets/' + encodeURIComponent(ticketId) + '/cobrar?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId), {
+                    method: 'POST'
+                });
+
+                toast('✅ Ticket marcado como cobrado', 'ok');
+
+                // Refrescar la lista
+                await cargarListaTickets(fotografo, eventoId);
+
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
             } finally {
