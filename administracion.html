@@ -2559,23 +2559,25 @@
                 estadoEmision = `<div class="fila" style="color:#888;">— No emitidos</div>`;
             }
 
-            const etiquetasPremios = premios.map(p => {
-                const premio = {
-                    descuento_10: '10% off',
-                    descuento_15: '15% off',
-                    descuento_25: '25% off',
-                    media_hora_extra: '+30 min',
-                    hora_extra_1: '+1h',
-                    hora_extra_2: '+2h',
-                    sesion_familiar: 'Sesión familiar',
-                    album_digital: 'Álbum digital',
-                    album_impreso: 'Álbum impreso',
-                    jackpot_50: '🎰 50% off',
-                    jackpot_combo: '🎰 Combo'
-                }[p] || p;
+            // 🔥 CORREGIDO: primero se calcula el map de etiquetas, después se usa
+            const mapaEtiquetas = {
+                descuento_10: '10% off',
+                descuento_15: '15% off',
+                descuento_25: '25% off',
+                media_hora_extra: '+30 min',
+                hora_extra_1: '+1h',
+                hora_extra_2: '+2h',
+                sesion_familiar: 'Sesión familiar',
+                album_digital: 'Álbum digital',
+                album_impreso: 'Álbum impreso',
+                jackpot_50: '🎰 50% off',
+                jackpot_combo: '🎰 Combo'
+            };
 
+            const etiquetasPremiosHtml = premios.map(p => {
+                const etiqueta = mapaEtiquetas[p] || p;
                 const esJackpot = p.startsWith('jackpot');
-                return `<span style="display:inline-block; background:${esJackpot ? 'rgba(232,196,122,0.15)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${esJackpot ? 'rgba(232,196,122,0.4)' : 'rgba(255,255,255,0.1)'}; color:${esJackpot ? '#e8c47a' : '#aaa'}; font-size:0.62rem; padding:3px 8px; border-radius:50px; margin:2px 4px 2px 0;">${etiquetasPremios}</span>`;
+                return `<span style="display:inline-block; background:${esJackpot ? 'rgba(232,196,122,0.15)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${esJackpot ? 'rgba(232,196,122,0.4)' : 'rgba(255,255,255,0.1)'}; color:${esJackpot ? '#e8c47a' : '#aaa'}; font-size:0.62rem; padding:3px 8px; border-radius:50px; margin:2px 4px 2px 0;">${etiqueta}</span>`;
             }).join('');
 
             return `
@@ -2595,7 +2597,7 @@
             ${premios.length > 0 ? `
                 <div style="margin-top:8px;">
                     <div style="font-size:0.62rem; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Premios disponibles</div>
-                    <div>${etiquetasPremios}</div>
+                    <div>${etiquetasPremiosHtml}</div>
                 </div>
             ` : ''}
             <div class="acciones">
