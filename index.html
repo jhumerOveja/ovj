@@ -4680,7 +4680,7 @@
             </div>
 
             <div class="cofre-premios-posibles" id="cofrePremiosLista">
-                <!-- Se inyecta por JS -->
+                <span class="cofre-premio-tag">🎁 Toca el cofre 4 veces para abrirlo</span>
             </div>
 
             <div class="cofre-contenedor">
@@ -7984,21 +7984,9 @@
         }
 
         function renderizarPremiosPosibles(premios) {
-            const cont = document.getElementById('cofrePremiosLista');
-            if (!cont) return;
-
-            if (!premios || premios.length === 0) {
-                cont.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            premios.forEach(p => {
-                const esJackpot = p.tipo === 'jackpot';
-                html += `<span class="cofre-premio-tag ${esJackpot ? 'jackpot' : ''}">${escapeHtml(p.titulo)}</span>`;
-            });
-
-            cont.innerHTML = html;
+            // 🔥 Ya no mostramos la lista de premios posibles.
+            // El HTML tiene un texto fijo de instrucción.
+            return;
         }
 
         // ==========================================
@@ -8072,6 +8060,7 @@
         function tocarCofre() {
             if (cofreAbriendo) return;
             if (!cofreActual) return;
+            if (cofreToquesActuales >= cofreToquesNecesarios) return;
 
             cofreToquesActuales++;
 
@@ -8083,21 +8072,22 @@
                 navigator.vibrate(30);
             }
 
-            if (cofreToquesActuales <= 3) {
+            if (cofreToquesActuales < cofreToquesNecesarios) {
                 const siguienteFrame = cofreFrameActual + COFRE_FRAMES_POR_TOQUE;
                 reproducirLottieHastaFrame(siguienteFrame);
+
+                const pct = Math.min(100, (cofreToquesActuales / cofreToquesNecesarios) * 100);
+                document.getElementById('cofreProgresoFill').style.width = pct + '%';
+                document.getElementById('cofreProgresoTexto').textContent = `${cofreToquesActuales} / ${cofreToquesNecesarios}`;
+
+                const instrucciones = ['¡Sigue!', '¡Casi!', '¡Un toque más!'];
+                const idx = Math.min(cofreToquesActuales - 1, instrucciones.length - 1);
+                document.getElementById('cofreInstruccionBottom').textContent = instrucciones[idx];
             } else {
+                document.getElementById('cofreProgresoFill').style.width = '100%';
+                document.getElementById('cofreProgresoTexto').textContent = `${cofreToquesNecesarios} / ${cofreToquesNecesarios}`;
                 abrirCofre();
-                return;
             }
-
-            const pct = Math.min(100, (cofreToquesActuales / cofreToquesNecesarios) * 100);
-            document.getElementById('cofreProgresoFill').style.width = pct + '%';
-            document.getElementById('cofreProgresoTexto').textContent = `${cofreToquesActuales} / ${cofreToquesNecesarios}`;
-
-            const instrucciones = ['¡Sigue!', '¡Casi!', '¡Un toque más!'];
-            const idx = Math.min(cofreToquesActuales - 1, instrucciones.length - 1);
-            document.getElementById('cofreInstruccionBottom').textContent = instrucciones[idx];
         }
 
         async function abrirCofre() {
