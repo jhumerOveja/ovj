@@ -3943,6 +3943,603 @@
                 font-size: 1.1rem;
             }
         }
+
+        /* ===== COFRE ===== */
+        .cofre-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 3500;
+            background: radial-gradient(ellipse at center, #1a1a1e 0%, #050506 100%);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cofre-overlay.activo {
+            display: flex;
+            animation: cofreFadeIn 0.5s ease;
+        }
+
+        @keyframes cofreFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .cofre-fase {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: cofreEntrada 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cofreEntrada {
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Instrucciones */
+        .cofre-instruccion-top {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--champagne);
+            text-align: center;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            animation: pulsoInstruccion 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsoInstruccion {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .cofre-instruccion-bottom {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--texto-suave);
+            text-align: center;
+            margin-top: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: pulsoInstruccion 1.8s ease-in-out infinite;
+        }
+
+        /* Fila de premios posibles */
+        .cofre-premios-posibles {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            max-width: 100%;
+            padding: 0 10px;
+        }
+
+        .cofre-premio-tag {
+            display: inline-block;
+            background: rgba(232, 196, 122, 0.08);
+            border: 1px solid rgba(232, 196, 122, 0.25);
+            color: var(--champagne);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .cofre-premio-tag.jackpot {
+            background: rgba(232, 196, 122, 0.15);
+            border-color: rgba(232, 196, 122, 0.5);
+            color: #f9d976;
+            box-shadow: 0 0 12px rgba(232, 196, 122, 0.3);
+        }
+
+        /* Caja del cofre */
+        .cofre-contenedor {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            user-select: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cofre-caja {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            transition: transform 0.15s ease;
+            z-index: 2;
+        }
+
+        .cofre-overlay.tocando .cofre-caja {
+            animation: cofreShake 0.4s ease;
+        }
+
+        @keyframes cofreShake {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            15% {
+                transform: rotate(-6deg) scale(1.05);
+            }
+
+            30% {
+                transform: rotate(6deg) scale(1.05);
+            }
+
+            45% {
+                transform: rotate(-4deg) scale(1.03);
+            }
+
+            60% {
+                transform: rotate(4deg) scale(1.03);
+            }
+
+            80% {
+                transform: rotate(-2deg) scale(1.01);
+            }
+        }
+
+        .cofre-tapa {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(135deg, #d4a94a, #a87d20);
+            border-radius: 12px 12px 6px 6px;
+            border: 2px solid #8b6914;
+            box-shadow:
+                inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+                inset 0 4px 6px rgba(255, 255, 255, 0.2),
+                0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 3;
+        }
+
+        .cofre-cuerpo {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(135deg, #b8932f, #8b6914);
+            border-radius: 6px 6px 12px 12px;
+            border: 2px solid #6b5010;
+            box-shadow:
+                inset 0 -6px 12px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.15),
+                0 6px 20px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cofre-cerradura {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+            animation: pulsoCerradura 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsoCerradura {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 2px 8px rgba(232, 196, 122, 0.6)) brightness(1.2);
+            }
+        }
+
+        /* Halo luminoso alrededor del cofre */
+        .cofre-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba(232, 196, 122, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulsoGlow 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulsoGlow {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.15);
+            }
+        }
+
+        .cofre-overlay.tocando .cofre-glow {
+            animation: flashGlow 0.4s ease;
+        }
+
+        @keyframes flashGlow {
+            0% {
+                opacity: 0.8;
+                transform: scale(1.15);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+        }
+
+        /* Barra de progreso */
+        .cofre-progreso {
+            width: 100%;
+            max-width: 240px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .cofre-progreso-barra {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .cofre-progreso-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4a94a, #f9d976);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 12px rgba(232, 196, 122, 0.6);
+        }
+
+        .cofre-progreso-texto {
+            font-size: 0.72rem;
+            color: var(--texto-tenue);
+            margin-top: 8px;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Animación de apertura (la caja se abre) */
+        .cofre-overlay.abriendo .cofre-tapa {
+            animation: tapaAbriendose 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes tapaAbriendose {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(-30px) rotate(-15deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(-40deg);
+                opacity: 0;
+            }
+        }
+
+        .cofre-overlay.abriendo .cofre-caja {
+            animation: cajaSaltando 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes cajaSaltando {
+            0% {
+                transform: scale(1);
+            }
+
+            40% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(0.9);
+                opacity: 0.8;
+            }
+        }
+
+        .cofre-overlay.abriendo .cofre-glow {
+            animation: glowExplosion 0.8s ease forwards;
+        }
+
+        @keyframes glowExplosion {
+            0% {
+                opacity: 0.8;
+                transform: scale(1.15);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(2.5);
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(232, 196, 122, 0.6) 40%, transparent 70%);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(4);
+            }
+        }
+
+        /* ===== FASE REVELACIÓN ===== */
+        .cofre-fase-revelacion {
+            position: relative;
+            max-width: 440px;
+        }
+
+        .cofre-explosion {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cofre-particula {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: particulaVuela 1.2s ease-out;
+        }
+
+        .cofre-particula:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .cofre-particula:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .cofre-particula:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .cofre-particula:nth-child(4) {
+            animation-delay: 0.15s;
+        }
+
+        .cofre-particula:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .cofre-particula:nth-child(6) {
+            animation-delay: 0.05s;
+        }
+
+        @keyframes particulaVuela {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.5);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(var(--x, 0), var(--y, 0)) scale(1.3);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(calc(var(--x, 0) * 2), calc(var(--y, 0) * 2)) scale(0.8);
+            }
+        }
+
+        .cofre-particula:nth-child(1) {
+            --x: -80px;
+            --y: -80px;
+        }
+
+        .cofre-particula:nth-child(2) {
+            --x: 80px;
+            --y: -70px;
+        }
+
+        .cofre-particula:nth-child(3) {
+            --x: -100px;
+            --y: 30px;
+        }
+
+        .cofre-particula:nth-child(4) {
+            --x: 100px;
+            --y: 40px;
+        }
+
+        .cofre-particula:nth-child(5) {
+            --x: -50px;
+            --y: 100px;
+        }
+
+        .cofre-particula:nth-child(6) {
+            --x: 50px;
+            --y: 100px;
+        }
+
+        .cofre-revelacion-contenido {
+            background: linear-gradient(135deg, var(--bg-card), #1a1a1e);
+            border: 1.5px solid rgba(232, 196, 122, 0.4);
+            border-radius: 20px;
+            padding: 32px 24px 26px;
+            text-align: center;
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(232, 196, 122, 0.15);
+            animation: revelacionEntrada 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes revelacionEntrada {
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .cofre-revelacion-emoji {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 14px;
+            animation: pulsoEmojiGrande 2s ease-in-out infinite;
+        }
+
+        .cofre-revelacion-titulo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--champagne);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .cofre-revelacion-desc {
+            font-size: 0.85rem;
+            color: var(--texto-suave);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .cofre-revelacion-token {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 0.72rem;
+            color: #93c5fd;
+            word-break: break-all;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .cofre-revelacion-venc {
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+            margin-bottom: 16px;
+        }
+
+        .cofre-btn-reclamar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a0a;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-bottom: 10px;
+        }
+
+        .cofre-btn-reclamar:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.4);
+        }
+
+        .cofre-btn-cerrar {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--texto-suave);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .cofre-btn-cerrar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .cofre-instruccion-top {
+                font-size: 1.15rem;
+            }
+
+            .cofre-contenedor {
+                width: 180px;
+                height: 180px;
+            }
+
+            .cofre-caja {
+                width: 120px;
+                height: 120px;
+            }
+
+            .cofre-cerradura {
+                font-size: 1.7rem;
+            }
+
+            .cofre-revelacion-titulo {
+                font-size: 1.25rem;
+            }
+
+            .cofre-revelacion-emoji {
+                font-size: 3rem;
+            }
+
+            .cofre-revelacion-contenido {
+                padding: 26px 20px 22px;
+            }
+        }
     </style>
 </head>
 
@@ -4163,6 +4760,57 @@
 
             <div id="detrasListaContainer">
                 <div class="feed-vacio">Cargando...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COFRE (pantalla completa) ===== -->
+    <div class="cofre-overlay" id="cofreOverlay">
+        <!-- Fase 1: cofre cerrado -->
+        <div class="cofre-fase" id="cofreFaseCerrado">
+            <div class="cofre-instruccion-top" id="cofreInstruccionTop">
+                ¡Tenés un regalo!
+            </div>
+
+            <div class="cofre-premios-posibles" id="cofrePremiosLista">
+                <!-- Se inyecta por JS -->
+            </div>
+
+            <div class="cofre-contenedor">
+                <div class="cofre-caja" id="cofreCaja">
+                    <div class="cofre-tapa"></div>
+                    <div class="cofre-cuerpo">
+                        <div class="cofre-cerradura">🎁</div>
+                    </div>
+                </div>
+                <div class="cofre-glow" id="cofreGlow"></div>
+            </div>
+
+            <div class="cofre-instruccion-bottom" id="cofreInstruccionBottom">
+                Toca para abrir
+            </div>
+
+            <div class="cofre-progreso">
+                <div class="cofre-progreso-barra">
+                    <div class="cofre-progreso-fill" id="cofreProgresoFill"></div>
+                </div>
+                <div class="cofre-progreso-texto" id="cofreProgresoTexto">0 / 3</div>
+            </div>
+        </div>
+
+        <!-- Fase 2: revelación del premio -->
+        <div class="cofre-fase cofre-fase-revelacion" id="cofreFaseRevelacion" style="display:none;">
+            <div class="cofre-explosion" id="cofreExplosion">
+                <span class="cofre-particula">✨</span>
+                <span class="cofre-particula">⭐</span>
+                <span class="cofre-particula">💫</span>
+                <span class="cofre-particula">✨</span>
+                <span class="cofre-particula">⭐</span>
+                <span class="cofre-particula">💫</span>
+            </div>
+
+            <div class="cofre-revelacion-contenido" id="cofreRevelacionContenido">
+                <!-- Se inyecta por JS -->
             </div>
         </div>
     </div>
@@ -5555,6 +6203,12 @@
                         cargarAforoAdmin();
                     }
                 }
+
+                // 🔥 COFRE: consultar si hay cofre disponible para este invitado.
+                // Solo consulta si el server está vivo. No programa timers nuevos.
+                // Si estamos en modo emergencia (servidorOnline === false o _modoOffline),
+                // la función sale sola sin hacer nada.
+                consultarCofre();
 
             } catch (error) {
                 console.error("Error:", error);
@@ -7305,6 +7959,384 @@
                 renderizarTicketEnRegalo(t);
                 actualizarMenuLateral();
             }, 500);
+        }
+
+
+        // ==========================================
+        // 🎁 COFRE
+        // ==========================================
+        let cofreActual = null;
+        let cofreToquesActuales = 0;
+        let cofreToquesNecesarios = 3;
+        let cofreAbriendo = false;
+        let cofreYaConsultado = false;
+
+        function _cofreYaAbiertoEnLS() {
+            if (!EVENTO_ID) return false;
+            return localStorage.getItem('ovj_cofre_abierto_' + EVENTO_ID) === 'true';
+        }
+
+        function _marcarCofreAbiertoEnLS() {
+            if (!EVENTO_ID) return;
+            localStorage.setItem('ovj_cofre_abierto_' + EVENTO_ID, 'true');
+        }
+
+        /**
+         * Calcula los toques necesarios según el tipo de ticket.
+         * Opción B: el frontend lo decide, sin cambios en el server.
+         */
+        function _calcularToquesNecesarios(tipo) {
+            if (tipo === 'jackpot') return 8;
+            if (tipo === 'simbolico') return 3;
+            return 5; // descuento, servicio, producto
+        }
+
+        /**
+         * Consulta al server si hay cofre para este invitado.
+         * Se llama desde cargarFotos(). No programa timers.
+         * No hace nada si:
+         *  - Estamos en modo offline / emergencia.
+         *  - Ya abrimos el cofre antes (localStorage).
+         *  - Ya lo consultamos con éxito y no había cofre.
+         */
+        async function consultarCofre() {
+            if (!EVENTO_ID || !TOKEN) return;
+            if (!sesion || !sesion.tipo) return;
+
+            // Modo emergencia / offline → no consultar
+            if (servidorOnline === false) return;
+            if (window._modoOffline === true) return;
+
+            // Ya lo abrimos antes → no hace falta consultar
+            if (_cofreYaAbiertoEnLS()) return;
+
+            // Si ya hay un cofre mostrándose, no interrumpir
+            if (cofreActual) return;
+
+            // Si ya lo consultamos con éxito y no había, no insistir
+            if (cofreYaConsultado) return;
+
+            try {
+                const url = `${URL_CLOUDFLARE}/cofre?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+
+                if (!resp.ok) {
+                    // Error del server (403, 404, etc.) → no insistir más
+                    cofreYaConsultado = true;
+                    return;
+                }
+
+                const data = await resp.json();
+
+                if (!data.ok) {
+                    cofreYaConsultado = true;
+                    return;
+                }
+
+                // Todavía no se emitieron los cofres
+                if (!data.listo) {
+                    // No marcar como consultado: puede que en el próximo poll ya estén
+                    return;
+                }
+
+                // El invitado no tiene cofre (entró después de la emisión)
+                if (!data.tieneCofre) {
+                    cofreYaConsultado = true;
+                    return;
+                }
+
+                // Ya lo abrió (según el server)
+                if (data.abierto) {
+                    _marcarCofreAbiertoEnLS();
+                    // Guardar el ticket en localStorage para "Mi regalo"
+                    if (data.ticket) {
+                        localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify({
+                            ...data.ticket,
+                            reclamado: !!data.reclamado,
+                            abierto: true
+                        }));
+                    }
+                    cofreYaConsultado = true;
+                    return;
+                }
+
+                // ¡Hay cofre para este invitado!
+                cofreYaConsultado = true;
+                mostrarCofre(data);
+
+            } catch (e) {
+                // Error de red: no marcar como consultado, reintentar en el próximo poll
+                // (a menos que sea modo offline, que ya se chequeó arriba)
+                console.warn('⚠️ consultarCofre:', e.message);
+            }
+        }
+
+        /**
+         * Muestra la pantalla del cofre.
+         */
+        function mostrarCofre(data) {
+            if (cofreActual) return;
+
+            cofreActual = data;
+
+            // Guardar el ticket en localStorage desde ahora (para "Mi regalo")
+            if (data.ticket) {
+                localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify({
+                    ...data.ticket,
+                    reclamado: false,
+                    abierto: false
+                }));
+            }
+
+            // Calcular toques
+            cofreToquesNecesarios = _calcularToquesNecesarios(data.ticket?.tipo || 'simbolico');
+            cofreToquesActuales = 0;
+            cofreAbriendo = false;
+
+            // Renderizar premios posibles
+            renderizarPremiosPosibles(data.premiosPosibles || []);
+
+            // Resetear UI
+            document.getElementById('cofreProgresoFill').style.width = '0%';
+            document.getElementById('cofreProgresoTexto').textContent = `0 / ${cofreToquesNecesarios}`;
+            document.getElementById('cofreInstruccionBottom').textContent = 'Toca para abrir';
+
+            // Mostrar fase 1, ocultar fase 2
+            document.getElementById('cofreFaseCerrado').style.display = 'flex';
+            document.getElementById('cofreFaseRevelacion').style.display = 'none';
+
+            // Mostrar overlay
+            document.getElementById('cofreOverlay').classList.add('activo');
+            document.body.style.overflow = 'hidden';
+
+            // Asociar el evento de toque al cofre
+            const contenedor = document.querySelector('.cofre-contenedor');
+            if (contenedor) {
+                // Removemos listeners previos clonando el nodo
+                const nuevo = contenedor.cloneNode(true);
+                contenedor.parentNode.replaceChild(nuevo, contenedor);
+                nuevo.addEventListener('click', tocarCofre);
+                nuevo.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    tocarCofre();
+                }, { passive: false });
+            }
+
+            // Efecto visual: vibrar un poco al aparecer
+            setTimeout(() => {
+                const overlay = document.getElementById('cofreOverlay');
+                if (overlay) {
+                    overlay.classList.add('tocando');
+                    setTimeout(() => overlay.classList.remove('tocando'), 400);
+                }
+            }, 600);
+        }
+
+        function renderizarPremiosPosibles(premios) {
+            const cont = document.getElementById('cofrePremiosLista');
+            if (!cont) return;
+
+            if (!premios || premios.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            premios.forEach(p => {
+                const esJackpot = p.tipo === 'jackpot';
+                html += `<span class="cofre-premio-tag ${esJackpot ? 'jackpot' : ''}">${escapeHtml(p.titulo)}</span>`;
+            });
+
+            cont.innerHTML = html;
+        }
+
+        function tocarCofre() {
+            if (cofreAbriendo) return;
+            if (!cofreActual) return;
+
+            cofreToquesActuales++;
+
+            // Efecto visual de toque
+            const overlay = document.getElementById('cofreOverlay');
+            overlay.classList.add('tocando');
+            setTimeout(() => overlay.classList.remove('tocando'), 400);
+
+            // Actualizar progreso
+            const pct = Math.min(100, (cofreToquesActuales / cofreToquesNecesarios) * 100);
+            document.getElementById('cofreProgresoFill').style.width = pct + '%';
+            document.getElementById('cofreProgresoTexto').textContent = `${cofreToquesActuales} / ${cofreToquesNecesarios}`;
+
+            // Vibración del dispositivo (si está disponible)
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+
+            // ¿Ya alcanzó los toques necesarios?
+            if (cofreToquesActuales >= cofreToquesNecesarios) {
+                abrirCofre();
+            } else {
+                // Cambiar la instrucción para dar feedback
+                const instrucciones = [
+                    '¡Sigue!',
+                    '¡Casi!',
+                    '¡Un toque más!',
+                    '¡Ya casi está!',
+                    '¡No pares!'
+                ];
+                const idx = Math.min(cofreToquesActuales - 1, instrucciones.length - 1);
+                document.getElementById('cofreInstruccionBottom').textContent = instrucciones[idx];
+            }
+        }
+
+        async function abrirCofre() {
+            if (cofreAbriendo) return;
+            cofreAbriendo = true;
+
+            document.getElementById('cofreInstruccionBottom').textContent = '¡Abriendo!';
+
+            // Animación de apertura
+            const overlay = document.getElementById('cofreOverlay');
+            overlay.classList.add('abriendo');
+
+            // Vibración larga
+            if (navigator.vibrate) {
+                navigator.vibrate([50, 30, 100]);
+            }
+
+            // Marcar en el server (no bloquea)
+            try {
+                const url = `${URL_CLOUDFLARE}/cofre/abrir?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+                fetch(url, { method: 'POST' }).catch(() => { });
+            } catch (e) { }
+
+            // Marcar en localStorage
+            _marcarCofreAbiertoEnLS();
+
+            // Actualizar el ticket guardado
+            if (cofreActual && cofreActual.ticket) {
+                const ticketGuardado = {
+                    ...cofreActual.ticket,
+                    reclamado: false,
+                    abierto: true
+                };
+                localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(ticketGuardado));
+            }
+
+            // Esperar la animación y mostrar la revelación
+            setTimeout(() => {
+                mostrarRevelacion();
+            }, 900);
+        }
+
+        function mostrarRevelacion() {
+            const overlay = document.getElementById('cofreOverlay');
+            overlay.classList.remove('abriendo');
+
+            // Ocultar fase 1, mostrar fase 2
+            document.getElementById('cofreFaseCerrado').style.display = 'none';
+            document.getElementById('cofreFaseRevelacion').style.display = 'flex';
+
+            // Disparar confeti
+            lanzarConfeti();
+            setTimeout(() => lanzarConfeti(), 300);
+
+            const ticket = cofreActual?.ticket;
+
+            if (!ticket) {
+                document.getElementById('cofreRevelacionContenido').innerHTML = `
+            <div class="cofre-revelacion-emoji">🎁</div>
+            <div class="cofre-revelacion-titulo">¡Gracias!</div>
+            <div class="cofre-revelacion-desc">Gracias por ser parte de este evento.</div>
+            <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
+        `;
+                return;
+            }
+
+            // ─── Ticket simbólico ───
+            if (ticket.tipo === 'simbolico') {
+                document.getElementById('cofreRevelacionContenido').innerHTML = `
+            <div class="cofre-revelacion-emoji">💛</div>
+            <div class="cofre-revelacion-titulo">Gracias por ser parte</div>
+            <div class="cofre-revelacion-desc">
+                ${escapeHtml(ticket.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}
+            </div>
+            <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
+        `;
+                return;
+            }
+
+            // ─── Ticket real ───
+            const fechaVenc = ticket.expiraEn
+                ? new Date(ticket.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })
+                : '';
+
+            document.getElementById('cofreRevelacionContenido').innerHTML = `
+        <div class="cofre-revelacion-emoji">🎁</div>
+        <div class="cofre-revelacion-titulo">${escapeHtml(ticket.titulo)}</div>
+        <div class="cofre-revelacion-desc">${escapeHtml(ticket.descripcion)}</div>
+        <div class="cofre-revelacion-token">${escapeHtml(ticket.token)}</div>
+        <div class="cofre-revelacion-venc">Vence: ${fechaVenc}</div>
+        <button class="cofre-btn-reclamar" onclick="reclamarCofreWhatsApp()">
+            📲 Reclamar por WhatsApp
+        </button>
+        <button class="cofre-btn-cerrar" onclick="cerrarCofre()">
+            Guardar y cerrar
+        </button>
+    `;
+        }
+
+        function reclamarCofreWhatsApp() {
+            if (!cofreActual || !cofreActual.ticket) return;
+
+            const t = cofreActual.ticket;
+            const nombreEvento = document.getElementById('eventoTitulo')?.textContent || '';
+
+            const mensaje =
+                `¡Hola OVJ Studio! Quiero reclamar mi regalo.\n\n` +
+                `🎁 ${t.titulo}\n` +
+                `🔑 Token: ${t.token}\n` +
+                `🎉 Evento: ${nombreEvento}\n\n` +
+                `Gracias!`;
+
+            window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+
+            // Marcar como reclamado en el server
+            try {
+                const url = `${URL_CLOUDFLARE}/cofre/reclamar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+                fetch(url, { method: 'POST' }).catch(() => { });
+            } catch (e) { }
+
+            // Actualizar en localStorage
+            const ticketGuardado = JSON.parse(localStorage.getItem('ovj_ticket_' + EVENTO_ID) || '{}');
+            ticketGuardado.reclamado = true;
+            localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(ticketGuardado));
+
+            // Actualizar UI del botón
+            const btn = document.querySelector('.cofre-btn-reclamar');
+            if (btn) {
+                btn.textContent = '✓ Enviado';
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+                btn.style.cursor = 'default';
+            }
+
+            actualizarMenuLateral();
+        }
+
+        function cerrarCofre() {
+            document.getElementById('cofreOverlay').classList.remove('activo');
+            document.body.style.overflow = '';
+            cofreActual = null;
+
+            // Actualizar badge del menú
+            actualizarMenuLateral();
         }
 
         inicializar();
