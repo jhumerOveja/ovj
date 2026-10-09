@@ -8007,13 +8007,10 @@
             if (servidorOnline === false) return;
             if (window._modoOffline === true) return;
 
-            // Ya lo abrimos antes → no hace falta consultar
-            if (_cofreYaAbiertoEnLS()) return;
-
             // Si ya hay un cofre mostrándose, no interrumpir
             if (cofreActual) return;
 
-            // Si ya lo consultamos con éxito y no había, no insistir
+            // Si ya consultamos con éxito en esta sesión, no insistir
             if (cofreYaConsultado) return;
 
             try {
@@ -8024,7 +8021,6 @@
                 const resp = await fetch(url);
 
                 if (!resp.ok) {
-                    // Error del server (403, 404, etc.) → no insistir más
                     cofreYaConsultado = true;
                     return;
                 }
@@ -8038,7 +8034,6 @@
 
                 // Todavía no se emitieron los cofres
                 if (!data.listo) {
-                    // No marcar como consultado: puede que en el próximo poll ya estén
                     return;
                 }
 
@@ -8048,10 +8043,9 @@
                     return;
                 }
 
-                // Ya lo abrió (según el server)
+                // Ya lo abrió (según el server) → no mostrar
                 if (data.abierto) {
-                    _marcarCofreAbiertoEnLS();
-                    // Guardar el ticket en localStorage para "Mi regalo"
+                    cofreYaConsultado = true;
                     if (data.ticket) {
                         localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify({
                             ...data.ticket,
@@ -8059,17 +8053,14 @@
                             abierto: true
                         }));
                     }
-                    cofreYaConsultado = true;
                     return;
                 }
 
-                // ¡Hay cofre para este invitado!
+                // Hay cofre sin abrir → mostrar
                 cofreYaConsultado = true;
                 mostrarCofre(data);
 
             } catch (e) {
-                // Error de red: no marcar como consultado, reintentar en el próximo poll
-                // (a menos que sea modo offline, que ya se chequeó arriba)
                 console.warn('⚠️ consultarCofre:', e.message);
             }
         }
