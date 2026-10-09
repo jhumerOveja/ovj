@@ -3525,6 +3525,424 @@
                 transform: translateX(-50%) scale(1.03);
             }
         }
+
+        /* ===== BOTÓN MENÚ HAMBURGUESA ===== */
+        .btn-menu-lateral {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-menu-lateral:hover {
+            background: rgba(232, 196, 122, 0.1);
+            border-color: rgba(232, 196, 122, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-menu-lateral .linea-menu {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background: var(--texto-suave);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-menu-lateral:hover .linea-menu {
+            background: var(--champagne);
+        }
+
+        /* ===== MENÚ LATERAL ===== */
+        .menu-lateral-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1900;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+        }
+
+        .menu-lateral-overlay.activo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 320px;
+            max-width: 88vw;
+            background: linear-gradient(180deg, #141417 0%, #0f0f12 100%);
+            border-left: 1px solid rgba(232, 196, 122, 0.15);
+            z-index: 1950;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+        }
+
+        .menu-lateral.activo {
+            transform: translateX(0);
+        }
+
+        .menu-lateral-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+
+        .menu-lateral-titulo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .menu-lateral-cerrar {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--texto-suave);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .menu-lateral-cerrar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .menu-lateral-nav {
+            flex: 1;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-lateral-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            color: var(--texto-suave);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: all 0.25s ease;
+            position: relative;
+            width: 100%;
+        }
+
+        .menu-lateral-item:hover {
+            background: rgba(232, 196, 122, 0.08);
+            color: var(--champagne);
+            transform: translateX(4px);
+        }
+
+        .menu-lateral-emoji {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-lateral-texto {
+            flex: 1;
+        }
+
+        .menu-lateral-badge {
+            background: var(--champagne);
+            color: #0a0a0a;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 50px;
+            min-width: 22px;
+            text-align: center;
+            animation: pulsoNovedad 1.5s ease-in-out infinite;
+        }
+
+        .menu-lateral-separador {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 8px 12px;
+            flex-shrink: 0;
+        }
+
+        /* Bloque de idioma */
+        .menu-lateral-idioma {
+            cursor: default;
+            flex-wrap: wrap;
+        }
+
+        .menu-lateral-idioma:hover {
+            background: transparent;
+            color: var(--texto-suave);
+            transform: none;
+        }
+
+        .menu-lateral-langs {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .menu-lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-lang-btn:hover {
+            background: rgba(232, 196, 122, 0.15);
+            border-color: rgba(232, 196, 122, 0.4);
+            transform: scale(1.08);
+        }
+
+        .menu-lang-btn.activo {
+            background: rgba(232, 196, 122, 0.2);
+            border-color: rgba(232, 196, 122, 0.6);
+            box-shadow: 0 0 12px rgba(232, 196, 122, 0.3);
+        }
+
+        .menu-lateral-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .menu-lateral-marca {
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1.5px;
+        }
+
+        .menu-lateral-sub {
+            font-size: 0.62rem;
+            color: var(--texto-tenue);
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* ===== MODALES INFO ===== */
+        .modal-info {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2600;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-info.activo {
+            display: flex;
+        }
+
+        .modal-info-contenido {
+            background: linear-gradient(135deg, var(--bg-card), #1a1a1e);
+            border: 1px solid rgba(232, 196, 122, 0.25);
+            border-radius: 20px;
+            padding: 32px 26px 24px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            position: relative;
+            animation: entradaDesbloqueo 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-info-emoji {
+            font-size: 2.8rem;
+            display: block;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .modal-info-titulo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 14px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-info-texto {
+            font-size: 0.85rem;
+            color: var(--texto-suave);
+            line-height: 1.65;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .modal-info-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-info-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(232, 196, 122, 0.35);
+        }
+
+        /* Ticket dentro de "Mi regalo" */
+        .regalo-ticket {
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.1), rgba(232, 196, 122, 0.02));
+            border: 1.5px solid rgba(232, 196, 122, 0.4);
+            border-radius: 14px;
+            padding: 18px 16px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .regalo-ticket-titulo {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--champagne);
+            margin-bottom: 8px;
+        }
+
+        .regalo-ticket-desc {
+            font-size: 0.78rem;
+            color: var(--texto-suave);
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .regalo-ticket-token {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 0.72rem;
+            color: #93c5fd;
+            word-break: break-all;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .regalo-ticket-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 13px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a0a;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-bottom: 8px;
+        }
+
+        .regalo-ticket-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
+        }
+
+        .regalo-ticket-venc {
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .regalo-vacio {
+            text-align: center;
+            padding: 20px 10px;
+            color: var(--texto-tenue);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .menu-lateral {
+                width: 300px;
+            }
+
+            .modal-info-contenido {
+                padding: 26px 20px 20px;
+            }
+
+            .modal-info-emoji {
+                font-size: 2.4rem;
+            }
+
+            .modal-info-titulo {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 
@@ -3548,27 +3966,12 @@
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                 </div>
                 <div class="header-right">
-                    <div class="lang-selector" id="langSelector">
-                        <div class="lang-btn" onclick="toggleLangMenu()">
-                            <span class="bandera" id="langBanderaActual">🇧🇴</span>
-                            <span id="langTextoActual">ES</span>
-                            <span class="flecha">▼</span>
-                        </div>
-                        <div class="lang-menu">
-                            <div class="lang-opcion" onclick="cambiarIdioma('es')" data-lang="es">
-                                <span class="bandera">🇧🇴</span>
-                                <span>Español</span>
-                            </div>
-                            <div class="lang-opcion" onclick="cambiarIdioma('en')" data-lang="en">
-                                <span class="bandera">🇺🇸</span>
-                                <span>English</span>
-                            </div>
-                            <div class="lang-opcion" onclick="cambiarIdioma('zh')" data-lang="zh">
-                                <span class="bandera">🇨🇳</span>
-                                <span>中文</span>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="btn-menu-lateral" id="btnMenuLateral" onclick="toggleMenuLateral()"
+                        aria-label="Menú">
+                        <span class="linea-menu"></span>
+                        <span class="linea-menu"></span>
+                        <span class="linea-menu"></span>
+                    </button>
                 </div>
             </div>
 
@@ -3817,6 +4220,112 @@
         <span class="indicador-vivo-punto"></span>
         <span class="indicador-vivo-texto" id="indicadorVivoTexto">En vivo</span>
     </div>
+    <!-- ===== MENÚ LATERAL ===== -->
+    <div class="menu-lateral-overlay" id="menuLateralOverlay" onclick="cerrarMenuLateral()"></div>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-lateral-header">
+            <div class="menu-lateral-titulo">OVJ Studio</div>
+            <button class="menu-lateral-cerrar" onclick="cerrarMenuLateral()" aria-label="Cerrar">✕</button>
+        </div>
+
+        <nav class="menu-lateral-nav">
+            <button class="menu-lateral-item" onclick="menuAccion('detras')">
+                <span class="menu-lateral-emoji">📸</span>
+                <span class="menu-lateral-texto" data-i18n="menuDetras">Detrás de cámara</span>
+                <span class="menu-lateral-badge" id="menuBadgeDetras" style="display:none;">0</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="menuAccion('regalo')">
+                <span class="menu-lateral-emoji">🎁</span>
+                <span class="menu-lateral-texto" data-i18n="menuRegalo">Mi regalo</span>
+                <span class="menu-lateral-badge" id="menuBadgeRegalo" style="display:none;">!</span>
+            </button>
+
+            <div class="menu-lateral-separador"></div>
+
+            <button class="menu-lateral-item" onclick="menuAccion('sobre')">
+                <span class="menu-lateral-emoji">ℹ️</span>
+                <span class="menu-lateral-texto" data-i18n="menuSobre">Sobre nosotros</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="menuAccion('contacto')">
+                <span class="menu-lateral-emoji">💬</span>
+                <span class="menu-lateral-texto" data-i18n="menuContacto">Contactanos</span>
+            </button>
+
+            <div class="menu-lateral-separador"></div>
+
+            <div class="menu-lateral-item menu-lateral-idioma">
+                <span class="menu-lateral-emoji">🌐</span>
+                <span class="menu-lateral-texto" data-i18n="menuIdioma">Idioma</span>
+                <div class="menu-lateral-langs">
+                    <button class="menu-lang-btn" data-lang="es" onclick="cambiarIdioma('es')">🇧🇴</button>
+                    <button class="menu-lang-btn" data-lang="en" onclick="cambiarIdioma('en')">🇺🇸</button>
+                    <button class="menu-lang-btn" data-lang="zh" onclick="cambiarIdioma('zh')">🇨🇳</button>
+                </div>
+            </div>
+
+            <div class="menu-lateral-separador"></div>
+
+            <button class="menu-lateral-item" onclick="menuAccion('terminos')">
+                <span class="menu-lateral-emoji">📋</span>
+                <span class="menu-lateral-texto" data-i18n="menuTerminos">Términos y condiciones</span>
+            </button>
+        </nav>
+
+        <div class="menu-lateral-footer">
+            <div class="menu-lateral-marca">OVJ Studio</div>
+            <div class="menu-lateral-sub">Fotografía con alma</div>
+        </div>
+    </aside>
+
+    <!-- ===== MODAL SOBRE NOSOTROS ===== -->
+    <div class="modal-info" id="modalSobre">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalSobre')">✕</button>
+            <span class="modal-info-emoji">ℹ️</span>
+            <div class="modal-info-titulo" data-i18n="sobreTitulo">Sobre nosotros</div>
+            <div class="modal-info-texto" data-i18n="sobreTexto">
+                OVJ Studio es una plataforma de galerías fotográficas en vivo para eventos.<br><br>
+                Creamos experiencias únicas donde cada invitado puede ver, revivir y descargar los momentos más
+                importantes del evento.<br><br>
+                Fotografía con alma.
+            </div>
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalSobre')" data-i18n="cerrar">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL TÉRMINOS ===== -->
+    <div class="modal-info" id="modalTerminos">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalTerminos')">✕</button>
+            <span class="modal-info-emoji">📋</span>
+            <div class="modal-info-titulo" data-i18n="terminosTitulo">Términos y condiciones</div>
+            <div class="modal-info-texto" data-i18n="terminosTexto">
+                1. Los tickets emitidos son válidos por 6 meses desde su emisión.<br><br>
+                2. Cada ticket tiene un token único y un número de WhatsApp asociado, y solo puede ser canjeado por esa
+                persona.<br><br>
+                3. El canje se realiza por WhatsApp, enviando el token al número oficial de OVJ Studio.<br><br>
+                4. Los descuentos no son acumulables con otras promociones.<br><br>
+                5. OVJ Studio se reserva el derecho de verificar la validez de cada ticket.<br><br>
+                6. Las fotografías son propiedad del cliente del evento y de OVJ Studio.
+            </div>
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalTerminos')" data-i18n="cerrar">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL MI REGALO ===== -->
+    <div class="modal-info" id="modalRegalo">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalRegalo')">✕</button>
+            <span class="modal-info-emoji" id="regaloEmoji">🎁</span>
+            <div class="modal-info-titulo" id="regaloTitulo" data-i18n="regaloTitulo">Mi regalo</div>
+            <div id="regaloContenido" class="modal-info-texto">
+                Cargando...
+            </div>
+        </div>
+    </div>
     <script src="qrcode.min.js"></script>
     <script src="config.js"></script>
 
@@ -4031,6 +4540,18 @@
                 mensajeTitulo: "📢 Mensaje del fotógrafo",
                 detrasBoton: "Detrás de cámara",
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
+                menuDetras: "Detrás de cámara",
+                menuRegalo: "Mi regalo",
+                menuSobre: "Sobre nosotros",
+                menuContacto: "Contactanos",
+                menuIdioma: "Idioma",
+                menuTerminos: "Términos y condiciones",
+                sobreTitulo: "Sobre nosotros",
+                sobreTexto: "OVJ Studio es una plataforma de galerías fotográficas en vivo para eventos.<br><br>Creamos experiencias únicas donde cada invitado puede ver, revivir y descargar los momentos más importantes del evento.<br><br>Fotografía con alma.",
+                terminosTitulo: "Términos y condiciones",
+                terminosTexto: "1. Los tickets emitidos son válidos por 6 meses desde su emisión.<br><br>2. Cada ticket tiene un token único y un número de WhatsApp asociado, y solo puede ser canjeado por esa persona.<br><br>3. El canje se realiza por WhatsApp, enviando el token al número oficial de OVJ Studio.<br><br>4. Los descuentos no son acumulables con otras promociones.<br><br>5. OVJ Studio se reserva el derecho de verificar la validez de cada ticket.<br><br>6. Las fotografías son propiedad del cliente del evento y de OVJ Studio.",
+                regaloTitulo: "Mi regalo",
+                cerrar: "Cerrar",
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -4093,6 +4614,18 @@
                 mensajeTitulo: "📢 Photographer's message",
                 detrasBoton: "Behind the scenes",
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
+                menuDetras: "Behind the scenes",
+                menuRegalo: "My gift",
+                menuSobre: "About us",
+                menuContacto: "Contact us",
+                menuIdioma: "Language",
+                menuTerminos: "Terms and conditions",
+                sobreTitulo: "About us",
+                sobreTexto: "OVJ Studio is a live photo gallery platform for events.<br><br>We create unique experiences where every guest can see, relive and download the most important moments of the event.<br><br>Photography with soul.",
+                terminosTitulo: "Terms and conditions",
+                terminosTexto: "1. Issued tickets are valid for 6 months from issuance.<br><br>2. Each ticket has a unique token and an associated WhatsApp number, and can only be redeemed by that person.<br><br>3. Redemption is done via WhatsApp, sending the token to the official OVJ Studio number.<br><br>4. Discounts cannot be combined with other promotions.<br><br>5. OVJ Studio reserves the right to verify the validity of each ticket.<br><br>6. Photographs are property of the event client and OVJ Studio.",
+                regaloTitulo: "My gift",
+                cerrar: "Close",
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
                     'OVJ Studio · <strong>Photographing with heart</strong>',
@@ -4155,6 +4688,18 @@
                 mensajeTitulo: "📢 摄影师消息",
                 detrasBoton: "幕后花絮",
                 detrasVacio: "摄影师还没有上传幕后照片。",
+                menuDetras: "幕后花絮",
+                menuRegalo: "我的礼物",
+                menuSobre: "关于我们",
+                menuContacto: "联系我们",
+                menuIdioma: "语言",
+                menuTerminos: "条款和条件",
+                sobreTitulo: "关于我们",
+                sobreTexto: "OVJ Studio 是一个活动现场照片画廊平台。<br><br>我们创造独特的体验，让每位嘉宾都能观看、回味并下载活动中最重要的瞬间。<br><br>用心拍摄。",
+                terminosTitulo: "条款和条件",
+                terminosTexto: "1. 已发出的门票自发出之日起 6 个月内有效。<br><br>2. 每张门票都有唯一的令牌和关联的 WhatsApp 号码，只能由该人兑换。<br><br>3. 兑换通过 WhatsApp 完成，将令牌发送到 OVJ Studio 官方号码。<br><br>4. 折扣不可与其他促销叠加。<br><br>5. OVJ Studio 保留验证每张门票有效性的权利。<br><br>6. 照片归活动客户和 OVJ Studio 所有。",
+                regaloTitulo: "我的礼物",
+                cerrar: "关闭",
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
                     'OVJ Studio · <strong>用心拍摄</strong>',
@@ -4190,6 +4735,17 @@
             localStorage.setItem('ovj_idioma', idioma);
             document.documentElement.lang = idioma;
             document.title = t('tituloVentana');
+            // 🔥 Aplicar traducciones a los elementos con data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const clave = el.getAttribute('data-i18n');
+                const valor = TRADUCCIONES[idioma][clave];
+                if (valor) {
+                    el.innerHTML = valor;
+                }
+            });
+
+            // Actualizar menú lateral (idioma activo)
+            actualizarMenuLateral();
 
             document.getElementById('indicadorVivoTexto').textContent = t('enVivo');
             document.getElementById('langTextoActual').textContent = t('langTexto');
@@ -5112,6 +5668,16 @@
 
             detrasCamaraTotal = total;
             detrasCamaraUltima = ultima;
+            // 🔥 Refrescar badge del menú lateral
+            const badgeMenu = document.getElementById('menuBadgeDetras');
+            if (badgeMenu) {
+                if (total > 0) {
+                    badgeMenu.textContent = String(total);
+                    badgeMenu.style.display = 'inline-block';
+                } else {
+                    badgeMenu.style.display = 'none';
+                }
+            }
         }
 
         function tiempoRelativo(fechaISO) {
@@ -6287,6 +6853,28 @@
                     // No cerrar el modal de nombre con ESC (es obligatorio)
                     return;
                 }
+
+                // 🔥 NUEVO: cerrar menú lateral primero
+                if (menuLateralAbierto) {
+                    cerrarMenuLateral();
+                    return;
+                }
+
+                // 🔥 NUEVO: cerrar modales info
+                if (document.getElementById('modalSobre').classList.contains('activo')) {
+                    cerrarModalInfo('modalSobre');
+                    return;
+                }
+                if (document.getElementById('modalTerminos').classList.contains('activo')) {
+                    cerrarModalInfo('modalTerminos');
+                    return;
+                }
+                if (document.getElementById('modalRegalo').classList.contains('activo')) {
+                    cerrarModalInfo('modalRegalo');
+                    return;
+                }
+
+                // Los de siempre
                 if (modalGeneralesActivo) cerrarModalGenerales();
                 else if (modalDesbloqueoActivo) cerrarDesbloqueo();
                 else if (modalDetrasActivo) cerrarDetrasCamara();
@@ -6451,6 +7039,275 @@
                 return false;
             }
         });
+
+        // ==========================================
+        // 🎁 MENÚ LATERAL
+        // ==========================================
+        let menuLateralAbierto = false;
+
+        function toggleMenuLateral() {
+            if (menuLateralAbierto) {
+                cerrarMenuLateral();
+            } else {
+                abrirMenuLateral();
+            }
+        }
+
+        function abrirMenuLateral() {
+            menuLateralAbierto = true;
+            document.getElementById('menuLateral').classList.add('activo');
+            document.getElementById('menuLateralOverlay').classList.add('activo');
+            document.body.style.overflow = 'hidden';
+
+            // Refrescar contadores del menú
+            actualizarMenuLateral();
+        }
+
+        function cerrarMenuLateral() {
+            menuLateralAbierto = false;
+            document.getElementById('menuLateral').classList.remove('activo');
+            document.getElementById('menuLateralOverlay').classList.remove('activo');
+            document.body.style.overflow = '';
+        }
+
+        function menuAccion(accion) {
+            cerrarMenuLateral();
+
+            // Pequeño delay para que el menú termine de cerrarse antes de abrir el modal
+            setTimeout(() => {
+                switch (accion) {
+                    case 'detras':
+                        abrirDetrasCamara();
+                        break;
+                    case 'regalo':
+                        abrirMiRegalo();
+                        break;
+                    case 'sobre':
+                        abrirModalInfo('modalSobre');
+                        break;
+                    case 'contacto':
+                        abrirContactoWhatsApp();
+                        break;
+                    case 'terminos':
+                        abrirModalInfo('modalTerminos');
+                        break;
+                }
+            }, 250);
+        }
+
+        function actualizarMenuLateral() {
+            // Badge de detrás de cámara
+            const badgeDetras = document.getElementById('menuBadgeDetras');
+            if (badgeDetras) {
+                if (detrasCamaraTotal > 0) {
+                    badgeDetras.textContent = String(detrasCamaraTotal);
+                    badgeDetras.style.display = 'inline-block';
+                } else {
+                    badgeDetras.style.display = 'none';
+                }
+            }
+
+            // Badge de regalo (si tiene ticket no reclamado)
+            const badgeRegalo = document.getElementById('menuBadgeRegalo');
+            if (badgeRegalo) {
+                const ticketGuardado = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
+                if (ticketGuardado) {
+                    try {
+                        const t = JSON.parse(ticketGuardado);
+                        if (t && t.tipo !== 'simbolico' && !t.reclamado) {
+                            badgeRegalo.style.display = 'inline-block';
+                        } else {
+                            badgeRegalo.style.display = 'none';
+                        }
+                    } catch (e) {
+                        badgeRegalo.style.display = 'none';
+                    }
+                } else {
+                    badgeRegalo.style.display = 'none';
+                }
+            }
+
+            // Marcar idioma activo
+            document.querySelectorAll('.menu-lang-btn').forEach(btn => {
+                btn.classList.toggle('activo', btn.dataset.lang === idiomaActual);
+            });
+        }
+
+        function abrirModalInfo(id) {
+            document.getElementById(id).classList.add('activo');
+        }
+
+        function cerrarModalInfo(id) {
+            document.getElementById(id).classList.remove('activo');
+        }
+
+        function abrirContactoWhatsApp() {
+            const mensaje = idiomaActual === 'en'
+                ? 'Hi! I want information about OVJ Studio live galleries.'
+                : idiomaActual === 'zh'
+                    ? '你好！我想了解 OVJ Studio 的现场画廊服务。'
+                    : '¡Hola! Quiero información sobre las galerías en vivo de OVJ Studio.';
+
+            window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        // ==========================================
+        // 🎁 MI REGALO
+        // ==========================================
+        async function abrirMiRegalo() {
+            abrirModalInfo('modalRegalo');
+
+            const cont = document.getElementById('regaloContenido');
+            const emoji = document.getElementById('regaloEmoji');
+            const titulo = document.getElementById('regaloTitulo');
+
+            cont.innerHTML = '<div class="regalo-vacio">Cargando...</div>';
+
+            // Primero, ver si hay un ticket guardado en localStorage
+            const ticketLocal = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
+
+            if (ticketLocal) {
+                try {
+                    const t = JSON.parse(ticketLocal);
+                    renderizarTicketEnRegalo(t);
+                    return;
+                } catch (e) {
+                    // Sigue al fetch
+                }
+            }
+
+            // Si no hay local, consultar al server
+            try {
+                const dispositivoId = getDispositivoId();
+                const url = `${URL_CLOUDFLARE}/cofre?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+
+                if (!resp.ok) {
+                    cont.innerHTML = '<div class="regalo-vacio">No pudimos cargar tu regalo. Intentá más tarde.</div>';
+                    return;
+                }
+
+                const data = await resp.json();
+
+                if (!data.ok || !data.listo) {
+                    cont.innerHTML = '<div class="regalo-vacio">Todavía no hay regalos disponibles.<br>Volvé más tarde.</div>';
+                    emoji.textContent = '🎁';
+                    return;
+                }
+
+                if (!data.tieneCofre) {
+                    cont.innerHTML = '<div class="regalo-vacio">No tenés un regalo asignado.<br>Quizás entraste después de que se repartieron.</div>';
+                    emoji.textContent = '🎁';
+                    return;
+                }
+
+                // Guardar localmente
+                const ticketData = {
+                    ...data.ticket,
+                    reclamado: !!data.reclamado,
+                    abierto: !!data.abierto
+                };
+
+                localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(ticketData));
+
+                renderizarTicketEnRegalo(ticketData);
+
+            } catch (e) {
+                console.error('Error cargando regalo:', e);
+                cont.innerHTML = '<div class="regalo-vacio">Error de conexión.<br>Intentá más tarde.</div>';
+            }
+        }
+
+        function renderizarTicketEnRegalo(t) {
+            const cont = document.getElementById('regaloContenido');
+            const emoji = document.getElementById('regaloEmoji');
+            const titulo = document.getElementById('regaloTitulo');
+
+            // Es simbólico
+            if (t.tipo === 'simbolico' || !t.token) {
+                emoji.textContent = '💛';
+                titulo.textContent = idiomaActual === 'en' ? 'A memory' : idiomaActual === 'zh' ? '一份回忆' : 'Un recuerdo';
+                cont.innerHTML = `
+            <div class="regalo-ticket" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border-color:rgba(255,255,255,0.15);">
+                <div class="regalo-ticket-titulo" style="color:#fff;">${escapeHtml(t.titulo || 'Gracias por ser parte')}</div>
+                <div class="regalo-ticket-desc">${escapeHtml(t.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}</div>
+            </div>
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalRegalo')">Cerrar</button>
+        `;
+                return;
+            }
+
+            // Es un ticket real
+            emoji.textContent = '🎁';
+            titulo.textContent = idiomaActual === 'en' ? 'My gift' : idiomaActual === 'zh' ? '我的礼物' : 'Mi regalo';
+
+            const fechaVenc = t.expiraEn
+                ? new Date(t.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })
+                : '';
+
+            const yaReclamado = !!t.reclamado;
+            const textoBoton = yaReclamado
+                ? (idiomaActual === 'en' ? '✓ Sent' : idiomaActual === 'zh' ? '✓ 已发送' : '✓ Enviado')
+                : (idiomaActual === 'en' ? '📲 Claim via WhatsApp' : idiomaActual === 'zh' ? '📲 通过 WhatsApp 领取' : '📲 Reclamar por WhatsApp');
+
+            cont.innerHTML = `
+        <div class="regalo-ticket">
+            <div class="regalo-ticket-titulo">${escapeHtml(t.titulo)}</div>
+            <div class="regalo-ticket-desc">${escapeHtml(t.descripcion)}</div>
+            <div class="regalo-ticket-token">${escapeHtml(t.token)}</div>
+            <button class="regalo-ticket-btn" onclick="reclamarTicketWhatsApp()" ${yaReclamado ? 'disabled style="opacity:0.6; cursor:default;"' : ''}>
+                ${textoBoton}
+            </button>
+            <div class="regalo-ticket-venc">${idiomaActual === 'en' ? 'Expires' : idiomaActual === 'zh' ? '有效期至' : 'Vence'}: ${fechaVenc}</div>
+        </div>
+        <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc;" onclick="cerrarModalInfo('modalRegalo')">
+            ${idiomaActual === 'en' ? 'Close' : idiomaActual === 'zh' ? '关闭' : 'Cerrar'}
+        </button>
+    `;
+        }
+
+        function reclamarTicketWhatsApp() {
+            const ticketLocal = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
+            if (!ticketLocal) return;
+
+            let t;
+            try {
+                t = JSON.parse(ticketLocal);
+            } catch (e) {
+                return;
+            }
+
+            const mensaje =
+                `¡Hola OVJ Studio! Quiero reclamar mi regalo.\n\n` +
+                `🎁 ${t.titulo}\n` +
+                `🔑 Token: ${t.token}\n` +
+                `🎉 Evento: ${document.getElementById('eventoTitulo').textContent || ''}\n\n` +
+                `Gracias!`;
+
+            window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+
+            // Marcar como reclamado localmente
+            t.reclamado = true;
+            localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(t));
+
+            // Avisar al server (métrica, no bloquea)
+            try {
+                const url = `${URL_CLOUDFLARE}/cofre/reclamar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                fetch(url, { method: 'POST' }).catch(() => { });
+            } catch (e) { }
+
+            // Actualizar la vista
+            setTimeout(() => {
+                renderizarTicketEnRegalo(t);
+                actualizarMenuLateral();
+            }, 500);
+        }
 
         inicializar();
     </script>
