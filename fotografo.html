@@ -367,11 +367,6 @@
             margin-bottom: 16px;
         }
 
-        .card-activo.modo-libre {
-            background: linear-gradient(135deg, rgba(243, 156, 18, 0.06), rgba(243, 156, 18, 0.02));
-            border-color: rgba(243, 156, 18, 0.3);
-        }
-
         .card-activo .badge {
             display: inline-flex;
             align-items: center;
@@ -385,11 +380,6 @@
             border-radius: 50px;
             text-transform: uppercase;
             margin-bottom: 12px;
-        }
-
-        .card-activo.modo-libre .badge {
-            background: rgba(243, 156, 18, 0.15);
-            color: var(--oro);
         }
 
         .card-activo .titulo {
@@ -793,71 +783,6 @@
 
         .card-agendado .aviso-ventana.no-puede {
             color: var(--rojo);
-        }
-
-        /* ===== CARD MODO LIBRE ===== */
-        .card-vacio {
-            background: var(--card);
-            border: 1px dashed rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .card-vacio .emoji {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 10px;
-            opacity: 0.6;
-        }
-
-        .card-vacio .titulo {
-            font-size: 0.95rem;
-            color: var(--texto-suave);
-            margin-bottom: 6px;
-        }
-
-        .card-vacio .subtitulo {
-            font-size: 0.75rem;
-            color: var(--texto-tenue);
-            line-height: 1.5;
-            margin-bottom: 16px;
-        }
-
-        .btn-modo-libre {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(243, 156, 18, 0.4);
-            background: rgba(243, 156, 18, 0.1);
-            color: var(--oro);
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.25s;
-        }
-
-        .btn-modo-libre:hover {
-            background: rgba(243, 156, 18, 0.2);
-            transform: scale(1.02);
-        }
-
-        .aviso-modo-libre {
-            background: rgba(231, 76, 60, 0.08);
-            border: 1px solid rgba(231, 76, 60, 0.25);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 14px;
-            font-size: 0.75rem;
-            color: #e74c3c;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .aviso-modo-libre strong {
-            color: #fff;
-            font-weight: 600;
         }
 
         /* ===== MODALES ===== */
@@ -1626,9 +1551,6 @@
             <!-- Sección: Agendados -->
             <div id="seccionAgendados"></div>
 
-            <!-- Sección: Modo Libre (siempre visible) -->
-            <div id="seccionVacio"></div>
-
             <!-- Sección: Finalizados hoy -->
             <div id="seccionFinalizados"></div>
             <!-- Sección: Emergencia (oculta por defecto) -->
@@ -1718,26 +1640,6 @@
             <button class="btn-primario" onclick="copiarUrlTokenGeneral()">📋 Copiar URL</button>
             <button class="btn-secundario" onclick="abrirQRGrande()">💾 Abrir QR en pestaña nueva</button>
             <button class="btn-secundario" onclick="cerrarTokenGeneral()">Cerrar</button>
-        </div>
-    </div>
-
-    <!-- ===== MODAL MODO LIBRE ===== -->
-    <div class="modal" id="modalModoLibre">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarModoLibre()">✕</button>
-            <div class="titulo">🆘 Modo Libre</div>
-            <div class="subtitulo">
-                Para eventos de urgencia fuera de agenda.<br>
-                El admin será notificado y se cobrará después.
-            </div>
-
-            <input type="text" id="inputNombreModoLibre" placeholder="Nombre del evento" maxlength="50"
-                autocomplete="off" style="text-transform:uppercase" />
-
-            <button class="btn-primario" id="btnConfirmarModoLibre" onclick="activarModoLibre()">
-                Activar Modo Libre
-            </button>
-            <button class="btn-secundario" onclick="cerrarModoLibre()">Cancelar</button>
         </div>
     </div>
 
@@ -2045,7 +1947,6 @@
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
-                renderModoLibre(eventoActivo);
 
                 // 🔥 Server OK → ocultar sección de emergencia
                 ocultarSeccionEmergencia();
@@ -2129,12 +2030,10 @@
                 return;
             }
 
-            const esLibre = activo.modo === 'libre';
-
             let metaHtml = '';
             metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
 
-            if (!esLibre && activo.horaFin) {
+            if (activo.horaFin) {
                 metaHtml += `<div class="meta-item"><span class="emoji">⏹️</span>Fin aprox: <strong>${activo.horaFin}</strong></div>`;
             }
 
@@ -2276,9 +2175,9 @@
             cont.innerHTML = `
                 <div class="seccion">
                     <div class="seccion-titulo">Evento activo</div>
-                    <div class="card-activo ${esLibre ? 'modo-libre' : ''}">
+                    <div class="card-activo">
                         <div class="badge">
-                            ${esLibre ? '🆘 Modo Libre' : '● En vivo'}
+                            ● En vivo
                         </div>
                         <div class="titulo">${escapeHtml(activo.evento)}</div>
                         <div class="meta">${metaHtml}</div>
@@ -2439,40 +2338,6 @@
             cont.innerHTML = html;
         }
 
-        function renderModoLibre(activo) {
-            const cont = $('seccionVacio');
-
-            const hayActivo = !!activo;
-            const nombreActivo = hayActivo ? activo.evento : '';
-
-            let aviso = '';
-            if (hayActivo) {
-                aviso = `
-                    <div class="aviso-modo-libre">
-                        ⚠️ Ya tenés un evento activo: <strong>${escapeHtml(nombreActivo)}</strong>.<br>
-                        Si necesitás activar Modo Libre, primero finalizá el evento actual.
-                    </div>
-                `;
-            }
-
-            cont.innerHTML = `
-                <div class="seccion">
-                    <div class="card-vacio">
-                        <span class="emoji">🆘</span>
-                        <div class="titulo">Modo Libre</div>
-                        <div class="subtitulo">
-                            Para eventos de urgencia fuera de agenda.<br>
-                            ${hayActivo ? 'No disponible mientras haya un evento activo.' : 'El admin será notificado y se cobrará después.'}
-                        </div>
-                        ${aviso}
-                        <button class="btn-modo-libre" onclick="abrirModoLibre(${hayActivo})">
-                            🆘 Activar Modo Libre
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
         // ==========================================
         // ACTIVAR EVENTO
         // ==========================================
@@ -2493,51 +2358,6 @@
                 toast('Error: ' + e.message, 'error');
             } finally {
                 loader(false);
-            }
-        }
-
-        // ==========================================
-        // MODO LIBRE
-        // ==========================================
-        function abrirModoLibre(hayActivo = false) {
-            if (hayActivo) {
-                toast('⚠️ Ya tenés un evento activo. Finalizalo primero.', 'error');
-                return;
-            }
-            $('inputNombreModoLibre').value = '';
-            $('modalModoLibre').classList.add('activo');
-        }
-        function cerrarModoLibre() {
-            $('modalModoLibre').classList.remove('activo');
-        }
-
-        async function activarModoLibre() {
-            const nombre = $('inputNombreModoLibre').value.trim();
-            if (nombre.length < 2) {
-                toast('Escribe el nombre del evento', 'error');
-                return;
-            }
-
-            loader(true);
-            $('btnConfirmarModoLibre').disabled = true;
-
-            try {
-                const data = await apiFetch('/fotografo/modo-libre', {
-                    method: 'POST',
-                    body: JSON.stringify({ evento: nombre })
-                });
-
-                cerrarModoLibre();
-                toast('🆘 Modo libre activado', 'ok');
-                await cargarTodo();
-
-                setTimeout(() => abrirLinkAdmin(), 400);
-
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-                $('btnConfirmarModoLibre').disabled = false;
             }
         }
 
@@ -2968,9 +2788,19 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
+            // Ocultar emergencia
             seccion.style.display = 'none';
 
-            // El panel normal se re-renderiza en el próximo cargarTodo()
+            // 🔥 Restaurar las secciones del panel normal
+            const seccionActivo = document.getElementById('seccionActivo');
+            const seccionAgendados = document.getElementById('seccionAgendados');
+            const seccionVacio = document.getElementById('seccionVacio');
+            const seccionFinalizados = document.getElementById('seccionFinalizados');
+
+            if (seccionActivo) seccionActivo.style.display = '';
+            if (seccionAgendados) seccionAgendados.style.display = '';
+            if (seccionVacio) seccionVacio.style.display = '';
+            if (seccionFinalizados) seccionFinalizados.style.display = '';
         }
 
         function manejarSeleccionEmergencia(e) {
