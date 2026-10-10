@@ -574,11 +574,6 @@
             color: var(--rojo);
         }
 
-        .badge.libre {
-            background: rgba(243, 156, 18, 0.15);
-            color: var(--oro);
-        }
-
         /* TABLA */
         .tabla-wrapper {
             background: var(--card);
@@ -1082,10 +1077,6 @@
                     <span class="emoji">📅</span>
                     <span class="texto-nav">Eventos</span>
                 </div>
-                <div class="nav-item" data-tab="modos" onclick="cambiarTab('modos')">
-                    <span class="emoji">🆘</span>
-                    <span class="texto-nav">Modos libres</span>
-                </div>
                 <div class="nav-item" data-tab="sistema" onclick="cambiarTab('sistema')">
                     <span class="emoji">⚙️</span>
                     <span class="texto-nav">Sistema</span>
@@ -1144,7 +1135,6 @@
         let intervalRefresh = null;
         let cacheFotografos = [];
         let cacheEventos = [];
-        let cacheModosLibres = [];
         let cacheCatalogoPremios = [];
         let ticketsEventoSeleccionado = null;
 
@@ -1309,7 +1299,6 @@
                 case 'dashboard': renderDashboard(); intervalRefresh = setInterval(renderDashboard, INTERVALO_REFRESH_MS); break;
                 case 'fotografos': renderFotografos(); break;
                 case 'eventos': renderEventos(); break;
-                case 'modos': renderModosLibres(); break;
                 case 'tickets': renderTickets(); break;
                 case 'sistema': renderSistema(); break;
             }
@@ -1398,8 +1387,7 @@
 
                         let etiquetaModo = '';
                         if (activo) {
-                            if (activo.modo === 'libre') etiquetaModo = ' · 🆘 Libre';
-                            else if (modoEvento === 'A') etiquetaModo = ' · 🎪 Íntimo';
+                            if (modoEvento === 'A') etiquetaModo = ' · 🎪 Íntimo';
                             else etiquetaModo = ' · 🎪 Masivo';
                         }
 
@@ -1410,7 +1398,7 @@
                                         <div style="font-size:1.05rem; font-weight:700; color:#fff;">${escapeHtml(f.nombre)}</div>
                                         ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${etiquetaModo}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
                                     </div>
-                                    ${activo ? `<span class="badge activo">${activo.modo === 'libre' ? '🆘 Libre' : '● Activo'}</span>` : `<span class="badge finalizado">Inactivo</span>`}
+                                    ${activo ? `<span class="badge activo">● Activo</span>` : `<span class="badge finalizado">Inactivo</span>`}
                                 </div>
                                 <div style="display:flex; gap:14px; font-size:0.75rem; color:#aaa; margin-bottom:6px; flex-wrap:wrap;">
                                     <span>🌐 Web: <strong style="color:#fff;">${f.fotosWeb || 0}</strong></span>
@@ -1710,24 +1698,17 @@
         }
 
         function renderCardEvento(e, esActivo) {
-            const badgeClase = e.modo === 'libre' ? 'libre' : (e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado');
-            const badgeTexto = e.modo === 'libre' ? '🆘 Libre' : (e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado');
+            const badgeClase = e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado';
+            const badgeTexto = e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado';
 
             const modoEvento = e.modoEvento || 'B';
 
             let meta = '';
-            if (e.modo === 'libre') {
-                meta += `<div class="fila">🆘 Modo libre</div>`;
-                if (e.inicioReal) meta += `<div class="fila">▶️ Inicio: <strong>${formatearHora(e.inicioReal)}</strong></div>`;
-            } else {
-                meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
-                meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
-            }
+            meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
+            meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
 
             // 🔥 FASE 2: mostrar modo y VIPs
-            if (e.modo === 'libre') {
-                meta += `<div class="fila" style="color:#f39c12;">🎪 Modo: <strong>Masivo</strong> (modo libre)</div>`;
-            } else if (modoEvento === 'A') {
+            if (modoEvento === 'A') {
                 meta += `<div class="fila" style="color:#e8c47a;">🎪 Modo: <strong>Íntimo</strong> (todos VIP)</div>`;
             } else {
                 meta += `<div class="fila" style="color:#5dade2;">🎪 Modo: <strong>Masivo</strong> · VIPs: ${e.maxVips || 0}</div>`;
@@ -2375,102 +2356,6 @@
                 loader(false);
             }
         }
-
-        // ==========================================
-        // 🆘 MODOS LIBRES
-        // ==========================================
-        async function renderModosLibres() {
-            $('contenidoPrincipal').innerHTML = `
-                <div class="page-header">
-                    <div><h1>🆘 Modos libres</h1><div class="subtitulo">Eventos de urgencia activos</div></div>
-                    <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
-                </div>
-                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-            `;
-
-            try {
-                const data = await apiFetch('/admin/modos-libres');
-                cacheModosLibres = data.modosLibres || [];
-
-                let html = `
-                    <div class="page-header">
-                        <div><h1>🆘 Modos libres</h1><div class="subtitulo">${cacheModosLibres.length} activo${cacheModosLibres.length === 1 ? '' : 's'}</div></div>
-                        <div class="acciones"><button class="btn btn-secundario" onclick="renderModosLibres()">🔄 Refrescar</button></div>
-                    </div>
-                `;
-
-                if (cacheModosLibres.length === 0) {
-                    html += `<div class="vacio"><span class="emoji">✅</span><div class="titulo">Sin modos libres activos</div><div class="subtitulo">Todo bajo control.</div></div>`;
-                } else {
-                    html += `<div class="grid grid-2">`;
-                    cacheModosLibres.forEach(m => {
-                        const inicio = new Date(m.inicioReal);
-                        const ahora = new Date();
-                        const minutos = Math.floor((ahora - inicio) / 60000);
-                        const horas = Math.floor(minutos / 60);
-                        const mins = minutos % 60;
-
-                        html += `
-                            <div class="card card-evento">
-                                <div class="cabecera">
-                                    <div>
-                                        <div class="titulo">${escapeHtml(m.evento)}</div>
-                                        <div class="fotografo">👤 ${escapeHtml(m.fotografo)}</div>
-                                    </div>
-                                    <span class="badge libre">🆘 Libre</span>
-                                </div>
-                                <div class="meta">
-                                    <div class="fila">▶️ Inicio: <strong>${formatearHora(m.inicioReal)}</strong></div>
-                                    <div class="fila">⏱️ Transcurrido: <strong>${horas}h ${mins}min</strong></div>
-                                    ${m.whatsappCliente ? `<div class="fila">📱 +${m.whatsappCliente}</div>` : ''}
-                                    ${m.poolGeneral ? `<div class="fila" style="color:#5dade2;">📥 ${m.poolGeneral.descargasPorSesion} desc/sesión</div>` : ''}
-                                </div>
-                                <div class="acciones">
-                                    <button class="btn btn-chico btn-peligro" onclick="confirmarCerrarModoLibre('${escapeHtml(m.id)}','${escapeHtml(m.evento)}','${escapeHtml(m.fotografo)}')">🏁 Forzar cierre</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                $('contenidoPrincipal').innerHTML = html;
-
-            } catch (e) {
-                $('contenidoPrincipal').innerHTML = `
-                    <div class="page-header"><div><h1>🆘 Modos libres</h1></div></div>
-                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-                `;
-            }
-        }
-
-        function confirmarCerrarModoLibre(id, evento, fotografo) {
-            abrirModal(`
-                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-                <div class="titulo">🏁 Cerrar modo libre</div>
-                <div class="subtitulo">
-                    ¿Forzar cierre de <strong>${escapeHtml(evento)}</strong> (${escapeHtml(fotografo)})?<br><br>
-                    Se borrarán los JSONs locales (invitaciones, goteo, detrás). Las fotos en B2 se limpian aparte desde Sistema → Limpiar B2.
-                </div>
-                <button class="btn-peligro" onclick="cerrarModoLibre('${escapeHtml(id)}')">Sí, cerrar</button>
-                <button class="btn-secundario" onclick="cerrarModal()">Volver</button>
-            `);
-        }
-
-        async function cerrarModoLibre(id) {
-            loader(true);
-            cerrarModal();
-            try {
-                const data = await apiFetch('/admin/modos-libres/' + encodeURIComponent(id) + '/cerrar', { method: 'POST' });
-                toast(`✅ Cerrado · ${data.eliminados} archivos · B2: ${data.b2.eliminadas}`, 'ok');
-                renderModosLibres();
-            } catch (e) {
-                toast('Error: ' + e.message, 'error');
-            } finally {
-                loader(false);
-            }
-        }
-
 
         // ==========================================
         // 🎁 TICKETS
