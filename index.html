@@ -5978,12 +5978,34 @@
                 estado.innerHTML = t('cargando');
                 estado.className = "cargando";
 
-                // 🔥 Va al Worker (con cache de 15s)
-                const url = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                // 🔥 Va al server (vía túnel). Responde desde memoria, 0 Class B.
+                // Si falla, cae al Worker (modo emergencia).
+                const urlServer = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID || '')}` +
                     `&t=${encodeURIComponent(TOKEN || '')}`;
 
-                const respuesta = await fetch(url, { cache: 'no-store' });
+                let respuesta;
+                let vinoDelWorker = false;
+
+                try {
+                    respuesta = await fetch(urlServer, { cache: 'no-store' });
+
+                    // Si el server responde 5xx o 502/503/504, tratamos como caído
+                    if (respuesta.status >= 500) {
+                        throw new Error(`Server HTTP ${respuesta.status}`);
+                    }
+                } catch (eServer) {
+                    // Fallback: Worker (modo emergencia)
+                    console.warn('⚠️ Server no responde, cayendo al Worker:', eServer.message);
+
+                    const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                        `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                        `&t=${encodeURIComponent(TOKEN || '')}`;
+
+                    respuesta = await fetch(urlWorker, { cache: 'no-store' });
+                    vinoDelWorker = true;
+                    servidorOnline = false;
+                }
 
                 if (respuesta.status === 403) {
                     cerrarSesionYBloquear();
@@ -6003,9 +6025,12 @@
 
                 const data = await respuesta.json();
 
-                if (!servidorOnline) {
-                    servidorOnline = true;
-                    fotosCache = [];
+                // 🔥 Si el server respondió OK, marcar online (y limpiar cache si volvimos de emergencia)
+                if (!vinoDelWorker) {
+                    if (!servidorOnline) {
+                        servidorOnline = true;
+                        fotosCache = [];
+                    }
                 }
 
                 if (data.evento) {
@@ -6021,23 +6046,18 @@
                     }
                 }
 
+                // 🔥 El poll adaptativo solo viene del server. El Worker no lo devuelve.
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
+                } else if (vinoDelWorker) {
+                    // En emergencia, usar el default (20-60s con jitter del frontend)
+                    window._ultimoPoll = {
+                        intervaloBaseSeg: 45,
+                        jitterSeg: 10,
+                        enReceso: false
+                    };
                 }
 
-                // 🔥 Actualizar estado de receso según lo que diga el server\
-                /*
-                if (sesionGeneral) {
-                    if (data.enReceso) {
-                        sesionGeneral.enReceso = true;
-                        sesionGeneral.reanudarEn = Date.now() + (data.reanudarEn || 5) * 60 * 1000;
-                    } else if (sesionGeneral.enReceso) {
-                        // El server ya no reporta receso → terminó
-                        sesionGeneral.enReceso = false;
-                        sesionGeneral.reanudarEn = 0;
-                    }
-                }
-                */
                 procesarMensaje(data.mensajeFotografo);
                 procesarDetrasCamara(data.detrasCamaraTotal, data.detrasCamaraUltima);
 
