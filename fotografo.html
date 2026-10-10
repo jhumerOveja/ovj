@@ -37,7 +37,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-                /* 🔥 FASE 9: Banner de estado del server */
+        /* 🔥 FASE 9: Banner de estado del server */
         .banner-server {
             position: fixed;
             top: 0;
@@ -650,7 +650,7 @@
             background: rgba(231, 76, 60, 0.2);
         }
 
-                .btn-emergencia {
+        .btn-emergencia {
             background: rgba(243, 156, 18, 0.12);
             border: 1px solid rgba(243, 156, 18, 0.4);
             color: var(--oro);
@@ -1349,6 +1349,209 @@
             border-color: rgba(231, 76, 60, 0.4);
         }
 
+        /* ===== MODO EMERGENCIA ===== */
+        .aviso-emergencia {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            font-size: 0.82rem;
+            color: #e74c3c;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .aviso-emergencia strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .zona-drop {
+            border: 2px dashed rgba(46, 204, 113, 0.3);
+            border-radius: 14px;
+            padding: 26px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(46, 204, 113, 0.03);
+            margin-bottom: 16px;
+        }
+
+        .zona-drop:hover,
+        .zona-drop.arrastrando {
+            border-color: rgba(46, 204, 113, 0.6);
+            background: rgba(46, 204, 113, 0.08);
+        }
+
+        .zona-drop .icono {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .zona-drop .texto {
+            font-size: 0.85rem;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .zona-drop .subtexto {
+            font-size: 0.7rem;
+            color: var(--texto-tenue);
+            margin-top: 6px;
+        }
+
+        .progreso-emergencia {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+        }
+
+        .progreso-emergencia .progreso-barra {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progreso-emergencia .progreso-barra-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #f1c40f);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .acciones-emergencia {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .acciones-emergencia .btn-accion {
+            flex: 1;
+        }
+
+        .lista-emergencia {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-foto-emergencia {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .item-foto-emergencia.ok {
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        .item-foto-emergencia.error {
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        .item-foto-emergencia.procesando,
+        .item-foto-emergencia.subiendo {
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+
+        .item-foto-emergencia .thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+        .item-foto-emergencia .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-foto-emergencia .nombre {
+            font-size: 0.72rem;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .item-foto-emergencia .error-texto {
+            font-size: 0.62rem;
+            color: #e74c3c;
+        }
+
+        .item-foto-emergencia .badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .item-foto-emergencia .badge.pendiente {
+            background: rgba(255, 255, 255, 0.06);
+            color: #888;
+        }
+
+        .item-foto-emergencia .badge.procesando {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--oro);
+        }
+
+        .item-foto-emergencia .badge.subiendo {
+            background: rgba(52, 152, 219, 0.15);
+            color: #5dade2;
+        }
+
+        .item-foto-emergencia .badge.ok {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+        }
+
+        .item-foto-emergencia .badge.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
+        .item-foto-emergencia .btn-quitar {
+            background: transparent;
+            border: none;
+            color: var(--texto-tenue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .item-foto-emergencia .btn-quitar:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
         @media (max-width: 500px) {
             .card-activo .meta {
                 grid-template-columns: 1fr;
@@ -1370,7 +1573,7 @@
 </head>
 
 <body>
-        <!-- 🔥 FASE 9: Banner de estado del server -->
+    <!-- 🔥 FASE 9: Banner de estado del server -->
     <div class="banner-server" id="bannerServer" style="display: none;">
         <span class="icono" id="bannerServerIcono">⚠️</span>
         <span class="texto" id="bannerServerTexto">Server caído. Usá Modo Emergencia.</span>
@@ -1428,6 +1631,49 @@
 
             <!-- Sección: Finalizados hoy -->
             <div id="seccionFinalizados"></div>
+            <!-- Sección: Emergencia (oculta por defecto) -->
+            <div id="seccionEmergencia" style="display:none;">
+                <div class="seccion">
+                    <div class="seccion-titulo">🔑 Modo Emergencia</div>
+
+                    <div class="aviso-emergencia" id="avisoEmergencia">
+                        ⚠️ <strong>Server caído.</strong><br>
+                        Subí fotos desde acá. Se sincronizarán cuando el server vuelva.
+                    </div>
+
+                    <div class="zona-drop" id="zonaDropEmergencia"
+                        onclick="document.getElementById('inputEmergencia').click()">
+                        <span class="icono">📸</span>
+                        <div class="texto">Seleccionar fotos</div>
+                        <div class="subtexto">Podés elegir varias de una vez</div>
+                    </div>
+
+                    <input type="file" id="inputEmergencia" accept="image/*" multiple style="display:none;" />
+
+                    <div class="progreso-emergencia" id="progresoEmergencia" style="display:none;">
+                        <div id="progresoTextoEmergencia">Subiendo...</div>
+                        <div class="progreso-barra">
+                            <div class="progreso-barra-fill" id="progresoFillEmergencia" style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="acciones-emergencia" id="accionesEmergencia" style="display:none;">
+                        <button class="btn-accion btn-subir" id="btnSubirEmergencia" onclick="subirTodasEmergencia()">
+                            🚀 Subir todas
+                        </button>
+                        <button class="btn-accion btn-secundario" onclick="limpiarListaEmergencia()">
+                            🗑️ Limpiar
+                        </button>
+                    </div>
+
+                    <div class="lista-emergencia" id="listaEmergencia">
+                        <div class="vacio">
+                            <span class="emoji">📥</span>
+                            Todavía no seleccionaste fotos
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1475,7 +1721,7 @@
         </div>
     </div>
 
-        <!-- ===== MODAL MODO EMERGENCIA ===== -->
+    <!-- ===== MODAL MODO EMERGENCIA ===== -->
     <div class="modal" id="modalEmergencia">
         <div class="modal-contenido">
             <button class="btn-cerrar" onclick="cerrarEmergencia()">✕</button>
@@ -1807,15 +2053,21 @@
                 renderFinalizados(eventos.finalizadosHoy || []);
                 renderModoLibre(eventoActivo);
 
+                // 🔥 Server OK → ocultar sección de emergencia
+                ocultarSeccionEmergencia();
+
                 marcarServidor('ok');
 
             } catch (e) {
                 console.error('Error cargando:', e.message);
                 marcarServidor('error');
+
+                // 🔥 Server caído → mostrar sección de emergencia
+                mostrarSeccionEmergencia();
             }
         }
 
-                // ==========================================
+        // ==========================================
         // 🔥 FASE 9: Avisos de estado del server
         // ==========================================
         function mostrarBannerServer(estado, textoCustom) {
@@ -2647,7 +2899,7 @@
             window.open('https://t.me/ovj_foto_bot', '_blank');
         }
 
-                // ==========================================
+        // ==========================================
         // 🔑 MODO EMERGENCIA
         // ==========================================
         async function abrirEmergencia() {
@@ -2827,6 +3079,338 @@
             if (!window._urlEmergenciaActual) return;
             window.open(window._urlEmergenciaActual, '_blank');
         }
+
+        // ==========================================
+        // 🔑 MODO EMERGENCIA
+        // ==========================================
+
+        const WORKER_BASE_EMERGENCIA = 'https://ovj-b2-proxy.jhumerali2.workers.dev';
+        const MAX_ORIGINAL_MB_EMERGENCIA = 15;
+        const MAX_PREVIEW_MB_EMERGENCIA = 2;
+        const PREVIEW_WIDTH_EMERGENCIA = 900;
+        const PREVIEW_JPEG_QUALITY_EMERGENCIA = 0.8;
+
+        let fotosEmergencia = [];
+        let subiendoEmergencia = false;
+        let eventoActivoEmergencia = null;
+
+        function mostrarSeccionEmergencia() {
+            const seccion = document.getElementById('seccionEmergencia');
+            if (!seccion) return;
+
+            // Guardar el evento activo (último conocido)
+            if (eventoActivo && eventoActivo.id) {
+                eventoActivoEmergencia = eventoActivo;
+            }
+
+            // Ocultar el panel normal
+            const seccionActivo = document.getElementById('seccionActivo');
+            const seccionAgendados = document.getElementById('seccionAgendados');
+            const seccionVacio = document.getElementById('seccionVacio');
+            const seccionFinalizados = document.getElementById('seccionFinalizados');
+
+            if (seccionActivo) seccionActivo.style.display = 'none';
+            if (seccionAgendados) seccionAgendados.style.display = 'none';
+            if (seccionVacio) seccionVacio.style.display = 'none';
+            if (seccionFinalizados) seccionFinalizados.style.display = 'none';
+
+            // Mostrar la sección de emergencia
+            seccion.style.display = 'block';
+
+            // Actualizar el aviso con el evento
+            const aviso = document.getElementById('avisoEmergencia');
+            if (aviso && eventoActivoEmergencia) {
+                aviso.innerHTML = `
+                    ⚠️ <strong>Server caído.</strong><br>
+                    Subí fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>.<br>
+                    Se sincronizarán cuando el server vuelva.
+                `;
+            } else if (aviso) {
+                aviso.innerHTML = `
+                    ⚠️ <strong>Server caído.</strong><br>
+                    No hay evento activo conocido. Activá el evento cuando el server vuelva.
+                `;
+            }
+
+            // Inicializar el input de archivos (solo una vez)
+            const input = document.getElementById('inputEmergencia');
+            if (input && !input._inicializado) {
+                input.addEventListener('change', manejarSeleccionEmergencia);
+                input._inicializado = true;
+            }
+        }
+
+        function ocultarSeccionEmergencia() {
+            const seccion = document.getElementById('seccionEmergencia');
+            if (!seccion) return;
+
+            seccion.style.display = 'none';
+
+            // El panel normal se re-renderiza en el próximo cargarTodo()
+        }
+
+        function manejarSeleccionEmergencia(e) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const thumbUrl = URL.createObjectURL(file);
+
+                fotosEmergencia.push({
+                    id: 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                    file,
+                    thumbUrl,
+                    estado: 'pendiente',
+                    error: null
+                });
+            });
+
+            e.target.value = '';
+            renderizarListaEmergencia();
+        }
+
+        function renderizarListaEmergencia() {
+            const cont = document.getElementById('listaEmergencia');
+            if (!cont) return;
+
+            if (fotosEmergencia.length === 0) {
+                cont.innerHTML = `
+                    <div class="vacio">
+                        <span class="emoji">📥</span>
+                        Todavía no seleccionaste fotos
+                    </div>
+                `;
+                const acciones = document.getElementById('accionesEmergencia');
+                if (acciones) acciones.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            fotosEmergencia.forEach(foto => {
+                const badgeTexto = {
+                    pendiente: 'Pendiente',
+                    procesando: 'Procesando',
+                    subiendo: 'Subiendo',
+                    ok: '✓ Subida',
+                    error: '✗ Error'
+                }[foto.estado] || foto.estado;
+
+                html += `
+                    <div class="item-foto-emergencia ${foto.estado}">
+                        <img class="thumb" src="${foto.thumbUrl}" alt="" />
+                        <div class="info">
+                            <div class="nombre">${escapeHtml(foto.file.name)}</div>
+                            ${foto.error ? `<div class="error-texto">${escapeHtml(foto.error)}</div>` : ''}
+                        </div>
+                        <span class="badge ${foto.estado}">${badgeTexto}</span>
+                        ${foto.estado === 'pendiente' || foto.estado === 'error'
+                        ? `<button class="btn-quitar" onclick="quitarFotoEmergencia('${foto.id}')">✕</button>`
+                        : ''}
+                    </div>
+                `;
+            });
+
+            cont.innerHTML = html;
+
+            const hayPendientes = fotosEmergencia.some(f => f.estado === 'pendiente' || f.estado === 'error');
+            const acciones = document.getElementById('accionesEmergencia');
+            if (acciones) {
+                acciones.style.display = (hayPendientes && !subiendoEmergencia) ? 'flex' : 'none';
+            }
+        }
+
+        function quitarFotoEmergencia(id) {
+            fotosEmergencia = fotosEmergencia.filter(f => f.id !== id);
+            renderizarListaEmergencia();
+        }
+
+        function limpiarListaEmergencia() {
+            if (subiendoEmergencia) return;
+            if (!confirm('¿Quitar todas las fotos?')) return;
+
+            fotosEmergencia.forEach(f => {
+                try { URL.revokeObjectURL(f.thumbUrl); } catch (e) { }
+            });
+            fotosEmergencia = [];
+            renderizarListaEmergencia();
+        }
+
+        async function subirTodasEmergencia() {
+            if (subiendoEmergencia) return;
+
+            if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
+                toast('⚠️ No hay evento activo', 'error');
+                return;
+            }
+
+            const pendientes = fotosEmergencia.filter(f => f.estado === 'pendiente' || f.estado === 'error');
+            if (pendientes.length === 0) {
+                toast('No hay fotos para subir', 'error');
+                return;
+            }
+
+            subiendoEmergencia = true;
+            const btn = document.getElementById('btnSubirEmergencia');
+            if (btn) btn.disabled = true;
+
+            const progreso = document.getElementById('progresoEmergencia');
+            if (progreso) progreso.style.display = 'block';
+
+            let ok = 0;
+            let errores = 0;
+            const total = pendientes.length;
+
+            for (let i = 0; i < total; i++) {
+                const foto = pendientes[i];
+                foto.estado = 'procesando';
+                foto.error = null;
+                renderizarListaEmergencia();
+                actualizarProgresoEmergencia(i, total, `Procesando ${i + 1} / ${total}`);
+
+                try {
+                    // 1. Procesar con Canvas
+                    const previewBlob = await procesarImagenEmergencia(foto.file);
+
+                    if (previewBlob.size > MAX_PREVIEW_MB_EMERGENCIA * 1024 * 1024) {
+                        throw new Error(`Preview muy grande (${formatearBytes(previewBlob.size)})`);
+                    }
+
+                    if (foto.file.size > MAX_ORIGINAL_MB_EMERGENCIA * 1024 * 1024) {
+                        throw new Error(`Original muy grande (${formatearBytes(foto.file.size)})`);
+                    }
+
+                    // 2. Generar nombres
+                    const base = generarNombreFotoEmergencia(eventoActivoEmergencia.evento);
+                    const nombreOriginal = `${base}.jpg`;
+                    const nombrePreview = `${base}_web.jpg`;
+
+                    // 3. Subir al Worker
+                    foto.estado = 'subiendo';
+                    renderizarListaEmergencia();
+                    actualizarProgresoEmergencia(i, total, `Subiendo ${i + 1} / ${total}`);
+
+                    await subirParAlWorkerEmergencia(foto.file, previewBlob, nombreOriginal, nombrePreview);
+
+                    foto.estado = 'ok';
+                    ok++;
+
+                } catch (e) {
+                    console.error('Error con', foto.file.name, e);
+                    foto.estado = 'error';
+                    foto.error = e.message || 'Error desconocido';
+                    errores++;
+                }
+
+                renderizarListaEmergencia();
+                actualizarProgresoEmergencia(i + 1, total, `Procesadas ${i + 1} / ${total}`);
+            }
+
+            if (progreso) progreso.style.display = 'none';
+            subiendoEmergencia = false;
+            renderizarListaEmergencia();
+
+            if (errores === 0) {
+                toast(`✅ ${ok} foto${ok === 1 ? '' : 's'} subida${ok === 1 ? '' : 's'}`, 'ok');
+            } else {
+                toast(`⚠️ ${ok} OK · ${errores} con error`, 'error');
+            }
+        }
+
+        function actualizarProgresoEmergencia(actual, total, texto) {
+            const pct = Math.round((actual / total) * 100);
+            const fill = document.getElementById('progresoFillEmergencia');
+            const textoEl = document.getElementById('progresoTextoEmergencia');
+            if (fill) fill.style.width = pct + '%';
+            if (textoEl) textoEl.textContent = texto;
+        }
+
+        async function procesarImagenEmergencia(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+
+                    const ratio = img.width > PREVIEW_WIDTH_EMERGENCIA
+                        ? PREVIEW_WIDTH_EMERGENCIA / img.width
+                        : 1;
+
+                    const w = Math.round(img.width * ratio);
+                    const h = Math.round(img.height * ratio);
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('No se pudo generar la preview'));
+                            return;
+                        }
+                        resolve(blob);
+                    }, 'image/jpeg', PREVIEW_JPEG_QUALITY_EMERGENCIA);
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('No se pudo leer la imagen'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        function generarNombreFotoEmergencia(evento) {
+            const eventoSlug = String(evento || 'EVENTO')
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 30) || 'EVENTO';
+
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 6);
+
+            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
+        }
+
+        function formatearBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        async function subirParAlWorkerEmergencia(originalFile, previewBlob, nombreOriginal, nombrePreview) {
+            const formData = new FormData();
+            formData.append('original', originalFile, nombreOriginal);
+            formData.append('preview', previewBlob, nombrePreview);
+            formData.append('nombreOriginal', nombreOriginal);
+            formData.append('nombrePreview', nombrePreview);
+
+            const resp = await fetch(`${WORKER_BASE_EMERGENCIA}/api/emergencia-upload`, {
+                method: 'POST',
+                headers: {
+                    'X-Evento-Id': eventoActivoEmergencia.id,
+                    'X-Fotografo': nombreFotografoActual
+                },
+                body: formData
+            });
+
+            let data = {};
+            try { data = await resp.json(); } catch (e) { }
+
+            if (!resp.ok || !data.ok) {
+                throw new Error(data.error || `HTTP ${resp.status}`);
+            }
+
+            return data;
+        }
+
         // ==========================================
         // INICIALIZACIÓN
         // ==========================================
