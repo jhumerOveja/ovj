@@ -18,7 +18,7 @@
 window.OVJ_CONFIG = {
     
     // 🔥 Cambiar esta URL cada vez que reinicies el túnel
-    urlTunel: 'https://remembered-vendors-sullivan-brother.trycloudflare.com',
+    urlTunel: 'https://alarm-wash-graphs-circuit.trycloudflare.com',
     workerUrl: 'https://ovj-b2-proxy.jhumerali2.workers.dev',
     // WhatsApp de publicidad (no cambia)
     whatsappPublicidad: '59160004962',
