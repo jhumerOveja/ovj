@@ -1931,8 +1931,10 @@
             localStorage.removeItem('ovj_fotografo_token');
             localStorage.removeItem('ovj_fotografo_nombre');
             localStorage.removeItem('ovj_fotografo_expira');
+            localStorage.removeItem('ovj_fotografo_evento_activo');   // 🔥 NUEVO
             tokenSesion = null;
             nombreFotografoActual = null;
+            eventoActivoEmergencia = null;                              // 🔥 NUEVO
             if (intervalRefresh) {
                 clearInterval(intervalRefresh);
                 intervalRefresh = null;
@@ -2032,6 +2034,13 @@
                 contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
                 mensajeInfo = estado.mensajeFotografo || null;
+
+                // 🔥 Guardar el evento activo en localStorage
+                if (eventoActivo && eventoActivo.id) {
+                    localStorage.setItem('ovj_fotografo_evento_activo', JSON.stringify(eventoActivo));
+                } else {
+                    localStorage.removeItem('ovj_fotografo_evento_activo');
+                }
 
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
@@ -2849,6 +2858,10 @@
                 const horas = Math.floor(data.duracionHoras);
                 const mins = Math.round((data.duracionHoras - horas) * 60);
 
+                // 🔥 Limpiar el evento activo de localStorage
+                localStorage.removeItem('ovj_fotografo_evento_activo');
+                eventoActivoEmergencia = null;
+
                 let msg = `✅ Evento finalizado · ${horas}h ${mins}min`;
                 toast(msg, 'ok');
                 await cargarTodo();
@@ -2899,9 +2912,19 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
-            // Guardar el evento activo (último conocido)
+            // 🔥 Leer el evento activo desde memoria o localStorage
             if (eventoActivo && eventoActivo.id) {
                 eventoActivoEmergencia = eventoActivo;
+            } else {
+                // El server está caído y la página se recargó → leer de localStorage
+                try {
+                    const guardado = localStorage.getItem('ovj_fotografo_evento_activo');
+                    if (guardado) {
+                        eventoActivoEmergencia = JSON.parse(guardado);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ No se pudo leer evento activo de localStorage:', e.message);
+                }
             }
 
             // Ocultar el panel normal
