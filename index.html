@@ -5542,6 +5542,45 @@
                         return false;
                     }
 
+                    // 🔥 FIX: si el server dice explícitamente "Evento no encontrado" (404),
+                    // significa que el token personal guardado en localStorage ya no existe
+                    // (evento reiniciado, archivo borrado, etc.).
+                    // Si además hay un token de la URL distinto al que estamos usando,
+                    // limpiamos las claves de sesión viejas y reintentamos con el de la URL.
+                    //
+                    // Guard estricto: SOLO 404 con "Evento no encontrado".
+                    // - NO se ejecuta si el server está caído (esos van al catch externo).
+                    // - NO se ejecuta en modo offline (mismo motivo).
+                    // - NO toca dispositivoId, idioma, ticket, cofre, vistas, mensaje, tokenGeneral.
+                    const es404EventoNoEncontrado =
+                        respuesta.status === 404 &&
+                        typeof data?.error === 'string' &&
+                        data.error.toLowerCase().includes('evento no encontrado');
+
+                    if (es404EventoNoEncontrado && PARAMS.token && PARAMS.token !== TOKEN) {
+                        console.log('🔄 Token viejo detectado. Limpiando localStorage y reintentando con token de URL.');
+
+                        // Solo claves de sesión del evento actual
+                        localStorage.removeItem('ovj_token_personal_' + EVENTO_ID);
+                        localStorage.removeItem('ovj_token_url_original_' + EVENTO_ID);
+                        localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
+                        localStorage.removeItem('ovj_token');
+                        localStorage.removeItem('ovj_tipo');
+                        localStorage.removeItem('ovj_rol_nombre');
+                        localStorage.removeItem('ovj_rol_id');
+
+                        // Actualizar TOKEN en memoria y reintentar una vez
+                        TOKEN = PARAMS.token;
+
+                        try {
+                            return await validarAcceso();
+                        } catch (eRetry) {
+                            console.error('Error en reintento de validarAcceso:', eRetry.message);
+                            mostrarBloqueo('invalido', t('bloqueoInvalido'));
+                            return false;
+                        }
+                    }
+
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
