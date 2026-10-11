@@ -1684,6 +1684,9 @@
     </div>
     <div class="toast" id="toast"></div>
     <script src="qrcode.min.js"></script>
+    <!-- 🔥 config.js dinámico desde el Worker (Idea 11). No-cache. -->
+    <script src="https://ovj-b2-proxy.jhumerali2.workers.dev/config.js"></script>
+    <!-- 🔥 Fallback local: NO sobreescribe si el Worker ya cargó algo. -->
     <script src="config.js"></script>
 
     <script>
@@ -1691,9 +1694,15 @@
         // CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-        const URL_API = _esLocalhost
+
+        // 🔥 IDEA 8: URL mutable en memoria. Se puede actualizar vía /api/donde
+        // sin recargar la página, si el túnel cambió mientras el panel estaba abierto.
+        let URL_API = _esLocalhost
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+
+        // 🔥 Worker base (para /api/donde y para el modo emergencia)
+        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || 'https://ovj-b2-proxy.jhumerali2.workers.dev';
 
         const INTERVALO_REFRESH_MS = 30000;
 
@@ -1782,6 +1791,39 @@
 
             const d = new Date(fechaISO);
             return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
+        }
+
+        // ==========================================
+        // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
+        // ==========================================
+        let _ultimaConsultaDonde = 0;
+        const _INTERVALO_MIN_CONSULTA_DONDE_MS = 30000;
+
+        async function consultarDonde() {
+            const ahora = Date.now();
+            if (ahora - _ultimaConsultaDonde < _INTERVALO_MIN_CONSULTA_DONDE_MS) {
+                return { ok: false, motivo: 'throttled' };
+            }
+            _ultimaConsultaDonde = ahora;
+
+            try {
+                const resp = await fetch(`${WORKER_BASE}/api/donde`, { cache: 'no-store' });
+                if (!resp.ok) return { ok: false, motivo: 'http_' + resp.status };
+
+                const data = await resp.json();
+                if (!data.ok || !data.urlTunel) return { ok: false, motivo: 'sin_url' };
+
+                if (data.urlTunel !== URL_API) {
+                    console.log('🔄 URL del túnel actualizada vía /api/donde:', data.urlTunel);
+                    URL_API = data.urlTunel;
+                    return { ok: true, cambio: true, urlTunel: data.urlTunel };
+                }
+
+                return { ok: true, cambio: false, urlTunel: data.urlTunel };
+
+            } catch (e) {
+                return { ok: false, motivo: 'excepcion', error: e.message };
+            }
         }
 
         async function apiFetch(ruta, opciones = {}) {
@@ -1955,6 +1997,43 @@
 
             } catch (e) {
                 console.error('Error cargando:', e.message);
+
+                // 🔥 IDEA 8: si el error parece de red (no 401), preguntar al Worker
+                // si el túnel cambió de URL y reintentar UNA vez contra la nueva.
+                const esErrorRed = !e.message || !e.message.includes('Sesión expirada');
+                if (esErrorRed) {
+                    const consulta = await consultarDonde();
+                    if (consulta.ok && consulta.cambio) {
+                        try {
+                            const eventos2 = await apiFetch('/fotografo/eventos');
+                            const estado2 = await apiFetch('/fotografo/estado');
+
+                            eventoActivo = estado2.activo;
+                            contadores = estado2.contadores || null;
+                            tiempoEvento = estado2.tiempo || null;
+                            mensajeInfo = estado2.mensajeFotografo || null;
+
+                            if (eventoActivo && eventoActivo.id) {
+                                localStorage.setItem('ovj_fotografo_evento_activo', JSON.stringify(eventoActivo));
+                            } else {
+                                localStorage.removeItem('ovj_fotografo_evento_activo');
+                            }
+
+                            renderActivo(eventoActivo, estado2);
+                            renderAgendados(eventos2.agendados || []);
+                            renderFinalizados(eventos2.finalizadosHoy || []);
+
+                            ocultarSeccionEmergencia();
+                            marcarServidor('ok');
+
+                            console.log('✅ Reintento exitoso con URL nueva');
+                            return;
+                        } catch (eRetry) {
+                            console.warn('⚠️ Reintento contra URL nueva falló:', eRetry.message);
+                        }
+                    }
+                }
+
                 marcarServidor('error');
 
                 // 🔥 Server caído → mostrar sección de emergencia
