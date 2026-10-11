@@ -4877,6 +4877,9 @@
         </div>
     </div>
     <script src="qrcode.min.js"></script>
+    <!-- 🔥 config.js dinámico desde el Worker (Idea 11). No-cache. -->
+    <script src="https://ovj-b2-proxy.jhumerali2.workers.dev/config.js"></script>
+    <!-- 🔥 Fallback local: NO sobreescribe si el Worker ya cargó algo. -->
     <script src="config.js"></script>
 
     <script>
@@ -4884,12 +4887,15 @@
         // CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-        const URL_CLOUDFLARE = _esLocalhost
+
+        // 🔥 IDEA 8: URL mutable en memoria. Se puede actualizar vía /api/donde
+        // sin recargar la página, si el túnel cambió mientras la web estaba abierta.
+        let URL_CLOUDFLARE = _esLocalhost
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
         // 🔥 Worker base (para /api/fotos y descargas en modo emergencia)
-        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || URL_CLOUDFLARE;
+        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || 'https://ovj-b2-proxy.jhumerali2.workers.dev';
 
         const WHATSAPP_PUBLICIDAD = window.OVJ_CONFIG?.whatsappPublicidad || '59160004962';
         const CODIGO_PAIS_DEFECTO = "591";
@@ -4948,6 +4954,41 @@
             // Misma sesión → usar el token personal
             return tokenPersonal;
         })();
+
+        // ==========================================
+        // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
+        // ==========================================
+        let _ultimaConsultaDonde = 0;
+        const _INTERVALO_MIN_CONSULTA_DONDE_MS = 30000; // no consultar más seguido que esto
+
+        async function consultarDonde() {
+            const ahora = Date.now();
+            if (ahora - _ultimaConsultaDonde < _INTERVALO_MIN_CONSULTA_DONDE_MS) {
+                return { ok: false, motivo: 'throttled' };
+            }
+            _ultimaConsultaDonde = ahora;
+
+            try {
+                const resp = await fetch(`${WORKER_BASE}/api/donde`, { cache: 'no-store' });
+                if (!resp.ok) return { ok: false, motivo: 'http_' + resp.status };
+
+                const data = await resp.json();
+                if (!data.ok || !data.urlTunel) return { ok: false, motivo: 'sin_url' };
+
+                if (data.urlTunel !== URL_CLOUDFLARE) {
+                    console.log('🔄 URL del túnel actualizada vía /api/donde:', data.urlTunel);
+                    URL_CLOUDFLARE = data.urlTunel;
+                    return { ok: true, cambio: true, urlTunel: data.urlTunel };
+                }
+
+                return { ok: true, cambio: false, urlTunel: data.urlTunel };
+
+            } catch (e) {
+                return { ok: false, motivo: 'excepcion', error: e.message };
+            }
+        }
+
+
 
         function getDispositivoId() {
             let id = localStorage.getItem('ovj_dispositivo_id');
@@ -5995,18 +6036,46 @@
                         throw new Error(`Server HTTP ${respuesta.status}`);
                     }
                 } catch (eServer) {
-                    // Fallback: Worker (modo emergencia)
-                    console.warn('⚠️ Server no responde, cayendo al Worker:', eServer.message);
+                    console.warn('⚠️ Server no responde:', eServer.message);
 
-                    const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                        `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                        `&t=${encodeURIComponent(TOKEN || '')}`;
+                    // 🔥 IDEA 8: preguntarle al Worker si el túnel cambió de URL.
+                    // Si cambió, reintentamos UNA vez contra la URL nueva antes de ir a modo emergencia.
+                    const consulta = await consultarDonde();
 
-                    respuesta = await fetch(urlWorker, { cache: 'no-store' });
-                    vinoDelWorker = true;
-                    servidorOnline = false;
+                    if (consulta.ok && consulta.cambio) {
+                        try {
+                            const urlServerRetry = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
+
+                            const respRetry = await fetch(urlServerRetry, { cache: 'no-store' });
+
+                            if (respRetry.ok) {
+                                console.log('✅ Reintento exitoso contra la URL nueva');
+                                respuesta = respRetry;
+                            } else {
+                                throw new Error(`Reintento HTTP ${respRetry.status}`);
+                            }
+                        } catch (eRetry) {
+                            // Si el reintento también falla, ir a modo emergencia
+                            console.warn('⚠️ Reintento contra URL nueva falló:', eRetry.message);
+                            const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
+                            respuesta = await fetch(urlWorker, { cache: 'no-store' });
+                            vinoDelWorker = true;
+                            servidorOnline = false;
+                        }
+                    } else {
+                        // No hubo cambio de URL: ir directo a modo emergencia
+                        const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                            `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                            `&t=${encodeURIComponent(TOKEN || '')}`;
+                        respuesta = await fetch(urlWorker, { cache: 'no-store' });
+                        vinoDelWorker = true;
+                        servidorOnline = false;
+                    }
                 }
-
                 if (respuesta.status === 403) {
                     cerrarSesionYBloquear();
                     cargando = false;
