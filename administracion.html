@@ -1113,7 +1113,9 @@
         <div class="loader-spinner"></div>
     </div>
     <script src="qrcode.min.js"></script>
-    <!-- 🔥 Configuración externa (editar config.js, NO este archivo) -->
+    <!-- 🔥 config.js dinámico desde el Worker (Idea 11). No-cache. -->
+    <script src="https://ovj-b2-proxy.jhumerali2.workers.dev/config.js"></script>
+    <!-- 🔥 Fallback local: NO sobreescribe si el Worker ya cargó algo. -->
     <script src="config.js"></script>
 
     <script>
@@ -1121,9 +1123,14 @@
         // ⚙️ CONFIGURACIÓN
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-        const URL_API = _esLocalhost
+
+        // 🔥 IDEA 8: URL mutable en memoria.
+        let URL_API = _esLocalhost
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
+
+        // 🔥 Worker base (para /api/donde)
+        const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || 'https://ovj-b2-proxy.jhumerali2.workers.dev';
 
         const INTERVALO_REFRESH_MS = 30000;
 
@@ -1180,12 +1187,58 @@
             });
         }
 
-        async function apiFetch(ruta, opciones = {}) {
+        // ==========================================
+        // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
+        // ==========================================
+        let _ultimaConsultaDonde = 0;
+        const _INTERVALO_MIN_CONSULTA_DONDE_MS = 30000;
+
+        async function consultarDonde() {
+            const ahora = Date.now();
+            if (ahora - _ultimaConsultaDonde < _INTERVALO_MIN_CONSULTA_DONDE_MS) {
+                return { ok: false, motivo: 'throttled' };
+            }
+            _ultimaConsultaDonde = ahora;
+
+            try {
+                const resp = await fetch(`${WORKER_BASE}/api/donde`, { cache: 'no-store' });
+                if (!resp.ok) return { ok: false, motivo: 'http_' + resp.status };
+
+                const data = await resp.json();
+                if (!data.ok || !data.urlTunel) return { ok: false, motivo: 'sin_url' };
+
+                if (data.urlTunel !== URL_API) {
+                    console.log('🔄 URL del túnel actualizada vía /api/donde:', data.urlTunel);
+                    URL_API = data.urlTunel;
+                    return { ok: true, cambio: true, urlTunel: data.urlTunel };
+                }
+
+                return { ok: true, cambio: false, urlTunel: data.urlTunel };
+
+            } catch (e) {
+                return { ok: false, motivo: 'excepcion', error: e.message };
+            }
+        }
+
+        async function apiFetch(ruta, opciones = {}, _esReintento = false) {
             const headers = opciones.headers || {};
             headers['Content-Type'] = 'application/json';
             if (adminToken) headers['Authorization'] = 'Bearer ' + adminToken;
 
-            const resp = await fetch(URL_API + ruta, { ...opciones, headers });
+            let resp;
+            try {
+                resp = await fetch(URL_API + ruta, { ...opciones, headers });
+            } catch (eRed) {
+                // 🔥 IDEA 8: si falla por red, consultar /api/donde y reintentar UNA vez
+                if (!_esReintento) {
+                    const consulta = await consultarDonde();
+                    if (consulta.ok && consulta.cambio) {
+                        console.log('🔄 Reintentando apiFetch con URL nueva');
+                        return apiFetch(ruta, opciones, true);
+                    }
+                }
+                throw eRed;
+            }
 
             if (resp.status === 401) {
                 cerrarSesionLocal();
