@@ -4714,12 +4714,6 @@
                 Los VIP tienen descargas ilimitadas, sin receso.
             </div>
 
-            <div class="input-group">
-                <label>Nombre del invitado (opcional)</label>
-                <input type="text" id="inputNombreInvitacion" placeholder="Ej: Familia Pérez" maxlength="40"
-                    autocomplete="off" enterkeyhint="next" />
-            </div>
-
             <div class="input-group" id="grupoWhatsapp">
                 <label>WhatsApp destino (opcional)</label>
                 <div class="input-con-prefijo">
@@ -5095,8 +5089,6 @@
         const MAX_VISTAS_LS = 1000;
 
         const INSTAGRAM_USUARIO = 'ovjstudio';
-
-        const UMBRAL_DESBLOQUEO = 2;
 
         // ==========================================
         // PARÁMETROS DEL URL
@@ -7487,7 +7479,6 @@
             }
 
             document.getElementById('modalInvitar').classList.add('activo');
-            document.getElementById('inputNombreInvitacion').value = '';
             document.getElementById('inputWhatsAppInvitacion').value = '';
             document.getElementById('avisoLimiteVips').style.display = 'none';
             document.getElementById('btnGenerarInvitacion').disabled = false;
@@ -7536,7 +7527,6 @@
             btn.disabled = true;
             btn.textContent = 'Generando...';
 
-            const nombre = document.getElementById('inputNombreInvitacion').value.trim();
             let whatsappLocal = document.getElementById('inputWhatsAppInvitacion').value.trim();
 
             whatsappLocal = whatsappLocal.replace(/[^0-9]/g, '');
@@ -7550,8 +7540,8 @@
                 }
             }
 
-            // 🔥 FASE 3: el nombre ahora es opcional
-            const nombreFinal = nombre || 'VIP';
+            // 🔥 FASE 15: el nombre se eliminó. Los VIP no lo usan.
+            const nombreFinal = 'VIP';
 
             try {
                 const url = `${URL_CLOUDFLARE}/invitar-vip?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
