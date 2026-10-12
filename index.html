@@ -4868,14 +4868,14 @@
 
             <div class="metricas-grid" id="metricasGrid">
                 <div class="metrica-card activos">
-                    <span class="emoji">🟢</span>
+                    <span class="emoji">👥</span>
                     <div class="valor" id="metricaActivos">—</div>
                     <div class="etiqueta">Activos</div>
                 </div>
                 <div class="metrica-card totales">
-                    <span class="emoji">👥</span>
-                    <div class="valor" id="metricaTotales">—</div>
-                    <div class="etiqueta">Generales</div>
+                    <span class="emoji">🏔️</span>
+                    <div class="valor" id="metricaPico">—</div>
+                    <div class="etiqueta">Pico</div>
                 </div>
                 <div class="metrica-card">
                     <span class="emoji">📥</span>
@@ -6208,20 +6208,20 @@
                 }
 
                 const aforo = data.aforo || {};
-                const totalGenerales = data.totalGenerales || 0;
+                const totalActivos = data.totalActivos || 0;
                 const metricas = data.metricas || {};
 
                 aforoActual = aforo;
 
                 // Actualizar contadores
-                metricaActivos.textContent = aforo.activos || 0;
-                metricaTotales.textContent = totalGenerales;
-
-                // 🔥 FASE 13: métricas nuevas
+                const elActivos = document.getElementById('metricaActivos');
+                const elPico = document.getElementById('metricaPico');
                 const elDescargas = document.getElementById('metricaDescargas');
                 const elClicsCliente = document.getElementById('metricaClicsCliente');
                 const elDesbloqueos = document.getElementById('metricaDesbloqueos');
 
+                if (elActivos) elActivos.textContent = totalActivos;
+                if (elPico) elPico.textContent = metricas.picoActivos || 0;
                 if (elDescargas) elDescargas.textContent = metricas.descargasTotales || 0;
                 if (elClicsCliente) elClicsCliente.textContent = metricas.clicsLinkCliente || 0;
                 if (elDesbloqueos) elDesbloqueos.textContent = metricas.desbloqueosUsados || 0;
