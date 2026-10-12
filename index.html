@@ -3525,6 +3525,11 @@
             color: #93c5fd;
         }
 
+        /* 🔥 FASE 13: colores para métricas nuevas */
+        .metrica-card:nth-child(2n) .valor {
+            color: var(--champagne);
+        }
+
         .metrica-card .etiqueta {
             font-size: 0.68rem;
             color: var(--texto-tenue);
@@ -4948,6 +4953,30 @@
                 </div>
             </div>
 
+            <!-- 🔥 FASE 13: métricas nuevas -->
+            <div class="metricas-grid" id="metricasExtra" style="margin-top:12px;">
+                <div class="metrica-card">
+                    <span class="emoji">📥</span>
+                    <div class="valor" id="metricaDescargas">—</div>
+                    <div class="etiqueta">Descargas totales</div>
+                </div>
+                <div class="metrica-card">
+                    <span class="emoji">🔗</span>
+                    <div class="valor" id="metricaClicsCliente">—</div>
+                    <div class="etiqueta">Clics a tus links</div>
+                </div>
+                <div class="metrica-card">
+                    <span class="emoji">🎁</span>
+                    <div class="valor" id="metricaDesbloqueos">—</div>
+                    <div class="etiqueta">Desbloqueos usados</div>
+                </div>
+                <div class="metrica-card">
+                    <span class="emoji">📸</span>
+                    <div class="valor" id="metricaClicsOvj">—</div>
+                    <div class="etiqueta">Clics a OVJ</div>
+                </div>
+            </div>
+
             <div class="aviso-aforo" id="avisoAforo" style="display:none;"></div>
 
             <button class="btn-accion btn-secundario" onclick="cerrarModalGenerales()"
@@ -6306,12 +6335,24 @@
 
                 const aforo = data.aforo || {};
                 const totalGenerales = data.totalGenerales || 0;
+                const metricas = data.metricas || {};
 
                 aforoActual = aforo;
 
                 // Actualizar contadores
                 metricaActivos.textContent = aforo.activos || 0;
                 metricaTotales.textContent = totalGenerales;
+
+                // 🔥 FASE 13: métricas nuevas
+                const elDescargas = document.getElementById('metricaDescargas');
+                const elClicsCliente = document.getElementById('metricaClicsCliente');
+                const elDesbloqueos = document.getElementById('metricaDesbloqueos');
+                const elClicsOvj = document.getElementById('metricaClicsOvj');
+
+                if (elDescargas) elDescargas.textContent = metricas.descargasTotales || 0;
+                if (elClicsCliente) elClicsCliente.textContent = metricas.clicsLinkCliente || 0;
+                if (elDesbloqueos) elDesbloqueos.textContent = metricas.desbloqueosUsados || 0;
+                if (elClicsOvj) elClicsOvj.textContent = metricas.clicsLinkOvj || 0;
 
                 // Subtítulo
                 subtitulo.innerHTML = aforo.excedido
@@ -8249,7 +8290,7 @@
             // Abrir el modal
             abrirModalInfo('modalMisRedes');
 
-            // Cargar los links actuales del server
+            // Consultar qué links ya tiene (solo para mostrar el aviso)
             try {
                 const url = `${URL_CLOUDFLARE}/admin/link-cliente?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
@@ -8259,22 +8300,17 @@
                 const data = await resp.json();
 
                 if (resp.ok && data.ok && data.linkCliente) {
-                    if (data.linkCliente.instagram) {
-                        document.getElementById('inputLinkInstagram').value = data.linkCliente.instagram;
-                    }
-                    if (data.linkCliente.facebook) {
-                        document.getElementById('inputLinkFacebook').value = data.linkCliente.facebook;
-                    }
-                    if (data.linkCliente.tiktok) {
-                        document.getElementById('inputLinkTiktok').value = data.linkCliente.tiktok;
-                    }
-                    if (data.linkCliente.texto) {
-                        document.getElementById('inputLinkTexto').value = data.linkCliente.texto;
-                    }
+                    const lc = data.linkCliente;
+                    const tieneLinks = lc.instagram || lc.facebook || lc.tiktok;
 
-                    // Aviso de que ya hay links guardados
-                    if (data.linkCliente.instagram || data.linkCliente.facebook || data.linkCliente.tiktok) {
-                        aviso.textContent = '✓ Ya tenés links guardados. Podés agregar o actualizar.';
+                    if (tieneLinks) {
+                        // Aviso: ya hay links guardados. Los nuevos reemplazan a los anteriores.
+                        const redesGuardadas = [];
+                        if (lc.instagram) redesGuardadas.push('Instagram');
+                        if (lc.facebook) redesGuardadas.push('Facebook');
+                        if (lc.tiktok) redesGuardadas.push('TikTok');
+
+                        aviso.textContent = `✓ Ya tenés links de ${redesGuardadas.join(', ')}. Los nuevos reemplazarán a los anteriores.`;
                         aviso.style.display = 'block';
                     }
                 }
