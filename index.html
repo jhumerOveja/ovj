@@ -462,7 +462,6 @@
             box-shadow: 0 6px 20px rgba(155, 89, 182, 0.2);
         }
 
-        /* 🔥 FASE 13: botón "Mis redes" (admin) */
         .btn-admin-mini.redes {
             background: rgba(74, 222, 128, 0.1);
             border: 1px solid rgba(74, 222, 128, 0.3);
@@ -472,6 +471,18 @@
         .btn-admin-mini.redes:hover {
             background: rgba(74, 222, 128, 0.2);
             box-shadow: 0 6px 20px rgba(74, 222, 128, 0.15);
+        }
+
+        /* 🔥 FASE 13: botón Métricas */
+        .btn-admin-mini.metricas {
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
+        }
+
+        .btn-admin-mini.metricas:hover {
+            background: rgba(96, 165, 250, 0.2);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.15);
         }
 
         .badge-novedad {
@@ -4696,6 +4707,10 @@
                 <button class="btn-admin-mini redes" id="btnMisRedes" onclick="abrirMisRedes()" style="display: none;">
                     🔗 <span class="btn-admin-texto">Mis redes</span><span class="btn-admin-texto-corto">Redes</span>
                 </button>
+                <button class="btn-admin-mini metricas" id="btnMetricas" onclick="abrirModalGenerales()"
+                    style="display: none;">
+                    📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Stats</span>
+                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -5979,6 +5994,7 @@
             const btnInvitar = document.getElementById('btnInvitar');
             const btnQrGeneral = document.getElementById('btnQrGeneral');
             const btnMisRedes = document.getElementById('btnMisRedes');
+            const btnMetricas = document.getElementById('btnMetricas');
 
             if (sesion.tipo === 'admin') {
                 // 🔥 FASE 3: el botón Invitar VIP solo aparece en Modo B
@@ -5993,6 +6009,9 @@
 
                 btnQrGeneral.style.display = 'inline-flex';
 
+                // 🔥 FASE 13: Métricas visibles en ambos modos
+                btnMetricas.style.display = 'inline-flex';
+
                 setTimeout(cargarAforoAdmin, 1500);
 
                 // 🔥 Toast de bienvenida al admin (con botón Aceptar)
@@ -6002,6 +6021,7 @@
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
                 btnMisRedes.style.display = 'none';
+                btnMetricas.style.display = 'none';
             }
 
             // 🔥 El chip EN VIVO refleja el estado del server
