@@ -764,46 +764,6 @@
             }
         }
 
-        /* 🔥 FASE 14: hora del momento */
-        .momento-evento {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.68rem;
-            color: var(--texto-tenue);
-            letter-spacing: 1px;
-            margin-top: 8px;
-            text-transform: uppercase;
-            font-weight: 600;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-
-        .momento-evento:hover {
-            opacity: 1;
-        }
-
-        .momento-evento .momento-hora {
-            color: var(--champagne);
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-        }
-
-        .momento-evento .momento-separador {
-            color: var(--texto-tenue);
-            opacity: 0.4;
-        }
-
-        .momento-evento .momento-texto {
-            color: var(--texto-tenue);
-        }
-
-        .header.scrolleado .momento-evento {
-            opacity: 0.4;
-            font-size: 0.6rem;
-            margin-top: 4px;
-        }
 
         .banner-mensaje {
             max-width: 700px;
@@ -2914,12 +2874,6 @@
                 font-size: 1.2rem;
             }
 
-            .momento-evento {
-                font-size: 0.62rem;
-                letter-spacing: 0.8px;
-                margin-top: 6px;
-            }
-
             .modal {
                 padding: 8px;
             }
@@ -4787,7 +4741,6 @@
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
-                <div class="momento-evento" id="momentoEvento"></div>
             </div>
         </div>
 
@@ -5033,36 +4986,27 @@
                 <div class="metrica-card activos">
                     <span class="emoji">🟢</span>
                     <div class="valor" id="metricaActivos">—</div>
-                    <div class="etiqueta">Activos ahora</div>
+                    <div class="etiqueta">Activos</div>
                 </div>
                 <div class="metrica-card totales">
                     <span class="emoji">👥</span>
                     <div class="valor" id="metricaTotales">—</div>
-                    <div class="etiqueta">Total generales</div>
+                    <div class="etiqueta">Generales</div>
                 </div>
-            </div>
-
-            <!-- 🔥 FASE 13: métricas nuevas -->
-            <div class="metricas-grid" id="metricasExtra">
                 <div class="metrica-card">
                     <span class="emoji">📥</span>
                     <div class="valor" id="metricaDescargas">—</div>
-                    <div class="etiqueta">Descargas totales</div>
+                    <div class="etiqueta">Descargas</div>
                 </div>
                 <div class="metrica-card">
                     <span class="emoji">🔗</span>
                     <div class="valor" id="metricaClicsCliente">—</div>
-                    <div class="etiqueta">Clics a tus links</div>
+                    <div class="etiqueta">Clics links</div>
                 </div>
                 <div class="metrica-card">
                     <span class="emoji">🎁</span>
                     <div class="valor" id="metricaDesbloqueos">—</div>
-                    <div class="etiqueta">Desbloqueos usados</div>
-                </div>
-                <div class="metrica-card">
-                    <span class="emoji">📸</span>
-                    <div class="valor" id="metricaClicsOvj">—</div>
-                    <div class="etiqueta">Clics a OVJ</div>
+                    <div class="etiqueta">Desbloqueos</div>
                 </div>
             </div>
 
@@ -6464,12 +6408,10 @@
                 const elDescargas = document.getElementById('metricaDescargas');
                 const elClicsCliente = document.getElementById('metricaClicsCliente');
                 const elDesbloqueos = document.getElementById('metricaDesbloqueos');
-                const elClicsOvj = document.getElementById('metricaClicsOvj');
 
                 if (elDescargas) elDescargas.textContent = metricas.descargasTotales || 0;
                 if (elClicsCliente) elClicsCliente.textContent = metricas.clicsLinkCliente || 0;
                 if (elDesbloqueos) elDesbloqueos.textContent = metricas.desbloqueosUsados || 0;
-                if (elClicsOvj) elClicsOvj.textContent = metricas.clicsLinkOvj || 0;
 
                 // Subtítulo
                 subtitulo.innerHTML = aforo.excedido
@@ -6843,32 +6785,6 @@
             return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
         }
 
-        // 🔥 FASE 14: hora del momento
-        function _getEmojiMomento(hora) {
-            if (hora >= 6 && hora < 12) return '☀️';
-            if (hora >= 12 && hora < 19) return '🌤️';
-            if (hora >= 19 && hora < 24) return '🌙';
-            return '✨';
-        }
-
-        function actualizarMomentoEvento() {
-            const el = document.getElementById('momentoEvento');
-            if (!el) return;
-
-            const ahora = new Date();
-            const hora = ahora.getHours();
-            const minutos = String(ahora.getMinutes()).padStart(2, '0');
-            const horaFormateada = `${String(hora).padStart(2, '0')}:${minutos}`;
-
-            const emoji = _getEmojiMomento(hora);
-
-            el.innerHTML = `
-                <span>${emoji}</span>
-                <span class="momento-hora">${horaFormateada}</span>
-                <span class="momento-separador">·</span>
-                <span class="momento-texto">Momento del evento</span>
-            `;
-        }
 
         async function abrirDetrasCamara() {
             const modal = document.getElementById('modalDetras');
@@ -8254,8 +8170,6 @@
             cargarFotos();
             iniciarAvisosRotativos();
 
-            // 🔥 FASE 14: hora del momento (actualiza cada minuto)
-            actualizarMomentoEvento();
             setInterval(actualizarMomentoEvento, 60 * 1000);
 
             // 🔥 Countdown en vivo del receso (actualiza cada segundo)
