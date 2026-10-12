@@ -5366,8 +5366,12 @@
             // Actualizar menú lateral (idioma activo)
             actualizarMenuLateral();
 
-            document.getElementById('indicadorVivoTexto').textContent = t('enVivo');
-            document.getElementById('textoDetras').textContent = t('detrasBoton');
+            // 🔥 Chip EN VIVO (reemplaza al viejo indicadorVivoTexto)
+            const chipTexto = document.querySelector('.chip-en-vivo-texto');
+            if (chipTexto) chipTexto.textContent = t('enVivo');
+
+            const textoDetras = document.getElementById('textoDetras');
+            if (textoDetras) textoDetras.textContent = t('detrasBoton');
 
             document.querySelectorAll('.lang-opcion').forEach(op => {
                 op.classList.toggle('activo', op.dataset.lang === idioma);
@@ -6126,11 +6130,8 @@
             if (cargando) return;
             cargando = true;
 
-            const estado = document.getElementById("estado");
-
             try {
-                estado.innerHTML = t('cargando');
-                estado.className = "cargando";
+                // (el #estado fue eliminado — sin "Cargando...")
 
                 // 🔥 Va al server (vía túnel). Responde desde memoria, 0 Class B.
                 // Si falla, cae al Worker (modo emergencia).
@@ -6634,9 +6635,9 @@
             const bannerMensaje = document.getElementById('bannerMensajeContainer');
             if (bannerMensaje) bannerMensaje.innerHTML = '';
 
-            // Ocultar el indicador en vivo
-            const indicador = document.getElementById('indicadorVivo');
-            if (indicador) indicador.style.display = 'none';
+            // Ocultar el chip EN VIVO
+            const chip = document.getElementById('chipEnVivo');
+            if (chip) chip.style.display = 'none';
 
             // Ocultar la app
             document.getElementById('app').classList.remove('activo');
