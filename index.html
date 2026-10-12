@@ -570,6 +570,18 @@
             white-space: nowrap;
         }
 
+        /* 🔥 FASE 14: contador "X mirando" dentro del chip */
+        .chip-en-vivo-contador {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--texto-suave);
+            white-space: nowrap;
+            margin-left: 2px;
+            padding-left: 6px;
+            border-left: 1px solid rgba(232, 196, 122, 0.3);
+        }
+
         .lang-selector {
             position: relative;
             user-select: none;
@@ -750,6 +762,47 @@
                 width: 70%;
                 opacity: 0.8;
             }
+        }
+
+        /* 🔥 FASE 14: hora del momento */
+        .momento-evento {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.68rem;
+            color: var(--texto-tenue);
+            letter-spacing: 1px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .momento-evento:hover {
+            opacity: 1;
+        }
+
+        .momento-evento .momento-hora {
+            color: var(--champagne);
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .momento-evento .momento-separador {
+            color: var(--texto-tenue);
+            opacity: 0.4;
+        }
+
+        .momento-evento .momento-texto {
+            color: var(--texto-tenue);
+        }
+
+        .header.scrolleado .momento-evento {
+            opacity: 0.4;
+            font-size: 0.6rem;
+            margin-top: 4px;
         }
 
         .banner-mensaje {
@@ -2842,6 +2895,11 @@
                 letter-spacing: 1.2px;
             }
 
+            .chip-en-vivo-contador {
+                font-size: 0.56rem;
+                padding-left: 5px;
+            }
+
             .chip-en-vivo-punto {
                 width: 6px;
                 height: 6px;
@@ -2854,6 +2912,12 @@
 
             .header.scrolleado .header-bottom .evento-titulo {
                 font-size: 1.2rem;
+            }
+
+            .momento-evento {
+                font-size: 0.62rem;
+                letter-spacing: 0.8px;
+                margin-top: 6px;
             }
 
             .modal {
@@ -3969,6 +4033,12 @@
             box-shadow: 0 8px 30px rgba(74, 222, 128, 0.35);
         }
 
+        .regalo-ticket-btn.secundario:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1) !important;
+        }
+
         .regalo-ticket-venc {
             font-size: 0.68rem;
             color: var(--texto-tenue);
@@ -4673,6 +4743,7 @@
                     <div class="chip-en-vivo" id="chipEnVivo">
                         <span class="chip-en-vivo-punto"></span>
                         <span class="chip-en-vivo-texto">En vivo</span>
+                        <span class="chip-en-vivo-contador" id="chipContadorMirando" style="display: none;"></span>
                     </div>
                     <button class="btn-menu-lateral" id="btnMenuLateral" onclick="toggleMenuLateral()"
                         aria-label="Menú">
@@ -4714,6 +4785,7 @@
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
+                <div class="momento-evento" id="momentoEvento"></div>
             </div>
         </div>
 
@@ -6113,6 +6185,27 @@
             }
         }
 
+        // 🔥 FASE 14: contador "X mirando"
+        function actualizarContadorMirando(cantidad) {
+            const el = document.getElementById('chipContadorMirando');
+            if (!el) return;
+
+            // Ocultar si el chip está oculto (emergencia) o si no hay nadie
+            const chip = document.getElementById('chipEnVivo');
+            if (!chip || chip.classList.contains('oculto')) {
+                el.style.display = 'none';
+                return;
+            }
+
+            if (!cantidad || cantidad <= 0) {
+                el.style.display = 'none';
+                return;
+            }
+
+            el.textContent = `${cantidad} mirando`;
+            el.style.display = 'inline';
+        }
+
         // ==========================================
         // 👑 BIENVENIDA AL ADMIN (1 vez por sesión)
         // ==========================================
@@ -6485,10 +6578,15 @@
                 const data = await respuesta.json();
 
                 // 🔥 Si el server respondió OK, marcar online (y limpiar cache si volvimos de emergencia)
+                // 🔥 Si el server respondió OK, marcar online (y limpiar cache si volvimos de emergencia)
                 if (!vinoDelWorker) {
                     if (!servidorOnline) {
                         servidorOnline = true;
                         fotosCache = [];
+                        // Refrescar estado visual (botón, badge, chip)
+                        actualizarChipEnVivo();
+                        actualizarBotonPrincipal();
+                        actualizarBadgeRol();
                     }
                 }
 
@@ -6507,6 +6605,11 @@
 
                 // 🔥 FASE 13: guardar link del cliente para el modal de desbloqueo
                 linkClienteActual = data.linkCliente || null;
+
+                // 🔥 FASE 14: actualizar contador "X mirando"
+                if (typeof data.mirando === 'number') {
+                    actualizarContadorMirando(data.mirando);
+                }
 
                 // 🔥 El poll adaptativo solo viene del server. El Worker no lo devuelve.
                 if (data.poll) {
@@ -6598,6 +6701,8 @@
                 console.error("Error:", error);
                 servidorOnline = false;
                 actualizarChipEnVivo();
+                actualizarBotonPrincipal();
+                actualizarBadgeRol();
 
                 // 🔥 Silencio total: no avisamos al invitado.
                 // La galería sigue mostrando las últimas fotos cacheadas.
@@ -6732,6 +6837,33 @@
 
             const d = new Date(fechaISO);
             return d.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' });
+        }
+
+        // 🔥 FASE 14: hora del momento
+        function _getEmojiMomento(hora) {
+            if (hora >= 6 && hora < 12) return '☀️';
+            if (hora >= 12 && hora < 19) return '🌤️';
+            if (hora >= 19 && hora < 24) return '🌙';
+            return '✨';
+        }
+
+        function actualizarMomentoEvento() {
+            const el = document.getElementById('momentoEvento');
+            if (!el) return;
+
+            const ahora = new Date();
+            const hora = ahora.getHours();
+            const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const horaFormateada = `${String(hora).padStart(2, '0')}:${minutos}`;
+
+            const emoji = _getEmojiMomento(hora);
+
+            el.innerHTML = `
+                <span>${emoji}</span>
+                <span class="momento-hora">${horaFormateada}</span>
+                <span class="momento-separador">·</span>
+                <span class="momento-texto">Momento del evento</span>
+            `;
         }
 
         async function abrirDetrasCamara() {
@@ -7066,6 +7198,14 @@
             }
 
             if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+                // 🔥 En emergencia, el botón siempre está disponible
+                if (servidorOnline === false) {
+                    btn.classList.remove('agotado');
+                    icono.textContent = "⬇️";
+                    texto.textContent = t('descargarFoto');
+                    return;
+                }
+
                 if (sesionGeneral.enReceso) {
                     const reanudarEn = Number(sesionGeneral.reanudarEn) || 0;
                     const restanteMs = reanudarEn > 0 ? reanudarEn - Date.now() : 0;
@@ -7408,7 +7548,10 @@
                 return;
             }
 
-            if (sesion && sesion.tipo === 'general' && sesionGeneral) {
+            // 🔥 En emergencia, no aplicar límites (el server no puede controlar nada)
+            const enEmergencia = servidorOnline === false;
+
+            if (!enEmergencia && sesion && sesion.tipo === 'general' && sesionGeneral) {
                 if (sesionGeneral.enReceso) {
                     const min = Math.max(1, Math.ceil((sesionGeneral.reanudarEn - Date.now()) / 60000));
                     mostrarToast(`⏸️ Podrás descargar en ${min} min`, 'tip');
@@ -8107,6 +8250,10 @@
             cargarFotos();
             iniciarAvisosRotativos();
 
+            // 🔥 FASE 14: hora del momento (actualiza cada minuto)
+            actualizarMomentoEvento();
+            setInterval(actualizarMomentoEvento, 60 * 1000);
+
             // 🔥 Countdown en vivo del receso (actualiza cada segundo)
             setInterval(() => {
                 if (sesionGeneral && sesionGeneral.enReceso) {
@@ -8532,6 +8679,12 @@
                 ? (idiomaActual === 'en' ? '✓ Sent' : idiomaActual === 'zh' ? '✓ 已发送' : '✓ Enviado')
                 : (idiomaActual === 'en' ? '📲 Claim via WhatsApp' : idiomaActual === 'zh' ? '📲 通过 WhatsApp 领取' : '📲 Reclamar por WhatsApp');
 
+            const textoCompartir = idiomaActual === 'en'
+                ? '🤝 Share with someone'
+                : idiomaActual === 'zh'
+                    ? '🤝 分享给他人'
+                    : '🤝 Compartir con alguien';
+
             cont.innerHTML = `
         <div class="regalo-ticket">
             <div class="regalo-ticket-titulo">${escapeHtml(t.titulo)}</div>
@@ -8542,7 +8695,12 @@
             </button>
             <div class="regalo-ticket-venc">${idiomaActual === 'en' ? 'Expires' : idiomaActual === 'zh' ? '有效期至' : 'Vence'}: ${fechaVenc}</div>
         </div>
-        <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc;" onclick="cerrarModalInfo('modalRegalo')">
+
+        <button class="regalo-ticket-btn secundario" onclick="compartirTicketWhatsApp()" style="background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.1);">
+            ${textoCompartir}
+        </button>
+
+        <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;" onclick="cerrarModalInfo('modalRegalo')">
             ${idiomaActual === 'en' ? 'Close' : idiomaActual === 'zh' ? '关闭' : 'Cerrar'}
         </button>
     `;
@@ -8586,6 +8744,68 @@
                 renderizarTicketEnRegalo(t);
                 actualizarMenuLateral();
             }, 500);
+        }
+
+        // 🔥 FASE 14: compartir ticket con un tercero
+        function compartirTicketWhatsApp() {
+            const ticketLocal = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
+            if (!ticketLocal) return;
+
+            let t;
+            try {
+                t = JSON.parse(ticketLocal);
+            } catch (e) {
+                return;
+            }
+
+            const nombreEvento = document.getElementById('eventoTitulo').textContent || 'el evento';
+            const textoParaOvj = idiomaActual === 'en'
+                ? 'Hi! Someone shared an OVJ Studio gift with me. I want to know more.'
+                : idiomaActual === 'zh'
+                    ? '你好！有人分享了 OVJ Studio 的礼物给我。我想了解更多。'
+                    : '¡Hola! Me compartieron un regalo de OVJ Studio. Quiero saber más.';
+
+            const linkContacto = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoParaOvj)}`;
+
+            let mensaje;
+            if (idiomaActual === 'en') {
+                mensaje =
+                    `Look at the gift I won at the event!\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 Event: ${nombreEvento}\n\n` +
+                    `If you want to take advantage of it, message OVJ Studio:\n` +
+                    `${linkContacto}\n\n` +
+                    `— Shared from OVJ Studio`;
+            } else if (idiomaActual === 'zh') {
+                mensaje =
+                    `看看我在活动上赢得的礼物！\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 活动：${nombreEvento}\n\n` +
+                    `如果你想利用它，请联系 OVJ Studio：\n` +
+                    `${linkContacto}\n\n` +
+                    `— 分享自 OVJ Studio`;
+            } else {
+                mensaje =
+                    `¡Mirá el regalo que gané en el evento!\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 Evento: ${nombreEvento}\n\n` +
+                    `Si lo querés aprovechar, escribile a OVJ Studio:\n` +
+                    `${linkContacto}\n\n` +
+                    `— Compartido desde OVJ Studio`;
+            }
+
+            // Abrir WhatsApp con el selector de contactos
+            // (el usuario elige a quién mandárselo)
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+
+            // Métrica local (no bloquea)
+            try {
+                if (!localStorage.getItem('ovj_ticket_compartido_' + EVENTO_ID)) {
+                    localStorage.setItem('ovj_ticket_compartido_' + EVENTO_ID, 'true');
+                }
+            } catch (e) { }
+
+            mostrarToast('🤝 Mensaje listo para compartir', 'success', 3000);
         }
 
 
