@@ -263,6 +263,44 @@
             font-weight: 600;
         }
 
+        .header-left .saludo .punto-server {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--texto-tenue);
+            margin-left: 6px;
+            vertical-align: middle;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header-left .saludo .punto-server.ok {
+            background: var(--verde);
+            box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+        }
+
+        .header-left .saludo .punto-server.error {
+            background: var(--rojo);
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+        }
+
+        .header-left .saludo .punto-server.cargando {
+            background: var(--oro);
+            animation: pulsePuntoServer 1.5s infinite;
+        }
+
+        @keyframes pulsePuntoServer {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
         .header-right .btn-salir {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -388,8 +426,26 @@
             color: #fff;
             letter-spacing: 1px;
             line-height: 1.2;
-            margin-bottom: 14px;
+            margin-bottom: 4px;
             word-break: break-word;
+        }
+
+        .card-activo .evento-subtitulo {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: inline-block;
+        }
+
+        .card-activo .evento-subtitulo.modo-intimo {
+            color: var(--champagne);
+            opacity: 0.85;
+        }
+
+        .card-activo .evento-subtitulo.modo-masivo {
+            color: #93c5fd;
+            opacity: 0.85;
         }
 
         .card-activo .meta {
@@ -1530,7 +1586,10 @@
         <div class="header">
             <div class="header-left">
                 <div class="ovj">OVJ <span>Studio</span></div>
-                <div class="saludo">Hola, <strong id="nombreFotografo">—</strong></div>
+                <div class="saludo">
+                    Hola, <strong id="nombreFotografo">—</strong>
+                    <span class="punto-server" id="puntoServer" title="Estado del servidor"></span>
+                </div>
             </div>
             <div class="header-right">
                 <button class="btn-salir" onclick="hacerLogout()">Salir</button>
@@ -1538,12 +1597,7 @@
         </div>
 
         <div class="contenedor">
-            <!-- Estado del sistema -->
-            <div class="barra-sistema" id="barraSistema">
-                <span><span class="punto cargando" id="puntoServer"></span>Servidor</span>
-                <span class="separador">·</span>
-                <span id="textoUltimaAct">Actualizando...</span>
-            </div>
+            <!-- (barra de sistema eliminada) -->
 
             <!-- Sección: Evento activo -->
             <div id="seccionActivo"></div>
@@ -2072,29 +2126,14 @@
 
         function marcarServidor(estado) {
             const punto = $('puntoServer');
-            const texto = $('textoUltimaAct');
-
-            punto.className = 'punto ' + estado;
+            if (punto) {
+                punto.className = 'punto-server ' + estado;
+            }
 
             if (estado === 'ok') {
-                const hora = new Date().toLocaleTimeString('es-BO', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                });
-                texto.textContent = 'Actualizado ' + hora;
-
-                // 🔥 FASE 9: server OK → ocultar banner
                 mostrarBannerServer('oculto');
-
             } else if (estado === 'error') {
-                texto.textContent = 'Sin conexión';
-
-                // 🔥 FASE 9: server caído → mostrar banner
                 mostrarBannerServer('caido', '⚠️ Server caído. Usá Modo Emergencia.');
-
-            } else {
-                texto.textContent = 'Actualizando...';
             }
         }
 
@@ -2109,6 +2148,7 @@
                 return;
             }
 
+            // ── Meta del evento ──
             let metaHtml = '';
             metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
 
@@ -2119,75 +2159,54 @@
             metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
             metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
+            // ── Avisos de tiempo (solo los condicionales) ──
             let avisoTiempoHtml = '';
             if (tiempoEvento) {
                 if (tiempoEvento.yaTermino) {
                     avisoTiempoHtml = `
-                        <div class="aviso-tiempo terminado">
-                            <span class="emoji">⏰</span>
-                            <div>
-                                <strong>El tiempo programado ya se agotó.</strong><br>
-                                Finalizá el evento cuando corresponda.
-                            </div>
-                        </div>
-                    `;
+                <div class="aviso-tiempo terminado">
+                    <span class="emoji">⏰</span>
+                    <div>
+                        <strong>El tiempo programado ya se agotó.</strong><br>
+                        Finalizá el evento cuando corresponda.
+                    </div>
+                </div>
+            `;
                 } else if (tiempoEvento.tiempoRestanteMin <= UMBRAL_AVISO_MIN) {
                     avisoTiempoHtml = `
-                        <div class="aviso-tiempo urgente">
-                            <span class="emoji">⏰</span>
-                            <div>
-                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    avisoTiempoHtml = `
-                        <div class="aviso-tiempo">
-                            <span class="emoji">⏱️</span>
-                            <div>
-                                Tiempo restante: <strong>${tiempoEvento.tiempoRestanteMin} min</strong>
-                                · Fin aprox: <strong>${tiempoEvento.horaFinFormateada}</strong>
-                            </div>
-                        </div>
-                    `;
+                <div class="aviso-tiempo urgente">
+                    <span class="emoji">⏰</span>
+                    <div>
+                        <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
+                    </div>
+                </div>
+            `;
                 }
             }
 
-            let contadoresHtml = '';
+            // ── Subtítulo del modo del evento ──
+            let subtituloModoHtml = '';
             if (contadores) {
                 const modoEvento = contadores.modoEvento || 'B';
-
-                // 🔥 FASE 4: bloque de modo del evento
-                let modoBadge = '';
                 if (modoEvento === 'A') {
-                    modoBadge = `
-            <div style="background:rgba(232,196,122,0.08); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:0.75rem; color:#e8c47a; line-height:1.5; text-align:center;">
-                🎪 <strong>Modo Íntimo</strong> · Todos los invitados son VIP automáticamente
-            </div>
-        `;
+                    subtituloModoHtml = `<div class="evento-subtitulo modo-intimo">🎪 Íntimo · Todos VIP</div>`;
                 } else {
-                    const vipsTotal = contadores.vipsTotal || 0;
                     const vipsUsados = contadores.vipsUsados || 0;
                     const limiteVips = contadores.limiteVips || 0;
-                    const restantes = Math.max(0, limiteVips - vipsUsados);
-
-                    modoBadge = `
-            <div style="background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.3); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:0.75rem; color:#93c5fd; line-height:1.5; text-align:center;">
-                🎪 <strong>Modo Masivo</strong> · VIPs: <strong>${vipsUsados} / ${limiteVips}</strong>${restantes > 0 ? ` · ${restantes} disponibles` : ' · completo'}
-            </div>
-        `;
+                    subtituloModoHtml = `<div class="evento-subtitulo modo-masivo">🎪 Masivo · VIPs ${vipsUsados}/${limiteVips}</div>`;
                 }
+            }
 
-                // Los contadores de generales solo aplican en Modo B
-                if (modoEvento === 'B') {
-                    const generalesActivos = contadores.generalesActivos || 0;
-                    const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
-                    const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
-                    const descSesion = contadores.descargasPorSesion || 5;
-                    const desbloqueos = contadores.desbloqueosSociales || 0;
+            // ── Contadores (solo modo B) ──
+            let contadoresHtml = '';
+            if (contadores && (contadores.modoEvento || 'B') === 'B') {
+                const generalesActivos = contadores.generalesActivos || 0;
+                const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
+                const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
+                const descSesion = contadores.descargasPorSesion || 5;
+                const desbloqueos = contadores.desbloqueosSociales || 0;
 
-                    contadoresHtml = `
-            ${modoBadge}
+                contadoresHtml = `
             <div class="contadores-grid">
                 <div class="contador-item">
                     <span class="emoji">📥</span>
@@ -2219,74 +2238,67 @@
                 </div>
             </div>
         `;
-                } else {
-                    // Modo A: solo el badge, sin contadores de generales
-                    contadoresHtml = modoBadge;
-                }
             }
 
+            // ── Aviso de aforo ──
             let aforoHtml = '';
             if (estado && estado.aforo && estado.aforo.excedido) {
                 const a = estado.aforo;
                 aforoHtml = `
-                    <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
-                        <span class="emoji">👥</span>
-                        <div>
-                            <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
-                            El cliente puede ver el detalle desde su panel.
-                        </div>
-                    </div>
-                `;
+            <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
+                <span class="emoji">👥</span>
+                <div>
+                    <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
+                    El cliente puede ver el detalle desde su panel.
+                </div>
+            </div>
+        `;
             }
+
+            // ── Mensaje en vivo ──
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
-                    <div class="card-mensaje">
-                        <span class="emoji">💬</span>
-                        <div class="info">
-                            <div class="titulo">Mensaje en vivo</div>
-                            <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
-                        </div>
-                    </div>
-                `;
+            <div class="card-mensaje">
+                <span class="emoji">💬</span>
+                <div class="info">
+                    <div class="titulo">Mensaje en vivo</div>
+                    <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
+                </div>
+            </div>
+        `;
             }
 
             cont.innerHTML = `
-                <div class="seccion">
-                    <div class="seccion-titulo">Evento activo</div>
-                    <div class="card-activo">
-                        <div class="badge">
-                            ● En vivo
-                        </div>
-                        <div class="titulo">${escapeHtml(activo.evento)}</div>
-                        <div class="meta">${metaHtml}</div>
+        <div class="seccion">
+            <div class="seccion-titulo">Evento activo</div>
+            <div class="card-activo">
+                <div class="titulo">${escapeHtml(activo.evento)}</div>
+                ${subtituloModoHtml}
+                <div class="meta">${metaHtml}</div>
 
-                        ${avisoTiempoHtml}
-                        ${contadoresHtml}
-                        ${aforoHtml}
-                        ${mensajeHtml}
+                ${avisoTiempoHtml}
+                ${contadoresHtml}
+                ${aforoHtml}
+                ${mensajeHtml}
 
-                        <div class="acciones-grid">
-                            <button class="btn-accion btn-subir full" onclick="abrirTelegram()">
-                                📤 Subir fotos desde Telegram
-                            </button>
-                            <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
-                                💬 Mensaje
-                            </button>
-                            <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                                🔗 Link Cliente
-                            </button>
-                            <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
-                                🎫 QR General
-                            </button>
-                            <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
-                                🏁 Finalizar evento
-                            </button>
-                        </div>
-
-                    </div>
+                <div class="acciones-grid">
+                    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+                        💬 Mensaje
+                    </button>
+                    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
+                        🔗 Link Cliente
+                    </button>
+                    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
+                        🎫 QR General
+                    </button>
+                    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
+                        🏁 Finalizar evento
+                    </button>
                 </div>
-            `;
+            </div>
+        </div>
+    `;
         }
 
         function renderAgendados(agendados) {
