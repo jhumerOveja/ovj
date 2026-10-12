@@ -487,6 +487,66 @@
             }
         }
 
+        /* ===== CHIP EN VIVO (header) ===== */
+        .chip-en-vivo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 11px 5px 9px;
+            background: var(--champagne-tenue);
+            border: 1px solid rgba(232, 196, 122, 0.35);
+            border-radius: 50px;
+            user-select: none;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .chip-en-vivo.oculto {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        .chip-en-vivo-punto {
+            position: relative;
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: var(--error);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.7);
+        }
+
+        .chip-en-vivo-punto::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: rgba(248, 113, 113, 0.45);
+            animation: pulsoChipVivo 1.8s ease-out infinite;
+        }
+
+        @keyframes pulsoChipVivo {
+            0% {
+                transform: scale(0.6);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        .chip-en-vivo-texto {
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--champagne);
+            white-space: nowrap;
+        }
+
         .lang-selector {
             position: relative;
             user-select: none;
@@ -1166,10 +1226,11 @@
         }
 
         .estado-offline {
+            grid-column: 1 / -1;
             max-width: 400px;
-            margin: 60px auto;
+            margin: 40px auto;
             text-align: center;
-            padding: 50px 30px;
+            padding: 40px 24px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
             border: 1px solid var(--borde);
             border-radius: 20px;
@@ -1189,10 +1250,10 @@
         }
 
         .estado-offline .icono {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.6rem;
+            margin-bottom: 16px;
             display: block;
-            opacity: 0.9;
+            opacity: 0.5;
             animation: pulsoIconoVacio 2.5s ease-in-out infinite;
         }
 
@@ -1201,26 +1262,26 @@
             0%,
             100% {
                 transform: scale(1);
-                opacity: 0.9;
+                opacity: 0.5;
             }
 
             50% {
                 transform: scale(1.08);
-                opacity: 1;
+                opacity: 0.8;
             }
         }
 
         .estado-offline .titulo {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--acento);
-            margin-bottom: 10px;
+            color: var(--texto-suave);
+            margin-bottom: 8px;
         }
 
         .estado-offline .mensaje {
-            font-size: 0.85rem;
-            color: var(--texto-suave);
-            line-height: 1.6;
+            font-size: 0.82rem;
+            color: var(--texto-tenue);
+            line-height: 1.5;
             font-weight: 300;
         }
 
@@ -2607,6 +2668,55 @@
             color: var(--error);
         }
 
+        .toast-item .toast-btn-aceptar {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 9px 16px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .toast-item .toast-btn-aceptar:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(232, 196, 122, 0.35);
+        }
+
+        .toast-item .toast-btn-aceptar:active {
+            transform: scale(0.98);
+        }
+
+        /* Estilo especial para el toast de bienvenida admin */
+        .toast-item.admin-bienvenida {
+            max-width: 420px;
+            border-color: rgba(232, 196, 122, 0.5);
+            background: rgba(20, 20, 23, 0.98);
+            box-shadow: 0 10px 40px rgba(232, 196, 122, 0.2),
+                0 0 0 1px rgba(232, 196, 122, 0.15) inset;
+            padding: 16px 18px;
+            border-radius: 16px;
+            animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toast-item.admin-bienvenida strong {
+            color: var(--champagne);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .toast-item.admin-bienvenida::after {
+            display: none;
+            /* sin shimmer para este toast */
+        }
+
         @keyframes toastIn {
             0% {
                 opacity: 0;
@@ -2697,6 +2807,21 @@
 
             .header-left .ovj-studio::before {
                 display: none;
+            }
+
+            .chip-en-vivo {
+                padding: 4px 9px 4px 8px;
+                gap: 5px;
+            }
+
+            .chip-en-vivo-texto {
+                font-size: 0.58rem;
+                letter-spacing: 1.2px;
+            }
+
+            .chip-en-vivo-punto {
+                width: 6px;
+                height: 6px;
             }
 
             .header-bottom .evento-titulo {
@@ -3034,102 +3159,6 @@
 
             .btn-detras-camara {
                 padding: 7px 10px;
-            }
-        }
-
-        /* ===== INDICADOR EN VIVO FLOTANTE ===== */
-        .indicador-vivo {
-            position: fixed;
-            bottom: 18px;
-            left: 18px;
-            z-index: 200;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 14px 7px 12px;
-            background: rgba(20, 20, 23, 0.85);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(248, 113, 113, 0.35);
-            border-radius: 50px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(248, 113, 113, 0.1) inset;
-            user-select: none;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            animation: latidoIndicador 2s ease-in-out infinite;
-        }
-
-        @keyframes latidoIndicador {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.9;
-            }
-
-            50% {
-                transform: scale(1.03);
-                opacity: 1;
-            }
-        }
-
-        .indicador-vivo-punto {
-            position: relative;
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--error);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
-        }
-
-        .indicador-vivo-punto::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: rgba(248, 113, 113, 0.5);
-            animation: pulsoIndicadorVivo 1.8s ease-out infinite;
-        }
-
-        @keyframes pulsoIndicadorVivo {
-            0% {
-                transform: scale(0.6);
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: scale(2.2);
-                opacity: 0;
-            }
-        }
-
-        .indicador-vivo-texto {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #fca5a5;
-            white-space: nowrap;
-        }
-
-        /* Ajuste responsive en móvil */
-        @media (max-width: 600px) {
-            .indicador-vivo {
-                bottom: 14px;
-                left: 14px;
-                padding: 6px 12px 6px 10px;
-            }
-
-            .indicador-vivo-texto {
-                font-size: 0.62rem;
-                letter-spacing: 1.2px;
-            }
-
-            .indicador-vivo-punto {
-                width: 7px;
-                height: 7px;
             }
         }
 
@@ -4470,6 +4499,10 @@
                     <h1 class="ovj-studio">OVJ <span>Studio</span></h1>
                 </div>
                 <div class="header-right">
+                    <div class="chip-en-vivo" id="chipEnVivo">
+                        <span class="chip-en-vivo-punto"></span>
+                        <span class="chip-en-vivo-texto">En vivo</span>
+                    </div>
                     <button class="btn-menu-lateral" id="btnMenuLateral" onclick="toggleMenuLateral()"
                         aria-label="Menú">
                         <span class="linea-menu"></span>
@@ -4508,7 +4541,6 @@
 
         <div id="bannerAforoContainer"></div>
         <div id="bannerMensajeContainer"></div>
-        <div id="estado">Cargando...</div>
 
         <div class="galeria" id="galeria"></div>
 
@@ -4765,11 +4797,7 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-    <!-- 🔴 Indicador EN VIVO flotante -->
-    <div class="indicador-vivo" id="indicadorVivo">
-        <span class="indicador-vivo-punto"></span>
-        <span class="indicador-vivo-texto" id="indicadorVivoTexto">En vivo</span>
-    </div>
+
     <!-- ===== MENÚ LATERAL ===== -->
     <div class="menu-lateral-overlay" id="menuLateralOverlay" onclick="cerrarMenuLateral()"></div>
 
@@ -5358,8 +5386,8 @@
             }
 
             actualizarBotonPrincipal();
-            actualizarEstado();
             actualizarBadgeRol();
+            actualizarChipEnVivo();
             if (fotosCache.length > 0) {
                 renderizarGaleria();
             }
@@ -5647,12 +5675,13 @@
                 // 🔥 FASE 10: si el server está caído, intentar restaurar desde cache
                 const restaurado = restaurarSesionDesdeCache();
                 if (restaurado) {
-                    console.log('✅ Sesión restaurada desde cache (server caído)');
-                    mostrarToast('📴 Server caído. Modo de lectura activo.', 'tip', 6000);
+                    console.log('✅ Sesión restaurada desde cache');
+                    // Silencio total: no avisamos al invitado
                     return true;
                 }
 
-                mostrarBloqueo('error', t('offlineMensaje'));
+                // Sin cache: mensaje neutro
+                mostrarBloqueo('error', 'No pudimos validar tu acceso.<br>Reintentá en un momento.');
                 return false;
             }
         }
@@ -5718,49 +5747,17 @@
                 btnQrGeneral.style.display = 'inline-flex';
 
                 setTimeout(cargarAforoAdmin, 1500);
+
+                // 🔥 Toast de bienvenida al admin (con botón Aceptar)
+                mostrarBienvenidaAdmin();
+
             } else {
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
             }
 
-            actualizarBadgeRol();
-            // 🔥 FASE 10: si estamos en modo offline, mostrar indicador visual
-            if (window._modoOffline) {
-                // Si ya existe, no lo duplicamos
-                if (!document.getElementById('bannerOffline')) {
-                    const banner = document.createElement('div');
-                    banner.id = 'bannerOffline';
-                    banner.style.cssText = `
-                position: fixed;
-                bottom: 70px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(243, 156, 18, 0.92);
-                color: #0a0a0a;
-                padding: 8px 18px;
-                border-radius: 50px;
-                font-size: 0.72rem;
-                font-weight: 700;
-                z-index: 250;
-                box-shadow: 0 4px 20px rgba(243, 156, 18, 0.4);
-                animation: pulseOffline 3s ease-in-out infinite;
-                pointer-events: none;
-            `;
-                    banner.textContent = '📴 Modo lectura · Algunas acciones no disponibles';
-                    document.body.appendChild(banner);
-
-                    setTimeout(() => {
-                        if (banner) {
-                            banner.textContent = '📴 Modo lectura';
-                            banner.style.opacity = '0.6';
-                        }
-                    }, 8000);
-                }
-            } else {
-                // Si no estamos offline y el banner existe, lo quitamos
-                const existente = document.getElementById('bannerOffline');
-                if (existente) existente.remove();
-            }
+            // 🔥 El chip EN VIVO refleja el estado del server
+            actualizarChipEnVivo();
 
             // 🔥 FASE 3: toast de bienvenida al VIP
             if (sesion.tipo === 'vip') {
@@ -5832,6 +5829,83 @@
             // Fallback
             el.style.display = 'none';
             if (elReceso) elReceso.style.display = 'none';
+        }
+
+        // ==========================================
+        // 🟢 CHIP EN VIVO
+        // ==========================================
+        function actualizarChipEnVivo() {
+            const chip = document.getElementById('chipEnVivo');
+            if (!chip) return;
+
+            if (servidorOnline === false) {
+                chip.classList.add('oculto');
+            } else {
+                chip.classList.remove('oculto');
+            }
+        }
+
+        // ==========================================
+        // 👑 BIENVENIDA AL ADMIN (1 vez por sesión)
+        // ==========================================
+        function mostrarBienvenidaAdmin() {
+            const clave = 'ovj_admin_bienvenida_' + (EVENTO_ID || 'default');
+
+            if (sessionStorage.getItem(clave)) return;
+            sessionStorage.setItem(clave, '1');
+
+            const esModoIntimo = sesion.modoEvento === 'A';
+
+            const texto = esModoIntimo
+                ? `<strong>👑 Sos administrador del evento</strong><br><br>Podés ver el QR general desde los botones de arriba.`
+                : `<strong>👑 Sos administrador del evento</strong><br><br>Podés invitar VIPs y ver el QR general desde los botones de arriba.`;
+
+            setTimeout(() => {
+                mostrarToastConBoton(texto, 'admin-bienvenida');
+            }, 1500);
+        }
+
+        // ==========================================
+        // ✨ TOAST DE FOTOS NUEVAS
+        // ==========================================
+        function mostrarToastFotosNuevas(cantidad) {
+            if (cantidad <= 0) return;
+
+            const texto = cantidad === 1
+                ? '✨ Nueva foto'
+                : `✨ ${cantidad} fotos nuevas`;
+
+            mostrarToast(texto, 'success', 3500);
+        }
+
+        // ==========================================
+        // 🔔 TOAST CON BOTÓN ACEPTAR
+        // ==========================================
+        function mostrarToastConBoton(html, tipo = 'tip') {
+            const contenedor = document.getElementById('toastContainer');
+            if (!contenedor) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-item ' + tipo;
+            toast.style.pointerEvents = 'auto';
+            toast.innerHTML = `
+        <div style="text-align:left; line-height:1.55; padding:2px 4px;">${html}</div>
+        <button class="toast-btn-aceptar" onclick="cerrarToastConBoton(this)">Aceptar</button>
+    `;
+
+            contenedor.appendChild(toast);
+            toastsActivos.push(toast);
+        }
+
+        function cerrarToastConBoton(btn) {
+            const toast = btn.closest('.toast-item');
+            if (!toast) return;
+
+            toast.classList.add('saliendo');
+            setTimeout(() => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+                toastsActivos = toastsActivos.filter(t => t !== toast);
+            }, 400);
         }
 
         // 🔥 Función separada para el countdown en vivo del receso
@@ -6212,16 +6286,16 @@
 
                     if (fotosRecienLlegadas.length > 0) {
                         lanzarConfeti();
-                        mostrarToast(`<strong>✨ ${t('fotoNuevaLlegada')}</strong>`, 'success');
+                        mostrarToastFotosNuevas(fotosRecienLlegadas.length);
                     }
                 }
 
                 // 🔥 Guardar siempre las fotos vistas (no solo cuando hay nuevas)
                 guardarFotosVistas(fotosVistas);
 
-                actualizarEstado();
                 actualizarBotonPrincipal();
                 actualizarBadgeRol();
+                actualizarChipEnVivo();
 
                 verificarMostrarDesbloqueo();
 
@@ -6243,7 +6317,10 @@
             } catch (error) {
                 console.error("Error:", error);
                 servidorOnline = false;
-                mostrarOffline();
+                actualizarChipEnVivo();
+
+                // 🔥 Silencio total: no avisamos al invitado.
+                // La galería sigue mostrando las últimas fotos cacheadas.
 
                 // 🔥 Reintentar en 30s
                 clearTimeout(window._pollTimer);
@@ -6539,21 +6616,6 @@
         // ==========================================
         // RENDER
         // ==========================================
-        function mostrarOffline() {
-            const estado = document.getElementById("estado");
-            const galeria = document.getElementById("galeria");
-
-            estado.innerHTML = "";
-            estado.className = "";
-
-            galeria.innerHTML = `
-                <div class="estado-offline">
-                    <span class="icono">📸</span>
-                    <div class="titulo">${t('offlineTitulo')}</div>
-                    <div class="mensaje">${t('offlineMensaje')}</div>
-                </div>
-            `;
-        }
 
         function detenerTodoYMostrarCierre() {
             // Detener el polling
@@ -6581,22 +6643,6 @@
 
             // Mostrar pantalla de cierre
             mostrarBloqueo('eventoFinalizado');
-        }
-
-        function actualizarEstado() {
-            const estado = document.getElementById("estado");
-
-            if (servidorOnline === false) return;
-
-            if (fotosCache.length === 0) {
-                estado.innerHTML = t('noHayFotos');
-                estado.className = "ok";
-                return;
-            }
-
-            const visibles = Math.min(fotosVisibles, fotosCache.length);
-            estado.innerHTML = t('mostrando', visibles, fotosCache.length);
-            estado.className = "ok";
         }
 
         function actualizarBotonPrincipal() {
@@ -6648,7 +6694,12 @@
             const galeria = document.getElementById("galeria");
 
             if (!fotosCache || fotosCache.length === 0) {
-                galeria.innerHTML = "";
+                galeria.innerHTML = `
+                    <div class="estado-offline">
+                        <span class="icono">📸</span>
+                        <div class="titulo">${t('noHayFotos')}</div>
+                    </div>
+                `;
                 return;
             }
 
@@ -6776,7 +6827,6 @@
             const fotosAntes = fotosVisibles;
             fotosVisibles += FOTOS_POR_CARGA;
             renderizarGaleria();
-            actualizarEstado();
 
             // 🔥 Efecto visual: las nuevas fotos entran con animación
             setTimeout(() => {
