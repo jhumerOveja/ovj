@@ -3556,16 +3556,16 @@
         /* ===== 🔥 PUNTO 14: MÉTRICAS DEL EVENTO ===== */
         .metricas-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .metrica-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--borde);
-            border-radius: 14px;
-            padding: 18px 14px;
+            border-radius: 10px;
+            padding: 10px 6px;
             text-align: center;
             transition: all 0.3s ease;
         }
@@ -3579,17 +3579,18 @@
         }
 
         .metrica-card .emoji {
-            font-size: 1.6rem;
+            font-size: 1rem;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            opacity: 0.9;
         }
 
         .metrica-card .valor {
-            font-size: 2rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: #fff;
-            line-height: 1;
-            margin-bottom: 6px;
+            line-height: 1.1;
+            margin-bottom: 3px;
         }
 
         .metrica-card.activos .valor {
@@ -3606,11 +3607,12 @@
         }
 
         .metrica-card .etiqueta {
-            font-size: 0.68rem;
+            font-size: 0.58rem;
             color: var(--texto-tenue);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 0.5px;
             font-weight: 600;
+            line-height: 1.2;
         }
 
         .aviso-aforo {
@@ -5041,7 +5043,7 @@
             </div>
 
             <!-- 🔥 FASE 13: métricas nuevas -->
-            <div class="metricas-grid" id="metricasExtra" style="margin-top:12px;">
+            <div class="metricas-grid" id="metricasExtra">
                 <div class="metrica-card">
                     <span class="emoji">📥</span>
                     <div class="valor" id="metricaDescargas">—</div>
@@ -6178,11 +6180,10 @@
             const chip = document.getElementById('chipEnVivo');
             if (!chip) return;
 
-            if (servidorOnline === false) {
-                chip.classList.add('oculto');
-            } else {
-                chip.classList.remove('oculto');
-            }
+            // 🔥 FASE 14: el chip EN VIVO NUNCA se oculta.
+            // En emergencia sigue visible (las fotos siguen llegando vía Worker).
+            // Solo se oculta el contador de personas.
+            chip.classList.remove('oculto');
         }
 
         // 🔥 FASE 14: contador "X mirando"
@@ -6190,9 +6191,8 @@
             const el = document.getElementById('chipContadorMirando');
             if (!el) return;
 
-            // Ocultar si el chip está oculto (emergencia) o si no hay nadie
-            const chip = document.getElementById('chipEnVivo');
-            if (!chip || chip.classList.contains('oculto')) {
+            // 🔥 FASE 14: en emergencia, ocultar solo el número. El chip EN VIVO se queda.
+            if (servidorOnline === false) {
                 el.style.display = 'none';
                 return;
             }
@@ -6202,7 +6202,11 @@
                 return;
             }
 
-            el.textContent = `${cantidad} mirando`;
+            const texto = cantidad === 1
+                ? '1 persona en la galería'
+                : `${cantidad} personas en la galería`;
+
+            el.textContent = texto;
             el.style.display = 'inline';
         }
 
