@@ -6185,14 +6185,20 @@
 
         async function cargarListaGenerales() {
             const subtitulo = document.getElementById('generalesSubtitulo');
-            const metricaActivos = document.getElementById('metricaActivos');
-            const metricaTotales = document.getElementById('metricaTotales');
+            const elActivos = document.getElementById('metricaActivos');
+            const elPico = document.getElementById('metricaPico');
+            const elDescargas = document.getElementById('metricaDescargas');
+            const elClicsCliente = document.getElementById('metricaClicsCliente');
+            const elDesbloqueos = document.getElementById('metricaDesbloqueos');
             const avisoAforo = document.getElementById('avisoAforo');
 
             subtitulo.textContent = 'Cargando...';
-            metricaActivos.textContent = '—';
-            metricaTotales.textContent = '—';
-            avisoAforo.style.display = 'none';
+            if (elActivos) elActivos.textContent = '—';
+            if (elPico) elPico.textContent = '—';
+            if (elDescargas) elDescargas.textContent = '—';
+            if (elClicsCliente) elClicsCliente.textContent = '—';
+            if (elDesbloqueos) elDesbloqueos.textContent = '—';
+            if (avisoAforo) avisoAforo.style.display = 'none';
 
             try {
                 const url = `${URL_CLOUDFLARE}/admin/generales?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -6214,12 +6220,6 @@
                 aforoActual = aforo;
 
                 // Actualizar contadores
-                const elActivos = document.getElementById('metricaActivos');
-                const elPico = document.getElementById('metricaPico');
-                const elDescargas = document.getElementById('metricaDescargas');
-                const elClicsCliente = document.getElementById('metricaClicsCliente');
-                const elDesbloqueos = document.getElementById('metricaDesbloqueos');
-
                 if (elActivos) elActivos.textContent = totalActivos;
                 if (elPico) elPico.textContent = metricas.picoActivos || 0;
                 if (elDescargas) elDescargas.textContent = metricas.descargasTotales || 0;
@@ -7980,8 +7980,6 @@
 
             cargarFotos();
             iniciarAvisosRotativos();
-
-            setInterval(actualizarMomentoEvento, 60 * 1000);
 
             // 🔥 Countdown en vivo del receso (actualiza cada segundo)
             setInterval(() => {
