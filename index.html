@@ -462,6 +462,18 @@
             box-shadow: 0 6px 20px rgba(155, 89, 182, 0.2);
         }
 
+        /* 🔥 FASE 13: botón "Mis redes" (admin) */
+        .btn-admin-mini.redes {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+        }
+
+        .btn-admin-mini.redes:hover {
+            background: rgba(74, 222, 128, 0.2);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.15);
+        }
+
         .badge-novedad {
             position: absolute;
             top: -3px;
@@ -3974,6 +3986,149 @@
             }
         }
 
+        /* ===== 🔥 FASE 13: MODAL MIS REDES ===== */
+        .red-input-group {
+            margin-bottom: 14px;
+        }
+
+        .red-input-group label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--texto-suave);
+            margin-bottom: 6px;
+            padding-left: 4px;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+        }
+
+        .red-input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--borde);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .red-input-group input::placeholder {
+            color: var(--texto-tenue);
+        }
+
+        .red-input-group input:focus {
+            border-color: rgba(232, 196, 122, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(232, 196, 122, 0.08);
+        }
+
+        .red-aviso {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            color: #4ade80;
+            text-align: center;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .red-aviso.error {
+            background: rgba(248, 113, 113, 0.1);
+            border-color: rgba(248, 113, 113, 0.3);
+            color: #f87171;
+        }
+
+        /* ===== 🔥 FASE 13: BOTONES DE RED EN EL MODAL DESBLOQUEO ===== */
+        .desbloqueo-redes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .desbloqueo-red-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 700;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .desbloqueo-red-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .desbloqueo-red-btn:hover::before {
+            left: 100%;
+        }
+
+        .desbloqueo-red-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .desbloqueo-red-btn:active {
+            transform: scale(0.98);
+        }
+
+        .desbloqueo-red-btn .red-emoji {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .desbloqueo-red-btn.instagram {
+            background: linear-gradient(135deg, #e1306c, #c13584, #833ab4);
+            color: #fff;
+            box-shadow: 0 6px 25px rgba(225, 48, 108, 0.3);
+        }
+
+        .desbloqueo-red-btn.facebook {
+            background: linear-gradient(135deg, #1877f2, #0d5fc7);
+            color: #fff;
+            box-shadow: 0 6px 25px rgba(24, 119, 242, 0.3);
+        }
+
+        .desbloqueo-red-btn.tiktok {
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: #fff;
+            box-shadow: 0 6px 25px rgba(37, 244, 238, 0.2);
+            border: 1px solid rgba(37, 244, 238, 0.4);
+        }
+
+        .desbloqueo-red-btn.otra {
+            background: linear-gradient(135deg, var(--champagne), var(--champagne-suave));
+            color: #0a0a0a;
+            box-shadow: 0 6px 25px rgba(232, 196, 122, 0.3);
+        }
+
+        .desbloqueo-texto-custom {
+            font-size: 0.85rem;
+            color: var(--texto-suave);
+            text-align: center;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
         /* ===== COFRE ===== */
         .cofre-overlay {
             display: none;
@@ -4533,6 +4688,9 @@
                 <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
                     🎫 <span class="btn-admin-texto">QR</span><span class="btn-admin-texto-corto">QR</span>
                 </button>
+                <button class="btn-admin-mini redes" id="btnMisRedes" onclick="abrirMisRedes()" style="display: none;">
+                    🔗 <span class="btn-admin-texto">Mis redes</span><span class="btn-admin-texto-corto">Redes</span>
+                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -4582,11 +4740,14 @@
             <span class="emoji-grande">🎁</span>
             <div class="titulo" id="desbloqueoTitulo">¡Desbloquea más descargas!</div>
             <div class="subtitulo" id="desbloqueoSubtitulo">
-                Sigue a OVJ Studio en Instagram y obtén <strong>3 descargas extra</strong> al instante.
+                <!-- Se inyecta por JS -->
             </div>
-            <button class="btn-instagram-full" onclick="irAInstagram()">
-                📸 Seguir en Instagram
-            </button>
+
+            <!-- 🔥 FASE 13: Botones de red (se inyectan por JS) -->
+            <div class="desbloqueo-redes" id="desbloqueoRedes">
+                <!-- Se inyecta por JS -->
+            </div>
+
             <button class="btn-ya-lo-hice" id="btnYaLoHice" onclick="confirmarDesbloqueoSocial()">
                 ✓ Ya lo hice
             </button>
@@ -4904,6 +5065,52 @@
             </div>
         </div>
     </div>
+
+    <!-- ===== MODAL MIS REDES (solo Admin Cliente) ===== -->
+    <div class="modal-info" id="modalMisRedes">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalMisRedes')">✕</button>
+            <span class="modal-info-emoji">🔗</span>
+            <div class="modal-info-titulo">Mis redes sociales</div>
+            <div class="modal-info-texto" style="text-align:center; margin-bottom:18px;">
+                Compartí tus links. Tus invitados los verán cuando agoten sus descargas.
+            </div>
+
+            <div class="red-input-group">
+                <label>📷 Instagram</label>
+                <input type="url" id="inputLinkInstagram" placeholder="https://instagram.com/tu-usuario" maxlength="500"
+                    autocomplete="off" inputmode="url" />
+            </div>
+
+            <div class="red-input-group">
+                <label>👍 Facebook</label>
+                <input type="url" id="inputLinkFacebook" placeholder="https://facebook.com/tu-pagina" maxlength="500"
+                    autocomplete="off" inputmode="url" />
+            </div>
+
+            <div class="red-input-group">
+                <label>🎵 TikTok</label>
+                <input type="url" id="inputLinkTiktok" placeholder="https://tiktok.com/@tu-usuario" maxlength="500"
+                    autocomplete="off" inputmode="url" />
+            </div>
+
+            <div class="red-input-group">
+                <label>💬 Texto personalizado (opcional)</label>
+                <input type="text" id="inputLinkTexto" placeholder="Sígueme para más fotos" maxlength="80"
+                    autocomplete="off" />
+            </div>
+
+            <div class="red-aviso" id="redAviso" style="display:none;"></div>
+
+            <button class="modal-info-btn" id="btnGuardarRedes" onclick="guardarMisRedes()">
+                💾 Guardar
+            </button>
+            <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;"
+                onclick="cerrarModalInfo('modalMisRedes')">
+                Cerrar
+            </button>
+        </div>
+    </div>
     <script src="qrcode.min.js"></script>
     <!-- 🔥 config.js dinámico desde el Worker (Idea 11). No-cache. -->
     <script src="https://ovj-b2-proxy.jhumerali2.workers.dev/config.js"></script>
@@ -5076,6 +5283,9 @@
         let cargando = false;
         let servidorOnline = true;
         let tituloEsDefault = true;
+
+        // 🔥 FASE 13: links del cliente (para el modal de desbloqueo)
+        let linkClienteActual = null;
 
         let invitacionGenerada = null;
         let urlQrGeneralActual = null;
@@ -5739,13 +5949,17 @@
 
             const btnInvitar = document.getElementById('btnInvitar');
             const btnQrGeneral = document.getElementById('btnQrGeneral');
+            const btnMisRedes = document.getElementById('btnMisRedes');
 
             if (sesion.tipo === 'admin') {
                 // 🔥 FASE 3: el botón Invitar VIP solo aparece en Modo B
                 if (sesion.modoEvento === 'A') {
                     btnInvitar.style.display = 'none';
+                    // 🔥 FASE 13: Mis redes solo en Modo B (no aplica en Íntimo)
+                    btnMisRedes.style.display = 'none';
                 } else {
                     btnInvitar.style.display = 'inline-flex';
+                    btnMisRedes.style.display = 'inline-flex';
                 }
 
                 btnQrGeneral.style.display = 'inline-flex';
@@ -5758,6 +5972,7 @@
             } else {
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
+                btnMisRedes.style.display = 'none';
             }
 
             // 🔥 El chip EN VIVO refleja el estado del server
@@ -6229,6 +6444,9 @@
                     }
                 }
 
+                // 🔥 FASE 13: guardar link del cliente para el modal de desbloqueo
+                linkClienteActual = data.linkCliente || null;
+
                 // 🔥 El poll adaptativo solo viene del server. El Worker no lo devuelve.
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
@@ -6537,16 +6755,81 @@
             const total = sesionGeneral.descargasPorSesion || 5;
             const restantes = total - usadas;
 
-            if (restantes <= UMBRAL_DESBLOQUEO) {
+            // 🔥 FASE 13: solo aparece cuando agotó TODAS sus descargas (0 restantes)
+            if (restantes <= 0) {
                 abrirDesbloqueo();
             }
         }
 
         function abrirDesbloqueo() {
             const modal = document.getElementById('modalDesbloqueo');
-            const descExtra = sesionGeneral.desbloqueoSocialDescargas || 3;
+            const contenedorRedes = document.getElementById('desbloqueoRedes');
+            const subtitulo = document.getElementById('desbloqueoSubtitulo');
 
-            document.getElementById('desbloqueoSubtitulo').innerHTML = t('desbloqueoSocialSubtitulo', descExtra);
+            // 🔥 FASE 13: resetear estado de "clic en red"
+            window._clicEnRedHecho = false;
+
+            const btnYaLoHice = document.getElementById('btnYaLoHice');
+            btnYaLoHice.disabled = true;
+            btnYaLoHice.style.opacity = '0.4';
+            btnYaLoHice.style.cursor = 'not-allowed';
+            btnYaLoHice.textContent = t('desbloqueoConfirmar');
+
+            // 🔥 FASE 13: ver si hay links del cliente configurados
+            const tieneLinksCliente = linkClienteActual
+                && (linkClienteActual.instagram || linkClienteActual.facebook || linkClienteActual.tiktok);
+
+            if (tieneLinksCliente) {
+                // ── Mostrar redes del cliente ──
+                const textoCustom = linkClienteActual.texto
+                    ? linkClienteActual.texto
+                    : 'Dame like o sígueme en mis redes sociales';
+
+                subtitulo.innerHTML = `<div class="desbloqueo-texto-custom">${escapeHtml(textoCustom)}</div>`;
+
+                let htmlBotones = '';
+
+                if (linkClienteActual.instagram) {
+                    htmlBotones += `
+                        <button class="desbloqueo-red-btn instagram" onclick="abrirRedCliente('instagram')">
+                            <span class="red-emoji">📷</span>
+                            <span>Instagram</span>
+                        </button>
+                    `;
+                }
+
+                if (linkClienteActual.facebook) {
+                    htmlBotones += `
+                        <button class="desbloqueo-red-btn facebook" onclick="abrirRedCliente('facebook')">
+                            <span class="red-emoji">👍</span>
+                            <span>Facebook</span>
+                        </button>
+                    `;
+                }
+
+                if (linkClienteActual.tiktok) {
+                    htmlBotones += `
+                        <button class="desbloqueo-red-btn tiktok" onclick="abrirRedCliente('tiktok')">
+                            <span class="red-emoji">🎵</span>
+                            <span>TikTok</span>
+                        </button>
+                    `;
+                }
+
+                contenedorRedes.innerHTML = htmlBotones;
+
+            } else {
+                // ── Fallback: Instagram de OVJ Studio ──
+                const descExtra = sesionGeneral.desbloqueoSocialDescargas || 3;
+                subtitulo.innerHTML = t('desbloqueoSocialSubtitulo', descExtra);
+
+                contenedorRedes.innerHTML = `
+                    <button class="desbloqueo-red-btn instagram" onclick="abrirRedOvj()">
+                        <span class="red-emoji">📸</span>
+                        <span>Seguir en Instagram</span>
+                    </button>
+                `;
+            }
 
             modal.classList.add('activo');
         }
@@ -6556,12 +6839,75 @@
             desbloqueoCerradoEnEstaSesion = true;
         }
 
-        function irAInstagram() {
-            window.open(`https://instagram.com/${INSTAGRAM_USUARIO}`, '_blank');
+        // 🔥 FASE 13: abrir red del cliente (prioridad)
+        function abrirRedCliente(red) {
+            if (!linkClienteActual) return;
+
+            const url = linkClienteActual[red];
+            if (!url) return;
+
+            // Registrar el clic (métrica, 1 vez por invitado, no bloquea)
+            registrarClicLink('cliente');
+
+            // Marcar como "clic hecho" y habilitar el botón "Ya lo hice"
+            window._clicEnRedHecho = true;
+            habilitarBotonYaLoHice();
+
+            // Abrir el link (intenta abrir la app nativa en móvil)
+            window.open(url, '_blank');
+
             mostrarToast(t('tipIG'), 'tip', 6000);
         }
 
+        // 🔥 FASE 13: abrir Instagram de OVJ (fallback)
+        function abrirRedOvj() {
+            // Registrar el clic (métrica)
+            registrarClicLink('ovj');
+
+            window._clicEnRedHecho = true;
+            habilitarBotonYaLoHice();
+
+            window.open(`https://instagram.com/${INSTAGRAM_USUARIO}`, '_blank');
+
+            mostrarToast(t('tipIG'), 'tip', 6000);
+        }
+
+        // 🔥 FASE 13: habilitar el botón "Ya lo hice"
+        function habilitarBotonYaLoHice() {
+            const btn = document.getElementById('btnYaLoHice');
+            if (!btn) return;
+
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        }
+
+        // 🔥 FASE 13: registrar clic en el server (métrica)
+        function registrarClicLink(tipo) {
+            if (!EVENTO_ID || !TOKEN) return;
+
+            try {
+                const url = `${URL_CLOUDFLARE}/desbloqueo-social/clic?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo })
+                }).catch(() => { });
+            } catch (e) {
+                // Silencioso: la métrica no debe bloquear la experiencia
+            }
+        }
+
         async function confirmarDesbloqueoSocial() {
+            // 🔥 FASE 13: no permitir si no tocó ninguna red
+            if (!window._clicEnRedHecho) {
+                mostrarToast('Primero tocá una red social', 'warning');
+                return;
+            }
+
             const btn = document.getElementById('btnYaLoHice');
             if (btn) {
                 btn.disabled = true;
@@ -7882,6 +8228,150 @@
                     : '¡Hola! Quiero información sobre las galerías en vivo de OVJ Studio.';
 
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        // ==========================================
+        // 🔥 FASE 13: MIS REDES (solo Admin Cliente)
+        // ==========================================
+        async function abrirMisRedes() {
+            if (!sesion || sesion.tipo !== 'admin') return;
+
+            // Resetear el aviso y los inputs
+            const aviso = document.getElementById('redAviso');
+            aviso.style.display = 'none';
+            aviso.className = 'red-aviso';
+
+            document.getElementById('inputLinkInstagram').value = '';
+            document.getElementById('inputLinkFacebook').value = '';
+            document.getElementById('inputLinkTiktok').value = '';
+            document.getElementById('inputLinkTexto').value = '';
+
+            // Abrir el modal
+            abrirModalInfo('modalMisRedes');
+
+            // Cargar los links actuales del server
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/link-cliente?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (resp.ok && data.ok && data.linkCliente) {
+                    if (data.linkCliente.instagram) {
+                        document.getElementById('inputLinkInstagram').value = data.linkCliente.instagram;
+                    }
+                    if (data.linkCliente.facebook) {
+                        document.getElementById('inputLinkFacebook').value = data.linkCliente.facebook;
+                    }
+                    if (data.linkCliente.tiktok) {
+                        document.getElementById('inputLinkTiktok').value = data.linkCliente.tiktok;
+                    }
+                    if (data.linkCliente.texto) {
+                        document.getElementById('inputLinkTexto').value = data.linkCliente.texto;
+                    }
+
+                    // Aviso de que ya hay links guardados
+                    if (data.linkCliente.instagram || data.linkCliente.facebook || data.linkCliente.tiktok) {
+                        aviso.textContent = '✓ Ya tenés links guardados. Podés agregar o actualizar.';
+                        aviso.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ No se pudieron cargar los links:', e.message);
+            }
+        }
+
+        async function guardarMisRedes() {
+            if (!sesion || sesion.tipo !== 'admin') return;
+
+            const btn = document.getElementById('btnGuardarRedes');
+            const aviso = document.getElementById('redAviso');
+
+            const instagram = document.getElementById('inputLinkInstagram').value.trim();
+            const facebook = document.getElementById('inputLinkFacebook').value.trim();
+            const tiktok = document.getElementById('inputLinkTiktok').value.trim();
+            const texto = document.getElementById('inputLinkTexto').value.trim();
+
+            // Validación básica en cliente
+            const validarUrl = (u) => !u || /^https?:\/\/.+/i.test(u);
+
+            if (!validarUrl(instagram)) {
+                aviso.textContent = 'La URL de Instagram debe empezar con https://';
+                aviso.className = 'red-aviso error';
+                aviso.style.display = 'block';
+                return;
+            }
+            if (!validarUrl(facebook)) {
+                aviso.textContent = 'La URL de Facebook debe empezar con https://';
+                aviso.className = 'red-aviso error';
+                aviso.style.display = 'block';
+                return;
+            }
+            if (!validarUrl(tiktok)) {
+                aviso.textContent = 'La URL de TikTok debe empezar con https://';
+                aviso.className = 'red-aviso error';
+                aviso.style.display = 'block';
+                return;
+            }
+
+            if (!instagram && !facebook && !tiktok) {
+                aviso.textContent = 'Ingresá al menos un link';
+                aviso.className = 'red-aviso error';
+                aviso.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+
+            try {
+                const url = `${URL_CLOUDFLARE}/admin/link-cliente?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                    `&e=${encodeURIComponent(EVENTO_ID)}` +
+                    `&t=${encodeURIComponent(TOKEN)}`;
+
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ instagram, facebook, tiktok, texto })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    aviso.textContent = data.error || 'No se pudo guardar. Intentá de nuevo.';
+                    aviso.className = 'red-aviso error';
+                    aviso.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = '💾 Guardar';
+                    return;
+                }
+
+                // Actualizar la copia local
+                linkClienteActual = data.linkCliente || linkClienteActual;
+
+                aviso.textContent = '✓ Guardado. Tus invitados verán estos links.';
+                aviso.className = 'red-aviso';
+                aviso.style.display = 'block';
+
+                btn.disabled = false;
+                btn.textContent = '💾 Guardar';
+
+                // Cerrar el modal después de 1.5s
+                setTimeout(() => {
+                    cerrarModalInfo('modalMisRedes');
+                    mostrarToast('🔗 Redes guardadas', 'success');
+                }, 1200);
+
+            } catch (e) {
+                console.error('Error guardando links:', e);
+                aviso.textContent = 'No se pudo conectar. Intentá de nuevo.';
+                aviso.className = 'red-aviso error';
+                aviso.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '💾 Guardar';
+            }
         }
 
         // ==========================================
