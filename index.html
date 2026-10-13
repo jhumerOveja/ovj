@@ -4664,7 +4664,7 @@
                     <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
                 </button>
                 <button class="btn-admin-mini invitar" id="btnInvitar" onclick="abrirInvitar()" style="display: none;">
-                    ✨ <span class="btn-admin-texto">Invitar VIP</span><span class="btn-admin-texto-corto">VIP</span>
+                    ✨ <span class="btn-admin-texto">Invitar VIP</span><span class="btn-admin-texto-corto">Invitar</span>
                 </button>
                 <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
                     🎫 <span class="btn-admin-texto">QR</span><span class="btn-admin-texto-corto">QR</span>
@@ -4674,7 +4674,7 @@
                 </button>
                 <button class="btn-admin-mini metricas" id="btnMetricas" onclick="abrirModalGenerales()"
                     style="display: none;">
-                    📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Stats</span>
+                    📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
             </div>
             <div class="header-bottom">
@@ -4955,6 +4955,11 @@
                 <span class="menu-lateral-badge" id="menuBadgeRegalo" style="display:none;">!</span>
             </button>
 
+            <button class="menu-lateral-item" onclick="menuAccion('beneficios')">
+                <span class="menu-lateral-emoji">✨</span>
+                <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
+            </button>
+
             <div class="menu-lateral-separador"></div>
 
             <button class="menu-lateral-item" onclick="menuAccion('sobre')">
@@ -5085,6 +5090,20 @@
             </div>
         </div>
     </div>
+
+    <!-- ===== MODAL BENEFICIOS ===== -->
+    <div class="modal-info" id="modalBeneficios">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalBeneficios')">✕</button>
+            <span class="modal-info-emoji">✨</span>
+            <div class="modal-info-titulo" data-i18n="beneficiosTitulo">Beneficios de usar nuestro servicio</div>
+            <div id="beneficiosContenido" class="modal-info-texto"></div>
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalBeneficios')"
+                data-i18n="cerrar">Cerrar</button>
+        </div>
+    </div>
+
+
     <!-- ===== MODAL BIENVENIDA ===== -->
     <div class="modal-info" id="modalBienvenida">
         <div class="modal-info-contenido">
@@ -5398,12 +5417,14 @@
                 detrasVacio: "El fotógrafo todavía no subió fotos detrás de cámara.",
                 menuDetras: "Detrás de cámara",
                 menuRegalo: "Mi regalo",
+                menuBeneficios: "Beneficios",
                 menuSobre: "Sobre nosotros",
                 menuContacto: "Contactanos",
                 menuIdioma: "Idioma",
                 menuTerminos: "Términos y condiciones",
                 sobreTitulo: "Sobre nosotros",
                 sobreTexto: `OVJ Studio es una <strong style="color:#e8c47a;">nueva plataforma tecnológica</strong> de galerías fotográficas en vivo, pensada para eventos sociales de todo tipo.<br><br>A diferencia del modelo tradicional de fotografía, donde las fotos llegan días o incluso meses después del evento, en un USB o en una carpeta digital que casi nadie abre, con nuestro servicio cada invitado ve las fotos aparecer <strong>en el momento</strong>, desde su celular, y descarga las que más le gustan con <strong>un solo toque</strong>.<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"LAS PUBLICACIONES EN REDES SOCIALES SE HACEN EL DÍA DEL EVENTO.<br>NADIE QUIERE PUBLICAR LO QUE PASÓ AYER<br>NI MUCHO MENOS LO QUE PASÓ HACE MESES."</div></div>Es <strong>fotografía profesional</strong>, en <strong>tiempo real</strong>, para todos los que están en el evento.<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">¿SEGUÍS DEJANDO QUE TUS INVITADOS<br>SAQUEN FOTOS BORROSAS CON EL CELULAR?</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">Dejá que los profesionales se encarguen de eso.</div></div>`,
+                beneficiosTitulo: "Beneficios de usar nuestro servicio",
                 terminosTitulo: "Términos y condiciones",
                 terminosTexto: `OVJ Studio es un servicio de galería fotográfica en vivo que entrega las fotografías del evento a los invitados <strong style="color:#e8c47a;">durante el transcurso del evento</strong>, desde el celular, y con un solo toque puede obtenerlas <strong>sin ninguna marca de agua ni pagar por la descarga</strong>.<br><br><strong style="color:#e8c47a;">Sobre las fotografías</strong><br>Las fotos que recibís están optimizadas para redes sociales y envío rápido por WhatsApp. Son ideales para compartir, publicar y guardar como recuerdo del evento.<br><br><strong style="color:#e8c47a;">Sobre los descargables</strong><br>Las descargas están disponibles según el tipo de acceso y del tipo de evento otorgado por el organizador (VIP, general o administrador).<br><br><strong style="color:#e8c47a;">Sobre los tickets y regalos</strong><br>Los tickets emitidos son válidos por <strong>6 meses</strong> desde su emisión. Cada ticket tiene un token único y un número de WhatsApp asociado, y solo puede ser canjeado por una persona. El canje se realiza por WhatsApp, enviando el token al número oficial de OVJ Studio. Los descuentos no son acumulables con otras promociones.<br><br>Las <strong>únicas formas</strong> de obtener tickets o regalos son: recibiéndolo en la galería web, o que algún conocido te envíe un ticket recibido en un evento.<br><br><strong style="color:#e8c47a;">Sobre la verificación</strong><br>OVJ Studio se reserva el derecho de verificar la validez de cada ticket y de cada acceso.<br><br><strong style="color:#e8c47a;">Sobre la propiedad</strong><br>Las fotografías son propiedad del cliente del evento y de OVJ Studio.`,
                 regaloTitulo: "Mi regalo",
@@ -5472,12 +5493,14 @@
                 detrasVacio: "The photographer hasn't uploaded behind-the-scenes photos yet.",
                 menuDetras: "Behind the scenes",
                 menuRegalo: "My gift",
+                menuBeneficios: "Benefits",
                 menuSobre: "About us",
                 menuContacto: "Contact us",
                 menuIdioma: "Language",
                 menuTerminos: "Terms and conditions",
                 sobreTitulo: "About us",
                 sobreTexto: `OVJ Studio is a <strong style="color:#e8c47a;">new technology platform</strong> for live photo galleries, built for social events of every kind.<br><br>Unlike the traditional photography model, where photos arrive days or even months after the event, on a USB stick or in a digital folder almost nobody opens, with our service every guest watches the photos appear <strong>in the moment</strong>, from their phone, and downloads their favorites with <strong>a single tap</strong>.<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"SOCIAL MEDIA POSTS HAPPEN ON THE DAY OF THE EVENT.<br>NOBODY WANTS TO POST ABOUT YESTERDAY,<br>LET ALONE ABOUT MONTHS AGO."</div></div>It's <strong>professional photography</strong>, in <strong>real time</strong>, for everyone at the event.<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">STILL LETTING YOUR GUESTS<br>TAKE BLURRY PHOTOS WITH THEIR PHONES?</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">Let the professionals handle that.</div></div>`,
+                beneficiosTitulo: "Benefits of using our service",
                 terminosTitulo: "Terms and conditions",
                 terminosTexto: `OVJ Studio is a live photo gallery service that delivers event photos to guests <strong style="color:#e8c47a;">while the event is happening</strong>, from their phone, and with a single tap they can get them <strong>without any watermark and without paying for the download</strong>.<br><br><strong style="color:#e8c47a;">About the photos</strong><br>The photos you receive are optimized for social media and fast WhatsApp sharing. They're ideal for posting, sharing and keeping as a memory of the event.<br><br><strong style="color:#e8c47a;">About downloads</strong><br>Downloads are available based on the type of access and the type of event granted by the organizer (VIP, general or administrator).<br><br><strong style="color:#e8c47a;">About tickets and gifts</strong><br>Issued tickets are valid for <strong>6 months</strong> from issuance. Each ticket has a unique token and an associated WhatsApp number, and can only be redeemed by one person. Redemption is done via WhatsApp, sending the token to the official OVJ Studio number. Discounts cannot be combined with other promotions.<br><br>The <strong>only ways</strong> to obtain tickets or gifts are: receiving them in the web gallery, or having someone you know send you a ticket received at an event.<br><br><strong style="color:#e8c47a;">About verification</strong><br>OVJ Studio reserves the right to verify the validity of each ticket and each access.<br><br><strong style="color:#e8c47a;">About ownership</strong><br>Photographs are property of the event client and OVJ Studio.`,
                 regaloTitulo: "My gift",
@@ -5546,12 +5569,14 @@
                 detrasVacio: "摄影师还没有上传幕后照片。",
                 menuDetras: "幕后花絮",
                 menuRegalo: "我的礼物",
+                menuBeneficios: "服务优势",
                 menuSobre: "关于我们",
                 menuContacto: "联系我们",
                 menuIdioma: "语言",
                 menuTerminos: "条款和条件",
                 sobreTitulo: "关于我们",
                 sobreTexto: `OVJ Studio 是一个 <strong style="color:#e8c47a;">全新的活动现场照片画廊技术平台</strong>，适用于各类社交活动。<br><br>与传统摄影模式不同，过去照片要在活动结束后几天甚至几个月才送到 U 盘或几乎无人打开的文件夹里，使用我们的服务，每位嘉宾都能 <strong>实时</strong> 在手机上看到照片出现，并 <strong>一点即下载</strong> 自己喜欢的照片。<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"社交媒体发布，就在活动当天。<br>没有人愿意发昨天的内容，<br>更别说几个月前的了。"</div></div>这是 <strong>专业摄影</strong>，<strong>实时呈现</strong>，献给现场的每一位嘉宾。<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">还在让嘉宾们<br>用手机拍模糊的照片吗？</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">交给专业人士吧。</div></div>`,
+                beneficiosTitulo: "使用我们服务的好处",
                 terminosTitulo: "条款和条件",
                 terminosTexto: `OVJ Studio 是一项现场照片画廊服务，在 <strong style="color:#e8c47a;">活动进行期间</strong> 将照片实时交付给嘉宾，通过手机一点即可获取，<strong>无水印，下载免费</strong>。<br><br><strong style="color:#e8c47a;">关于照片</strong><br>您收到的照片已针对社交媒体和 WhatsApp 快速分享进行优化，非常适合发布、分享并作为活动回忆保存。<br><br><strong style="color:#e8c47a;">关于下载</strong><br>下载根据活动主办方授予的访问类型及活动类型提供（VIP、普通或管理员）。<br><br><strong style="color:#e8c47a;">关于门票与礼物</strong><br>已发出的门票自发出之日起 <strong>6 个月</strong> 内有效。每张门票都有唯一的令牌和关联的 WhatsApp 号码，只能由一人兑换。兑换通过 WhatsApp 完成，将令牌发送到 OVJ Studio 官方号码。折扣不可与其他促销叠加。<br><br>获取门票或礼物的 <strong>唯一方式</strong> 是：在网页画廊中获得，或由认识的人将从活动中收到的门票转发给你。<br><br><strong style="color:#e8c47a;">关于验证</strong><br>OVJ Studio 保留验证每张门票及每次访问有效性的权利。<br><br><strong style="color:#e8c47a;">关于所有权</strong><br>照片归活动客户和 OVJ Studio 所有。`,
                 regaloTitulo: "我的礼物",
@@ -8001,6 +8026,11 @@
                     return;
                 }
 
+                if (document.getElementById('modalBeneficios').classList.contains('activo')) {
+                    cerrarModalInfo('modalBeneficios');
+                    return;
+                }
+
                 // Los de siempre
                 if (modalGeneralesActivo) cerrarModalGenerales();
                 else if (modalDesbloqueoActivo) cerrarDesbloqueo();
@@ -8208,6 +8238,9 @@
                     case 'regalo':
                         abrirMiRegalo();
                         break;
+                    case 'beneficios':
+                        abrirBeneficios();
+                        break;
                     case 'sobre':
                         abrirModalInfo('modalSobre');
                         break;
@@ -8292,6 +8325,178 @@
 
         function cerrarModalInfo(id) {
             document.getElementById(id).classList.remove('activo');
+        }
+
+        function abrirBeneficios() {
+            const cont = document.getElementById('beneficiosContenido');
+            if (!cont) return;
+
+            let html = '';
+
+            if (idiomaActual === 'en') {
+                html = `
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:18px; font-size:1rem; letter-spacing:0.3px;">
+                        ✦ BENEFITS OF USING OUR SERVICE ✦
+                    </div>
+
+                    <div style="line-height:1.9; margin-bottom:22px;">
+                        <strong style="color:#e8c47a;">✦ Ultra-fast photos</strong><br>
+                        Your guests see the photos in the moment, from their phone.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ General invitations</strong><br>
+                        One single QR for all your guests.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ VIP invitations (unique)</strong><br>
+                        Exclusive single-use passes for your special guests.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Live metrics</strong><br>
+                        Downloads, clicks and activity of your event in real time.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Help with your social media</strong><br>
+                        Your guests follow your networks when they run out of downloads.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Unlimited downloads for you</strong><br>
+                        No limits, no break, no complications.
+                    </div>
+
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem; letter-spacing:0.3px;">
+                        📸 TRADITIONAL MODEL vs. OVJ STUDIO
+                    </div>
+
+                    <div style="line-height:1.9;">
+                        <strong style="color:#f87171;">Traditional:</strong><br>
+                        • Photos arrive days or weeks later<br>
+                        • On a USB stick or folder nobody opens<br>
+                        • No guest segmentation<br>
+                        • No metrics<br>
+                        • No social media presence
+                        <br><br>
+
+                        <strong style="color:#4ade80;">OVJ Studio:</strong><br>
+                        • Live photos, during the event<br>
+                        • Customized web gallery<br>
+                        • 3 access levels (Admin, VIP, General)<br>
+                        • Real-time metrics<br>
+                        • Your guests follow you<br>
+                        • One-tap download
+                    </div>
+                `;
+            } else if (idiomaActual === 'zh') {
+                html = `
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:18px; font-size:1rem; letter-spacing:0.3px;">
+                        ✦ 使用我们服务的好处 ✦
+                    </div>
+
+                    <div style="line-height:1.9; margin-bottom:22px;">
+                        <strong style="color:#e8c47a;">✦ 超快速照片</strong><br>
+                        您的嘉宾在活动现场即可用手机查看照片。
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ 普通邀请</strong><br>
+                        一张二维码即可邀请所有嘉宾。
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ VIP 邀请（唯一）</strong><br>
+                        为贵宾准备的专属一次性通行证。
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ 实时数据</strong><br>
+                        实时查看活动的下载量、点击量和动态。
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ 社交媒体助力</strong><br>
+                        当嘉宾下载次数用尽时，会自动关注您的社交账号。
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ 无限下载</strong><br>
+                        无限制，无休息，无繁琐。
+                    </div>
+
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem; letter-spacing:0.3px;">
+                        📸 传统模式 vs. OVJ STUDIO
+                    </div>
+
+                    <div style="line-height:1.9;">
+                        <strong style="color:#f87171;">传统模式：</strong><br>
+                        • 照片在活动结束后数天甚至数周才送达<br>
+                        • 存放在无人打开的 U 盘或文件夹中<br>
+                        • 无嘉宾分级<br>
+                        • 无数据统计<br>
+                        • 无社交媒体曝光
+                        <br><br>
+
+                        <strong style="color:#4ade80;">OVJ Studio：</strong><br>
+                        • 活动现场实时照片<br>
+                        • 个性化网页画廊<br>
+                        • 3 种访问等级（管理员、VIP、普通）<br>
+                        • 实时数据统计<br>
+                        • 嘉宾关注您的社交账号<br>
+                        • 一键下载
+                    </div>
+                `;
+            } else {
+                // Español (default)
+                html = `
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:18px; font-size:1rem; letter-spacing:0.3px;">
+                        ✦ BENEFICIOS DE USAR NUESTRO SERVICIO ✦
+                    </div>
+
+                    <div style="line-height:1.9; margin-bottom:22px;">
+                        <strong style="color:#e8c47a;">✦ Fotos ultrarrápidas</strong><br>
+                        Tus invitados ven las fotos en el momento, desde su celular.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Invitaciones generales</strong><br>
+                        Un solo QR para todos tus invitados.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Invitaciones VIP (únicas)</strong><br>
+                        Pases exclusivos de un solo uso para tus invitados especiales.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Métricas en vivo</strong><br>
+                        Descargas, clics y actividad de tu evento en tiempo real.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Ayuda con tus redes sociales</strong><br>
+                        Tus invitados siguen tus redes cuando agotan descargas.
+                        <br><br>
+
+                        <strong style="color:#e8c47a;">✦ Descargas ilimitadas para ti</strong><br>
+                        Sin límites, sin receso, sin complicaciones.
+                    </div>
+
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem; letter-spacing:0.3px;">
+                        📸 MODELO TRADICIONAL vs. OVJ STUDIO
+                    </div>
+
+                    <div style="line-height:1.9;">
+                        <strong style="color:#f87171;">Tradicional:</strong><br>
+                        • Las fotos llegan días o semanas después<br>
+                        • En un USB o carpeta que nadie abre<br>
+                        • Sin segmentación de invitados<br>
+                        • Sin métricas<br>
+                        • Sin presencia en redes
+                        <br><br>
+
+                        <strong style="color:#4ade80;">OVJ Studio:</strong><br>
+                        • Fotos en vivo, durante el evento<br>
+                        • Galería web personalizada<br>
+                        • 3 tipos de acceso (Admin, VIP, General)<br>
+                        • Métricas en tiempo real<br>
+                        • Tus invitados te siguen<br>
+                        • Descarga con un solo toque
+                    </div>
+                `;
+            }
+
+            cont.innerHTML = html;
+            document.getElementById('modalBeneficios').classList.add('activo');
         }
 
         function abrirContactoWhatsApp() {
