@@ -3505,6 +3505,7 @@
 
         /* ===== BOTÓN MENÚ HAMBURGUESA ===== */
         .btn-menu-lateral {
+            position: relative;
             display: inline-flex;
             flex-direction: column;
             justify-content: center;
@@ -3538,6 +3539,44 @@
 
         .btn-menu-lateral:hover .linea-menu {
             background: var(--champagne);
+        }
+
+        .btn-menu-lateral.llamar-atencion {
+            background: rgba(232, 196, 122, 0.12);
+            border-color: rgba(232, 196, 122, 0.5);
+            animation: pulsoMenuLateral 2s ease-in-out infinite;
+        }
+
+        .btn-menu-lateral.llamar-atencion .linea-menu {
+            background: var(--champagne);
+        }
+
+        .btn-menu-lateral.llamar-atencion::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: #dc2626;
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+            animation: pulsoNovedad 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.8);
+        }
+
+        @keyframes pulsoMenuLateral {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(232, 196, 122, 0);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(232, 196, 122, 0.6);
+                transform: scale(1.05);
+            }
         }
 
         /* ===== MENÚ LATERAL ===== */
@@ -6652,6 +6691,9 @@
                         localStorage.setItem(getClaveDetrasVisto(), detrasCamaraUltima);
                     } catch (e) { }
                     document.getElementById('badgeNovedadDetras').style.display = 'none';
+
+                    // 🔥 Quitar el brillo del menú lateral
+                    actualizarMenuLateral();
                 }
 
                 let html = '<div class="feed-detras">';
@@ -8130,6 +8172,27 @@
             }, 250);
         }
 
+        function actualizarEstadoMenuLateral() {
+            const btn = document.getElementById('btnMenuLateral');
+            if (!btn) return;
+
+            let debeLlamarAtencion = false;
+
+            // 1. ¿Hay fotos de detrás que el invitado no vio?
+            const badgeDetras = document.getElementById('menuBadgeDetras');
+            const hayDetrasNuevas = badgeDetras && badgeDetras.style.display !== 'none';
+
+            // 2. ¿Hay regalo sin reclamar?
+            const badgeRegalo = document.getElementById('menuBadgeRegalo');
+            const hayRegaloNuevo = badgeRegalo && badgeRegalo.style.display !== 'none';
+
+            if (hayDetrasNuevas || hayRegaloNuevo) {
+                debeLlamarAtencion = true;
+            }
+
+            btn.classList.toggle('llamar-atencion', debeLlamarAtencion);
+        }
+
         function actualizarMenuLateral() {
             // Badge de detrás de cámara
             const badgeDetras = document.getElementById('menuBadgeDetras');
@@ -8166,6 +8229,9 @@
             document.querySelectorAll('.menu-lang-btn').forEach(btn => {
                 btn.classList.toggle('activo', btn.dataset.lang === idiomaActual);
             });
+
+            // 🔥 Activar brillo del botón hamburguesa si hay algo nuevo
+            actualizarEstadoMenuLateral();
         }
 
         function abrirModalInfo(id) {
@@ -8674,6 +8740,8 @@
                     setTimeout(() => overlay.classList.remove('tocando'), 400);
                 }
             }, 600);
+            // 🔥 Refrescar el menú lateral para que el botón hamburguesa brille
+            actualizarMenuLateral();
         }
 
         function renderizarPremiosPosibles(premios) {
