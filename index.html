@@ -6633,16 +6633,9 @@
 
             detrasCamaraTotal = total;
             detrasCamaraUltima = ultima;
-            // 🔥 Refrescar badge del menú lateral
-            const badgeMenu = document.getElementById('menuBadgeDetras');
-            if (badgeMenu) {
-                if (total > 0) {
-                    badgeMenu.textContent = String(total);
-                    badgeMenu.style.display = 'inline-block';
-                } else {
-                    badgeMenu.style.display = 'none';
-                }
-            }
+
+            // 🔥 Refrescar menú lateral (badge + brillo del hamburguesa)
+            actualizarMenuLateral();
         }
 
         function tiempoRelativo(fechaISO) {
@@ -8194,11 +8187,14 @@
         }
 
         function actualizarMenuLateral() {
-            // Badge de detrás de cámara
+            // Badge de detrás de cámara (solo si hay fotos NUEVAS sin ver)
             const badgeDetras = document.getElementById('menuBadgeDetras');
             if (badgeDetras) {
-                if (detrasCamaraTotal > 0) {
-                    badgeDetras.textContent = String(detrasCamaraTotal);
+                const ultimaVista = localStorage.getItem(getClaveDetrasVisto());
+                const hayNuevas = detrasCamaraTotal > 0 && detrasCamaraUltima && detrasCamaraUltima !== ultimaVista;
+
+                if (hayNuevas) {
+                    badgeDetras.textContent = '!';
                     badgeDetras.style.display = 'inline-block';
                 } else {
                     badgeDetras.style.display = 'none';
