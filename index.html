@@ -515,10 +515,6 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 5px 11px 5px 9px;
-            background: var(--champagne-tenue);
-            border: 1px solid rgba(232, 196, 122, 0.35);
-            border-radius: 50px;
             user-select: none;
             pointer-events: none;
             transition: opacity 0.3s ease, transform 0.3s ease;
@@ -535,9 +531,9 @@
             display: inline-block;
             width: 7px;
             height: 7px;
-            background: var(--error);
+            background: #dc2626;
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(248, 113, 113, 0.7);
+            box-shadow: 0 0 8px rgba(220, 38, 38, 0.9);
         }
 
         .chip-en-vivo-punto::after {
@@ -545,7 +541,7 @@
             position: absolute;
             inset: -3px;
             border-radius: 50%;
-            background: rgba(248, 113, 113, 0.45);
+            background: rgba(220, 38, 38, 0.6);
             animation: pulsoChipVivo 1.8s ease-out infinite;
         }
 
@@ -566,20 +562,20 @@
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--champagne);
+            color: #dc2626;
             white-space: nowrap;
         }
 
         /* 🔥 FASE 14: contador "X mirando" dentro del chip */
         .chip-en-vivo-contador {
-            font-size: 0.6rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.3px;
             color: var(--texto-suave);
             white-space: nowrap;
-            margin-left: 2px;
-            padding-left: 6px;
-            border-left: 1px solid rgba(232, 196, 122, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .lang-selector {
@@ -2846,7 +2842,6 @@
             }
 
             .chip-en-vivo {
-                padding: 4px 9px 4px 8px;
                 gap: 5px;
             }
 
@@ -6053,7 +6048,6 @@
             const el = document.getElementById('chipContadorMirando');
             if (!el) return;
 
-            // 🔥 FASE 14: en emergencia, ocultar solo el número. El chip EN VIVO se queda.
             if (servidorOnline === false) {
                 el.style.display = 'none';
                 return;
@@ -6064,12 +6058,8 @@
                 return;
             }
 
-            const texto = cantidad === 1
-                ? '1 persona en la galería'
-                : `${cantidad} personas en la galería`;
-
-            el.textContent = texto;
-            el.style.display = 'inline';
+            el.textContent = `👥 ${cantidad}`;
+            el.style.display = 'inline-flex';
         }
 
         // ==========================================
