@@ -5085,6 +5085,15 @@
             </div>
         </div>
     </div>
+    <!-- ===== MODAL BIENVENIDA ===== -->
+    <div class="modal-info" id="modalBienvenida">
+        <div class="modal-info-contenido">
+            <span class="modal-info-emoji" id="bienvenidaEmoji">✨</span>
+            <div class="modal-info-titulo" id="bienvenidaTitulo">Bienvenido a OVJ Studio</div>
+            <div id="bienvenidaContenido" class="modal-info-texto"></div>
+            <button class="modal-info-btn" onclick="cerrarBienvenida()">Empezar</button>
+        </div>
+    </div>
 
     <!-- ===== MODAL MIS REDES (solo Admin Cliente) ===== -->
     <div class="modal-info" id="modalMisRedes">
@@ -5983,9 +5992,6 @@
 
                 setTimeout(cargarAforoAdmin, 1500);
 
-                // 🔥 Toast de bienvenida al admin (con botón Aceptar)
-                mostrarBienvenidaAdmin();
-
             } else {
                 btnInvitar.style.display = 'none';
                 btnQrGeneral.style.display = 'none';
@@ -5996,14 +6002,13 @@
             // 🔥 El chip EN VIVO refleja el estado del server
             actualizarChipEnVivo();
 
-            // 🔥 FASE 3: toast de bienvenida al VIP
-            if (sesion.tipo === 'vip') {
-                setTimeout(() => {
-                    mostrarToast(`👑 ¡Bienvenido, ${sesion.nombre || 'VIP'}! Descargas ilimitadas.`, 'success', 6000);
-                }, 1500);
-            } else if (!tipsMostrados.primeraEntrada) {
+            // 🔥 Modal de bienvenida (1 vez por sesión, para los 3 tipos)
+            setTimeout(() => mostrarBienvenida(), 800);
+
+            // Tips de entrada (después de la bienvenida)
+            if (!tipsMostrados.primeraEntrada) {
                 tipsMostrados.primeraEntrada = true;
-                setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 2000);
+                setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 4500);
             }
         }
 
@@ -6021,8 +6026,7 @@
 
             // ── Admin ──
             if (sesion.tipo === 'admin') {
-                el.textContent = t('contadorAdmin');
-                el.className = 'badge-rol admin';
+                el.style.display = 'none';
                 if (elReceso) elReceso.style.display = 'none';
                 return;
             }
@@ -6100,24 +6104,70 @@
             el.style.display = 'inline-flex';
         }
 
-        // ==========================================
-        // 👑 BIENVENIDA AL ADMIN (1 vez por sesión)
-        // ==========================================
-        function mostrarBienvenidaAdmin() {
-            const clave = 'ovj_admin_bienvenida_' + (EVENTO_ID || 'default');
+        function mostrarBienvenida() {
+            if (!sesion) return;
 
+            const clave = 'ovj_bienvenida_' + (EVENTO_ID || 'default');
             if (sessionStorage.getItem(clave)) return;
             sessionStorage.setItem(clave, '1');
 
-            const esModoIntimo = sesion.modoEvento === 'A';
+            const emoji = document.getElementById('bienvenidaEmoji');
+            const titulo = document.getElementById('bienvenidaTitulo');
+            const contenido = document.getElementById('bienvenidaContenido');
 
-            const texto = esModoIntimo
-                ? `<strong>👑 Sos administrador del evento</strong><br><br>Podés ver el QR general desde los botones de arriba.`
-                : `<strong>👑 Sos administrador del evento</strong><br><br>Podés invitar VIPs y ver el QR general desde los botones de arriba.`;
+            let beneficios = '';
 
-            setTimeout(() => {
-                mostrarToastConBoton(texto, 'admin-bienvenida');
-            }, 1500);
+            if (sesion.tipo === 'admin') {
+                emoji.textContent = '👑';
+                titulo.textContent = 'Bienvenido a OVJ Studio';
+
+                beneficios = `
+                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:16px; font-size:0.95rem; letter-spacing:0.3px;">
+                        GRACIAS POR CONTRATAR NUESTRO SERVICIO
+                    </div>
+                    <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
+                        Eres administrador del evento.
+                    </div>
+                    <div style="line-height:1.9;">
+                        • Descargas ilimitadas de todas las fotos<br>
+                        • Compartir tus redes sociales a tus invitados<br>
+                        • Acceso a los QRs del evento<br>
+                        • Invitar VIPs rápidamente<br>
+                        • Compartir invitaciones por WhatsApp<br>
+                        • Ver las métricas del evento en vivo
+                    </div>
+                `;
+            } else if (sesion.tipo === 'vip') {
+                emoji.textContent = '👑';
+                titulo.textContent = 'Bienvenido a OVJ Studio';
+
+                beneficios = `
+                    <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
+                        Eres VIP.
+                    </div>
+                    <div style="line-height:1.9;">
+                        • Descargas ilimitadas<br>
+                        • Sin receso<br>
+                        • Sin límites
+                    </div>
+                `;
+            } else {
+                emoji.textContent = '✨';
+                titulo.textContent = 'Bienvenido a OVJ Studio';
+
+                beneficios = `
+                    <div style="text-align:center; line-height:1.6; color:#ccc;">
+                        Disfrutá las fotos del evento.
+                    </div>
+                `;
+            }
+
+            contenido.innerHTML = beneficios;
+            document.getElementById('modalBienvenida').classList.add('activo');
+        }
+
+        function cerrarBienvenida() {
+            document.getElementById('modalBienvenida').classList.remove('activo');
         }
 
         // ==========================================
@@ -7928,6 +7978,12 @@
                 // 🔥 NUEVO: cerrar menú lateral primero
                 if (menuLateralAbierto) {
                     cerrarMenuLateral();
+                    return;
+                }
+
+                // 🔥 Cerrar modal de bienvenida con ESC
+                if (document.getElementById('modalBienvenida').classList.contains('activo')) {
+                    cerrarBienvenida();
                     return;
                 }
 
