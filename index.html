@@ -5340,11 +5340,11 @@
                 contadorAgotado: "⏸️ Receso",
                 fotoNuevaLlegada: "¡Nueva foto disponible!",
                 desbloqueoSocialTitulo: "¡Desbloquea más descargas!",
-                desbloqueoSocialSubtitulo: (n) => `Sigue a OVJ Studio en Instagram y obtén <strong>${n} descargas extra</strong> al instante.`,
+                desbloqueoSocialSubtitulo: `Seguí a OVJ Studio en Instagram y <strong>recuperá tu sesión completa</strong> al instante.`,
                 desbloqueoSeguirIG: "📸 Seguir en Instagram",
                 desbloqueoConfirmar: "✓ Ya lo hice",
                 desbloqueoVerificando: "Verificando...",
-                desbloqueoExito: (n) => `<strong>🎁 ¡+${n} descargas desbloqueadas!</strong>`,
+                desbloqueoExito: `<strong>🎁 ¡Sesión recuperada!</strong>`,
                 desbloqueoYaUsado: "Ya usaste este desbloqueo",
                 tipEntrada: "💡 Toca una foto para verla en grande",
                 tipPrimeraDescarga: "💡 Descarga tus favoritas. Se guardan en tu celular",
@@ -5414,11 +5414,11 @@
                 contadorAgotado: "⏸️ Break",
                 fotoNuevaLlegada: "New photo available!",
                 desbloqueoSocialTitulo: "Unlock more downloads!",
-                desbloqueoSocialSubtitulo: (n) => `Follow OVJ Studio on Instagram and get <strong>${n} extra downloads</strong> instantly.`,
+                desbloqueoSocialSubtitulo: `Follow OVJ Studio on Instagram and <strong>restore your full session</strong> instantly.`,
                 desbloqueoSeguirIG: "📸 Follow on Instagram",
                 desbloqueoConfirmar: "✓ Done",
                 desbloqueoVerificando: "Checking...",
-                desbloqueoExito: (n) => `<strong>🎁 +${n} downloads unlocked!</strong>`,
+                desbloqueoExito: `<strong>🎁 Session restored!</strong>`,
                 desbloqueoYaUsado: "You already used this unlock",
                 tipEntrada: "💡 Tap a photo to view it large",
                 tipPrimeraDescarga: "💡 Download your favorites. They save to your phone",
@@ -5488,11 +5488,11 @@
                 contadorAgotado: "⏸️ 休息",
                 fotoNuevaLlegada: "新照片已上线！",
                 desbloqueoSocialTitulo: "解锁更多下载！",
-                desbloqueoSocialSubtitulo: (n) => `关注 OVJ Studio 的 Instagram，立即获得 <strong>${n} 次额外下载</strong>。`,
+                desbloqueoSocialSubtitulo: `关注 OVJ Studio 的 Instagram，立即 <strong>恢复完整下载次数</strong>。`,
                 desbloqueoSeguirIG: "📸 关注 Instagram",
                 desbloqueoConfirmar: "✓ 已完成",
                 desbloqueoVerificando: "验证中...",
-                desbloqueoExito: (n) => `<strong>🎁 已解锁 +${n} 次下载！</strong>`,
+                desbloqueoExito: `<strong>🎁 已恢复完整次数！</strong>`,
                 desbloqueoYaUsado: "你已使用过此解锁",
                 tipEntrada: "💡 点击照片查看大图",
                 tipPrimeraDescarga: "💡 下载你喜欢的照片，会保存到手机",
@@ -5842,7 +5842,6 @@
 
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
-                        sesionGeneral.desbloqueoSocialDescargas = data.desbloqueoSocial.descargasExtra;
                         sesionGeneral.desbloqueoSocialActivo = data.desbloqueoSocial.activo;
                     }
                 }
@@ -6781,15 +6780,14 @@
 
             } else {
                 // ── Fallback: Instagram de OVJ Studio ──
-                const descExtra = sesionGeneral.desbloqueoSocialDescargas || 3;
-                subtitulo.innerHTML = t('desbloqueoSocialSubtitulo', descExtra);
+                subtitulo.innerHTML = t('desbloqueoSocialSubtitulo');
 
                 contenedorRedes.innerHTML = `
-                    <button class="desbloqueo-red-btn instagram" onclick="abrirRedOvj()">
-                        <span class="red-emoji">📸</span>
-                        <span>Seguir en Instagram</span>
-                    </button>
-                `;
+        <button class="desbloqueo-red-btn instagram" onclick="abrirRedOvj()">
+            <span class="red-emoji">📸</span>
+            <span>Seguir en Instagram</span>
+        </button>
+    `;
             }
 
             modal.classList.add('activo');
@@ -6905,7 +6903,7 @@
                 cerrarDesbloqueo();
 
                 lanzarConfeti();
-                mostrarToast(t('desbloqueoExito', data.descargasExtra), 'success', 6000);
+                mostrarToast(t('desbloqueoExito'), 'success', 6000);
 
                 actualizarBadgeRol();
                 actualizarBotonPrincipal();
@@ -8070,7 +8068,6 @@
 
                     if (data.desbloqueoSocial) {
                         sesionGeneral.desbloqueoSocialUsado = data.desbloqueoSocial.usado;
-                        sesionGeneral.desbloqueoSocialDescargas = data.desbloqueoSocial.descargasExtra;
                         sesionGeneral.desbloqueoSocialActivo = data.desbloqueoSocial.activo;
                     }
 
