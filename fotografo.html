@@ -2370,7 +2370,6 @@
         <div class="titulo">${escapeHtml(evt.evento)}</div>
         <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
         ${etiquetaModo}
-        ${evt.whatsappCliente ? `<div class="whatsapp">📱 Cliente: +${evt.whatsappCliente}</div>` : ''}
         <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
             ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
         </button>
