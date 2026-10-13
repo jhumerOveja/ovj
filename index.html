@@ -1372,64 +1372,33 @@
             z-index: 999;
         }
 
-        /* Header del modal (arriba de la foto) */
-        .modal-header-preview {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 8px 12px;
-            margin-bottom: 8px;
-        }
-
-        .modal-header-marca {
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 4px;
-            color: rgba(255, 255, 255, 0.35);
-            text-transform: uppercase;
-            user-select: none;
-        }
-
-        .modal-header-cerrar {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.78rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+        .btn-cerrar-modal {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--borde);
+            color: var(--texto-suave);
+            font-size: 1.4rem;
             cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: all 0.25s ease;
-            font-family: inherit;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .modal-header-cerrar:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.9);
+        .btn-cerrar-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: rotate(90deg) scale(1.1);
+            border-color: rgba(232, 196, 122, 0.3);
         }
 
-        /* Footer del modal (arriba del botón descargar) */
-        .modal-footer-preview {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 14px;
-        }
-
-        .modal-footer-separador {
-            width: 60%;
-            height: 1px;
-            margin: 0 auto 12px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-        }
-
-        .modal-footer-texto {
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 1px;
-            font-weight: 400;
-            user-select: none;
-        }
 
         .modal.activo .modal-contenido {
             animation: entradaCinematografica 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1452,11 +1421,61 @@
         .modal-contenido .imagen-wrapper {
             position: relative;
             border-radius: 16px;
-            overflow: hidden;
             background: var(--bg);
             border: 1px solid var(--borde);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
                 0 0 0 1px rgba(232, 196, 122, 0.05);
+            /* overflow: visible para que el badge pueda desbordar */
+            overflow: visible;
+        }
+
+        .modal-contenido .imagen-wrapper img {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Badge flotante sobre la foto */
+        .modal-badge-flotante {
+            position: absolute;
+            top: -14px;
+            left: 18px;
+            z-index: 15;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-transform: uppercase;
+            user-select: none;
+            pointer-events: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.5),
+                0 0 24px rgba(232, 196, 122, 0.25);
+            background: linear-gradient(120deg,
+                    #e8c47a 0%,
+                    #a78bfa 25%,
+                    #60a5fa 50%,
+                    #fb7185 75%,
+                    #e8c47a 100%);
+            background-size: 400% 400%;
+            animation: gradienteBadge 3s ease-in-out infinite;
+        }
+
+        @keyframes gradienteBadge {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .modal-contenido img {
@@ -2904,19 +2923,12 @@
                 padding: 8px;
             }
 
-            .modal-header-marca {
-                font-size: 0.6rem;
-                letter-spacing: 3px;
-            }
-
-            .modal-header-cerrar {
-                font-size: 0.72rem;
+            .modal-badge-flotante {
+                font-size: 0.58rem;
                 padding: 5px 10px;
-            }
-
-            .modal-footer-texto {
-                font-size: 0.66rem;
-                letter-spacing: 0.8px;
+                letter-spacing: 2px;
+                top: -12px;
+                left: 14px;
             }
 
             .modal-contenido img {
@@ -4741,21 +4753,14 @@
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
         <div class="modal-contenido">
-            <div class="modal-header-preview">
-                <span class="modal-header-marca">OVJ STUDIO</span>
-                <button class="modal-header-cerrar" onclick="cerrarModal()">Cerrar</button>
-            </div>
             <div class="imagen-wrapper">
+                <div class="modal-badge-flotante" id="modalBadgeFlotante">OVJ STUDIO</div>
+                <button class="btn-cerrar-modal" onclick="cerrarModal()">✕</button>
                 <button class="nav-flecha izquierda oculto" id="flechaIzquierda" onclick="navegarFoto(-1)">‹</button>
                 <img id="modalImagen" src="" alt="Foto ampliada" />
                 <button class="nav-flecha derecha oculto" id="flechaDerecha" onclick="navegarFoto(1)">›</button>
             </div>
             <div class="modal-footer">
-                <div class="modal-footer-preview">
-                    <div class="modal-footer-separador"></div>
-                    <div class="modal-footer-texto">Vista previa de la foto</div>
-                </div>
-
                 <button class="btn-pedir" id="btnPedir" onclick="accionBotonPrincipal()">
                     <span class="icono-whatsapp" id="btnIcono">📱</span>
                     <span id="btnPedirTexto">Descargar Alta calidad</span>
