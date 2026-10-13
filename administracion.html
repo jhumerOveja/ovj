@@ -370,6 +370,17 @@
             color: #0a0a0a;
         }
 
+        .btn-whatsapp-cliente {
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            color: #4ade80;
+        }
+
+        .btn-whatsapp-cliente:hover:not(:disabled) {
+            background: rgba(74, 222, 128, 0.22);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+        }
+
         .btn-chico {
             padding: 7px 12px;
             font-size: 0.72rem;
@@ -1188,6 +1199,28 @@
         }
 
         // ==========================================
+        // 💬 CONTACTAR CLIENTE POR WHATSAPP
+        // ==========================================
+        function contactarCliente(whatsapp) {
+            if (!whatsapp) {
+                toast('Este evento no tiene WhatsApp del cliente guardado', 'error');
+                return;
+            }
+
+            // Limpiar el número (solo dígitos)
+            const numero = String(whatsapp).replace(/[^0-9]/g, '');
+
+            if (numero.length < 8) {
+                toast('El número guardado no es válido', 'error');
+                return;
+            }
+
+            // Abrir chat de WhatsApp sin mensaje pre-armado
+            const url = `https://wa.me/${numero}`;
+            window.open(url, '_blank');
+        }
+
+        // ==========================================
         // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
         // ==========================================
         let _ultimaConsultaDonde = 0;
@@ -1794,15 +1827,26 @@
             }
 
             let acciones = '';
+
+            // Botón de WhatsApp del cliente (si existe el número)
+            const botonWhatsApp = e.whatsappCliente
+                ? `<button class="btn btn-chico btn-whatsapp-cliente" onclick="contactarCliente('${escapeHtml(e.whatsappCliente)}')">💬 Cliente</button>`
+                : '';
+
             if (e.estado === 'agendado') {
                 acciones = `
-                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
-                    <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
-                `;
+        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
+        ${botonWhatsApp}
+        <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
+    `;
             } else if (e.estado === 'activo') {
                 acciones = `
-                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
-                `;
+        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
+        ${botonWhatsApp}
+    `;
+            } else {
+                // Historial (finalizados, cancelados)
+                acciones = botonWhatsApp;
             }
 
             return `
@@ -1941,7 +1985,7 @@
 <div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
 
 <div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
-    💡 El invitado sigue a OVJ en Instagram y <strong style="color:#e8c47a;">recupera su sesión completa</strong>. Solo se puede usar <strong style="color:#e8c47a;">1 vez por cliente</strong>.
+    💡 El invitado sigue las redes configuradas y <strong style="color:#e8c47a;">recupera su sesión completa</strong>. Solo se puede usar <strong style="color:#e8c47a;">1 vez por invitado</strong> durante el evento.
 </div>
 
 <div class="campo">
