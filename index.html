@@ -1347,7 +1347,7 @@
             animation: blurIn 0.4s ease;
         }
 
-        /* ===== IRIS (transición de lente) ===== */
+        /* ===== IRIS (diafragma de lente real) ===== */
         .iris-overlay {
             position: fixed;
             inset: 0;
@@ -1361,90 +1361,53 @@
             display: block;
         }
 
-        /* Cada aspa es un triángulo que sale de un borde */
-        .iris-aspa {
+        .iris-svg {
             position: absolute;
-            background: #000;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* El agujero del diafragma (círculo de la máscara) */
+        #irisAgujero {
+            transition: r 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Estado cerrado: el agujero se achica a 0 */
+        .iris-overlay.cerrado #irisAgujero {
+            r: 0;
+        }
+
+        /* Estado abierto: el agujero es grande (cubre toda la pantalla) */
+        #irisAgujero {
+            r: 90;
+        }
+
+        /* Cada aspa del diafragma */
+        .iris-aspa {
+            transform-origin: 50px 50px;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
+            opacity: 0;
         }
 
-        /* 6 aspas: arriba-izq, arriba-der, der, abajo-der, abajo-izq, izq */
-        /* Cada una cubre un triángulo grande que sale de su borde hacia el centro */
-
-        .iris-aspa-1 {
-            /* Superior izquierda */
-            top: -10vh;
-            left: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-            transform: translate(-100%, -100%);
-        }
-
-        .iris-aspa-2 {
-            /* Superior derecha */
-            top: -10vh;
-            right: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(0 0, 100% 0, 100% 100%);
-            transform: translate(100%, -100%);
-        }
-
-        .iris-aspa-3 {
-            /* Derecha */
-            top: -10vh;
-            right: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(100% 0, 100% 100%, 0 50%);
-            transform: translate(100%, 0);
-        }
-
-        .iris-aspa-4 {
-            /* Inferior derecha */
-            bottom: -10vh;
-            right: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(100% 100%, 0 100%, 100% 0);
-            transform: translate(100%, 100%);
-        }
-
-        .iris-aspa-5 {
-            /* Inferior izquierda */
-            bottom: -10vh;
-            left: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(0 100%, 100% 100%, 0 0);
-            transform: translate(-100%, 100%);
-        }
-
-        .iris-aspa-6 {
-            /* Izquierda */
-            top: -10vh;
-            left: -10vw;
-            width: 120vw;
-            height: 120vh;
-            clip-path: polygon(0 0, 0 100%, 100% 50%);
-            transform: translate(-100%, 0);
-        }
-
-        /* Estado cerrado: todas las aspas al centro */
-        .iris-overlay.cerrado .iris-aspa-1,
-        .iris-overlay.cerrado .iris-aspa-2,
-        .iris-overlay.cerrado .iris-aspa-3,
-        .iris-overlay.cerrado .iris-aspa-4,
-        .iris-overlay.cerrado .iris-aspa-5,
-        .iris-overlay.cerrado .iris-aspa-6 {
-            transform: translate(0, 0);
-        }
-
-        /* Borde dorado sutil en los cortes (se ve cuando están cerradas) */
+        /* Estado cerrado: las aspas se mueven al centro y se hacen visibles */
         .iris-overlay.cerrado .iris-aspa {
-            box-shadow: inset 0 0 30px rgba(232, 196, 122, 0.06);
+            opacity: 1;
+            transform: scale(0.3) rotate(0deg);
+        }
+
+        /* Estado abierto: las aspas se van al borde y desaparecen */
+        .iris-overlay .iris-aspa {
+            opacity: 0;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Colores de las aspas: negro con un borde dorado muy sutil */
+        .iris-aspa {
+            stroke: rgba(232, 196, 122, 0.15);
+            stroke-width: 0.3;
         }
 
         .modal-fondo.activo {
@@ -4850,12 +4813,25 @@
     </div>
 
     <div class="iris-overlay" id="irisOverlay">
-        <div class="iris-aspa iris-aspa-1"></div>
-        <div class="iris-aspa iris-aspa-2"></div>
-        <div class="iris-aspa iris-aspa-3"></div>
-        <div class="iris-aspa iris-aspa-4"></div>
-        <div class="iris-aspa iris-aspa-5"></div>
-        <div class="iris-aspa iris-aspa-6"></div>
+        <svg class="iris-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <mask id="irisMask">
+                    <rect width="100" height="100" fill="white" />
+                    <circle id="irisAgujero" cx="50" cy="50" r="80" fill="black" />
+                </mask>
+            </defs>
+
+            <rect width="100" height="100" fill="#000" mask="url(#irisMask)" />
+
+            <g id="irisAspas" fill="#000">
+                <path class="iris-aspa" d="M50,50 L30,-20 Q50,-30 70,-20 Z" />
+                <path class="iris-aspa" d="M50,50 L120,30 Q130,50 120,70 Z" />
+                <path class="iris-aspa" d="M50,50 L70,120 Q50,130 30,120 Z" />
+                <path class="iris-aspa" d="M50,50 L-20,70 Q-30,50 -20,30 Z" />
+                <path class="iris-aspa" d="M50,50 L110,-10 Q120,0 130,10 Z" />
+                <path class="iris-aspa" d="M50,50 L-10,110 Q-20,120 10,130 Z" />
+            </g>
+        </svg>
     </div>
 
     <div class="modal-fondo" id="modalFondo"></div>
@@ -7502,10 +7478,9 @@
         }, 1000);
 
         // ==========================================
-        // 🎥 IRIS (transición de lente — aspas)
+        // 🎥 IRIS (diafragma de lente real)
         // ==========================================
-        // Cierra las aspas (tapan todo) → ejecuta acción →
-        // abre las aspas (revelan el nuevo estado).
+        // Cierra el diafragma → ejecuta la acción → abre el diafragma.
         // El overlay solo se ve durante la animación.
 
         function _ejecutarIris(accionAlCerrar, accionAlAbrir) {
@@ -7513,7 +7488,6 @@
 
             const overlay = document.getElementById('irisOverlay');
             if (!overlay) {
-                // Fallback: si no existe el overlay, hacer la acción directa
                 if (accionAlCerrar) accionAlCerrar();
                 if (accionAlAbrir) accionAlAbrir();
                 return;
@@ -7521,44 +7495,40 @@
 
             _irisAnimando = true;
 
-            // 1. Mostrar overlay SIN animación, con las aspas ya en posición abierta.
-            //    Como las aspas están "fuera de pantalla" en su estado base,
-            //    no se ven. Luego las movemos al centro para "cerrar".
+            // 1. Mostrar overlay (las aspas están afuera, no se ven)
             overlay.classList.add('activo');
 
             // Forzar un reflow para que el navegador registre el estado inicial
             void overlay.offsetWidth;
 
-            // 2. Cerrar las aspas (llevan al centro)
+            // 2. Cerrar el diafragma
             overlay.classList.add('cerrado');
 
-            // 3. Esperar 400ms (la duración de la transición) y ejecutar la acción
+            // 3. Esperar 450ms y ejecutar la acción
             _irisTimer = setTimeout(() => {
-                // Acción mientras las aspas tapan todo
                 if (accionAlCerrar) {
                     try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
                 }
 
-                // Pequeña pausa para que se pinte el cambio de fondo
+                // Pequeña pausa para que se pinte el cambio
                 setTimeout(() => {
-                    // 4. Abrir las aspas (vuelven a sus posiciones de salida)
+                    // 4. Abrir el diafragma
                     overlay.classList.remove('cerrado');
 
-                    // Acción opcional después de abrir (por si hace falta)
                     if (accionAlAbrir) {
                         try { accionAlAbrir(); } catch (e) { console.error('Iris acción:', e); }
                     }
 
-                    // 5. Después de la animación de apertura, ocultar el overlay
+                    // 5. Después de la apertura, ocultar el overlay
                     _irisTimer = setTimeout(() => {
                         overlay.classList.remove('activo');
                         _irisAnimando = false;
                         _irisTimer = null;
                     }, 450);
 
-                }, 50);
+                }, 60);
 
-            }, 420);
+            }, 460);
         }
 
         // ==========================================
