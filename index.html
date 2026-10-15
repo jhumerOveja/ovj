@@ -1358,7 +1358,7 @@
             align-items: center;
             background: #000;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         .iris-overlay.activo {
@@ -1368,7 +1368,7 @@
 
         .iris-overlay.saliendo {
             opacity: 0;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.25s ease;
         }
 
         /* Contenedor del contenido (logo + nombre evento) */
@@ -1390,8 +1390,8 @@
             opacity: 0;
             transform: translateY(20px) scale(0.95);
             transition:
-                opacity 0.5s ease,
-                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+                opacity 0.3s ease,
+                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             user-select: none;
         }
 
@@ -1418,8 +1418,8 @@
             opacity: 0;
             transform: translateY(12px);
             transition:
-                opacity 0.5s ease 0.15s,
-                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+                opacity 0.35s ease 0.1s,
+                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
             user-select: none;
             max-width: 90vw;
             word-break: break-word;
@@ -1446,16 +1446,16 @@
             opacity: 0;
             transform: translateY(-15px) scale(1.02);
             transition:
-                opacity 0.25s ease,
-                transform 0.35s ease;
+                opacity 0.15s ease,
+                transform 0.25s ease;
         }
 
         .iris-overlay.saliendo .iris-evento {
             opacity: 0;
             transform: translateY(-10px);
             transition:
-                opacity 0.2s ease,
-                transform 0.3s ease;
+                opacity 0.15s ease,
+                transform 0.2s ease;
         }
 
         /* En móvil, más chico */
@@ -7557,7 +7557,7 @@
             overlay.classList.remove('saliendo');
             overlay.classList.add('activo');
 
-            // 2. Esperar a que termine la entrada (700ms) y ejecutar la acción
+            // 2. Esperar a que termine la entrada (450ms) y ejecutar la acción
             _irisTimer = setTimeout(() => {
                 if (accionAlCerrar) {
                     try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
@@ -7577,11 +7577,11 @@
                         overlay.classList.remove('activo', 'saliendo');
                         _irisAnimando = false;
                         _irisTimer = null;
-                    }, 380);
+                    }, 250);
 
-                }, 120);
+                }, 80);
 
-            }, 750);
+            }, 450);
         }
 
         // ==========================================
