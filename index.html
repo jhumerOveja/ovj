@@ -1347,6 +1347,50 @@
             animation: blurIn 0.4s ease;
         }
 
+        /* ===== IRIS (transición de lente) ===== */
+        .iris-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1500;
+            pointer-events: none;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+        }
+
+        .iris-overlay.activo {
+            display: flex;
+        }
+
+        .iris-circulo {
+            width: 250vmax;
+            height: 250vmax;
+            border-radius: 50%;
+            background: #000;
+            box-shadow:
+                0 0 0 1px rgba(232, 196, 122, 0.4),
+                0 0 60px rgba(232, 196, 122, 0.15),
+                inset 0 0 100px rgba(232, 196, 122, 0.08);
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .iris-overlay.cerrando .iris-circulo {
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .iris-overlay.cerrado .iris-circulo {
+            transform: scale(1);
+            transition: none;
+        }
+
+        .iris-overlay.abriendo .iris-circulo {
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .modal-fondo.activo {
             display: block;
         }
@@ -4749,6 +4793,9 @@
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
 
+    <div class="iris-overlay" id="irisOverlay">
+        <div class="iris-circulo"></div>
+    </div>
 
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
@@ -5386,6 +5433,8 @@
         let fotosCache = [];
         let fotosVisibles = FOTOS_POR_CARGA;
         let fotoSeleccionadaIndex = -1;
+        let _irisAnimando = false;
+        let _irisTimer = null;
         let cargando = false;
         let servidorOnline = true;
         let tituloEsDefault = true;
@@ -7392,6 +7441,58 @@
         }, 1000);
 
         // ==========================================
+        // 🎥 IRIS (transición de lente)
+        // ==========================================
+        function _ejecutarIris(accionAlCerrar, accionAlAbrir) {
+            if (_irisAnimando) return;
+
+            const overlay = document.getElementById('irisOverlay');
+            if (!overlay) {
+                // Fallback: si no existe el overlay, hacer la acción directa
+                if (accionAlCerrar) accionAlCerrar();
+                if (accionAlAbrir) accionAlAbrir();
+                return;
+            }
+
+            _irisAnimando = true;
+
+            // 1. Mostrar overlay y animar cierre del iris (300ms)
+            overlay.classList.add('activo', 'cerrando');
+
+            _irisTimer = setTimeout(() => {
+                // 2. Ejecutar la acción mientras el iris está cerrado
+                if (accionAlCerrar) {
+                    try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
+                }
+
+                // 3. Cambiar a estado "cerrado" (sin transición)
+                overlay.classList.remove('cerrando');
+                overlay.classList.add('cerrado');
+
+                // 4. Pequeña pausa para que se pinte el cambio
+                setTimeout(() => {
+                    // 5. Animar apertura del iris (400ms)
+                    overlay.classList.remove('cerrado');
+                    overlay.classList.add('abriendo');
+
+                    // 6. Ejecutar la acción de apertura (cargar la foto, etc.)
+                    if (accionAlAbrir) {
+                        try { accionAlAbrir(); } catch (e) { console.error('Iris acción:', e); }
+                    }
+
+                    _irisTimer = setTimeout(() => {
+                        // 7. Limpiar todo
+                        overlay.classList.remove('activo', 'abriendo');
+                        _irisAnimando = false;
+                        _irisTimer = null;
+                    }, 420);
+
+                }, 30);
+
+            }, 320);
+        }
+
+        // ==========================================
         // MODAL FOTO
         // ==========================================
         function abrirModal(nombreFoto) {
@@ -7401,31 +7502,51 @@
             const foto = fotosCache[index];
             if (!foto || !foto.nombre) return;
 
-            fotoSeleccionadaIndex = index;
+            // 🔥 Bloquear si ya está abierto el modal
+            if (document.getElementById("modal").classList.contains("activo")) return;
 
-            marcarFotoComoVista(nombreFoto);
+            _ejecutarIris(
+                // Acción mientras el iris está cerrado: preparar el modal
+                () => {
+                    fotoSeleccionadaIndex = index;
+                    marcarFotoComoVista(nombreFoto);
 
-            const modal = document.getElementById("modal");
-            const fondo = document.getElementById("modalFondo");
-            const modalImagen = document.getElementById("modalImagen");
+                    const modal = document.getElementById("modal");
+                    const fondo = document.getElementById("modalFondo");
+                    const modalImagen = document.getElementById("modalImagen");
 
-            const urlImagen = foto.url;
-            modalImagen.src = urlImagen;
-            modalImagen.alt = `Foto ${index + 1}`;
+                    const urlImagen = foto.url;
+                    modalImagen.src = urlImagen;
+                    modalImagen.alt = `Foto ${index + 1}`;
 
-            modal.classList.add("activo");
-            fondo.classList.add("activo");
-            document.body.style.overflow = "hidden";
+                    modal.classList.add("activo");
+                    fondo.classList.add("activo");
+                    document.body.style.overflow = "hidden";
 
-            actualizarFlechas();
-            actualizarBotonPrincipal();
-            precargarAdyacentes(index);
+                    actualizarFlechas();
+                    actualizarBotonPrincipal();
+                    precargarAdyacentes(index);
+                },
+                // Acción al abrir el iris: nada (el modal ya está listo)
+                null
+            );
         }
-
         function cerrarModal() {
-            document.getElementById("modal").classList.remove("activo");
-            document.getElementById("modalFondo").classList.remove("activo");
-            document.body.style.overflow = "";
+            const modal = document.getElementById("modal");
+            if (!modal.classList.contains("activo")) return;
+
+            _ejecutarIris(
+                // Acción mientras el iris está cerrado: cerrar el modal
+                () => {
+                    modal.classList.remove("activo");
+                    document.getElementById("modalFondo").classList.remove("activo");
+                    document.body.style.overflow = "";
+
+                    // 🔥 Resetear la foto seleccionada
+                    fotoSeleccionadaIndex = -1;
+                },
+                null
+            );
         }
 
         function actualizarFlechas() {
@@ -7435,6 +7556,9 @@
         }
 
         function navegarFoto(direccion) {
+            // 🔥 Bloquear si el iris está animando
+            if (_irisAnimando) return;
+
             const nuevoIndex = fotoSeleccionadaIndex + direccion;
             if (nuevoIndex < 0 || nuevoIndex >= fotosCache.length) return;
 
