@@ -1347,67 +1347,65 @@
             animation: blurIn 0.4s ease;
         }
 
-        /* ===== IRIS (diafragma de lente real) ===== */
+        /* ===== IRIS (transición con logo OVJ Studio) ===== */
         .iris-overlay {
             position: fixed;
             inset: 0;
             z-index: 1500;
             pointer-events: none;
             display: none;
-            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
 
         .iris-overlay.activo {
-            display: block;
-        }
-
-        .iris-svg {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* El agujero del diafragma (círculo de la máscara) */
-        #irisAgujero {
-            transition: r 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Estado cerrado: el agujero se achica a 0 */
-        .iris-overlay.cerrado #irisAgujero {
-            r: 0;
-        }
-
-        /* Estado abierto: el agujero es grande (cubre toda la pantalla) */
-        #irisAgujero {
-            r: 90;
-        }
-
-        /* Cada aspa del diafragma */
-        .iris-aspa {
-            transform-origin: 50px 50px;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-            opacity: 0;
-        }
-
-        /* Estado cerrado: las aspas se mueven al centro y se hacen visibles */
-        .iris-overlay.cerrado .iris-aspa {
+            display: flex;
             opacity: 1;
-            transform: scale(0.3) rotate(0deg);
         }
 
-        /* Estado abierto: las aspas se van al borde y desaparecen */
-        .iris-overlay .iris-aspa {
+        .iris-overlay.saliendo {
             opacity: 0;
-            transform: scale(1) rotate(0deg);
         }
 
-        /* Colores de las aspas: negro con un borde dorado muy sutil */
-        .iris-aspa {
-            stroke: rgba(232, 196, 122, 0.15);
-            stroke-width: 0.3;
+        .iris-logo {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #fff;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+        }
+
+        .iris-logo span {
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .iris-overlay.activo .iris-logo {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Cuando el overlay va a salir, el logo se desvanece primero */
+        .iris-overlay.saliendo .iris-logo {
+            opacity: 0;
+            transform: scale(1.05);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        /* En móvil, un poco más chico */
+        @media (max-width: 600px) {
+            .iris-logo {
+                font-size: 1.8rem;
+                letter-spacing: 1.5px;
+            }
         }
 
         .modal-fondo.activo {
@@ -4813,25 +4811,7 @@
     </div>
 
     <div class="iris-overlay" id="irisOverlay">
-        <svg class="iris-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-            <defs>
-                <mask id="irisMask">
-                    <rect width="100" height="100" fill="white" />
-                    <circle id="irisAgujero" cx="50" cy="50" r="80" fill="black" />
-                </mask>
-            </defs>
-
-            <rect width="100" height="100" fill="#000" mask="url(#irisMask)" />
-
-            <g id="irisAspas" fill="#000">
-                <path class="iris-aspa" d="M50,50 L30,-20 Q50,-30 70,-20 Z" />
-                <path class="iris-aspa" d="M50,50 L120,30 Q130,50 120,70 Z" />
-                <path class="iris-aspa" d="M50,50 L70,120 Q50,130 30,120 Z" />
-                <path class="iris-aspa" d="M50,50 L-20,70 Q-30,50 -20,30 Z" />
-                <path class="iris-aspa" d="M50,50 L110,-10 Q120,0 130,10 Z" />
-                <path class="iris-aspa" d="M50,50 L-10,110 Q-20,120 10,130 Z" />
-            </g>
-        </svg>
+        <div class="iris-logo">OVJ <span>Studio</span></div>
     </div>
 
     <div class="modal-fondo" id="modalFondo"></div>
@@ -7478,10 +7458,10 @@
         }, 1000);
 
         // ==========================================
-        // 🎥 IRIS (diafragma de lente real)
+        // 🎥 IRIS (transición con logo OVJ Studio)
         // ==========================================
-        // Cierra el diafragma → ejecuta la acción → abre el diafragma.
-        // El overlay solo se ve durante la animación.
+        // Muestra el logo OVJ Studio al centro con fade in/out.
+        // El modal se carga detrás, mientras el overlay está visible.
 
         function _ejecutarIris(accionAlCerrar, accionAlAbrir) {
             if (_irisAnimando) return;
@@ -7495,40 +7475,36 @@
 
             _irisAnimando = true;
 
-            // 1. Mostrar overlay (las aspas están afuera, no se ven)
+            // 1. Mostrar overlay (fade in del fondo negro + logo)
+            overlay.classList.remove('saliendo');
             overlay.classList.add('activo');
 
-            // Forzar un reflow para que el navegador registre el estado inicial
-            void overlay.offsetWidth;
-
-            // 2. Cerrar el diafragma
-            overlay.classList.add('cerrado');
-
-            // 3. Esperar 450ms y ejecutar la acción
+            // 2. Después del fade in (250ms) + un momento para ver el logo (400ms),
+            //    ejecutar la acción mientras el overlay está visible
             _irisTimer = setTimeout(() => {
                 if (accionAlCerrar) {
                     try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
                 }
 
-                // Pequeña pausa para que se pinte el cambio
+                // 3. Pequeña pausa para que se pinte el cambio (100ms)
                 setTimeout(() => {
-                    // 4. Abrir el diafragma
-                    overlay.classList.remove('cerrado');
+                    // 4. Iniciar fade out del overlay
+                    overlay.classList.add('saliendo');
 
                     if (accionAlAbrir) {
                         try { accionAlAbrir(); } catch (e) { console.error('Iris acción:', e); }
                     }
 
-                    // 5. Después de la apertura, ocultar el overlay
+                    // 5. Después del fade out (250ms), ocultar el overlay
                     _irisTimer = setTimeout(() => {
-                        overlay.classList.remove('activo');
+                        overlay.classList.remove('activo', 'saliendo');
                         _irisAnimando = false;
                         _irisTimer = null;
-                    }, 450);
+                    }, 280);
 
-                }, 60);
+                }, 100);
 
-            }, 460);
+            }, 700);
         }
 
         // ==========================================
