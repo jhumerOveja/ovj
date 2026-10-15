@@ -1347,134 +1347,6 @@
             animation: blurIn 0.4s ease;
         }
 
-        /* ===== IRIS (transición con logo OVJ Studio) ===== */
-        .iris-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 1500;
-            pointer-events: none;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .iris-overlay.activo {
-            display: flex;
-            opacity: 1;
-        }
-
-        .iris-overlay.saliendo {
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-
-        /* Contenedor del contenido (logo + nombre evento) */
-        .iris-contenido {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            text-align: center;
-            padding: 20px;
-        }
-
-        /* Logo OVJ Studio */
-        .iris-logo {
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            color: #fff;
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-            transition:
-                opacity 0.3s ease,
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            user-select: none;
-        }
-
-        .iris-logo span {
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #a1a1aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Estado activo: el logo entra desde abajo con scale */
-        .iris-overlay.activo .iris-logo {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /* Nombre del evento (debajo del logo) */
-        .iris-evento {
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 3px;
-            color: rgba(255, 255, 255, 0.45);
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(12px);
-            transition:
-                opacity 0.35s ease 0.1s,
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
-            user-select: none;
-            max-width: 90vw;
-            word-break: break-word;
-        }
-
-        .iris-overlay.activo .iris-evento {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Separador sutil entre logo y evento */
-        .iris-evento::before {
-            content: '';
-            display: block;
-            width: 30px;
-            height: 1px;
-            margin: 0 auto 12px;
-            background: linear-gradient(90deg, transparent, rgba(232, 196, 122, 0.4), transparent);
-            opacity: 0.6;
-        }
-
-        /* Estado "saliendo": el logo y el evento se van hacia arriba */
-        .iris-overlay.saliendo .iris-logo {
-            opacity: 0;
-            transform: translateY(-15px) scale(1.02);
-            transition:
-                opacity 0.15s ease,
-                transform 0.25s ease;
-        }
-
-        .iris-overlay.saliendo .iris-evento {
-            opacity: 0;
-            transform: translateY(-10px);
-            transition:
-                opacity 0.15s ease,
-                transform 0.2s ease;
-        }
-
-        /* En móvil, más chico */
-        @media (max-width: 600px) {
-            .iris-logo {
-                font-size: 1.8rem;
-                letter-spacing: 1.5px;
-            }
-
-            .iris-evento {
-                font-size: 0.72rem;
-                letter-spacing: 2px;
-            }
-
-            .iris-contenido {
-                gap: 10px;
-            }
-        }
-
         .modal-fondo.activo {
             display: block;
         }
@@ -1614,6 +1486,22 @@
             background: var(--bg);
             padding: 16px;
             transition: transform 0.4s ease;
+        }
+
+        /* ===== Efecto "vivo" de la foto ===== */
+        .imagen-wrapper {
+            perspective: 1200px;
+        }
+
+        .modal-contenido img.vivo {
+            will-change: transform, filter;
+            transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), filter 1.4s ease;
+            filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+            transform: translateZ(0) rotateX(0deg) rotateY(0deg) scale(1);
+        }
+
+        .modal-contenido img.vivo.en-animacion {
+            /* La transformación se aplica por JS con estilos inline */
         }
 
         .nav-flecha {
@@ -4877,13 +4765,6 @@
         <div class="footer">OVJ STUDIO · Fotografía con alma</div>
     </div>
 
-    <div class="iris-overlay" id="irisOverlay">
-        <div class="iris-contenido">
-            <div class="iris-logo">OVJ <span>Studio</span></div>
-            <div class="iris-evento" id="irisEvento"></div>
-        </div>
-    </div>
-
     <div class="modal-fondo" id="modalFondo"></div>
     <div class="modal" id="modal">
         <div class="modal-contenido">
@@ -5520,8 +5401,91 @@
         let fotosCache = [];
         let fotosVisibles = FOTOS_POR_CARGA;
         let fotoSeleccionadaIndex = -1;
-        let _irisAnimando = false;
-        let _irisTimer = null;
+        // ==========================================
+        // 🎬 EFECTO VIVO (movimiento automático de la foto)
+        // ==========================================
+        let _efectoTimer = null;
+        let _efectoActivo = false;
+
+        const _EFECTO_DURACION_MS = 1500;    // duración de cada animación
+        const _EFECTO_PAUSA_MS = 2500;       // pausa entre animaciones
+        const _EFECTO_MAX_ROTACION = 2.5;    // grados máximos
+        const _EFECTO_MAX_SCALE = 1.018;     // zoom máximo sutil
+
+        function iniciarEfectoVivo() {
+            detenerEfectoVivo();
+
+            const img = document.getElementById('modalImagen');
+            if (!img) return;
+
+            img.classList.add('vivo');
+            _efectoActivo = true;
+
+            // Primera animación después de un breve delay
+            _efectoTimer = setTimeout(() => {
+                if (!_efectoActivo) return;
+                _ejecutarAnimacionViva();
+            }, 400);
+        }
+
+        function detenerEfectoVivo() {
+            _efectoActivo = false;
+            if (_efectoTimer) {
+                clearTimeout(_efectoTimer);
+                _efectoTimer = null;
+            }
+            const img = document.getElementById('modalImagen');
+            if (img) {
+                img.classList.remove('vivo', 'en-animacion');
+                img.style.transform = '';
+                img.style.filter = '';
+            }
+        }
+
+        function _ejecutarAnimacionViva() {
+            if (!_efectoActivo) return;
+
+            const img = document.getElementById('modalImagen');
+            if (!img) return;
+
+            // Elegir una dirección aleatoria para el movimiento
+            // Cada animación va hacia un lado distinto
+            const direcciones = [
+                { rx: 1, ry: 1 },   // diagonal arriba-derecha
+                { rx: -1, ry: 1 },   // diagonal arriba-izquierda
+                { rx: 1, ry: -1 },   // diagonal abajo-derecha
+                { rx: -1, ry: -1 },   // diagonal abajo-izquierda
+                { rx: 1, ry: 0 },   // solo derecha
+                { rx: -1, ry: 0 },   // solo izquierda
+                { rx: 0, ry: 1 },   // solo arriba
+                { rx: 0, ry: -1 }    // solo abajo
+            ];
+
+            const dir = direcciones[Math.floor(Math.random() * direcciones.length)];
+
+            const rotX = dir.rx * _EFECTO_MAX_ROTACION;
+            const rotY = dir.ry * _EFECTO_MAX_ROTACION;
+            const scale = _EFECTO_MAX_SCALE;
+
+            // Aplicar la transformación
+            img.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+            img.style.filter = `drop-shadow(${-rotY * 3}px ${-rotX * 3}px 20px rgba(0, 0, 0, 0.35))`;
+
+            // Después de la duración, volver a estado base
+            setTimeout(() => {
+                if (!_efectoActivo) return;
+
+                img.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
+                img.style.filter = 'drop-shadow(0 0 0 rgba(0, 0, 0, 0))';
+
+                // Programar la siguiente animación después de la pausa
+                _efectoTimer = setTimeout(() => {
+                    if (!_efectoActivo) return;
+                    _ejecutarAnimacionViva();
+                }, _EFECTO_PAUSA_MS);
+
+            }, _EFECTO_DURACION_MS);
+        }
         let cargando = false;
         let servidorOnline = true;
         let tituloEsDefault = true;
@@ -5969,6 +5933,8 @@
         }
 
         function cerrarSesionYBloquear() {
+            detenerEfectoVivo();
+
             localStorage.removeItem('ovj_token');
             localStorage.removeItem('ovj_tipo');
             localStorage.removeItem('ovj_rol_nombre');
@@ -7218,6 +7184,8 @@
         // ==========================================
 
         function detenerTodoYMostrarCierre() {
+            detenerEfectoVivo();
+
             // Detener el polling
             if (window._pollTimer) {
                 clearTimeout(window._pollTimer);
@@ -7528,63 +7496,6 @@
         }, 1000);
 
         // ==========================================
-        // 🎥 IRIS (transición con logo OVJ Studio)
-        // ==========================================
-        // Muestra el logo OVJ Studio + nombre del evento al centro.
-        // El modal se carga detrás, mientras el overlay está visible.
-
-        function _ejecutarIris(accionAlCerrar, accionAlAbrir) {
-            if (_irisAnimando) return;
-
-            const overlay = document.getElementById('irisOverlay');
-            if (!overlay) {
-                if (accionAlCerrar) accionAlCerrar();
-                if (accionAlAbrir) accionAlAbrir();
-                return;
-            }
-
-            // Actualizar el nombre del evento
-            const elEvento = document.getElementById('irisEvento');
-            if (elEvento) {
-                const nombreEvento = document.getElementById('eventoTitulo')?.textContent || '';
-                elEvento.textContent = nombreEvento.trim();
-                elEvento.style.display = nombreEvento.trim() ? 'block' : 'none';
-            }
-
-            _irisAnimando = true;
-
-            // 1. Mostrar overlay (fade in del fondo negro + logo entra desde abajo)
-            overlay.classList.remove('saliendo');
-            overlay.classList.add('activo');
-
-            // 2. Esperar a que termine la entrada (450ms) y ejecutar la acción
-            _irisTimer = setTimeout(() => {
-                if (accionAlCerrar) {
-                    try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
-                }
-
-                // 3. Pequeña pausa para que se pinte el cambio
-                setTimeout(() => {
-                    // 4. Iniciar salida (logo se va hacia arriba + fade out)
-                    overlay.classList.add('saliendo');
-
-                    if (accionAlAbrir) {
-                        try { accionAlAbrir(); } catch (e) { console.error('Iris acción:', e); }
-                    }
-
-                    // 5. Después del fade out, ocultar el overlay
-                    _irisTimer = setTimeout(() => {
-                        overlay.classList.remove('activo', 'saliendo');
-                        _irisAnimando = false;
-                        _irisTimer = null;
-                    }, 250);
-
-                }, 80);
-
-            }, 450);
-        }
-
-        // ==========================================
         // MODAL FOTO
         // ==========================================
         function abrirModal(nombreFoto) {
@@ -7594,51 +7505,39 @@
             const foto = fotosCache[index];
             if (!foto || !foto.nombre) return;
 
-            // 🔥 Bloquear si ya está abierto el modal
-            if (document.getElementById("modal").classList.contains("activo")) return;
+            fotoSeleccionadaIndex = index;
+            marcarFotoComoVista(nombreFoto);
 
-            _ejecutarIris(
-                // Acción mientras el iris está cerrado: preparar el modal
-                () => {
-                    fotoSeleccionadaIndex = index;
-                    marcarFotoComoVista(nombreFoto);
+            const modal = document.getElementById("modal");
+            const fondo = document.getElementById("modalFondo");
+            const modalImagen = document.getElementById("modalImagen");
 
-                    const modal = document.getElementById("modal");
-                    const fondo = document.getElementById("modalFondo");
-                    const modalImagen = document.getElementById("modalImagen");
+            const urlImagen = foto.url;
+            modalImagen.src = urlImagen;
+            modalImagen.alt = `Foto ${index + 1}`;
 
-                    const urlImagen = foto.url;
-                    modalImagen.src = urlImagen;
-                    modalImagen.alt = `Foto ${index + 1}`;
+            modal.classList.add("activo");
+            fondo.classList.add("activo");
+            document.body.style.overflow = "hidden";
 
-                    modal.classList.add("activo");
-                    fondo.classList.add("activo");
-                    document.body.style.overflow = "hidden";
+            actualizarFlechas();
+            actualizarBotonPrincipal();
+            precargarAdyacentes(index);
 
-                    actualizarFlechas();
-                    actualizarBotonPrincipal();
-                    precargarAdyacentes(index);
-                },
-                // Acción al abrir el iris: nada (el modal ya está listo)
-                null
-            );
+            // 🔥 Iniciar el efecto "vivo" de la foto
+            iniciarEfectoVivo();
         }
         function cerrarModal() {
             const modal = document.getElementById("modal");
             if (!modal.classList.contains("activo")) return;
 
-            _ejecutarIris(
-                // Acción mientras el iris está cerrado: cerrar el modal
-                () => {
-                    modal.classList.remove("activo");
-                    document.getElementById("modalFondo").classList.remove("activo");
-                    document.body.style.overflow = "";
+            // 🔥 Detener el efecto "vivo"
+            detenerEfectoVivo();
 
-                    // 🔥 Resetear la foto seleccionada
-                    fotoSeleccionadaIndex = -1;
-                },
-                null
-            );
+            modal.classList.remove("activo");
+            document.getElementById("modalFondo").classList.remove("activo");
+            document.body.style.overflow = "";
+            fotoSeleccionadaIndex = -1;
         }
 
         function actualizarFlechas() {
@@ -7648,9 +7547,6 @@
         }
 
         function navegarFoto(direccion) {
-            // 🔥 Bloquear si el iris está animando
-            if (_irisAnimando) return;
-
             const nuevoIndex = fotoSeleccionadaIndex + direccion;
             if (nuevoIndex < 0 || nuevoIndex >= fotosCache.length) return;
 
