@@ -1358,7 +1358,7 @@
             align-items: center;
             background: #000;
             opacity: 0;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
         }
 
         .iris-overlay.activo {
@@ -1368,16 +1368,30 @@
 
         .iris-overlay.saliendo {
             opacity: 0;
+            transition: opacity 0.35s ease;
         }
 
+        /* Contenedor del contenido (logo + nombre evento) */
+        .iris-contenido {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Logo OVJ Studio */
         .iris-logo {
             font-size: 2.5rem;
             font-weight: 300;
             letter-spacing: 2px;
             color: #fff;
             opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(20px) scale(0.95);
+            transition:
+                opacity 0.5s ease,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             user-select: none;
         }
 
@@ -1388,23 +1402,76 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* Estado activo: el logo entra desde abajo con scale */
         .iris-overlay.activo .iris-logo {
             opacity: 1;
-            transform: scale(1);
+            transform: translateY(0) scale(1);
         }
 
-        /* Cuando el overlay va a salir, el logo se desvanece primero */
+        /* Nombre del evento (debajo del logo) */
+        .iris-evento {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(12px);
+            transition:
+                opacity 0.5s ease 0.15s,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+            user-select: none;
+            max-width: 90vw;
+            word-break: break-word;
+        }
+
+        .iris-overlay.activo .iris-evento {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Separador sutil entre logo y evento */
+        .iris-evento::before {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 1px;
+            margin: 0 auto 12px;
+            background: linear-gradient(90deg, transparent, rgba(232, 196, 122, 0.4), transparent);
+            opacity: 0.6;
+        }
+
+        /* Estado "saliendo": el logo y el evento se van hacia arriba */
         .iris-overlay.saliendo .iris-logo {
             opacity: 0;
-            transform: scale(1.05);
-            transition: opacity 0.2s ease, transform 0.3s ease;
+            transform: translateY(-15px) scale(1.02);
+            transition:
+                opacity 0.25s ease,
+                transform 0.35s ease;
         }
 
-        /* En móvil, un poco más chico */
+        .iris-overlay.saliendo .iris-evento {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition:
+                opacity 0.2s ease,
+                transform 0.3s ease;
+        }
+
+        /* En móvil, más chico */
         @media (max-width: 600px) {
             .iris-logo {
                 font-size: 1.8rem;
                 letter-spacing: 1.5px;
+            }
+
+            .iris-evento {
+                font-size: 0.72rem;
+                letter-spacing: 2px;
+            }
+
+            .iris-contenido {
+                gap: 10px;
             }
         }
 
@@ -4811,7 +4878,10 @@
     </div>
 
     <div class="iris-overlay" id="irisOverlay">
-        <div class="iris-logo">OVJ <span>Studio</span></div>
+        <div class="iris-contenido">
+            <div class="iris-logo">OVJ <span>Studio</span></div>
+            <div class="iris-evento" id="irisEvento"></div>
+        </div>
     </div>
 
     <div class="modal-fondo" id="modalFondo"></div>
@@ -7460,7 +7530,7 @@
         // ==========================================
         // 🎥 IRIS (transición con logo OVJ Studio)
         // ==========================================
-        // Muestra el logo OVJ Studio al centro con fade in/out.
+        // Muestra el logo OVJ Studio + nombre del evento al centro.
         // El modal se carga detrás, mientras el overlay está visible.
 
         function _ejecutarIris(accionAlCerrar, accionAlAbrir) {
@@ -7473,38 +7543,45 @@
                 return;
             }
 
+            // Actualizar el nombre del evento
+            const elEvento = document.getElementById('irisEvento');
+            if (elEvento) {
+                const nombreEvento = document.getElementById('eventoTitulo')?.textContent || '';
+                elEvento.textContent = nombreEvento.trim();
+                elEvento.style.display = nombreEvento.trim() ? 'block' : 'none';
+            }
+
             _irisAnimando = true;
 
-            // 1. Mostrar overlay (fade in del fondo negro + logo)
+            // 1. Mostrar overlay (fade in del fondo negro + logo entra desde abajo)
             overlay.classList.remove('saliendo');
             overlay.classList.add('activo');
 
-            // 2. Después del fade in (250ms) + un momento para ver el logo (400ms),
-            //    ejecutar la acción mientras el overlay está visible
+            // 2. Esperar a que termine la entrada (700ms) y ejecutar la acción
             _irisTimer = setTimeout(() => {
                 if (accionAlCerrar) {
                     try { accionAlCerrar(); } catch (e) { console.error('Iris acción:', e); }
                 }
 
-                // 3. Pequeña pausa para que se pinte el cambio (100ms)
+                // 3. Pequeña pausa para que se pinte el cambio
                 setTimeout(() => {
-                    // 4. Iniciar fade out del overlay
+                    // 4. Iniciar salida (logo se va hacia arriba + fade out)
                     overlay.classList.add('saliendo');
 
                     if (accionAlAbrir) {
                         try { accionAlAbrir(); } catch (e) { console.error('Iris acción:', e); }
                     }
 
-                    // 5. Después del fade out (250ms), ocultar el overlay
+                    // 5. Después del fade out, ocultar el overlay
                     _irisTimer = setTimeout(() => {
                         overlay.classList.remove('activo', 'saliendo');
                         _irisAnimando = false;
                         _irisTimer = null;
-                    }, 280);
+                    }, 380);
 
-                }, 100);
+                }, 120);
 
-            }, 700);
+            }, 750);
         }
 
         // ==========================================
