@@ -1497,11 +1497,32 @@
             will-change: transform, filter;
             transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), filter 1.4s ease;
             filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-            transform: translateZ(0) rotateX(0deg) rotateY(0deg) scale(1);
+            transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1);
+            transform-origin: center center;
         }
 
-        .modal-contenido img.vivo.en-animacion {
-            /* La transformación se aplica por JS con estilos inline */
+        /* Entrada cinematográfica */
+        .modal-contenido img.vivo.entrando {
+            animation: entradaCinematograficaFoto 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes entradaCinematograficaFoto {
+            0% {
+                opacity: 0.6;
+                transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1.08);
+                filter: blur(6px) brightness(1.3) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+            }
+
+            60% {
+                opacity: 1;
+                filter: blur(1px) brightness(1.1) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+            }
+
+            100% {
+                opacity: 1;
+                transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1);
+                filter: blur(0) brightness(1) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+            }
         }
 
         .nav-flecha {
@@ -5407,10 +5428,10 @@
         let _efectoTimer = null;
         let _efectoActivo = false;
 
-        const _EFECTO_DURACION_MS = 1500;    // duración de cada animación
-        const _EFECTO_PAUSA_MS = 2500;       // pausa entre animaciones
-        const _EFECTO_MAX_ROTACION = 2.5;    // grados máximos
-        const _EFECTO_MAX_SCALE = 1.018;     // zoom máximo sutil
+        const _EFECTO_DURACION_MS = 1800;    // duración de cada animación
+        const _EFECTO_PAUSA_MS = 3000;       // pausa entre animaciones
+        const _EFECTO_MAX_ROTACION = 6;      // grados máximos (más notorio)
+        const _EFECTO_MAX_SCALE = 1.05;      // zoom máximo (más notorio)
 
         function iniciarEfectoVivo() {
             detenerEfectoVivo();
@@ -5421,11 +5442,19 @@
             img.classList.add('vivo');
             _efectoActivo = true;
 
-            // Primera animación después de un breve delay
+            // 🔥 Entrada cinematográfica (blur + zoom + brightness)
+            img.classList.add('entrando');
+
+            // Quitar la clase de entrada cuando termine la animación
+            setTimeout(() => {
+                img.classList.remove('entrando');
+            }, 1200);
+
+            // Primera animación viva después de la entrada
             _efectoTimer = setTimeout(() => {
                 if (!_efectoActivo) return;
                 _ejecutarAnimacionViva();
-            }, 400);
+            }, 1500);
         }
 
         function detenerEfectoVivo() {
@@ -5448,33 +5477,59 @@
             const img = document.getElementById('modalImagen');
             if (!img) return;
 
-            // Elegir una dirección aleatoria para el movimiento
-            // Cada animación va hacia un lado distinto
-            const direcciones = [
-                { rx: 1, ry: 1 },   // diagonal arriba-derecha
-                { rx: -1, ry: 1 },   // diagonal arriba-izquierda
-                { rx: 1, ry: -1 },   // diagonal abajo-derecha
-                { rx: -1, ry: -1 },   // diagonal abajo-izquierda
-                { rx: 1, ry: 0 },   // solo derecha
-                { rx: -1, ry: 0 },   // solo izquierda
-                { rx: 0, ry: 1 },   // solo arriba
-                { rx: 0, ry: -1 }    // solo abajo
+            // 🔥 Direcciones más variadas: cada una tiene rotación + zoom
+            // distinto, para que se sienta único cada vez.
+            const animaciones = [
+                // Diagonales
+                { rx: 1, ry: 1, scale: 1.05, dur: 1800 },
+                { rx: -1, ry: 1, scale: 1.05, dur: 1800 },
+                { rx: 1, ry: -1, scale: 1.05, dur: 1800 },
+                { rx: -1, ry: -1, scale: 1.05, dur: 1800 },
+
+                // Solo un eje, más sutil pero notorio
+                { rx: 1, ry: 0, scale: 1.04, dur: 1600 },
+                { rx: -1, ry: 0, scale: 1.04, dur: 1600 },
+                { rx: 0, ry: 1, scale: 1.04, dur: 1600 },
+                { rx: 0, ry: -1, scale: 1.04, dur: 1600 },
+
+                // Zoom dramático sin rotación (de vez en cuando)
+                { rx: 0, ry: 0, scale: 1.07, dur: 1500 },
+
+                // Rotación dramática sin zoom (de vez en cuando)
+                { rx: 1, ry: 0, scale: 1.01, dur: 2000 },
+                { rx: 0, ry: 1, scale: 1.01, dur: 2000 },
+
+                // Combinaciones más intensas (raro)
+                { rx: 1, ry: 1, scale: 1.06, dur: 2200 },
+                { rx: -1, ry: -1, scale: 1.06, dur: 2200 }
             ];
 
-            const dir = direcciones[Math.floor(Math.random() * direcciones.length)];
+            // Elegir una animación al azar
+            const anim = animaciones[Math.floor(Math.random() * animaciones.length)];
 
-            const rotX = dir.rx * _EFECTO_MAX_ROTACION;
-            const rotY = dir.ry * _EFECTO_MAX_ROTACION;
-            const scale = _EFECTO_MAX_SCALE;
+            // Convertir las direcciones en ángulos reales
+            // Rotación máxima de ±6°, con intensidad variable
+            const intensidadRot = 0.7 + Math.random() * 0.3;  // entre 0.7 y 1.0
+            const rotX = anim.rx * _EFECTO_MAX_ROTACION * intensidadRot;
+            const rotY = anim.ry * _EFECTO_MAX_ROTACION * intensidadRot;
 
-            // Aplicar la transformación
+            const scale = anim.scale;
+
+            // Sombra proporcional a la rotación (más visible)
+            const sombraX = -rotY * 5;    // más offset horizontal
+            const sombraY = -rotX * 5;    // más offset vertical
+            const sombraBlur = 25 + Math.abs(rotX + rotY) * 2;  // más blur
+
+            // Aplicar la transformación con un toque de "spring"
+            img.style.transition = `transform ${anim.dur}ms cubic-bezier(0.22, 1.2, 0.36, 1), filter ${anim.dur}ms ease`;
             img.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
-            img.style.filter = `drop-shadow(${-rotY * 3}px ${-rotX * 3}px 20px rgba(0, 0, 0, 0.35))`;
+            img.style.filter = `drop-shadow(${sombraX}px ${sombraY}px ${sombraBlur}px rgba(0, 0, 0, 0.45))`;
 
             // Después de la duración, volver a estado base
             setTimeout(() => {
                 if (!_efectoActivo) return;
 
+                img.style.transition = `transform 900ms cubic-bezier(0.4, 0, 0.2, 1), filter 900ms ease`;
                 img.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
                 img.style.filter = 'drop-shadow(0 0 0 rgba(0, 0, 0, 0))';
 
@@ -5484,8 +5539,10 @@
                     _ejecutarAnimacionViva();
                 }, _EFECTO_PAUSA_MS);
 
-            }, _EFECTO_DURACION_MS);
+            }, anim.dur);
         }
+
+
         let cargando = false;
         let servidorOnline = true;
         let tituloEsDefault = true;
