@@ -2611,8 +2611,6 @@
                 const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(data.eventoId)}&t=${encodeURIComponent(data.tokenGeneral)}`;
                 urlTokenGeneralActual = urlGeneral;
 
-                // 🔥 Modal minimalista
-                $('urlTokenGeneral').textContent = '';
 
                 try {
                     const qr = window.qrcode(0, 'M');
