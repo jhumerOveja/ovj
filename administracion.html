@@ -796,26 +796,6 @@
             font-weight: 600;
         }
 
-        .btn-sugerir {
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(52, 152, 219, 0.35);
-            background: rgba(52, 152, 219, 0.1);
-            color: #5dade2;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.2s;
-            margin-bottom: 12px;
-        }
-
-        .btn-sugerir:hover {
-            background: rgba(52, 152, 219, 0.2);
-            transform: scale(1.01);
-        }
-
         .qr-token-wrapper {
             background: #fff;
             border-radius: 12px;
@@ -1207,7 +1187,6 @@
                 return;
             }
 
-            // Limpiar el número (solo dígitos)
             const numero = String(whatsapp).replace(/[^0-9]/g, '');
 
             if (numero.length < 8) {
@@ -1215,13 +1194,12 @@
                 return;
             }
 
-            // Abrir chat de WhatsApp sin mensaje pre-armado
             const url = `https://wa.me/${numero}`;
             window.open(url, '_blank');
         }
 
         // ==========================================
-        // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
+        // 🔥 IDEA 8: consultar /api/donde
         // ==========================================
         let _ultimaConsultaDonde = 0;
         const _INTERVALO_MIN_CONSULTA_DONDE_MS = 30000;
@@ -1262,7 +1240,6 @@
             try {
                 resp = await fetch(URL_API + ruta, { ...opciones, headers });
             } catch (eRed) {
-                // 🔥 IDEA 8: si falla por red, consultar /api/donde y reintentar UNA vez
                 if (!_esReintento) {
                     const consulta = await consultarDonde();
                     if (consulta.ok && consulta.cambio) {
@@ -1469,20 +1446,13 @@
                     html += `<div class="grid grid-2">`;
                     status.fotografos.forEach(f => {
                         const activo = f.eventoActivo;
-                        const modoEvento = activo ? (activo.modoEvento || 'B') : null;
-
-                        let etiquetaModo = '';
-                        if (activo) {
-                            if (modoEvento === 'A') etiquetaModo = ' · 🎪 Íntimo';
-                            else etiquetaModo = ' · 🎪 Masivo';
-                        }
 
                         html += `
                             <div class="card">
                                 <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:1.05rem; font-weight:700; color:#fff;">${escapeHtml(f.nombre)}</div>
-                                        ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}${etiquetaModo}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
+                                        ${activo ? `<div style="font-size:0.75rem; color:#f39c12; margin-top:4px;">● ${escapeHtml(activo.evento)}</div>` : `<div style="font-size:0.72rem; color:#666; margin-top:4px;">Sin evento activo</div>`}
                                     </div>
                                     ${activo ? `<span class="badge activo">● Activo</span>` : `<span class="badge finalizado">Inactivo</span>`}
                                 </div>
@@ -1787,32 +1757,11 @@
             const badgeClase = e.estado === 'activo' ? 'activo' : e.estado === 'agendado' ? 'agendado' : e.estado === 'cancelado' ? 'cancelado' : 'finalizado';
             const badgeTexto = e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : e.estado === 'cancelado' ? '✗ Cancelado' : '✔ Finalizado';
 
-            const modoEvento = e.modoEvento || 'B';
-
             let meta = '';
             meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
             meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
 
-            // 🔥 FASE 2: mostrar modo y VIPs
-            if (modoEvento === 'A') {
-                meta += `<div class="fila" style="color:#e8c47a;">🎪 Modo: <strong>Íntimo</strong> (todos VIP)</div>`;
-            } else {
-                meta += `<div class="fila" style="color:#5dade2;">🎪 Modo: <strong>Masivo</strong> · VIPs: ${e.maxVips || 0}</div>`;
-            }
-
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
-
-            // Pool general
-            if (e.poolGeneral && modoEvento === 'B') {
-                meta += `<div class="fila" style="color:#5dade2;">📥 ${e.poolGeneral.descargasPorSesion} desc/sesión · ${e.poolGeneral.maxGeneralesSimultaneos || 20} simultáneos</div>`;
-
-                // 🔥 Desbloqueo social
-                if (e.poolGeneral.desbloqueoSocialActivo) {
-                    meta += `<div class="fila" style="color:#e8c47a;">🎁 Desbloqueo social: +${e.poolGeneral.desbloqueoSocialDescargas || 3} descargas</div>`;
-                } else {
-                    meta += `<div class="fila" style="color:#666;">🎁 Desbloqueo social: desactivado</div>`;
-                }
-            }
 
             // Razón de cierre
             if (e.estado === 'cancelado') {
@@ -1828,24 +1777,22 @@
 
             let acciones = '';
 
-            // Botón de WhatsApp del cliente (si existe el número)
             const botonWhatsApp = e.whatsappCliente
                 ? `<button class="btn btn-chico btn-whatsapp-cliente" onclick="contactarCliente('${escapeHtml(e.whatsappCliente)}')">💬 Cliente</button>`
                 : '';
 
             if (e.estado === 'agendado') {
                 acciones = `
-        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
+        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
         ${botonWhatsApp}
         <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
     `;
             } else if (e.estado === 'activo') {
                 acciones = `
-        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}', '${escapeHtml(modoEvento)}')">🎫 Ver QR</button>
+        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
         ${botonWhatsApp}
     `;
             } else {
-                // Historial (finalizados, cancelados)
                 acciones = botonWhatsApp;
             }
 
@@ -1891,28 +1838,7 @@
                 <div class="titulo">➕ Agendar Evento</div>
                 <div class="subtitulo">Completa los datos del evento.</div>
 
-                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">🎪 Modo del evento</div>
-
-                <div class="config-sugerida" id="avisoModoTexto" style="background:rgba(96,165,250,0.06); border-color:rgba(96,165,250,0.3);">
-                    💡 <strong>Modo Masivo:</strong> ideal para eventos con muchos invitados.<br>
-                    El cliente genera QRs VIP de un solo uso y el resto entra por el QR general con límites.
-                </div>
-
-                <div class="campo">
-                    <label>Modo del evento</label>
-                    <select id="inputModoEvento" onchange="alCambiarModoEvento()">
-                        <option value="B">B — Masivo (recomendado)</option>
-                        <option value="A">A — Íntimo</option>
-                    </select>
-                </div>
-
-                <div class="campo" id="campoMaxVips">
-                    <label>Máximo de VIPs</label>
-                    <input type="number" id="inputMaxVips" value="5" min="0" max="50" />
-                    <div class="ayuda">Cantidad de QRs VIP que el cliente podrá generar. Queda fijo para el evento.</div>
-                </div>
-
-                <div class="seccion-titulo-form">Datos básicos</div>
+                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">Datos básicos</div>
 
                 <div class="campo">
                     <label>Fotógrafo</label>
@@ -1937,7 +1863,7 @@
 
                 <div class="campo">
                     <label>Duración (horas)</label>
-                    <input type="number" id="inputEventoDuracion" value="3" min="1" max="24" oninput="actualizarSugerencia()" />
+                    <input type="number" id="inputEventoDuracion" value="3" min="1" max="24" />
                     <div class="ayuda">Entre 1 y 24 horas.</div>
                 </div>
 
@@ -1946,57 +1872,6 @@
                     <input type="tel" id="inputEventoWhatsapp" placeholder="ej: 59160004962" />
                     <div class="ayuda">Solo dígitos, con código de país.</div>
                 </div>
-
-                <div id="bloquePoolGeneral">
-                    <div class="seccion-titulo-form">Configuración del pool general</div>
-
-                    <div class="config-sugerida" id="textoSugerencia">
-                        💡 Según la duración del evento, te sugiero:
-                        <strong id="sugerenciaTexto">5 descargas/sesión · 60 min sesión · 60 min descanso</strong>
-                    </div>
-
-                    <button class="btn-sugerir" onclick="aplicarSugerencia()">
-                        💡 Aplicar valores sugeridos
-                    </button>
-
-                    <div class="campo-fila">
-                        <div class="campo">
-                            <label>Descargas por sesión</label>
-                            <input type="number" id="inputDescargasPorSesion" value="5" min="1" max="50" />
-                        </div>
-                        <div class="campo">
-                            <label>Duración sesión (min)</label>
-                            <input type="number" id="inputDuracionSesion" value="60" min="10" max="240" />
-                        </div>
-                    </div>
-
-                    <div class="campo-fila">
-                        <div class="campo">
-                            <label>Descanso (min)</label>
-                            <input type="number" id="inputDescanso" value="60" min="10" max="240" />
-                        </div>
-                        <div class="campo">
-                            <label>Generales simultáneos</label>
-                            <input type="number" id="inputMaxGenerales" value="20" min="1" max="200" />
-                            <div class="ayuda">Límite referencial. Si se supera, se avisa al cliente pero no se expulsa a nadie.</div>
-                        </div>
-                    </div>
-
-<div class="seccion-titulo-form destacado">🎁 Desbloqueo social</div>
-
-<div class="config-sugerida" style="background:rgba(232,196,122,0.06); border-color:rgba(232,196,122,0.3);">
-    💡 El invitado sigue las redes configuradas y <strong style="color:#e8c47a;">recupera su sesión completa</strong>. Solo se puede usar <strong style="color:#e8c47a;">1 vez por invitado</strong> durante el evento.
-</div>
-
-<div class="campo">
-    <label>Desbloqueo social activo</label>
-    <select id="inputDesbloqueoSocialActivo">
-        <option value="true">Sí, activado</option>
-        <option value="false">No, desactivado</option>
-    </select>
-    <div class="ayuda">Al agotar sus descargas, el invitado puede seguir las redes para volver a tener todas sus descargas disponibles.</div>
-</div>
-            </div>
 
             <div class="seccion-titulo-form destacado">🎁 Cofres-regalo</div>
 
@@ -2041,38 +1916,8 @@
             <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
         `);
 
-            actualizarSugerencia();
-            alCambiarModoEvento();
             inicializarFormCofres();
 
-        }
-
-        // 🔥 FASE 2: cambio de modo en el form
-        function alCambiarModoEvento() {
-            const modo = $('inputModoEvento')?.value || 'B';
-            const campoMaxVips = $('campoMaxVips');
-            const bloquePool = $('bloquePoolGeneral');
-            const avisoModo = $('avisoModoTexto');
-
-            if (!campoMaxVips || !bloquePool || !avisoModo) return;
-
-            if (modo === 'A') {
-                campoMaxVips.style.display = 'none';
-                bloquePool.style.display = 'none';
-                avisoModo.innerHTML =
-                    '💡 <strong>Modo Íntimo:</strong> todos los invitados son VIP automáticamente.<br>' +
-                    'Descargas ilimitadas, sin receso, sin desbloqueo social. Ideal para eventos chicos.';
-                avisoModo.style.background = 'rgba(232,196,122,0.06)';
-                avisoModo.style.borderColor = 'rgba(232,196,122,0.3)';
-            } else {
-                campoMaxVips.style.display = 'block';
-                bloquePool.style.display = 'block';
-                avisoModo.innerHTML =
-                    '💡 <strong>Modo Masivo:</strong> ideal para eventos con muchos invitados.<br>' +
-                    'El cliente genera QRs VIP de un solo uso y el resto entra por el QR general con límites.';
-                avisoModo.style.background = 'rgba(96,165,250,0.06)';
-                avisoModo.style.borderColor = 'rgba(96,165,250,0.3)';
-            }
         }
 
         // ==========================================
@@ -2085,7 +1930,6 @@
 
             if (!select || !bloque || !lista) return;
 
-            // Renderizar el catálogo
             if (cacheCatalogoPremios.length === 0) {
                 lista.innerHTML = '<div style="color:#888; font-size:0.75rem; padding:10px;">No hay premios disponibles.</div>';
             } else {
@@ -2103,7 +1947,6 @@
                 lista.innerHTML = html;
             }
 
-            // Mostrar/ocultar config al cambiar el select
             function actualizarVisibilidad() {
                 if (select.value === 'true') {
                     bloque.style.display = 'block';
@@ -2151,24 +1994,6 @@
             const duracion = parseInt($('inputEventoDuracion').value, 10);
             const whatsapp = $('inputEventoWhatsapp').value.replace(/[^0-9]/g, '');
 
-            // 🔥 FASE 2: modo del evento
-            const modoEvento = $('inputModoEvento')?.value || 'B';
-
-            const poolGeneral = {
-                descargasPorSesion: parseInt($('inputDescargasPorSesion')?.value, 10) || 5,
-                duracionSesionMin: parseInt($('inputDuracionSesion')?.value, 10) || 60,
-                descansoMin: parseInt($('inputDescanso')?.value, 10) || 60,
-                maxGeneralesSimultaneos: parseInt($('inputMaxGenerales')?.value, 10) || 20,
-                desbloqueoSocialActivo: modoEvento === 'B'
-                    ? $('inputDesbloqueoSocialActivo')?.value === 'true'
-                    : false
-            };
-
-            const maxVips = modoEvento === 'B'
-                ? (parseInt($('inputMaxVips')?.value, 10) || 5)
-                : 0;
-
-            // 🔥 COFRES
             const cofres = getCofresDelForm();
 
             if (cofres.activo && cofres.premios.length === 0) {
@@ -2203,9 +2028,6 @@
                         hora,
                         duracion,
                         whatsappCliente: whatsapp || null,
-                        modoEvento,
-                        maxVips,
-                        poolGeneral,
                         cofres
                     })
                 });
@@ -2217,8 +2039,7 @@
                         data.evento.evento,
                         data.tokenGeneral,
                         fotografo,
-                        data.evento.id,
-                        data.evento.modoEvento || 'B'
+                        data.evento.id
                     ), 300);
                 } else {
                     toast('✅ Evento agendado', 'ok');
@@ -2233,67 +2054,14 @@
         }
 
         // ==========================================
-        // 💡 SUGERENCIA AUTOMÁTICA
-        // ==========================================
-        function getSugerencia(duracion) {
-            if (duracion <= 3) {
-                return {
-                    descargasPorSesion: 3,
-                    duracionSesionMin: 45,
-                    descansoMin: 45,
-                    texto: '3 descargas/sesión · 45 min sesión · 45 min descanso'
-                };
-            } else if (duracion <= 5) {
-                return {
-                    descargasPorSesion: 5,
-                    duracionSesionMin: 60,
-                    descansoMin: 60,
-                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso'
-                };
-            } else if (duracion <= 8) {
-                return {
-                    descargasPorSesion: 5,
-                    duracionSesionMin: 60,
-                    descansoMin: 60,
-                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso'
-                };
-            } else {
-                return {
-                    descargasPorSesion: 5,
-                    duracionSesionMin: 60,
-                    descansoMin: 60,
-                    texto: '5 descargas/sesión · 60 min sesión · 60 min descanso'
-                };
-            }
-        }
-
-        function actualizarSugerencia() {
-            const duracion = parseInt($('inputEventoDuracion')?.value, 10) || 3;
-            const sug = getSugerencia(duracion);
-            const el = $('sugerenciaTexto');
-            if (el) el.textContent = sug.texto;
-        }
-
-        function aplicarSugerencia() {
-            const duracion = parseInt($('inputEventoDuracion').value, 10) || 3;
-            const sug = getSugerencia(duracion);
-
-            $('inputDescargasPorSesion').value = sug.descargasPorSesion;
-            $('inputDuracionSesion').value = sug.duracionSesionMin;
-            $('inputDescanso').value = sug.descansoMin;
-
-            toast('💡 Valores sugeridos aplicados', 'ok');
-        }
-
-        // ==========================================
         // 🎫 TOKEN GENERAL: MODAL CON QR
         // ==========================================
-        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId, modoEvento = 'B') {
+        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId) {
             const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
 
             // 🔥 Guardar datos para el botón "Imprimir QR"
             window._ultimaUrlGeneral = urlGeneral;
-            window._modoEventoActual = modoEvento;
+            window._nombreEventoActual = nombreEvento;
             window._fechaEventoActual = '';
 
             // Buscar la fecha del evento (si existe)
@@ -2312,7 +2080,7 @@
         <div class="qr-token-wrapper" id="qrTokenWrapper" style="margin: 20px auto;"></div>
 
         <button class="btn-primario" onclick="descargarQR(window._ultimaUrlGeneral)">
-            🖨️ Imprimir QR
+            🖨️ Descargar QR
         </button>
         <button class="btn-secundario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
             📋 Copiar URL
@@ -2352,16 +2120,15 @@
         }
 
         function descargarQR(url) {
-            // Abrir una pestaña nueva con el QR diseñado para imprimir
+            // Abrir una pestaña nueva con el QR diseñado para imprimir/descargar
             const w = window.open('', '_blank');
             if (!w) {
-                alert('Permití las ventanas emergentes para imprimir el QR');
+                alert('Permití las ventanas emergentes para descargar el QR');
                 return;
             }
 
             // Obtener datos del evento actual
-            const nombreEvento = document.getElementById('eventoTitulo')?.textContent || 'Evento';
-            const modoEvento = window._modoEventoActual || 'B';
+            const nombreEvento = window._nombreEventoActual || 'Evento';
             const fechaEvento = window._fechaEventoActual || '';
 
             // Generar el QR como data URL
@@ -2466,7 +2233,7 @@
         <img class="qr-imagen" src="${dataUrl}" alt="QR del evento" />
         <div class="qr-instruccion">📱 Escaneá para ver las fotos</div>
         <div class="qr-subinstruccion">Escaneá este código con la cámara de tu celular</div>
-        <div class="qr-modo">${modoEvento === 'A' ? '🎪 Modo Íntimo' : '🎪 Modo Masivo'}</div>
+        <div class="qr-modo">🎪 Galería en Vivo</div>
     </div>
     <script>
         window.onload = function() {
@@ -2484,12 +2251,12 @@
         // ==========================================
         // 🔍 VER TOKEN DE UN EVENTO EXISTENTE
         // ==========================================
-        async function verTokenGeneral(idEvento, nombreEvento, fotografo, modoEvento) {
+        async function verTokenGeneral(idEvento, nombreEvento, fotografo) {
             loader(true);
             try {
                 const data = await apiFetch('/admin/token-general?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(idEvento));
                 if (data.ok && data.tokenGeneral) {
-                    mostrarTokenGeneral(nombreEvento, data.tokenGeneral, fotografo, idEvento, modoEvento || 'B');
+                    mostrarTokenGeneral(nombreEvento, data.tokenGeneral, fotografo, idEvento);
                 } else {
                     toast('Token no encontrado', 'error');
                 }
@@ -2544,7 +2311,6 @@
                 const data = await apiFetch('/admin/eventos');
                 const eventos = data.eventos || [];
 
-                // Filtrar eventos que tengan cofres configurados
                 const conCofres = eventos.filter(e => e.cofres && e.cofres.activo === true);
 
                 if (conCofres.length === 0) {
@@ -2562,7 +2328,6 @@
                     return;
                 }
 
-                // Ordenar: activos primero, después por fecha descendente
                 conCofres.sort((a, b) => {
                     const prioridad = (e) => e.estado === 'activo' ? 0 : (e.estado === 'agendado' ? 1 : 2);
                     const pa = prioridad(a);
@@ -2615,7 +2380,6 @@
                 estadoEmision = `<div class="fila" style="color:#888;">— No emitidos</div>`;
             }
 
-            // 🔥 CORREGIDO: primero se calcula el map de etiquetas, después se usa
             const mapaEtiquetas = {
                 extra_30min: '+30 min',
                 extra_1hora: '+1 hora',
@@ -2699,13 +2463,11 @@
                     return;
                 }
 
-                // Separar por tipo
                 const reales = tickets.filter(t => t.tipo !== 'simbolico');
                 const simbolicos = tickets.filter(t => t.tipo === 'simbolico');
 
                 let html = '';
 
-                // Resumen
                 html += `
             <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
                 <div style="background:rgba(232,196,122,0.08); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:8px 12px; font-size:0.75rem;">
@@ -2723,7 +2485,6 @@
             </div>
         `;
 
-                // Lista de tickets reales
                 if (reales.length > 0) {
                     html += `<div style="font-size:0.68rem; color:#e8c47a; text-transform:uppercase; letter-spacing:1.5px; margin: 14px 0 8px;">Tickets reales</div>`;
 
@@ -2732,7 +2493,6 @@
                     });
                 }
 
-                // Lista de simbólicos (colapsable)
                 if (simbolicos.length > 0) {
                     html += `
                 <div style="font-size:0.68rem; color:#888; text-transform:uppercase; letter-spacing:1.5px; margin: 18px 0 8px; cursor:pointer; user-select:none;" onclick="toggleSimbolicosTickets()">
@@ -2838,7 +2598,6 @@
 
                 toast('✅ Ticket marcado como cobrado', 'ok');
 
-                // Refrescar la lista
                 await cargarListaTickets(fotografo, eventoId);
 
             } catch (e) {
