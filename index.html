@@ -5068,7 +5068,7 @@
     <!-- 🔥 BOTÓN FLOTANTE "N FOTOS NUEVAS" -->
     <button class="btn-fotos-nuevas" id="btnFotosNuevas" onclick="irAFotosNuevas()">
         <span class="btn-fotos-nuevas-icono">✨</span>
-        <span class="btn-fotos-nuevas-texto" id="btnFotosNuevasTexto">Nuevas fotos</span>
+        <span class="btn-fotos-nuevas-texto" id="btnFotosNuevasTexto">Ver foto nueva</span>
     </button>
 
     <div class="toast-container" id="toastContainer"></div>
@@ -5685,6 +5685,8 @@
                 terminosTexto: `OVJ Studio es un servicio de galería fotográfica en vivo que entrega las fotografías del evento a los invitados <strong style="color:#e8c47a;">durante el transcurso del evento</strong>, desde el celular, y con un solo toque puede obtenerlas <strong>sin ninguna marca de agua ni pagar por la descarga</strong>.<br><br><strong style="color:#e8c47a;">Sobre las fotografías</strong><br>Las fotos que recibís están optimizadas para redes sociales y envío rápido por WhatsApp. Son ideales para compartir, publicar y guardar como recuerdo del evento.<br><br><strong style="color:#e8c47a;">Sobre los descargables</strong><br>Las descargas están disponibles según el tipo de acceso y del tipo de evento otorgado por el organizador (VIP, general o administrador).<br><br><strong style="color:#e8c47a;">Sobre los tickets y regalos</strong><br>Los tickets emitidos son válidos por <strong>6 meses</strong> desde su emisión. Cada ticket tiene un token único y un número de WhatsApp asociado, y solo puede ser canjeado por una persona. El canje se realiza por WhatsApp, enviando el token al número oficial de OVJ Studio. Los descuentos no son acumulables con otras promociones.<br><br>Las <strong>únicas formas</strong> de obtener tickets o regalos son: recibiéndolo en la galería web, o que algún conocido te envíe un ticket recibido en un evento.<br><br><strong style="color:#e8c47a;">Sobre la verificación</strong><br>OVJ Studio se reserva el derecho de verificar la validez de cada ticket y de cada acceso.<br><br><strong style="color:#e8c47a;">Sobre la propiedad</strong><br>Las fotografías son propiedad del cliente del evento y de OVJ Studio.`,
                 regaloTitulo: "Mi regalo",
                 cerrar: "Cerrar",
+                btnVerFotoNueva: "Ver foto nueva",
+                btnVerFotosNuevas: (n) => `Ver ${n} fotos nuevas`,
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -5761,6 +5763,8 @@
                 terminosTexto: `OVJ Studio is a live photo gallery service that delivers event photos to guests <strong style="color:#e8c47a;">while the event is happening</strong>, from their phone, and with a single tap they can get them <strong>without any watermark and without paying for the download</strong>.<br><br><strong style="color:#e8c47a;">About the photos</strong><br>The photos you receive are optimized for social media and fast WhatsApp sharing. They're ideal for posting, sharing and keeping as a memory of the event.<br><br><strong style="color:#e8c47a;">About downloads</strong><br>Downloads are available based on the type of access and the type of event granted by the organizer (VIP, general or administrator).<br><br><strong style="color:#e8c47a;">About tickets and gifts</strong><br>Issued tickets are valid for <strong>6 months</strong> from issuance. Each ticket has a unique token and an associated WhatsApp number, and can only be redeemed by one person. Redemption is done via WhatsApp, sending the token to the official OVJ Studio number. Discounts cannot be combined with other promotions.<br><br>The <strong>only ways</strong> to obtain tickets or gifts are: receiving them in the web gallery, or having someone you know send you a ticket received at an event.<br><br><strong style="color:#e8c47a;">About verification</strong><br>OVJ Studio reserves the right to verify the validity of each ticket and each access.<br><br><strong style="color:#e8c47a;">About ownership</strong><br>Photographs are property of the event client and OVJ Studio.`,
                 regaloTitulo: "My gift",
                 cerrar: "Close",
+                btnVerFotoNueva: "See new photo",
+                btnVerFotosNuevas: (n) => `See ${n} new photos`,
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
                     'OVJ Studio · <strong>Photographing with heart</strong>',
@@ -5837,6 +5841,8 @@
                 terminosTexto: `OVJ Studio 是一项现场照片画廊服务，在 <strong style="color:#e8c47a;">活动进行期间</strong> 将照片实时交付给嘉宾，通过手机一点即可获取，<strong>无水印，下载免费</strong>。<br><br><strong style="color:#e8c47a;">关于照片</strong><br>您收到的照片已针对社交媒体和 WhatsApp 快速分享进行优化，非常适合发布、分享并作为活动回忆保存。<br><br><strong style="color:#e8c47a;">关于下载</strong><br>下载根据活动主办方授予的访问类型及活动类型提供（VIP、普通或管理员）。<br><br><strong style="color:#e8c47a;">关于门票与礼物</strong><br>已发出的门票自发出之日起 <strong>6 个月</strong> 内有效。每张门票都有唯一的令牌和关联的 WhatsApp 号码，只能由一人兑换。兑换通过 WhatsApp 完成，将令牌发送到 OVJ Studio 官方号码。折扣不可与其他促销叠加。<br><br>获取门票或礼物的 <strong>唯一方式</strong> 是：在网页画廊中获得，或由认识的人将从活动中收到的门票转发给你。<br><br><strong style="color:#e8c47a;">关于验证</strong><br>OVJ Studio 保留验证每张门票及每次访问有效性的权利。<br><br><strong style="color:#e8c47a;">关于所有权</strong><br>照片归活动客户和 OVJ Studio 所有。`,
                 regaloTitulo: "我的礼物",
                 cerrar: "关闭",
+                btnVerFotoNueva: "查看新照片",
+                btnVerFotosNuevas: (n) => `查看 ${n} 张新照片`,
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
                     'OVJ Studio · <strong>用心拍摄</strong>',
@@ -6458,19 +6464,6 @@
         }
 
         // ==========================================
-        // ✨ TOAST DE FOTOS NUEVAS
-        // ==========================================
-        function mostrarToastFotosNuevas(cantidad) {
-            if (cantidad <= 0) return;
-
-            const texto = cantidad === 1
-                ? '✨ Nueva foto'
-                : `✨ ${cantidad} fotos nuevas`;
-
-            mostrarToast(texto, 'success', 3500);
-        }
-
-        // ==========================================
         // 🔥 BOTÓN FLOTANTE "N FOTOS NUEVAS"
         // ==========================================
 
@@ -6487,11 +6480,10 @@
                 return;
             }
 
-            // 🔥 Texto traducido según idioma actual
             if (cantidad === 1) {
-                texto.textContent = t('btnFotoNueva');
+                texto.textContent = t('btnVerFotoNueva');
             } else {
-                texto.textContent = t('btnFotosNuevas', cantidad);
+                texto.textContent = t('btnVerFotosNuevas', cantidad);
             }
 
             const scrollY = window.scrollY || window.pageYOffset;
@@ -6906,11 +6898,16 @@
                     renderizarGaleria();
 
                     if (fotosRecienLlegadas.length > 0) {
-                        lanzarConfeti();
-                        mostrarToastFotosNuevas(fotosRecienLlegadas.length);
-
                         // 🔥 Acumular las fotos nuevas para el botón flotante
                         _fotosNuevasPendientes += fotosRecienLlegadas.length;
+
+                        // 🔥 Solo confeti si el invitado está arriba (viendo la galería)
+                        const scrollY = window.scrollY || window.pageYOffset;
+                        if (scrollY < 100) {
+                            lanzarConfeti();
+                        }
+
+                        // 🔥 Actualizar el botón (que se muestra solo si está abajo)
                         actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                     }
                 }
