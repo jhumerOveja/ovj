@@ -4746,6 +4746,77 @@
                 font-size: 1rem;
             }
         }
+
+        /* ===== 🔥 BADGE "TOCA PARA ABRIR" EN LA PRIMERA FOTO ===== */
+        .badge-toca-abrir {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, rgba(232, 196, 122, 0.95), rgba(212, 169, 74, 0.95));
+            color: #0a0a0a;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 8px 14px;
+            border-radius: 50px;
+            text-align: center;
+            z-index: 6;
+            box-shadow: 0 4px 20px rgba(232, 196, 122, 0.6);
+            animation: pulsoTocaAbrir 2s ease-in-out infinite;
+            pointer-events: none;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .badge-toca-abrir .icono {
+            font-size: 1rem;
+            margin-right: 4px;
+            display: inline-block;
+            animation: manoToca 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsoTocaAbrir {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(232, 196, 122, 0.6);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 30px rgba(232, 196, 122, 0.9);
+            }
+        }
+
+        @keyframes manoToca {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-3px) rotate(-10deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .badge-toca-abrir {
+                font-size: 0.68rem;
+                padding: 6px 10px;
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+            }
+
+            .badge-toca-abrir .icono {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 
@@ -5461,6 +5532,16 @@
             return 'ovj_detras_visto_' + (EVENTO_ID || 'default');
         }
 
+        function getClaveTutorialVisto() {
+            return 'ovj_tutorial_galeria_visto_' + (EVENTO_ID || 'default');
+        }
+
+        function marcarTutorialVisto() {
+            try {
+                localStorage.setItem(getClaveTutorialVisto(), '1');
+            } catch (e) { }
+        }
+
         // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
@@ -5687,6 +5768,7 @@
                 cerrar: "Cerrar",
                 btnVerFotoNueva: "Ver foto nueva",
                 btnVerFotosNuevas: (n) => `Ver ${n} fotos nuevas`,
+                tocaParaAbrir: "Toca para abrir",
                 avisos: [
                     'Las fotos son <strong>vista previa</strong>. Descarga en calidad original.',
                     'OVJ Studio · <strong>Fotografiando con el corazón</strong>',
@@ -5765,6 +5847,7 @@
                 cerrar: "Close",
                 btnVerFotoNueva: "See new photo",
                 btnVerFotosNuevas: (n) => `See ${n} new photos`,
+                tocaParaAbrir: "Tap to open",
                 avisos: [
                     'Photos are a <strong>preview</strong>. Download in original quality.',
                     'OVJ Studio · <strong>Photographing with heart</strong>',
@@ -5843,6 +5926,7 @@
                 cerrar: "关闭",
                 btnVerFotoNueva: "查看新照片",
                 btnVerFotosNuevas: (n) => `查看 ${n} 张新照片`,
+                tocaParaAbrir: "点击打开",
                 avisos: [
                     '照片为 <strong>预览图</strong>。请下载原画质照片。',
                     'OVJ Studio · <strong>用心拍摄</strong>',
@@ -7452,11 +7536,11 @@
 
             if (!fotosCache || fotosCache.length === 0) {
                 galeria.innerHTML = `
-                    <div class="estado-offline">
-                        <span class="icono">📸</span>
-                        <div class="titulo">${t('noHayFotos')}</div>
-                    </div>
-                `;
+            <div class="estado-offline">
+                <span class="icono">📸</span>
+                <div class="titulo">${t('noHayFotos')}</div>
+            </div>
+        `;
                 return;
             }
 
@@ -7480,6 +7564,12 @@
                 if (esNueva) badges += '<div class="badge-nueva">✨ NUEVA</div>';
                 if (esReciente && !esNueva) badges += '<div class="badge-reciente">🔥 RECIÉN SUBIDA</div>';
 
+                // 🔥 Badge "Toca para abrir" solo en la primera foto
+                const mostrarTocaAbrir = (i === 0) && !localStorage.getItem(getClaveTutorialVisto());
+                if (mostrarTocaAbrir) {
+                    badges += `<div class="badge-toca-abrir"><span class="icono">👆</span>${t('tocaParaAbrir')}</div>`;
+                }
+
                 html += `
             <div class="${clases}"
                  data-index="${i}"
@@ -7500,14 +7590,14 @@
                 const restantes = fotosCache.length - visibles;
                 const textoRestantes = restantes === 1 ? t('fotoMas') : t('fotosMas');
                 html += `
-                    <div class="ver-mas-wrapper">
-                        <button class="btn-ver-mas" onclick="mostrarMasFotos()">
-                        ✨ ${t('verMas')}
-                        </button>
-                    <div class="info-restantes">
-            <span class="restantes-numero">${restantes}</span> ${textoRestantes} ${t('porDescubrir')}
-        </div>
-    </div>
+            <div class="ver-mas-wrapper">
+                <button class="btn-ver-mas" onclick="mostrarMasFotos()">
+                ✨ ${t('verMas')}
+                </button>
+            <div class="info-restantes">
+    <span class="restantes-numero">${restantes}</span> ${textoRestantes} ${t('porDescubrir')}
+</div>
+</div>
 `;
             } else if (fotosCache.length > FOTOS_POR_CARGA) {
                 html += `
@@ -7680,6 +7770,10 @@
         // MODAL FOTO
         // ==========================================
         function abrirModal(nombreFoto) {
+
+            // 🔥 Marcar tutorial como visto (no vuelve a aparecer el badge)
+            marcarTutorialVisto();
+
             const index = fotosCache.findIndex(f => f.nombre === nombreFoto);
             if (index < 0) return;
 
