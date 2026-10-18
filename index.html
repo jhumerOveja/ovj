@@ -4654,6 +4654,98 @@
                 padding: 26px 20px 22px;
             }
         }
+
+        /* ===== 🔥 BOTÓN FLOTANTE "N FOTOS NUEVAS" ===== */
+        .btn-fotos-nuevas {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            z-index: 2500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, #e8c47a, #d4a94a);
+            color: #0a0a0a;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow:
+                0 8px 30px rgba(232, 196, 122, 0.5),
+                0 0 0 1px rgba(232, 196, 122, 0.3) inset;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            pointer-events: none;
+            animation: pulsoBotonNuevas 2s ease-in-out infinite;
+        }
+
+        .btn-fotos-nuevas.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-fotos-nuevas:hover {
+            transform: translateX(-50%) translateY(-3px) scale(1.05);
+            box-shadow:
+                0 12px 40px rgba(232, 196, 122, 0.7),
+                0 0 0 1px rgba(232, 196, 122, 0.5) inset;
+        }
+
+        .btn-fotos-nuevas:active {
+            transform: translateX(-50%) translateY(-1px) scale(0.98);
+        }
+
+        .btn-fotos-nuevas-icono {
+            font-size: 1.1rem;
+            line-height: 1;
+            animation: brilloIconoNuevas 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsoBotonNuevas {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 8px 30px rgba(232, 196, 122, 0.5),
+                    0 0 0 1px rgba(232, 196, 122, 0.3) inset;
+            }
+
+            50% {
+                box-shadow:
+                    0 12px 45px rgba(232, 196, 122, 0.8),
+                    0 0 0 1px rgba(232, 196, 122, 0.5) inset;
+            }
+        }
+
+        @keyframes brilloIconoNuevas {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(15deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .btn-fotos-nuevas {
+                bottom: 16px;
+                padding: 11px 18px;
+                font-size: 0.82rem;
+            }
+
+            .btn-fotos-nuevas-icono {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -4973,6 +5065,12 @@
         </div>
     </div>
 
+    <!-- 🔥 BOTÓN FLOTANTE "N FOTOS NUEVAS" -->
+    <button class="btn-fotos-nuevas" id="btnFotosNuevas" onclick="irAFotosNuevas()">
+        <span class="btn-fotos-nuevas-icono">✨</span>
+        <span class="btn-fotos-nuevas-texto" id="btnFotosNuevasTexto">Nuevas fotos</span>
+    </button>
+
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ===== MENÚ LATERAL ===== -->
@@ -5233,6 +5331,9 @@
         const MAX_VISTAS_LS = 1000;
 
         const INSTAGRAM_USUARIO = 'ovjstudio';
+        // 🔥 Botón flotante de fotos nuevas
+        let _fotosNuevasPendientes = 0;
+        let _botonNuevasVisible = false;
 
         // ==========================================
         // PARÁMETROS DEL URL
@@ -5812,6 +5913,10 @@
             if (fotosCache.length > 0) {
                 renderizarGaleria();
             }
+            // 🔥 Actualizar el texto del botón flotante si está visible
+            if (_fotosNuevasPendientes > 0 && _botonNuevasVisible) {
+                actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+            }
         }
 
         function cambiarIdioma(idioma) {
@@ -6366,6 +6471,86 @@
         }
 
         // ==========================================
+        // 🔥 BOTÓN FLOTANTE "N FOTOS NUEVAS"
+        // ==========================================
+
+        function actualizarBotonFotosNuevas(cantidad) {
+            const btn = document.getElementById('btnFotosNuevas');
+            const texto = document.getElementById('btnFotosNuevasTexto');
+            if (!btn || !texto) return;
+
+            _fotosNuevasPendientes = cantidad;
+
+            if (cantidad <= 0) {
+                btn.classList.remove('visible');
+                _botonNuevasVisible = false;
+                return;
+            }
+
+            // 🔥 Texto traducido según idioma actual
+            if (cantidad === 1) {
+                texto.textContent = t('btnFotoNueva');
+            } else {
+                texto.textContent = t('btnFotosNuevas', cantidad);
+            }
+
+            const scrollY = window.scrollY || window.pageYOffset;
+            const estaArriba = scrollY < 100;
+
+            if (estaArriba) {
+                btn.classList.remove('visible');
+                _botonNuevasVisible = false;
+            } else {
+                btn.classList.add('visible');
+                _botonNuevasVisible = true;
+            }
+        }
+
+        function irAFotosNuevas() {
+            const btn = document.getElementById('btnFotosNuevas');
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            if (btn) btn.classList.remove('visible');
+            _botonNuevasVisible = false;
+            _fotosNuevasPendientes = 0;
+
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+
+        // Detectar scroll para mostrar/ocultar el botón
+        let _scrollTickNuevas = false;
+        window.addEventListener('scroll', () => {
+            if (!_scrollTickNuevas) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    const estaArriba = scrollY < 100;
+
+                    // Si llegó arriba manualmente, resetear el contador
+                    if (estaArriba && _fotosNuevasPendientes > 0) {
+                        _fotosNuevasPendientes = 0;
+                        const btn = document.getElementById('btnFotosNuevas');
+                        if (btn) btn.classList.remove('visible');
+                        _botonNuevasVisible = false;
+                        _scrollTickNuevas = false;
+                        return;
+                    }
+
+                    if (_fotosNuevasPendientes > 0) {
+                        actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+                    }
+                    _scrollTickNuevas = false;
+                });
+                _scrollTickNuevas = true;
+            }
+        }, { passive: true });
+
+        // ==========================================
         // 🔔 TOAST CON BOTÓN ACEPTAR
         // ==========================================
         function mostrarToastConBoton(html, tipo = 'tip') {
@@ -6723,6 +6908,10 @@
                     if (fotosRecienLlegadas.length > 0) {
                         lanzarConfeti();
                         mostrarToastFotosNuevas(fotosRecienLlegadas.length);
+
+                        // 🔥 Acumular las fotos nuevas para el botón flotante
+                        _fotosNuevasPendientes += fotosRecienLlegadas.length;
+                        actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                     }
                 }
 
