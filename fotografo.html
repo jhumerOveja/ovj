@@ -84,7 +84,6 @@
             }
         }
 
-        /* Ajuste para que el contenido no quede tapado por el banner */
         body.con-banner {
             padding-top: 40px;
         }
@@ -325,62 +324,6 @@
             margin: 0 auto;
         }
 
-        /* ===== BARRA ESTADO SISTEMA ===== */
-        .barra-sistema {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 18px;
-            font-size: 0.72rem;
-            color: var(--texto-suave);
-            flex-wrap: wrap;
-        }
-
-        .barra-sistema .punto {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--texto-tenue);
-            margin-right: 4px;
-            vertical-align: middle;
-        }
-
-        .barra-sistema .punto.ok {
-            background: var(--verde);
-            box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
-        }
-
-        .barra-sistema .punto.error {
-            background: var(--rojo);
-            box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
-        }
-
-        .barra-sistema .punto.cargando {
-            background: var(--oro);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.4;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .barra-sistema .separador {
-            color: #333;
-        }
-
         /* ===== SECCIONES ===== */
         .seccion {
             margin-bottom: 16px;
@@ -426,26 +369,8 @@
             color: #fff;
             letter-spacing: 1px;
             line-height: 1.2;
-            margin-bottom: 4px;
-            word-break: break-word;
-        }
-
-        .card-activo .evento-subtitulo {
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
             margin-bottom: 14px;
-            display: inline-block;
-        }
-
-        .card-activo .evento-subtitulo.modo-intimo {
-            color: var(--champagne);
-            opacity: 0.85;
-        }
-
-        .card-activo .evento-subtitulo.modo-masivo {
-            color: #93c5fd;
-            opacity: 0.85;
+            word-break: break-word;
         }
 
         .card-activo .meta {
@@ -508,58 +433,6 @@
             background: rgba(231, 76, 60, 0.08);
             border-color: rgba(231, 76, 60, 0.3);
             color: var(--rojo);
-        }
-
-        /* Contadores */
-        .contadores-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-        }
-
-        .contador-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.78rem;
-            color: var(--texto-suave);
-        }
-
-        .contador-item .emoji {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .contador-item .info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .contador-item .valor {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #fff;
-            line-height: 1;
-        }
-
-        .contador-item .etiqueta {
-            font-size: 0.65rem;
-            color: var(--texto-tenue);
-            margin-top: 2px;
-            letter-spacing: 0.3px;
-        }
-
-        .contador-item .valor.alerta {
-            color: var(--rojo);
-        }
-
-        .contador-item .valor.ok {
-            color: var(--verde);
         }
 
         /* Mensaje activo */
@@ -988,10 +861,6 @@
             color: #fff;
         }
 
-        .modal-contenido.grande {
-            max-width: 560px;
-        }
-
         @keyframes zoomIn {
             from {
                 transform: scale(0.9);
@@ -1348,41 +1217,6 @@
             font-weight: 700;
         }
 
-        .zona-drop {
-            border: 2px dashed rgba(46, 204, 113, 0.3);
-            border-radius: 14px;
-            padding: 26px 18px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.25s;
-            background: rgba(46, 204, 113, 0.03);
-            margin-bottom: 16px;
-        }
-
-        .zona-drop:hover,
-        .zona-drop.arrastrando {
-            border-color: rgba(46, 204, 113, 0.6);
-            background: rgba(46, 204, 113, 0.08);
-        }
-
-        .zona-drop .icono {
-            font-size: 2.2rem;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .zona-drop .texto {
-            font-size: 0.85rem;
-            color: #ccc;
-            font-weight: 500;
-        }
-
-        .zona-drop .subtexto {
-            font-size: 0.7rem;
-            color: var(--texto-tenue);
-            margin-top: 6px;
-        }
-
         .progreso-emergencia {
             background: var(--card);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1545,10 +1379,6 @@
             .acciones-grid {
                 grid-template-columns: 1fr;
             }
-
-            .contadores-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -1597,16 +1427,10 @@
         </div>
 
         <div class="contenedor">
-            <!-- (barra de sistema eliminada) -->
-
-            <!-- Sección: Evento activo -->
             <div id="seccionActivo"></div>
-
-            <!-- Sección: Agendados -->
             <div id="seccionAgendados"></div>
-
-            <!-- Sección: Finalizados hoy -->
             <div id="seccionFinalizados"></div>
+
             <!-- Sección: Emergencia (oculta por defecto) -->
             <div id="seccionEmergencia" style="display:none;">
                 <div class="seccion">
@@ -1653,7 +1477,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LINK DEL CLIENTE ===== -->
     <!-- ===== MODAL LINK DEL CLIENTE (con 2 admins) ===== -->
     <div class="modal" id="modalLinkAdmin">
         <div class="modal-contenido grande">
@@ -1686,7 +1509,7 @@
 
             <div class="qr-wrapper" id="qrTokenGeneral" style="margin: 20px auto;"></div>
 
-            <button class="btn-primario" onclick="abrirQRGrande()">🖨️ Imprimir QR</button>
+            <button class="btn-primario" onclick="abrirQRGrande()">🖨️ Descargar QR</button>
             <button class="btn-secundario" onclick="copiarUrlTokenGeneral()">📋 Copiar URL</button>
             <button class="btn-secundario" onclick="cerrarTokenGeneral()">Cerrar</button>
         </div>
@@ -1744,17 +1567,13 @@
         // ==========================================
         const _esLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-        // 🔥 IDEA 8: URL mutable en memoria. Se puede actualizar vía /api/donde
-        // sin recargar la página, si el túnel cambió mientras el panel estaba abierto.
         let URL_API = _esLocalhost
             ? 'http://localhost:3000'
             : (window.OVJ_CONFIG?.urlTunel || 'http://localhost:3000');
 
-        // 🔥 Worker base (para /api/donde y para el modo emergencia)
         const WORKER_BASE = window.OVJ_CONFIG?.workerUrl || 'https://ovj-b2-proxy.jhumerali2.workers.dev';
 
         const INTERVALO_REFRESH_MS = 30000;
-
 
         const UMBRAL_AVISO_MIN = 15;
 
@@ -1764,7 +1583,6 @@
         let tokenSesion = null;
         let nombreFotografoActual = null;
         let eventoActivo = null;
-        let contadores = null;
         let tiempoEvento = null;
         let mensajeInfo = null;
 
@@ -1797,7 +1615,6 @@
         }
 
         function generarNombreFoto() {
-            // Slug del evento: MAYÚSCULAS, solo A-Z, 0-9 y guiones
             const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
                 .toUpperCase()
                 .replace(/[^A-Z0-9]+/g, '-')
@@ -1843,7 +1660,7 @@
         }
 
         // ==========================================
-        // 🔥 IDEA 8: consultar /api/donde para saber si el túnel cambió
+        // 🔥 IDEA 8: consultar /api/donde
         // ==========================================
         let _ultimaConsultaDonde = 0;
         const _INTERVALO_MIN_CONSULTA_DONDE_MS = 30000;
@@ -1924,10 +1741,10 @@
             localStorage.removeItem('ovj_fotografo_token');
             localStorage.removeItem('ovj_fotografo_nombre');
             localStorage.removeItem('ovj_fotografo_expira');
-            localStorage.removeItem('ovj_fotografo_evento_activo');   // 🔥 NUEVO
+            localStorage.removeItem('ovj_fotografo_evento_activo');
             tokenSesion = null;
             nombreFotografoActual = null;
-            eventoActivoEmergencia = null;                              // 🔥 NUEVO
+            eventoActivoEmergencia = null;
             if (intervalRefresh) {
                 clearInterval(intervalRefresh);
                 intervalRefresh = null;
@@ -2024,11 +1841,9 @@
                 ]);
 
                 eventoActivo = estado.activo;
-                contadores = estado.contadores || null;
                 tiempoEvento = estado.tiempo || null;
                 mensajeInfo = estado.mensajeFotografo || null;
 
-                // 🔥 Guardar el evento activo en localStorage
                 if (eventoActivo && eventoActivo.id) {
                     localStorage.setItem('ovj_fotografo_evento_activo', JSON.stringify(eventoActivo));
                 } else {
@@ -2039,7 +1854,6 @@
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
 
-                // 🔥 Server OK → ocultar sección de emergencia
                 ocultarSeccionEmergencia();
 
                 marcarServidor('ok');
@@ -2047,8 +1861,6 @@
             } catch (e) {
                 console.error('Error cargando:', e.message);
 
-                // 🔥 IDEA 8: si el error parece de red (no 401), preguntar al Worker
-                // si el túnel cambió de URL y reintentar UNA vez contra la nueva.
                 const esErrorRed = !e.message || !e.message.includes('Sesión expirada');
                 if (esErrorRed) {
                     const consulta = await consultarDonde();
@@ -2058,7 +1870,6 @@
                             const estado2 = await apiFetch('/fotografo/estado');
 
                             eventoActivo = estado2.activo;
-                            contadores = estado2.contadores || null;
                             tiempoEvento = estado2.tiempo || null;
                             mensajeInfo = estado2.mensajeFotografo || null;
 
@@ -2085,7 +1896,6 @@
 
                 marcarServidor('error');
 
-                // 🔥 Server caído → mostrar sección de emergencia
                 mostrarSeccionEmergencia();
             }
         }
@@ -2115,7 +1925,6 @@
                 texto.textContent = textoCustom || 'Server activo.';
             }
 
-            // Ajustar padding del body para que no tape contenido
             document.body.classList.add('con-banner');
         }
 
@@ -2143,7 +1952,6 @@
                 return;
             }
 
-            // ── Meta del evento ──
             let metaHtml = '';
             metaHtml += `<div class="meta-item"><span class="emoji">▶️</span>Inicio: <strong>${formatearHora(activo.inicioReal)}</strong></div>`;
 
@@ -2154,7 +1962,6 @@
             metaHtml += `<div class="meta-item"><span class="emoji">🌐</span>Web: <strong>${estado?.fotosWeb || 0}</strong></div>`;
             metaHtml += `<div class="meta-item"><span class="emoji">⏳</span>Cola: <strong>${estado?.fotosPendientes || 0}</strong></div>`;
 
-            // ── Avisos de tiempo (solo los condicionales) ──
             let avisoTiempoHtml = '';
             if (tiempoEvento) {
                 if (tiempoEvento.yaTermino) {
@@ -2179,78 +1986,6 @@
                 }
             }
 
-            // ── Subtítulo del modo del evento ──
-            let subtituloModoHtml = '';
-            if (contadores) {
-                const modoEvento = contadores.modoEvento || 'B';
-                if (modoEvento === 'A') {
-                    subtituloModoHtml = `<div class="evento-subtitulo modo-intimo">🎪 Íntimo · Todos VIP</div>`;
-                } else {
-                    const vipsUsados = contadores.vipsUsados || 0;
-                    const limiteVips = contadores.limiteVips || 0;
-                    subtituloModoHtml = `<div class="evento-subtitulo modo-masivo">🎪 Masivo · VIPs ${vipsUsados}/${limiteVips}</div>`;
-                }
-            }
-
-            // ── Contadores (solo modo B) ──
-            let contadoresHtml = '';
-            if (contadores && (contadores.modoEvento || 'B') === 'B') {
-                const generalesActivos = contadores.generalesActivos || 0;
-                const maxGenerales = contadores.maxGeneralesSimultaneos || 20;
-                const claseGenerales = generalesActivos >= maxGenerales ? 'alerta' : 'ok';
-                const descSesion = contadores.descargasPorSesion || 5;
-                const desbloqueos = contadores.desbloqueosSociales || 0;
-
-                contadoresHtml = `
-            <div class="contadores-grid">
-                <div class="contador-item">
-                    <span class="emoji">📥</span>
-                    <div class="info">
-                        <div class="valor">${descSesion}</div>
-                        <div class="etiqueta">Descargas / sesión</div>
-                    </div>
-                </div>
-                <div class="contador-item">
-                    <span class="emoji">🎟️</span>
-                    <div class="info">
-                        <div class="valor">${contadores.generalesTotal}</div>
-                        <div class="etiqueta">Generales totales</div>
-                    </div>
-                </div>
-                <div class="contador-item">
-                    <span class="emoji">🟢</span>
-                    <div class="info">
-                        <div class="valor ${claseGenerales}">${generalesActivos} / ${maxGenerales}</div>
-                        <div class="etiqueta">Generales activos</div>
-                    </div>
-                </div>
-                <div class="contador-item">
-                    <span class="emoji">🎁</span>
-                    <div class="info">
-                        <div class="valor" style="color:${desbloqueos > 0 ? '#4ade80' : '#888'};">${desbloqueos}</div>
-                        <div class="etiqueta">Desbloqueos sociales usados</div>
-                    </div>
-                </div>
-            </div>
-        `;
-            }
-
-            // ── Aviso de aforo ──
-            let aforoHtml = '';
-            if (estado && estado.aforo && estado.aforo.excedido) {
-                const a = estado.aforo;
-                aforoHtml = `
-            <div class="aviso-tiempo urgente" style="margin-bottom:14px;">
-                <span class="emoji">👥</span>
-                <div>
-                    <strong>${a.activos} generales activos</strong> (contrataste ${a.limite}).<br>
-                    El cliente puede ver el detalle desde su panel.
-                </div>
-            </div>
-        `;
-            }
-
-            // ── Mensaje en vivo ──
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
@@ -2269,12 +2004,9 @@
             <div class="seccion-titulo">Evento activo</div>
             <div class="card-activo">
                 <div class="titulo">${escapeHtml(activo.evento)}</div>
-                ${subtituloModoHtml}
                 <div class="meta">${metaHtml}</div>
 
                 ${avisoTiempoHtml}
-                ${contadoresHtml}
-                ${aforoHtml}
                 ${mensajeHtml}
 
                 <div class="acciones-grid">
@@ -2350,21 +2082,10 @@
                         btnDisabled = 'disabled';
                     }
 
-                    // 🔥 FASE 4: modo del evento agendado
-                    const modoEvento = evt.modoEvento || 'B';
-                    let etiquetaModo = '';
-                    if (modoEvento === 'A') {
-                        etiquetaModo = `<div class="fecha" style="color:#e8c47a;">🎪 Modo Íntimo · Todos VIP</div>`;
-                    } else {
-                        const maxVips = evt.maxVips || 0;
-                        etiquetaModo = `<div class="fecha" style="color:#5dade2;">🎪 Modo Masivo · ${maxVips} VIPs máx.</div>`;
-                    }
-
                     html += `
     <div class="card-agendado">
         <div class="titulo">${escapeHtml(evt.evento)}</div>
         <div class="fecha">🗓️ <strong>${formatearFecha(evt.fechaProgramada)}</strong> · ⏰ ${rango}</div>
-        ${etiquetaModo}
         <button class="btn-activar" onclick="activarEvento('${evt.id}')" ${btnDisabled}>
             ${puedeActivar ? '✅ Activar ahora' : '⏳ No disponible aún'}
         </button>
@@ -2408,13 +2129,11 @@
 
             finalizados.forEach(evt => {
                 const horaFin = evt.finReal ? formatearHora(evt.finReal) : '';
-                const modoEvento = evt.modoEvento || 'B';
-                const etiquetaModo = modoEvento === 'A' ? '🎪 Íntimo' : '🎪 Masivo';
 
                 html += `
             <div class="card-agendado" style="opacity:0.6;">
                 <div class="titulo">${escapeHtml(evt.evento)}</div>
-                <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''} · ${etiquetaModo}</div>
+                <div class="fecha">✔️ Finalizado${horaFin ? ' a las ' + horaFin : ''}</div>
             </div>
         `;
             });
@@ -2466,7 +2185,6 @@
                     `Cada link es de <strong>un solo uso</strong>.<br>` +
                     `<strong style="color:#e8c47a;">${usados} / ${limite} admins creados</strong>`;
 
-                // Renderizar cada admin
                 let html = '';
 
                 admins.forEach((admin, idx) => {
@@ -2494,7 +2212,6 @@
 
                 $('listaAdminsContainer').innerHTML = html;
 
-                // Guardar URLs para copiar
                 window._urlsAdmins = {};
                 window._qrTextosAdmins = {};
 
@@ -2504,7 +2221,6 @@
 
                     $('urlAdmin_' + idx).textContent = admin.url;
 
-                    // Generar QR
                     try {
                         const qr = window.qrcode(0, 'M');
                         qr.addData(admin.url);
@@ -2525,7 +2241,6 @@
                     }
                 });
 
-                // Si hay menos de 2 admins, mostrar botón de generar
                 if (usados < limite) {
                     $('btnGenerarRespaldo').style.display = 'block';
                     $('btnGenerarRespaldo').textContent = `➕ Generar admin de respaldo (${usados}/${limite})`;
@@ -2579,7 +2294,6 @@
 
                 toast('👑 Admin de respaldo generado', 'ok');
 
-                // Refrescar la lista
                 await abrirLinkAdmin();
             } catch (e) {
                 if (e.message.includes('Límite')) {
@@ -2662,9 +2376,7 @@
         function abrirQRGrande() {
             if (!urlTokenGeneralActual) return;
 
-            // Obtener datos del evento actual
             const nombreEvento = eventoActivo?.evento || 'Evento';
-            const modoEvento = contadores?.modoEvento || 'B';
             const fechaEvento = eventoActivo?.inicioReal
                 ? new Date(eventoActivo.inicioReal).toLocaleDateString('es-BO', {
                     day: '2-digit',
@@ -2675,7 +2387,7 @@
 
             const w = window.open('', '_blank');
             if (!w) {
-                alert('Permití las ventanas emergentes para imprimir el QR');
+                alert('Permití las ventanas emergentes para descargar el QR');
                 return;
             }
 
@@ -2779,7 +2491,7 @@
         <img class="qr-imagen" src="${dataUrl}" alt="QR del evento" />
         <div class="qr-instruccion">📱 Escaneá para ver las fotos</div>
         <div class="qr-subinstruccion">Escaneá este código con la cámara de tu celular</div>
-        <div class="qr-modo">${modoEvento === 'A' ? '🎪 Modo Íntimo' : '🎪 Modo Masivo'}</div>
+        <div class="qr-modo">🎪 Galería en Vivo</div>
     </div>
     <script>
         window.onload = function() {
@@ -2872,7 +2584,6 @@
                 const horas = Math.floor(data.duracionHoras);
                 const mins = Math.round((data.duracionHoras - horas) * 60);
 
-                // 🔥 Limpiar el evento activo de localStorage
                 localStorage.removeItem('ovj_fotografo_evento_activo');
                 eventoActivoEmergencia = null;
 
@@ -2901,14 +2612,6 @@
         });
 
         // ==========================================
-        // 🔥 MIGRACIÓN A TELEGRAM
-        // ==========================================
-        function abrirTelegram() {
-            // Abrir el bot en Telegram
-            window.open('https://t.me/ovj_foto_bot', '_blank');
-        }
-
-        // ==========================================
         // 🔑 MODO EMERGENCIA
         // ==========================================
 
@@ -2926,11 +2629,9 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
-            // 🔥 Leer el evento activo desde memoria o localStorage
             if (eventoActivo && eventoActivo.id) {
                 eventoActivoEmergencia = eventoActivo;
             } else {
-                // El server está caído y la página se recargó → leer de localStorage
                 try {
                     const guardado = localStorage.getItem('ovj_fotografo_evento_activo');
                     if (guardado) {
@@ -2941,7 +2642,6 @@
                 }
             }
 
-            // Ocultar el panel normal
             const seccionActivo = document.getElementById('seccionActivo');
             const seccionAgendados = document.getElementById('seccionAgendados');
             const seccionVacio = document.getElementById('seccionVacio');
@@ -2952,10 +2652,8 @@
             if (seccionVacio) seccionVacio.style.display = 'none';
             if (seccionFinalizados) seccionFinalizados.style.display = 'none';
 
-            // Mostrar la sección de emergencia
             seccion.style.display = 'block';
 
-            // Actualizar el aviso con el evento
             const aviso = document.getElementById('avisoEmergencia');
             if (aviso && eventoActivoEmergencia) {
                 aviso.innerHTML = `
@@ -2970,7 +2668,6 @@
                 `;
             }
 
-            // Inicializar el input de archivos (solo una vez)
             const input = document.getElementById('inputEmergencia');
             if (input && !input._inicializado) {
                 input.addEventListener('change', manejarSeleccionEmergencia);
@@ -2982,10 +2679,8 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
-            // Ocultar emergencia
             seccion.style.display = 'none';
 
-            // 🔥 Restaurar las secciones del panel normal
             const seccionActivo = document.getElementById('seccionActivo');
             const seccionAgendados = document.getElementById('seccionAgendados');
             const seccionVacio = document.getElementById('seccionVacio');
@@ -3118,7 +2813,6 @@
                 actualizarProgresoEmergencia(i, total, `Procesando ${i + 1} / ${total}`);
 
                 try {
-                    // 1. Procesar con Canvas
                     const previewBlob = await procesarImagenEmergencia(foto.file);
 
                     if (previewBlob.size > MAX_PREVIEW_MB_EMERGENCIA * 1024 * 1024) {
@@ -3129,12 +2823,10 @@
                         throw new Error(`Original muy grande (${formatearBytes(foto.file.size)})`);
                     }
 
-                    // 2. Generar nombres
                     const base = generarNombreFotoEmergencia(eventoActivoEmergencia.evento);
                     const nombreOriginal = `${base}.jpg`;
                     const nombrePreview = `${base}_web.jpg`;
 
-                    // 3. Subir al Worker
                     foto.estado = 'subiendo';
                     renderizarListaEmergencia();
                     actualizarProgresoEmergencia(i, total, `Subiendo ${i + 1} / ${total}`);
