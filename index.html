@@ -1434,50 +1434,6 @@
             overflow: hidden;
         }
 
-        /* Badge flotante sobre la foto */
-        .modal-badge-flotante {
-            position: absolute;
-            top: -5px;
-            left: 18px;
-            z-index: 15;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.68rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: #ffffff;
-            text-transform: uppercase;
-            user-select: none;
-            pointer-events: none;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow:
-                0 4px 20px rgba(0, 0, 0, 0.5),
-                0 0 24px rgba(232, 196, 122, 0.25);
-            background: linear-gradient(120deg,
-                    #e8c47a 0%,
-                    #a78bfa 25%,
-                    #60a5fa 50%,
-                    #fb7185 75%,
-                    #e8c47a 100%);
-            background-size: 400% 400%;
-            animation: gradienteBadge 3s ease-in-out infinite;
-        }
-
-        @keyframes gradienteBadge {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         .modal-contenido img {
             width: 100%;
             max-height: 68vh;
@@ -1501,30 +1457,6 @@
             transform-origin: center center;
         }
 
-        /* Entrada cinematográfica */
-        .modal-contenido img.vivo.entrando {
-            animation: entradaCinematograficaFoto 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        @keyframes entradaCinematograficaFoto {
-            0% {
-                opacity: 0.5;
-                transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.12);
-                filter: blur(10px) brightness(1.5) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-            }
-
-            55% {
-                opacity: 1;
-                transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.02);
-                filter: blur(2px) brightness(1.15) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-            }
-
-            100% {
-                opacity: 1;
-                transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
-                filter: blur(0) brightness(1) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-            }
-        }
 
         .nav-flecha {
             position: absolute;
@@ -2959,14 +2891,6 @@
 
             .modal {
                 padding: 8px;
-            }
-
-            .modal-badge-flotante {
-                font-size: 0.58rem;
-                padding: 5px 10px;
-                letter-spacing: 2px;
-                top: 10px;
-                left: 10px;
             }
 
             .modal-contenido img {
@@ -4791,7 +4715,6 @@
     <div class="modal" id="modal">
         <div class="modal-contenido">
             <div class="imagen-wrapper">
-                <div class="modal-badge-flotante" id="modalBadgeFlotante">OVJ STUDIO</div>
                 <button class="btn-cerrar-modal" onclick="cerrarModal()">✕</button>
                 <button class="nav-flecha izquierda oculto" id="flechaIzquierda" onclick="navegarFoto(-1)">‹</button>
                 <img id="modalImagen" src="" alt="Foto ampliada" />
@@ -5431,8 +5354,8 @@
 
         const _EFECTO_DURACION_MS = 2000;    // duración de cada animación
         const _EFECTO_PAUSA_MS = 2500;       // pausa entre animaciones
-        const _EFECTO_MAX_ROTACION = 10;     // grados máximos (muy notorio)
-        const _EFECTO_MAX_SCALE = 1.08;      // zoom máximo (muy notorio)
+        const _EFECTO_MAX_ROTACION = 15;     // grados máximos (muy notorio)
+        const _EFECTO_MAX_SCALE = 1.18;      // zoom máximo (muy notorio)
 
         function iniciarEfectoVivo() {
             detenerEfectoVivo();
@@ -5442,14 +5365,6 @@
 
             img.classList.add('vivo');
             _efectoActivo = true;
-
-            // 🔥 Entrada cinematográfica (blur + zoom + brightness)
-            img.classList.add('entrando');
-
-            // Quitar la clase de entrada cuando termine la animación
-            setTimeout(() => {
-                img.classList.remove('entrando');
-            }, 1500);
 
             // Primera animación viva después de la entrada
             _efectoTimer = setTimeout(() => {
@@ -5481,56 +5396,58 @@
             // 🔥 Animaciones variadas y notorias
             const animaciones = [
                 // Diagonales dramáticas
-                { rx: 1, ry: 1, scale: 1.08, dur: 2000 },
-                { rx: -1, ry: 1, scale: 1.08, dur: 2000 },
-                { rx: 1, ry: -1, scale: 1.08, dur: 2000 },
-                { rx: -1, ry: -1, scale: 1.08, dur: 2000 },
+                { rx: 1, ry: 1, scale: 1.18, dur: 2000 },
+                { rx: -1, ry: 1, scale: 1.18, dur: 2000 },
+                { rx: 1, ry: -1, scale: 1.18, dur: 2000 },
+                { rx: -1, ry: -1, scale: 1.18, dur: 2000 },
 
-                // Un eje, más notorio
-                { rx: 1, ry: 0, scale: 1.06, dur: 1800 },
-                { rx: -1, ry: 0, scale: 1.06, dur: 1800 },
-                { rx: 0, ry: 1, scale: 1.06, dur: 1800 },
-                { rx: 0, ry: -1, scale: 1.06, dur: 1800 },
+                // Un eje, muy notorio
+                { rx: 1, ry: 0, scale: 1.14, dur: 1800 },
+                { rx: -1, ry: 0, scale: 1.14, dur: 1800 },
+                { rx: 0, ry: 1, scale: 1.14, dur: 1800 },
+                { rx: 0, ry: -1, scale: 1.14, dur: 1800 },
 
                 // Zoom dramático sin rotación
-                { rx: 0, ry: 0, scale: 1.10, dur: 1700 },
+                { rx: 0, ry: 0, scale: 1.22, dur: 1700 },
 
-                // Rotación dramática sin zoom
-                { rx: 1, ry: 0, scale: 1.02, dur: 2200 },
-                { rx: 0, ry: 1, scale: 1.02, dur: 2200 },
-                { rx: -1, ry: 0, scale: 1.02, dur: 2200 },
-                { rx: 0, ry: -1, scale: 1.02, dur: 2200 },
+                // Rotación dramática casi sin zoom
+                { rx: 1, ry: 0, scale: 1.04, dur: 2200 },
+                { rx: 0, ry: 1, scale: 1.04, dur: 2200 },
+                { rx: -1, ry: 0, scale: 1.04, dur: 2200 },
+                { rx: 0, ry: -1, scale: 1.04, dur: 2200 },
 
                 // Combinaciones intensas
-                { rx: 1, ry: 1, scale: 1.10, dur: 2400 },
-                { rx: -1, ry: -1, scale: 1.10, dur: 2400 }
+                { rx: 1, ry: 1, scale: 1.22, dur: 2400 },
+                { rx: -1, ry: -1, scale: 1.22, dur: 2400 }
             ];
 
             const anim = animaciones[Math.floor(Math.random() * animaciones.length)];
 
             // Intensidad variable para que no sea robótico
-            const intensidadRot = 0.8 + Math.random() * 0.2;   // entre 0.8 y 1.0
+            const intensidadRot = 0.7 + Math.random() * 0.3;
+
             const rotX = anim.rx * _EFECTO_MAX_ROTACION * intensidadRot;
             const rotY = anim.ry * _EFECTO_MAX_ROTACION * intensidadRot;
 
             const scale = anim.scale;
+            const translateZ = (scale - 1) * 60;
 
             // Sombra MUCHO más notoria
-            const sombraX = -rotY * 6;
-            const sombraY = -rotX * 6;
-            const sombraBlur = 30 + Math.abs(rotX + rotY) * 2.5;
+            const sombraX = -rotY * 12;
+            const sombraY = -rotX * 12;
+            const sombraBlur = 50 + Math.abs(rotX + rotY) * 4;
 
             // Transición con rebote perceptible
             img.style.transition = `transform ${anim.dur}ms cubic-bezier(0.34, 1.4, 0.5, 1), filter ${anim.dur}ms ease`;
-            img.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
-            img.style.filter = `drop-shadow(${sombraX}px ${sombraY}px ${sombraBlur}px rgba(0, 0, 0, 0.55))`;
+            img.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(${translateZ}px) scale(${scale})`;
+            img.style.filter = `drop-shadow(${sombraX}px ${sombraY}px ${sombraBlur}px rgba(0, 0, 0, 0.65))`;
 
             // Después de la duración, volver a estado base
             setTimeout(() => {
                 if (!_efectoActivo) return;
 
                 img.style.transition = `transform 1000ms cubic-bezier(0.34, 1.2, 0.5, 1), filter 1000ms ease`;
-                img.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+                img.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)';
                 img.style.filter = 'drop-shadow(0 0 0 rgba(0, 0, 0, 0))';
 
                 _efectoTimer = setTimeout(() => {
