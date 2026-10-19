@@ -5669,80 +5669,89 @@
 
             if (idiomaActual === 'en') {
                 html = `
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
-                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ TRADITIONAL</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
-                        • Days or weeks later<br>
-                        • USB / folder nobody opens<br>
-                        • No metrics<br>
-                        • No social presence
-                    </div>
+            <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
+                    ❌ Traditional photography service
                 </div>
-                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
-                        • Live photos<br>
-                        • Custom web gallery<br>
-                        • Real-time metrics<br>
-                        • One-tap download
-                    </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
+                    • They deliver the photos <strong style="color:#fff;">days or weeks later</strong><br>
+                    • A USB drive that's <strong style="color:#fff;">forgettable and nobody opens</strong><br>
+                    • <strong style="color:#fff;">No metrics</strong> about the event<br>
+                    • You <strong style="color:#fff;">can't post your photos on social media</strong> because you don't have them yet
                 </div>
             </div>
-            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
-                ⚡ <strong style="color:#e8c47a;">Ultra-fast</strong> · 📊 <strong style="color:#e8c47a;">Live metrics</strong> · ⬇️ <strong style="color:#e8c47a;">Unlimited</strong>
+
+            <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
+                    ✓ OVJ STUDIO
+                </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
+                    • Live photos<br>
+                    • Private web gallery<br>
+                    • Real-time metrics<br>
+                    • One-tap downloads<br>
+                    • Ultra-fast photos<br>
+                    • Unlimited downloads<br>
+                    • Behind the scenes of the event
+                </div>
             </div>
         `;
             } else if (idiomaActual === 'zh') {
                 html = `
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
-                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ 传统模式</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
-                        • 数天或数周后送达<br>
-                        • 无人打开的 U 盘<br>
-                        • 无数据统计<br>
-                        • 无社交曝光
-                    </div>
+            <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
+                    ❌ 传统摄影服务
                 </div>
-                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
-                        • 现场实时照片<br>
-                        • 个性化网页画廊<br>
-                        • 实时数据统计<br>
-                        • 一键下载
-                    </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
+                    • 照片要 <strong style="color:#fff;">数天甚至数周后</strong> 才送达<br>
+                    • 一个 <strong style="color:#fff;">容易被遗忘、无人打开的 U 盘</strong><br>
+                    • <strong style="color:#fff;">没有活动数据统计</strong><br>
+                    • <strong style="color:#fff;">无法把照片发到社交媒体</strong>，因为还没拿到
                 </div>
             </div>
-            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
-                ⚡ <strong style="color:#e8c47a;">超快速</strong> · 📊 <strong style="color:#e8c47a;">实时数据</strong> · ⬇️ <strong style="color:#e8c47a;">无限下载</strong>
+
+            <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
+                    ✓ OVJ STUDIO
+                </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
+                    • 现场实时照片<br>
+                    • 私人网页画廊<br>
+                    • 实时数据统计<br>
+                    • 一键下载<br>
+                    • 超快速照片<br>
+                    • 无限下载<br>
+                    • 活动幕后花絮
+                </div>
             </div>
         `;
             } else {
                 html = `
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
-                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ TRADICIONAL</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
-                        • Días o semanas después<br>
-                        • USB que nadie abre<br>
-                        • Sin métricas<br>
-                        • Sin presencia en redes
-                    </div>
+            <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
+                    ❌ Servicio de fotografía tradicional
                 </div>
-                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
-                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
-                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
-                        • Fotos en vivo<br>
-                        • Galería web propia<br>
-                        • Métricas en tiempo real<br>
-                        • Descarga en un toque
-                    </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
+                    • Te entregan las fotos <strong style="color:#fff;">días o semanas después</strong><br>
+                    • Un pendrive USB que es <strong style="color:#fff;">olvidable y nadie lo abre</strong><br>
+                    • <strong style="color:#fff;">No tenés métricas</strong> del evento<br>
+                    • <strong style="color:#fff;">No podés publicar tus fotos en redes</strong> porque no te las entregaron
                 </div>
             </div>
-            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
-                ⚡ <strong style="color:#e8c47a;">Ultrarrápidas</strong> · 📊 <strong style="color:#e8c47a;">Métricas en vivo</strong> · ⬇️ <strong style="color:#e8c47a;">Ilimitadas</strong>
+
+            <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
+                    ✓ OVJ STUDIO
+                </div>
+                <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
+                    • Fotos en vivo<br>
+                    • Galería web privada<br>
+                    • Métricas en tiempo real<br>
+                    • Descargas con un solo toque<br>
+                    • Fotos ultrarrápidas<br>
+                    • Descargas ilimitadas<br>
+                    • Backstage del evento
+                </div>
             </div>
         `;
             }
