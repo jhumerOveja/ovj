@@ -2835,6 +2835,32 @@
             text-align: center;
         }
 
+        .modal-detras-contenido .btn-cerrar-instr {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--texto-suave);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            z-index: 10;
+        }
+
+        .modal-detras-contenido .btn-cerrar-instr:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
         .modal-detras-contenido .titulo {
             font-size: 1.1rem;
             font-weight: 700;
@@ -3262,7 +3288,6 @@
     <div class="modal-info" id="modalSobre">
         <div class="modal-info-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalSobre')">✕</button>
-            <span class="modal-info-emoji">ℹ️</span>
             <div class="modal-info-titulo" data-i18n="sobreTitulo">Sobre nosotros</div>
             <div class="modal-info-texto" data-i18n="sobreTexto"></div>
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalSobre')" data-i18n="cerrar">Cerrar</button>
@@ -3293,7 +3318,6 @@
     <div class="modal-info" id="modalBeneficios">
         <div class="modal-info-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalBeneficios')">✕</button>
-            <span class="modal-info-emoji">✨</span>
             <div class="modal-info-titulo" data-i18n="beneficiosTitulo">Beneficios de usar nuestro servicio</div>
             <div id="beneficiosContenido" class="modal-info-texto"></div>
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalBeneficios')"
@@ -3630,7 +3654,32 @@
                 menuIdioma: "Idioma",
                 menuTerminos: "Términos y condiciones",
                 sobreTitulo: "Sobre nosotros",
-                sobreTexto: `OVJ Studio es una <strong style="color:#e8c47a;">nueva plataforma tecnológica</strong> de galerías fotográficas en vivo, pensada para eventos sociales de todo tipo.<br><br>A diferencia del modelo tradicional de fotografía, donde las fotos llegan días o incluso meses después del evento, en un USB o en una carpeta digital que casi nadie abre, con nuestro servicio cada invitado ve las fotos aparecer <strong>en el momento</strong>, desde su celular, y descarga las que más le gustan con <strong>un solo toque</strong>.<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"LAS PUBLICACIONES EN REDES SOCIALES SE HACEN EL DÍA DEL EVENTO.<br>NADIE QUIERE PUBLICAR LO QUE PASÓ AYER<br>NI MUCHO MENOS LO QUE PASÓ HACE MESES."</div></div>Es <strong>fotografía profesional</strong>, en <strong>tiempo real</strong>, para todos los que están en el evento.<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">¿SEGUÍS DEJANDO QUE TUS INVITADOS<br>SAQUEN FOTOS BORROSAS CON EL CELULAR?</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">Dejá que los profesionales se encarguen de eso.</div></div>`,
+                sobreTexto: `
+    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
+        OVJ Studio es una <strong style="color:#e8c47a;">plataforma de galerías fotográficas en vivo</strong> para eventos sociales. Lo que en el modelo tradicional llega días después, acá aparece <strong style="color:#fff;">en el momento</strong>.
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
+        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.3px;">
+            "LAS PUBLICACIONES EN REDES SE HACEN EL DÍA DEL EVENTO.<br>
+            NADIE QUIERE PUBLICAR LO DE AYER,<br>
+            MENOS LO DE HACE MESES."
+        </div>
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+            ¿SEGUÍS DEJANDO QUE TUS INVITADOS SAQUEN FOTOS BORROSAS?
+        </div>
+        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.3; letter-spacing:0.3px;">
+            Dejá que los profesionales se encarguen.
+        </div>
+    </div>
+
+    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+        Fotografía profesional, en tiempo real, para todos los que están en el evento.
+    </div>
+`,
                 beneficiosTitulo: "Beneficios de usar nuestro servicio",
                 terminosTitulo: "Términos y condiciones",
                 terminosTexto: `OVJ Studio es un servicio de galería fotográfica en vivo que entrega las fotografías del evento a los invitados <strong style="color:#e8c47a;">durante el transcurso del evento</strong>, desde el celular, y con un solo toque puede obtenerlas <strong>sin ninguna marca de agua ni pagar por la descarga</strong>.<br><br><strong style="color:#e8c47a;">Sobre las fotografías</strong><br>Las fotos que recibís están optimizadas para redes sociales y envío rápido por WhatsApp. Son ideales para compartir, publicar y guardar como recuerdo del evento.<br><br><strong style="color:#e8c47a;">Sobre los descargables</strong><br>Las descargas son ilimitadas para todos los invitados.<br><br><strong style="color:#e8c47a;">Sobre los tickets y regalos</strong><br>Los tickets emitidos son válidos por <strong>6 meses</strong> desde su emisión. Cada ticket tiene un token único y un número de WhatsApp asociado, y solo puede ser canjeado por una persona. El canje se realiza por WhatsApp, enviando el token al número oficial de OVJ Studio.<br><br><strong style="color:#e8c47a;">Sobre la verificación</strong><br>OVJ Studio se reserva el derecho de verificar la validez de cada ticket y de cada acceso.<br><br><strong style="color:#e8c47a;">Sobre la propiedad</strong><br>Las fotografías son propiedad del cliente del evento y de OVJ Studio.`,
@@ -3685,7 +3734,32 @@
                 menuIdioma: "Language",
                 menuTerminos: "Terms and conditions",
                 sobreTitulo: "About us",
-                sobreTexto: `OVJ Studio is a <strong style="color:#e8c47a;">new technology platform</strong> for live photo galleries, built for social events of every kind.<br><br>Unlike the traditional photography model, where photos arrive days or even months after the event, on a USB stick or in a digital folder almost nobody opens, with our service every guest watches the photos appear <strong>in the moment</strong>, from their phone, and downloads their favorites with <strong>a single tap</strong>.<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"SOCIAL MEDIA POSTS HAPPEN ON THE DAY OF THE EVENT.<br>NOBODY WANTS TO POST ABOUT YESTERDAY,<br>LET ALONE ABOUT MONTHS AGO."</div></div>It's <strong>professional photography</strong>, in <strong>real time</strong>, for everyone at the event.<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">STILL LETTING YOUR GUESTS<br>TAKE BLURRY PHOTOS WITH THEIR PHONES?</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">Let the professionals handle that.</div></div>`,
+                sobreTexto: `
+    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
+        OVJ Studio is a <strong style="color:#e8c47a;">live photo gallery platform</strong> for social events. What in the traditional model arrives days later, here appears <strong style="color:#fff;">in the moment</strong>.
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
+        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.3px;">
+            "SOCIAL POSTS HAPPEN ON THE DAY OF THE EVENT.<br>
+            NOBODY WANTS TO POST YESTERDAY'S NEWS,<br>
+            LET ALONE MONTHS-OLD."
+        </div>
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+            STILL LETTING YOUR GUESTS TAKE BLURRY PHOTOS?
+        </div>
+        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.3; letter-spacing:0.3px;">
+            Let the professionals handle it.
+        </div>
+    </div>
+
+    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+        Professional photography, in real time, for everyone at the event.
+    </div>
+`,
                 beneficiosTitulo: "Benefits of using our service",
                 terminosTitulo: "Terms and conditions",
                 terminosTexto: `OVJ Studio is a live photo gallery service that delivers event photos to guests <strong style="color:#e8c47a;">while the event is happening</strong>, from their phone, and with a single tap they can get them <strong>without any watermark and without paying for the download</strong>.<br><br><strong style="color:#e8c47a;">About the photos</strong><br>The photos you receive are optimized for social media and fast WhatsApp sharing.<br><br><strong style="color:#e8c47a;">About downloads</strong><br>Downloads are unlimited for all guests.<br><br><strong style="color:#e8c47a;">About tickets and gifts</strong><br>Issued tickets are valid for <strong>6 months</strong> from issuance. Each ticket has a unique token and an associated WhatsApp number, and can only be redeemed by one person. Redemption is done via WhatsApp.<br><br><strong style="color:#e8c47a;">About verification</strong><br>OVJ Studio reserves the right to verify the validity of each ticket and each access.<br><br><strong style="color:#e8c47a;">About ownership</strong><br>Photographs are property of the event client and OVJ Studio.`,
@@ -3740,7 +3814,32 @@
                 menuIdioma: "语言",
                 menuTerminos: "条款和条件",
                 sobreTitulo: "关于我们",
-                sobreTexto: `OVJ Studio 是一个 <strong style="color:#e8c47a;">全新的活动现场照片画廊技术平台</strong>，适用于各类社交活动。<br><br>与传统摄影模式不同，过去照片要在活动结束后几天甚至几个月才送到 U 盘或几乎无人打开的文件夹里，使用我们的服务，每位嘉宾都能 <strong>实时</strong> 在手机上看到照片出现，并 <strong>一点即下载</strong> 自己喜欢的照片。<br><br><div style="text-align:center; margin:18px 0; padding:16px 14px; background:rgba(232,196,122,0.06); border-left:3px solid #e8c47a; border-radius:8px;"><div style="font-size:0.92rem; font-weight:700; color:#e8c47a; line-height:1.5; letter-spacing:0.3px;">"社交媒体发布，就在活动当天。<br>没有人愿意发昨天的内容，<br>更别说几个月前的了。"</div></div>这是 <strong>专业摄影</strong>，<strong>实时呈现</strong>，献给现场的每一位嘉宾。<br><br><div style="text-align:center; margin-top:24px; padding:22px 16px; background:linear-gradient(135deg, rgba(232,196,122,0.12), rgba(232,196,122,0.02)); border:1.5px solid rgba(232,196,122,0.45); border-radius:14px; box-shadow:0 8px 30px rgba(232,196,122,0.15);"><div style="font-size:1.1rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.5px; margin-bottom:10px;">还在让嘉宾们<br>用手机拍模糊的照片吗？</div><div style="font-size:1.05rem; font-weight:700; color:#fff; line-height:1.4; letter-spacing:0.4px;">交给专业人士吧。</div></div>`,
+                sobreTexto: `
+    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
+        OVJ Studio 是一个面向社交活动的 <strong style="color:#e8c47a;">现场照片画廊平台</strong>。传统模式要等好几天才送达，而这里 <strong style="color:#fff;">即时呈现</strong>。
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
+        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.45; letter-spacing:0.3px;">
+            "社交媒体发布，就在活动当天。<br>
+            没有人愿意发昨天的内容，<br>
+            更别说几个月前的了。"
+        </div>
+    </div>
+
+    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.35; letter-spacing:0.3px; margin-bottom:6px;">
+            还在让嘉宾们拍模糊的照片吗？
+        </div>
+        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.35; letter-spacing:0.3px;">
+            交给专业人士吧。
+        </div>
+    </div>
+
+    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+        专业摄影，实时呈现，献给现场的每一位嘉宾。
+    </div>
+`,
                 beneficiosTitulo: "使用我们服务的好处",
                 terminosTitulo: "条款和条件",
                 terminosTexto: `OVJ Studio 是一项现场照片画廊服务，在 <strong style="color:#e8c47a;">活动进行期间</strong> 将照片实时交付给嘉宾，通过手机一点即可获取，<strong>无水印，下载免费</strong>。<br><br><strong style="color:#e8c47a;">关于照片</strong><br>您收到的照片已针对社交媒体和 WhatsApp 快速分享进行优化。<br><br><strong style="color:#e8c47a;">关于下载</strong><br>所有嘉宾均可无限下载。<br><br><strong style="color:#e8c47a;">关于门票与礼物</strong><br>已发出的门票自发出之日起 <strong>6 个月</strong> 内有效。每张门票都有唯一的令牌和关联的 WhatsApp 号码，只能由一人兑换。<br><br><strong style="color:#e8c47a;">关于验证</strong><br>OVJ Studio 保留验证每张门票及每次访问有效性的权利。<br><br><strong style="color:#e8c47a;">关于所有权</strong><br>照片归活动客户和 OVJ Studio 所有。`,
@@ -5570,100 +5669,82 @@
 
             if (idiomaActual === 'en') {
                 html = `
-                    <div style="line-height:1.9; margin-bottom:22px;">
-                        <strong style="color:#e8c47a;">⚡ Ultra-fast photos</strong><br>
-                        Your guests see the photos in the moment, from their phone.
-                        <br><br>
-                        <strong style="color:#e8c47a;">📊 Live metrics</strong><br>
-                        Downloads, clicks and activity of your event in real time.
-                        <br><br>
-                        <strong style="color:#e8c47a;">⬇️ Unlimited downloads</strong><br>
-                        No limits, no break, no complications.
-                    </div>
-
-                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem;">
-                        ⚖️ TRADITIONAL MODEL vs. OVJ STUDIO
-                    </div>
-
-                    <div style="line-height:1.9;">
-                        <strong style="color:#f87171;">Traditional:</strong><br>
-                        • Photos arrive days or weeks later<br>
-                        • On a USB stick or folder nobody opens<br>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ TRADITIONAL</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
+                        • Days or weeks later<br>
+                        • USB / folder nobody opens<br>
                         • No metrics<br>
-                        • No social media presence
-                        <br><br>
-
-                        <strong style="color:#4ade80;">OVJ Studio:</strong><br>
-                        • Live photos, during the event<br>
-                        • Customized web gallery<br>
+                        • No social presence
+                    </div>
+                </div>
+                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
+                        • Live photos<br>
+                        • Custom web gallery<br>
                         • Real-time metrics<br>
                         • One-tap download
                     </div>
-                `;
+                </div>
+            </div>
+            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
+                ⚡ <strong style="color:#e8c47a;">Ultra-fast</strong> · 📊 <strong style="color:#e8c47a;">Live metrics</strong> · ⬇️ <strong style="color:#e8c47a;">Unlimited</strong>
+            </div>
+        `;
             } else if (idiomaActual === 'zh') {
                 html = `
-                    <div style="line-height:1.9; margin-bottom:22px;">
-                        <strong style="color:#e8c47a;">⚡ 超快速照片</strong><br>
-                        您的嘉宾在活动现场即可用手机查看照片。
-                        <br><br>
-                        <strong style="color:#e8c47a;">📊 实时数据</strong><br>
-                        实时查看活动的下载量、点击量和动态。
-                        <br><br>
-                        <strong style="color:#e8c47a;">⬇️ 无限下载</strong><br>
-                        无限制，无休息，无繁琐。
-                    </div>
-
-                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem;">
-                        ⚖️ 传统模式 vs. OVJ STUDIO
-                    </div>
-
-                    <div style="line-height:1.9;">
-                        <strong style="color:#f87171;">传统模式：</strong><br>
-                        • 照片在活动结束后数天甚至数周才送达<br>
-                        • 存放在无人打开的 U 盘或文件夹中<br>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ 传统模式</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
+                        • 数天或数周后送达<br>
+                        • 无人打开的 U 盘<br>
                         • 无数据统计<br>
-                        • 无社交媒体曝光
-                        <br><br>
-
-                        <strong style="color:#4ade80;">OVJ Studio：</strong><br>
-                        • 活动现场实时照片<br>
+                        • 无社交曝光
+                    </div>
+                </div>
+                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
+                        • 现场实时照片<br>
                         • 个性化网页画廊<br>
                         • 实时数据统计<br>
                         • 一键下载
                     </div>
-                `;
+                </div>
+            </div>
+            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
+                ⚡ <strong style="color:#e8c47a;">超快速</strong> · 📊 <strong style="color:#e8c47a;">实时数据</strong> · ⬇️ <strong style="color:#e8c47a;">无限下载</strong>
+            </div>
+        `;
             } else {
                 html = `
-                    <div style="line-height:1.9; margin-bottom:22px;">
-                        <strong style="color:#e8c47a;">⚡ Fotos ultrarrápidas</strong><br>
-                        Tus invitados ven las fotos en el momento, desde su celular.
-                        <br><br>
-                        <strong style="color:#e8c47a;">📊 Métricas en vivo</strong><br>
-                        Descargas, clics y actividad de tu evento en tiempo real.
-                        <br><br>
-                        <strong style="color:#e8c47a;">⬇️ Descargas ilimitadas</strong><br>
-                        Sin límites, sin receso, sin complicaciones.
-                    </div>
-
-                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin:24px 0 18px; font-size:0.95rem;">
-                        ⚖️ MODELO TRADICIONAL vs. OVJ STUDIO
-                    </div>
-
-                    <div style="line-height:1.9;">
-                        <strong style="color:#f87171;">Tradicional:</strong><br>
-                        • Las fotos llegan días o semanas después<br>
-                        • En un USB o carpeta que nadie abre<br>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+                <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#f87171; margin-bottom:6px; letter-spacing:0.5px;">❌ TRADICIONAL</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#bbb;">
+                        • Días o semanas después<br>
+                        • USB que nadie abre<br>
                         • Sin métricas<br>
                         • Sin presencia en redes
-                        <br><br>
-
-                        <strong style="color:#4ade80;">OVJ Studio:</strong><br>
-                        • Fotos en vivo, durante el evento<br>
-                        • Galería web personalizada<br>
-                        • Métricas en tiempo real<br>
-                        • Descarga con un solo toque
                     </div>
-                `;
+                </div>
+                <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:10px 10px;">
+                    <div style="font-size:0.7rem; font-weight:800; color:#4ade80; margin-bottom:6px; letter-spacing:0.5px;">✓ OVJ STUDIO</div>
+                    <div style="font-size:0.68rem; line-height:1.45; color:#ddd;">
+                        • Fotos en vivo<br>
+                        • Galería web propia<br>
+                        • Métricas en tiempo real<br>
+                        • Descarga en un toque
+                    </div>
+                </div>
+            </div>
+            <div style="font-size:0.68rem; line-height:1.55; color:#999; text-align:center;">
+                ⚡ <strong style="color:#e8c47a;">Ultrarrápidas</strong> · 📊 <strong style="color:#e8c47a;">Métricas en vivo</strong> · ⬇️ <strong style="color:#e8c47a;">Ilimitadas</strong>
+            </div>
+        `;
             }
 
             cont.innerHTML = html;
