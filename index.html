@@ -3080,8 +3080,6 @@
 
     <div class="modal-qr-general" id="modalQrGeneral">
         <div class="modal-qr-general-contenido">
-            <button class="btn-cerrar-instr" onclick="cerrarQrGeneral()">✕</button>
-            <span class="emoji-grande" style="font-size:2.5rem;display:block;margin-bottom:12px;">🎫</span>
             <div class="titulo" style="font-size:1.05rem;font-weight:700;color:#93c5fd;margin-bottom:6px;">QR General
                 del Evento</div>
             <div class="subtitulo" style="font-size:0.8rem;color:#aaa;margin-bottom:18px;line-height:1.5;">
@@ -3100,6 +3098,11 @@
                     style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"
                     onclick="copiarUrlQrGeneral()">
                     📋 Copiar URL
+                </button>
+                <button
+                    style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#4ade80,#22c55e);color:#0a0a0a;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"
+                    onclick="compartirQrWhatsApp()">
+                    💬 Compartir por WhatsApp
                 </button>
                 <button
                     style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:rgba(255,255,255,0.06);color:#ccc;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;"
@@ -5209,6 +5212,23 @@
                 document.body.removeChild(ta);
                 alert('✅ URL copiada');
             });
+        }
+
+        function compartirQrWhatsApp() {
+            if (!urlQrGeneralActual) {
+                mostrarToast('El QR todavía no está cargado', 'warning');
+                return;
+            }
+
+            const nombreEvento = document.getElementById('eventoTitulo')?.textContent || 'nuestro evento';
+
+            const mensaje =
+                `¡Hola! Te comparto el acceso a la galería en vivo de ${nombreEvento}.\n\n` +
+                `📸 Entrá acá y escaneá el QR (o tocá el link directo):\n` +
+                `${urlQrGeneralActual}\n\n` +
+                `— OVJ Studio`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         // ==========================================
