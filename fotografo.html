@@ -2373,137 +2373,144 @@
             });
         }
 
-        function abrirQRGrande() {
+        async function abrirQRGrande() {
             if (!urlTokenGeneralActual) return;
 
             const nombreEvento = eventoActivo?.evento || 'Evento';
-            const fechaEvento = eventoActivo?.inicioReal
-                ? new Date(eventoActivo.inicioReal).toLocaleDateString('es-BO', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                })
-                : '';
 
-            const w = window.open('', '_blank');
-            if (!w) {
-                alert('Permití las ventanas emergentes para descargar el QR');
-                return;
+            try {
+                // 1. Generar el QR como data URL (grande para imprimir)
+                const qr = window.qrcode(0, 'M');
+                qr.addData(urlTokenGeneralActual);
+                qr.make();
+                const qrDataUrl = qr.createDataURL(10, 20);
+
+                // 2. Crear un canvas 800x1100 px con el diseño
+                const canvas = document.createElement('canvas');
+                canvas.width = 800;
+                canvas.height = 1100;
+                const ctx = canvas.getContext('2d');
+
+                // Fondo blanco
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Borde dorado
+                ctx.strokeStyle = '#e8c47a';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+                // ── Marca "OVJ Studio" centrada ──
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
+                ctx.font = '300 36px Segoe UI, Tahoma, sans-serif';
+                const textoOVJ = 'OVJ ';
+                const anchoOVJ = ctx.measureText(textoOVJ).width;
+
+                ctx.font = '800 36px Segoe UI, Tahoma, sans-serif';
+                const textoStudio = 'Studio';
+                const anchoStudio = ctx.measureText(textoStudio).width;
+
+                const anchoTotalMarca = anchoOVJ + anchoStudio;
+                const marcaX = (canvas.width - anchoTotalMarca) / 2;
+                const marcaY = 110;
+
+                ctx.font = '300 36px Segoe UI, Tahoma, sans-serif';
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillText(textoOVJ, marcaX, marcaY);
+
+                ctx.font = '800 36px Segoe UI, Tahoma, sans-serif';
+                ctx.fillStyle = '#d4a94a';
+                ctx.fillText(textoStudio, marcaX + anchoOVJ, marcaY);
+
+                // ── Nombre del evento (truncado si es muy largo) ──
+                let nombreMostrar = String(nombreEvento).toUpperCase();
+                if (nombreMostrar.length > 28) {
+                    nombreMostrar = nombreMostrar.slice(0, 26) + '…';
+                }
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#0a0a0a';
+                ctx.font = '800 44px Segoe UI, Tahoma, sans-serif';
+                ctx.fillText(nombreMostrar, canvas.width / 2, 200);
+
+                // ── QR en el centro (500x500 px) ──
+                const qrImg = new Image();
+                qrImg.src = qrDataUrl;
+
+                await new Promise((resolve, reject) => {
+                    qrImg.onload = resolve;
+                    qrImg.onerror = reject;
+                });
+
+                const qrSize = 500;
+                const qrX = (canvas.width - qrSize) / 2;
+                const qrY = 300;
+                ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+                // ── Instrucción principal ──
+                ctx.fillStyle = '#0a0a0a';
+                ctx.font = '800 40px Segoe UI, Tahoma, sans-serif';
+                ctx.fillText('Escaneá para ver las fotos', canvas.width / 2, 880);
+
+                // ── Sub-instrucción ──
+                ctx.fillStyle = '#666666';
+                ctx.font = '400 22px Segoe UI, Tahoma, sans-serif';
+                ctx.fillText('Escaneá este código con la cámara de tu celular', canvas.width / 2, 925);
+
+                // ── Badge inferior ──
+                ctx.fillStyle = '#f5f5f5';
+                const badgeTexto = 'Galería en Vivo';
+                ctx.font = '700 20px Segoe UI, Tahoma, sans-serif';
+                const badgeAncho = ctx.measureText(badgeTexto).width + 60;
+                const badgeX = (canvas.width - badgeAncho) / 2;
+                const badgeY = 965;
+                const badgeAlto = 44;
+
+                const radio = 22;
+                ctx.beginPath();
+                ctx.moveTo(badgeX + radio, badgeY);
+                ctx.lineTo(badgeX + badgeAncho - radio, badgeY);
+                ctx.quadraticCurveTo(badgeX + badgeAncho, badgeY, badgeX + badgeAncho, badgeY + radio);
+                ctx.lineTo(badgeX + badgeAncho, badgeY + badgeAlto - radio);
+                ctx.quadraticCurveTo(badgeX + badgeAncho, badgeY + badgeAlto, badgeX + badgeAncho - radio, badgeY + badgeAlto);
+                ctx.lineTo(badgeX + radio, badgeY + badgeAlto);
+                ctx.quadraticCurveTo(badgeX, badgeY + badgeAlto, badgeX, badgeY + badgeAlto - radio);
+                ctx.lineTo(badgeX, badgeY + radio);
+                ctx.quadraticCurveTo(badgeX, badgeY, badgeX + radio, badgeY);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = '#333333';
+                ctx.font = '700 20px Segoe UI, Tahoma, sans-serif';
+                ctx.fillText(badgeTexto, canvas.width / 2, badgeY + 30);
+
+                // 3. Convertir a PNG y descargar
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        toast('Error generando la imagen del QR', 'error');
+                        return;
+                    }
+
+                    const urlBlob = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = urlBlob;
+                    a.download = `QR_${nombreEvento.replace(/[^a-zA-Z0-9_-]/g, '_')}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(urlBlob);
+                    }, 100);
+
+                    toast('✅ QR descargado como PNG', 'ok');
+                }, 'image/png');
+
+            } catch (e) {
+                console.error('Error generando QR:', e);
+                toast('Error generando la imagen del QR', 'error');
             }
-
-            const qr = window.qrcode(0, 'M');
-            qr.addData(urlTokenGeneralActual);
-            qr.make();
-            const dataUrl = qr.createDataURL(10, 20);
-
-            const html = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>QR - ${escapeHtml(nombreEvento)}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #fff;
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .qr-card {
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            border: 3px solid #e8c47a;
-            border-radius: 20px;
-            padding: 30px 20px;
-        }
-        .qr-marca {
-            font-size: 1.4rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-        }
-        .qr-marca strong {
-            font-weight: 800;
-            color: #d4a94a;
-        }
-        .qr-evento {
-            font-size: 1.6rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            word-break: break-word;
-        }
-        .qr-fecha {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 24px;
-            letter-spacing: 1px;
-        }
-        .qr-imagen {
-            width: 320px;
-            height: 320px;
-            max-width: 100%;
-            margin: 0 auto 20px;
-            display: block;
-            image-rendering: pixelated;
-        }
-        .qr-instruccion {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #000;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-        .qr-subinstruccion {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .qr-modo {
-            display: inline-block;
-            background: #f5f5f5;
-            color: #333;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 6px 16px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        @media print {
-            body { padding: 0; }
-            .qr-card { border: none; }
-        }
-    </style>
-</head>
-<body>
-    <div class="qr-card">
-        <div class="qr-marca">OVJ <strong>Studio</strong></div>
-        <div class="qr-evento">${escapeHtml(nombreEvento)}</div>
-        ${fechaEvento ? `<div class="qr-fecha">${escapeHtml(fechaEvento)}</div>` : ''}
-        <img class="qr-imagen" src="${dataUrl}" alt="QR del evento" />
-        <div class="qr-instruccion">📱 Escaneá para ver las fotos</div>
-        <div class="qr-subinstruccion">Escaneá este código con la cámara de tu celular</div>
-        <div class="qr-modo">🎪 Galería en Vivo</div>
-    </div>
-    <script>
-        window.onload = function() {
-            setTimeout(function() { window.print(); }, 500);
-        };
-    <\/script>
-</body>
-</html>
-    `;
-
-            w.document.write(html);
-            w.document.close();
         }
 
         // ==========================================
