@@ -2059,19 +2059,9 @@
         function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId) {
             const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
 
-            // 🔥 Guardar datos para el botón "Imprimir QR"
+            // 🔥 Guardar datos para el botón "Descargar QR"
             window._ultimaUrlGeneral = urlGeneral;
             window._nombreEventoActual = nombreEvento;
-            window._fechaEventoActual = '';
-
-            // Buscar la fecha del evento (si existe)
-            try {
-                const evento = cacheEventos.find(e => e.id === eventoId);
-                if (evento && evento.fechaProgramada) {
-                    const [y, m, d] = evento.fechaProgramada.split('-');
-                    window._fechaEventoActual = `${d}/${m}/${y}`;
-                }
-            } catch (e) { }
 
             abrirModal(`
         <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
@@ -2118,10 +2108,8 @@
                 toast('No se pudo copiar', 'error');
             });
         }
-
         async function descargarQR(url) {
             const nombreEvento = window._nombreEventoActual || 'Evento';
-            const fechaEvento = window._fechaEventoActual || '';
 
             try {
                 // 1. Generar el QR como data URL (grande para imprimir)
@@ -2145,33 +2133,42 @@
                 ctx.lineWidth = 8;
                 ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
 
-                // Marca "OVJ Studio"
-                ctx.fillStyle = '#0a0a0a';
+                // ── Marca "OVJ Studio" centrada correctamente ──
+                // Dibujamos "OVJ " con font 300, medimos, y dibujamos "Studio" justo al lado.
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
                 ctx.font = '300 36px Segoe UI, Tahoma, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('OVJ ', canvas.width / 2 - 40, 110);
+                const textoOVJ = 'OVJ ';
+                const anchoOVJ = ctx.measureText(textoOVJ).width;
+
+                ctx.font = '800 36px Segoe UI, Tahoma, sans-serif';
+                const textoStudio = 'Studio';
+                const anchoStudio = ctx.measureText(textoStudio).width;
+
+                const anchoTotalMarca = anchoOVJ + anchoStudio;
+                const marcaX = (canvas.width - anchoTotalMarca) / 2;
+                const marcaY = 110;
+
+                ctx.font = '300 36px Segoe UI, Tahoma, sans-serif';
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillText(textoOVJ, marcaX, marcaY);
 
                 ctx.font = '800 36px Segoe UI, Tahoma, sans-serif';
                 ctx.fillStyle = '#d4a94a';
-                ctx.fillText('Studio', canvas.width / 2 + 38, 110);
+                ctx.fillText(textoStudio, marcaX + anchoOVJ, marcaY);
 
-                // Nombre del evento (truncado si es muy largo)
+                // ── Nombre del evento (truncado si es muy largo) ──
                 let nombreMostrar = String(nombreEvento).toUpperCase();
                 if (nombreMostrar.length > 28) {
                     nombreMostrar = nombreMostrar.slice(0, 26) + '…';
                 }
+                ctx.textAlign = 'center';
                 ctx.fillStyle = '#0a0a0a';
                 ctx.font = '800 44px Segoe UI, Tahoma, sans-serif';
                 ctx.fillText(nombreMostrar, canvas.width / 2, 200);
 
-                // Fecha (si existe)
-                if (fechaEvento) {
-                    ctx.fillStyle = '#666666';
-                    ctx.font = '400 26px Segoe UI, Tahoma, sans-serif';
-                    ctx.fillText(fechaEvento, canvas.width / 2, 250);
-                }
-
-                // QR en el centro (500x500 px)
+                // ── QR en el centro (500x500 px) ──
                 const qrImg = new Image();
                 qrImg.src = qrDataUrl;
 
@@ -2182,29 +2179,28 @@
 
                 const qrSize = 500;
                 const qrX = (canvas.width - qrSize) / 2;
-                const qrY = 320;
+                const qrY = 300;
                 ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-                // Instrucción principal
+                // ── Instrucción principal ──
                 ctx.fillStyle = '#0a0a0a';
                 ctx.font = '800 40px Segoe UI, Tahoma, sans-serif';
-                ctx.fillText('Escaneá para ver las fotos', canvas.width / 2, 900);
+                ctx.fillText('Escaneá para ver las fotos', canvas.width / 2, 880);
 
-                // Sub-instrucción
+                // ── Sub-instrucción ──
                 ctx.fillStyle = '#666666';
                 ctx.font = '400 22px Segoe UI, Tahoma, sans-serif';
-                ctx.fillText('Escaneá este código con la cámara de tu celular', canvas.width / 2, 945);
+                ctx.fillText('Escaneá este código con la cámara de tu celular', canvas.width / 2, 925);
 
-                // Badge inferior
+                // ── Badge inferior ──
                 ctx.fillStyle = '#f5f5f5';
                 const badgeTexto = 'Galería en Vivo';
                 ctx.font = '700 20px Segoe UI, Tahoma, sans-serif';
                 const badgeAncho = ctx.measureText(badgeTexto).width + 60;
                 const badgeX = (canvas.width - badgeAncho) / 2;
-                const badgeY = 985;
+                const badgeY = 965;
                 const badgeAlto = 44;
 
-                // Rectángulo redondeado del badge
                 const radio = 22;
                 ctx.beginPath();
                 ctx.moveTo(badgeX + radio, badgeY);
@@ -2223,7 +2219,7 @@
                 ctx.font = '700 20px Segoe UI, Tahoma, sans-serif';
                 ctx.fillText(badgeTexto, canvas.width / 2, badgeY + 30);
 
-                // 3. Convertir el canvas a blob PNG y descargar
+                // 3. Convertir a PNG y descargar
                 canvas.toBlob((blob) => {
                     if (!blob) {
                         toast('Error generando la imagen del QR', 'error');
