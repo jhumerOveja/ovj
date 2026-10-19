@@ -95,8 +95,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .bloqueo-contenido {
@@ -105,8 +110,15 @@
         }
 
         @keyframes bloquearEntrada {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .bloqueo .icono {
@@ -118,8 +130,17 @@
         }
 
         @keyframes pulsoIcono {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.05); }
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
         }
 
         .bloqueo .titulo {
@@ -155,8 +176,13 @@
         }
 
         @keyframes fadeInApp {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .header {
@@ -194,8 +220,19 @@
         }
 
         @keyframes subrayadoHeader {
-            0%, 100% { left: 30%; width: 40%; opacity: 0.4; }
-            50% { left: 15%; width: 70%; opacity: 0.9; }
+
+            0%,
+            100% {
+                left: 30%;
+                width: 40%;
+                opacity: 0.4;
+            }
+
+            50% {
+                left: 15%;
+                width: 70%;
+                opacity: 0.9;
+            }
         }
 
         .header-top {
@@ -258,7 +295,9 @@
         }
 
         @keyframes rotarEstrella {
-            to { transform: translateY(-50%) rotate(360deg); }
+            to {
+                transform: translateY(-50%) rotate(360deg);
+            }
         }
 
         .header-right {
@@ -369,8 +408,15 @@
         }
 
         @keyframes pulsoNovedad {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
         }
 
         /* ===== CHIP EN VIVO ===== */
@@ -402,8 +448,15 @@
         }
 
         @keyframes pulsoChipVivo {
-            0% { transform: scale(0.6); opacity: 0.9; }
-            100% { transform: scale(2.2); opacity: 0; }
+            0% {
+                transform: scale(0.6);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
         }
 
         .chip-en-vivo-texto {
@@ -548,8 +601,15 @@
         }
 
         @keyframes brilloTitulo {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .header.scrolleado .header-bottom .evento-titulo {
@@ -568,8 +628,19 @@
         }
 
         @keyframes subrayadoTitulo {
-            0%, 100% { left: 25%; width: 50%; opacity: 0.3; }
-            50% { left: 15%; width: 70%; opacity: 0.8; }
+
+            0%,
+            100% {
+                left: 25%;
+                width: 50%;
+                opacity: 0.3;
+            }
+
+            50% {
+                left: 15%;
+                width: 70%;
+                opacity: 0.8;
+            }
         }
 
         .banner-mensaje {
@@ -586,8 +657,15 @@
         }
 
         @keyframes entradaBanner {
-            from { opacity: 0; transform: translateY(-15px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .banner-mensaje .emoji {
@@ -761,8 +839,13 @@
         }
 
         @keyframes fadeInGaleria {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .foto {
@@ -808,11 +891,13 @@
                     0 0 48px rgba(232, 196, 122, 0.08),
                     0 0 0 0 rgba(232, 196, 122, 0.8);
             }
+
             50% {
                 box-shadow: 0 0 24px var(--champagne-tenue),
                     0 0 48px rgba(232, 196, 122, 0.3),
                     0 0 0 12px rgba(232, 196, 122, 0);
             }
+
             100% {
                 box-shadow: 0 0 24px var(--champagne-tenue),
                     0 0 48px rgba(232, 196, 122, 0.08),
@@ -843,7 +928,9 @@
         }
 
         @keyframes bordeGirando {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .foto .badge-nueva {
@@ -868,8 +955,15 @@
         }
 
         @keyframes pulsoBadgeNueva {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
         }
 
         .foto .badge-reciente {
@@ -904,8 +998,13 @@
         }
 
         @keyframes skeleton {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         .foto img {
@@ -949,9 +1048,22 @@
         }
 
         @keyframes revelarFoto {
-            0% { opacity: 0; transform: scale(0.9) translateY(20px); filter: blur(12px) brightness(1.3); }
-            60% { opacity: 1; filter: blur(0px) brightness(1.05); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px) brightness(1); }
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+                filter: blur(12px) brightness(1.3);
+            }
+
+            60% {
+                opacity: 1;
+                filter: blur(0px) brightness(1.05);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px) brightness(1);
+            }
         }
 
         .foto.entrada-viewport {
@@ -959,8 +1071,15 @@
         }
 
         @keyframes entradaViewport {
-            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .ver-mas-wrapper {
@@ -991,8 +1110,17 @@
         }
 
         @keyframes pulsoVerMas {
-            0%, 100% { box-shadow: 0 4px 20px rgba(232, 196, 122, 0.15); transform: scale(1); }
-            50% { box-shadow: 0 6px 30px rgba(232, 196, 122, 0.35); transform: scale(1.02); }
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(232, 196, 122, 0.15);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 6px 30px rgba(232, 196, 122, 0.35);
+                transform: scale(1.02);
+            }
         }
 
         .btn-ver-mas:hover {
@@ -1093,8 +1221,15 @@
         }
 
         @keyframes blurIn {
-            from { backdrop-filter: blur(0px); opacity: 0; }
-            to { backdrop-filter: blur(16px); opacity: 1; }
+            from {
+                backdrop-filter: blur(0px);
+                opacity: 0;
+            }
+
+            to {
+                backdrop-filter: blur(16px);
+                opacity: 1;
+            }
         }
 
         .modal-contenido {
@@ -1138,8 +1273,17 @@
         }
 
         @keyframes entradaCinematografica {
-            0% { opacity: 0; transform: scale(0.7) rotateX(15deg) translateY(40px); filter: blur(8px); }
-            100% { opacity: 1; transform: scale(1) rotateX(0) translateY(0); filter: blur(0px); }
+            0% {
+                opacity: 0;
+                transform: scale(0.7) rotateX(15deg) translateY(40px);
+                filter: blur(8px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateX(0) translateY(0);
+                filter: blur(0px);
+            }
         }
 
         .modal-contenido .imagen-wrapper {
@@ -1207,8 +1351,13 @@
             transform: translateY(-50%) scale(1.12);
         }
 
-        .nav-flecha.izquierda { left: 18px; }
-        .nav-flecha.derecha { right: 18px; }
+        .nav-flecha.izquierda {
+            left: 18px;
+        }
+
+        .nav-flecha.derecha {
+            right: 18px;
+        }
 
         .nav-flecha.oculto {
             opacity: 0;
@@ -1267,8 +1416,15 @@
         }
 
         @keyframes brilloPublicidad {
-            0%, 100% { box-shadow: 0 0 0 rgba(232, 196, 122, 0); }
-            50% { box-shadow: 0 0 20px rgba(232, 196, 122, 0.3); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(232, 196, 122, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(232, 196, 122, 0.3);
+            }
         }
 
         .publicidad-wrapper .pub-btn:hover {
@@ -1309,10 +1465,23 @@
         }
 
         @keyframes descargaCompletada {
-            0% { transform: scale(1); }
-            30% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-            60% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(74, 222, 128, 0); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            30% {
+                transform: scale(0.92);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            60% {
+                transform: scale(1.08);
+                box-shadow: 0 0 0 20px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .btn-pedir:hover {
@@ -1357,8 +1526,15 @@
         }
 
         @keyframes entradaDesbloqueo {
-            from { opacity: 0; transform: scale(0.85) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .modal-info-emoji {
@@ -1580,8 +1756,13 @@
         }
 
         @keyframes cofreFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .cofre-fase {
@@ -1594,8 +1775,15 @@
         }
 
         @keyframes cofreEntrada {
-            from { opacity: 0; transform: scale(0.85) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .cofre-instruccion-top {
@@ -1609,8 +1797,15 @@
         }
 
         @keyframes pulsoInstruccion {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .cofre-instruccion-bottom {
@@ -1647,12 +1842,31 @@
         }
 
         @keyframes cofreShake {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            15% { transform: rotate(-5deg) scale(1.04); }
-            30% { transform: rotate(5deg) scale(1.04); }
-            45% { transform: rotate(-3deg) scale(1.02); }
-            60% { transform: rotate(3deg) scale(1.02); }
-            80% { transform: rotate(-1deg) scale(1.01); }
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            15% {
+                transform: rotate(-5deg) scale(1.04);
+            }
+
+            30% {
+                transform: rotate(5deg) scale(1.04);
+            }
+
+            45% {
+                transform: rotate(-3deg) scale(1.02);
+            }
+
+            60% {
+                transform: rotate(3deg) scale(1.02);
+            }
+
+            80% {
+                transform: rotate(-1deg) scale(1.01);
+            }
         }
 
         .cofre-glow {
@@ -1666,8 +1880,17 @@
         }
 
         @keyframes pulsoGlow {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.15); }
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.15);
+            }
         }
 
         .cofre-progreso {
@@ -1712,8 +1935,15 @@
         }
 
         @keyframes revelacionEntrada {
-            from { opacity: 0; transform: scale(0.85) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .cofre-revelacion-emoji {
@@ -1870,13 +2100,27 @@
         }
 
         @keyframes toastIn {
-            0% { opacity: 0; transform: translateY(30px) scale(0.9); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         @keyframes toastOut {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(30px) scale(0.9); }
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
         }
 
         .toast-item.saliendo {
@@ -1987,8 +2231,13 @@
                 font-size: 1.1rem;
             }
 
-            .nav-flecha.izquierda { left: 6px; }
-            .nav-flecha.derecha { right: 6px; }
+            .nav-flecha.izquierda {
+                left: 6px;
+            }
+
+            .nav-flecha.derecha {
+                right: 6px;
+            }
 
             .foto::after {
                 display: none;
@@ -2057,15 +2306,22 @@
         }
 
         @media (max-width: 1100px) {
-            .galeria { column-count: 3; }
+            .galeria {
+                column-count: 3;
+            }
         }
 
         @media (max-width: 800px) {
-            .galeria { column-count: 2; }
+            .galeria {
+                column-count: 2;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
+
+            *,
+            *::before,
+            *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
@@ -2095,8 +2351,15 @@
         }
 
         @keyframes gradienteDetras {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .btn-detras-camara:hover {
@@ -2142,6 +2405,7 @@
             .btn-detras-texto {
                 display: none;
             }
+
             .btn-detras-texto-corto {
                 display: inline;
             }
@@ -2155,6 +2419,7 @@
             .btn-admin-texto {
                 display: none;
             }
+
             .btn-admin-texto-corto {
                 display: inline;
             }
@@ -2223,8 +2488,17 @@
         }
 
         @keyframes pulsoMenuLateral {
-            0%, 100% { box-shadow: 0 0 0 rgba(232, 196, 122, 0); transform: scale(1); }
-            50% { box-shadow: 0 0 20px rgba(232, 196, 122, 0.6); transform: scale(1.05); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(232, 196, 122, 0);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(232, 196, 122, 0.6);
+                transform: scale(1.05);
+            }
         }
 
         /* ===== MENÚ LATERAL ===== */
@@ -2468,8 +2742,15 @@
         }
 
         @keyframes pulsoBotonNuevas {
-            0%, 100% { box-shadow: 0 8px 30px rgba(232, 196, 122, 0.5); }
-            50% { box-shadow: 0 12px 45px rgba(232, 196, 122, 0.8); }
+
+            0%,
+            100% {
+                box-shadow: 0 8px 30px rgba(232, 196, 122, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 12px 45px rgba(232, 196, 122, 0.8);
+            }
         }
 
         .btn-fotos-nuevas:hover {
@@ -2503,8 +2784,15 @@
         }
 
         @keyframes pulsoTocaAbrir {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         /* Detrás de cámara feed */
@@ -2696,7 +2984,6 @@
         }
 
         /* (Modales de desbloqueo e invitación eliminados) */
-
     </style>
 </head>
 
@@ -2725,7 +3012,8 @@
                         <span class="chip-en-vivo-texto">En vivo</span>
                         <span class="chip-en-vivo-contador" id="chipContadorMirando" style="display: none;"></span>
                     </div>
-                    <button class="btn-menu-lateral" id="btnMenuLateral" onclick="toggleMenuLateral()" aria-label="Menú">
+                    <button class="btn-menu-lateral" id="btnMenuLateral" onclick="toggleMenuLateral()"
+                        aria-label="Menú">
                         <span class="linea-menu"></span>
                         <span class="linea-menu"></span>
                         <span class="linea-menu"></span>
@@ -2734,8 +3022,8 @@
             </div>
 
             <div class="header-badges" id="headerBadges">
-                <div class="badge-rol" id="badgeRol" style="display:none;"></div>
-                <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()" style="display: none;">
+                <button class="btn-detras-camara" id="btnDetrasCamara" onclick="abrirDetrasCamara()"
+                    style="display: none;">
                     <span class="btn-detras-icono">📸</span>
                     <span class="btn-detras-texto" id="textoDetras">Detrás de cámara</span>
                     <span class="btn-detras-texto-corto">Tras cámaras</span>
@@ -2748,7 +3036,8 @@
                 <button class="btn-admin-mini redes" id="btnMisRedes" onclick="abrirMisRedes()" style="display: none;">
                     🔗 <span class="btn-admin-texto">Mis redes</span><span class="btn-admin-texto-corto">Redes</span>
                 </button>
-                <button class="btn-admin-mini metricas" id="btnMetricas" onclick="abrirModalMetricas()" style="display: none;">
+                <button class="btn-admin-mini metricas" id="btnMetricas" onclick="abrirModalMetricas()"
+                    style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
             </div>
@@ -2797,7 +3086,8 @@
         <div class="modal-qr-general-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarQrGeneral()">✕</button>
             <span class="emoji-grande" style="font-size:2.5rem;display:block;margin-bottom:12px;">🎫</span>
-            <div class="titulo" style="font-size:1.05rem;font-weight:700;color:#93c5fd;margin-bottom:6px;">QR General del Evento</div>
+            <div class="titulo" style="font-size:1.05rem;font-weight:700;color:#93c5fd;margin-bottom:6px;">QR General
+                del Evento</div>
             <div class="subtitulo" style="font-size:0.8rem;color:#aaa;margin-bottom:18px;line-height:1.5;">
                 Este es el QR que tus invitados escanean.<br>
                 Compartilo o mostralo desde tu celular.
@@ -2810,10 +3100,14 @@
             <div class="url-box" id="urlQrGeneral">Cargando...</div>
 
             <div style="display:flex;flex-direction:column;gap:8px;">
-                <button style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;" onclick="copiarUrlQrGeneral()">
+                <button
+                    style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"
+                    onclick="copiarUrlQrGeneral()">
                     📋 Copiar URL
                 </button>
-                <button style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:rgba(255,255,255,0.06);color:#ccc;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;" onclick="cerrarQrGeneral()">
+                <button
+                    style="width:100%;padding:12px 18px;border-radius:12px;border:none;background:rgba(255,255,255,0.06);color:#ccc;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;"
+                    onclick="cerrarQrGeneral()">
                     Cerrar
                 </button>
             </div>
@@ -2921,12 +3215,6 @@
         </div>
 
         <nav class="menu-lateral-nav">
-            <button class="menu-lateral-item" onclick="menuAccion('detras')">
-                <span class="menu-lateral-emoji">📸</span>
-                <span class="menu-lateral-texto" data-i18n="menuDetras">Detrás de cámara</span>
-                <span class="menu-lateral-badge" id="menuBadgeDetras" style="display:none;">0</span>
-            </button>
-
             <button class="menu-lateral-item" onclick="menuAccion('regalo')">
                 <span class="menu-lateral-emoji">🎁</span>
                 <span class="menu-lateral-texto" data-i18n="menuRegalo">Mi regalo</span>
@@ -3014,7 +3302,8 @@
             <span class="modal-info-emoji">✨</span>
             <div class="modal-info-titulo" data-i18n="beneficiosTitulo">Beneficios de usar nuestro servicio</div>
             <div id="beneficiosContenido" class="modal-info-texto"></div>
-            <button class="modal-info-btn" onclick="cerrarModalInfo('modalBeneficios')" data-i18n="cerrar">Cerrar</button>
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalBeneficios')"
+                data-i18n="cerrar">Cerrar</button>
         </div>
     </div>
 
@@ -3038,22 +3327,26 @@
 
             <div class="red-input-group">
                 <label>📷 Instagram</label>
-                <input type="url" id="inputLinkInstagram" placeholder="https://instagram.com/tu-usuario" maxlength="500" autocomplete="off" inputmode="url" />
+                <input type="url" id="inputLinkInstagram" placeholder="https://instagram.com/tu-usuario" maxlength="500"
+                    autocomplete="off" inputmode="url" />
             </div>
 
             <div class="red-input-group">
                 <label>👍 Facebook</label>
-                <input type="url" id="inputLinkFacebook" placeholder="https://facebook.com/tu-pagina" maxlength="500" autocomplete="off" inputmode="url" />
+                <input type="url" id="inputLinkFacebook" placeholder="https://facebook.com/tu-pagina" maxlength="500"
+                    autocomplete="off" inputmode="url" />
             </div>
 
             <div class="red-input-group">
                 <label>🎵 TikTok</label>
-                <input type="url" id="inputLinkTiktok" placeholder="https://tiktok.com/@tu-usuario" maxlength="500" autocomplete="off" inputmode="url" />
+                <input type="url" id="inputLinkTiktok" placeholder="https://tiktok.com/@tu-usuario" maxlength="500"
+                    autocomplete="off" inputmode="url" />
             </div>
 
             <div class="red-input-group">
                 <label>💬 Texto personalizado (opcional)</label>
-                <input type="text" id="inputLinkTexto" placeholder="Sígueme para más fotos" maxlength="80" autocomplete="off" />
+                <input type="text" id="inputLinkTexto" placeholder="Sígueme para más fotos" maxlength="80"
+                    autocomplete="off" />
             </div>
 
             <div class="red-aviso" id="redAviso" style="display:none;"></div>
@@ -3061,7 +3354,8 @@
             <button class="modal-info-btn" id="btnGuardarRedes" onclick="guardarMisRedes()">
                 💾 Guardar
             </button>
-            <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;" onclick="cerrarModalInfo('modalMisRedes')">
+            <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;"
+                onclick="cerrarModalInfo('modalMisRedes')">
                 Cerrar
             </button>
         </div>
@@ -3572,7 +3866,6 @@
             }
 
             actualizarBotonPrincipal();
-            actualizarBadgeRol();
             actualizarChipEnVivo();
             if (fotosCache.length > 0) {
                 renderizarGaleria();
@@ -3860,29 +4153,6 @@
             }
         }
 
-        function actualizarBadgeRol() {
-            const el = document.getElementById('badgeRol');
-
-            if (!sesion) {
-                el.style.display = 'none';
-                return;
-            }
-
-            if (sesion.tipo === 'admin') {
-                el.style.display = 'none';
-                return;
-            }
-
-            if (sesion.tipo === 'vip') {
-                el.textContent = '👑 VIP';
-                el.className = 'badge-rol admin';
-                el.style.display = 'inline-flex';
-                return;
-            }
-
-            el.style.display = 'none';
-        }
-
         // ==========================================
         // 🟢 CHIP EN VIVO
         // ==========================================
@@ -3925,35 +4195,33 @@
             if (sesion.tipo === 'admin') {
                 emoji.textContent = '👑';
                 titulo.textContent = 'Bienvenido a OVJ Studio';
-
                 beneficios = `
-                    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:16px; font-size:0.95rem; letter-spacing:0.3px;">
-                        GRACIAS POR CONTRATAR NUESTRO SERVICIO
-                    </div>
-                    <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
-                        Eres administrador del evento.
-                    </div>
-                    <div style="line-height:1.9;">
-                        • Descargas ilimitadas de todas las fotos<br>
-                        • Compartir tus redes sociales a tus invitados<br>
-                        • Acceso a los QRs del evento<br>
-                        • Ver las métricas del evento en vivo
-                    </div>
-                `;
+        <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:16px; font-size:0.95rem; letter-spacing:0.3px;">
+            GRACIAS POR CONTRATAR NUESTRO SERVICIO
+        </div>
+        <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
+            Eres administrador del evento.
+        </div>
+        <div style="line-height:1.9;">
+            • Descargas ilimitadas de todas las fotos<br>
+            • Compartir tus redes sociales a tus invitados<br>
+            • Acceso a los QRs del evento<br>
+            • Ver las métricas del evento en vivo
+        </div>
+    `;
             } else {
-                emoji.textContent = '👑';
+                emoji.textContent = '✨';
                 titulo.textContent = 'Bienvenido a OVJ Studio';
-
                 beneficios = `
-                    <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
-                        Eres VIP.
-                    </div>
-                    <div style="line-height:1.9;">
-                        • Descargas ilimitadas<br>
-                        • Sin receso<br>
-                        • Sin límites
-                    </div>
-                `;
+        <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
+            Gracias por acompañarnos.
+        </div>
+        <div style="line-height:1.9;">
+            • Descargas ilimitadas<br>
+            • Sin receso<br>
+            • Sin límites
+        </div>
+    `;
             }
 
             contenido.innerHTML = beneficios;
@@ -4199,7 +4467,6 @@
                         fotosCache = [];
                         actualizarChipEnVivo();
                         actualizarBotonPrincipal();
-                        actualizarBadgeRol();
                     }
                 }
 
@@ -4288,7 +4555,6 @@
                 guardarFotosVistas(fotosVistas);
 
                 actualizarBotonPrincipal();
-                actualizarBadgeRol();
                 actualizarChipEnVivo();
 
                 // 🔥 Renderizar banner de redes si aplica
@@ -4301,7 +4567,6 @@
                 servidorOnline = false;
                 actualizarChipEnVivo();
                 actualizarBotonPrincipal();
-                actualizarBadgeRol();
 
                 clearTimeout(window._pollTimer);
                 window._pollTimer = setTimeout(cargarFotos, 30000);
@@ -4403,7 +4668,6 @@
             detrasCamaraTotal = total;
             detrasCamaraUltima = ultima;
 
-            actualizarMenuLateral();
         }
 
         function tiempoRelativo(fechaISO) {
@@ -4450,7 +4714,6 @@
                         localStorage.setItem(getClaveDetrasVisto(), detrasCamaraUltima);
                     } catch (e) { }
                     document.getElementById('badgeNovedadDetras').style.display = 'none';
-                    actualizarMenuLateral();
                 }
 
                 let html = '<div class="feed-detras">';
@@ -5321,9 +5584,6 @@
 
             setTimeout(() => {
                 switch (accion) {
-                    case 'detras':
-                        abrirDetrasCamara();
-                        break;
                     case 'regalo':
                         abrirMiRegalo();
                         break;
@@ -5347,35 +5607,13 @@
             const btn = document.getElementById('btnMenuLateral');
             if (!btn) return;
 
-            let debeLlamarAtencion = false;
-
-            const badgeDetras = document.getElementById('menuBadgeDetras');
-            const hayDetrasNuevas = badgeDetras && badgeDetras.style.display !== 'none';
-
             const badgeRegalo = document.getElementById('menuBadgeRegalo');
             const hayRegaloNuevo = badgeRegalo && badgeRegalo.style.display !== 'none';
 
-            if (hayDetrasNuevas || hayRegaloNuevo) {
-                debeLlamarAtencion = true;
-            }
-
-            btn.classList.toggle('llamar-atencion', debeLlamarAtencion);
+            btn.classList.toggle('llamar-atencion', !!hayRegaloNuevo);
         }
 
         function actualizarMenuLateral() {
-            const badgeDetras = document.getElementById('menuBadgeDetras');
-            if (badgeDetras) {
-                const ultimaVista = localStorage.getItem(getClaveDetrasVisto());
-                const hayNuevas = detrasCamaraTotal > 0 && detrasCamaraUltima && detrasCamaraUltima !== ultimaVista;
-
-                if (hayNuevas) {
-                    badgeDetras.textContent = '!';
-                    badgeDetras.style.display = 'inline-block';
-                } else {
-                    badgeDetras.style.display = 'none';
-                }
-            }
-
             const badgeRegalo = document.getElementById('menuBadgeRegalo');
             if (badgeRegalo) {
                 const ticketGuardado = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
