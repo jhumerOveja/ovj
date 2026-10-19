@@ -3033,9 +3033,6 @@
                 <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
                     🎫 <span class="btn-admin-texto">QR</span><span class="btn-admin-texto-corto">QR</span>
                 </button>
-                <button class="btn-admin-mini redes" id="btnMisRedes" onclick="abrirMisRedes()" style="display: none;">
-                    🔗 <span class="btn-admin-texto">Mis redes</span><span class="btn-admin-texto-corto">Redes</span>
-                </button>
                 <button class="btn-admin-mini metricas" id="btnMetricas" onclick="abrirModalMetricas()"
                     style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
@@ -3046,7 +3043,6 @@
             </div>
         </div>
 
-        <div id="bannerRedesGaleriaContainer"></div>
         <div id="bannerMensajeContainer"></div>
 
         <div class="galeria" id="galeria"></div>
@@ -3181,11 +3177,6 @@
                     <div class="etiqueta">Descargas</div>
                 </div>
                 <div class="metrica-card">
-                    <span class="emoji">🔗</span>
-                    <div class="valor" id="metricaClicsBanners">—</div>
-                    <div class="etiqueta">Clics banners</div>
-                </div>
-                <div class="metrica-card">
                     <span class="emoji">🎁</span>
                     <div class="valor" id="metricaTickets">—</div>
                     <div class="etiqueta">Tickets</div>
@@ -3313,51 +3304,6 @@
             <div class="modal-info-titulo" id="bienvenidaTitulo">Bienvenido a OVJ Studio</div>
             <div id="bienvenidaContenido" class="modal-info-texto"></div>
             <button class="modal-info-btn" onclick="cerrarBienvenida()">Empezar</button>
-        </div>
-    </div>
-
-    <div class="modal-info" id="modalMisRedes">
-        <div class="modal-info-contenido">
-            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalMisRedes')">✕</button>
-            <span class="modal-info-emoji">🔗</span>
-            <div class="modal-info-titulo">Mis redes sociales</div>
-            <div class="modal-info-texto" style="text-align:center; margin-bottom:18px;">
-                Compartí tus links. Tus invitados los verán en la galería.
-            </div>
-
-            <div class="red-input-group">
-                <label>📷 Instagram</label>
-                <input type="url" id="inputLinkInstagram" placeholder="https://instagram.com/tu-usuario" maxlength="500"
-                    autocomplete="off" inputmode="url" />
-            </div>
-
-            <div class="red-input-group">
-                <label>👍 Facebook</label>
-                <input type="url" id="inputLinkFacebook" placeholder="https://facebook.com/tu-pagina" maxlength="500"
-                    autocomplete="off" inputmode="url" />
-            </div>
-
-            <div class="red-input-group">
-                <label>🎵 TikTok</label>
-                <input type="url" id="inputLinkTiktok" placeholder="https://tiktok.com/@tu-usuario" maxlength="500"
-                    autocomplete="off" inputmode="url" />
-            </div>
-
-            <div class="red-input-group">
-                <label>💬 Texto personalizado (opcional)</label>
-                <input type="text" id="inputLinkTexto" placeholder="Sígueme para más fotos" maxlength="80"
-                    autocomplete="off" />
-            </div>
-
-            <div class="red-aviso" id="redAviso" style="display:none;"></div>
-
-            <button class="modal-info-btn" id="btnGuardarRedes" onclick="guardarMisRedes()">
-                💾 Guardar
-            </button>
-            <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;"
-                onclick="cerrarModalInfo('modalMisRedes')">
-                Cerrar
-            </button>
         </div>
     </div>
 
@@ -3621,9 +3567,6 @@
         let servidorOnline = true;
         let tituloEsDefault = true;
 
-        // 🔥 Banners de redes del cliente (en la galería)
-        let bannersRedesActual = null;
-        let _bannerRedesMostradoEnSesion = false;
 
         let urlQrGeneralActual = null;
 
@@ -4129,19 +4072,8 @@
             document.getElementById('bloqueo').classList.remove('activo');
             document.getElementById('app').classList.add('activo');
 
-            const btnQrGeneral = document.getElementById('btnQrGeneral');
-            const btnMisRedes = document.getElementById('btnMisRedes');
-            const btnMetricas = document.getElementById('btnMetricas');
-
-            if (sesion.tipo === 'admin') {
-                btnQrGeneral.style.display = 'inline-flex';
-                btnMisRedes.style.display = 'inline-flex';
-                btnMetricas.style.display = 'inline-flex';
-            } else {
-                btnQrGeneral.style.display = 'none';
-                btnMisRedes.style.display = 'none';
-                btnMetricas.style.display = 'none';
-            }
+            // Mostrar/ocultar botones según el tipo de usuario y el estado del server
+            actualizarBotonesModoEmergencia();
 
             actualizarChipEnVivo();
 
@@ -4150,6 +4082,50 @@
             if (!tipsMostrados.primeraEntrada) {
                 tipsMostrados.primeraEntrada = true;
                 setTimeout(() => mostrarToast(t('tipEntrada'), 'tip'), 4500);
+            }
+        }
+
+        // ==========================================
+        // 🔥 BOTONES EN MODO EMERGENCIA
+        // Cuando el server está caído (servidorOnline === false), ocultamos
+        // los botones que dependen de él. Vuelven a mostrarse cuando el
+        // server se recupera.
+        // ==========================================
+        function actualizarBotonesModoEmergencia() {
+            const enEmergencia = servidorOnline === false;
+
+            const btnQrGeneral = document.getElementById('btnQrGeneral');
+            const btnMetricas = document.getElementById('btnMetricas');
+            const btnDetras = document.getElementById('btnDetrasCamara');
+
+            // QR General (solo admin): requiere server para obtener el token general
+            if (btnQrGeneral) {
+                if (sesion && sesion.tipo === 'admin') {
+                    btnQrGeneral.style.display = enEmergencia ? 'none' : 'inline-flex';
+                } else {
+                    btnQrGeneral.style.display = 'none';
+                }
+            }
+
+            // Métricas (solo admin): requiere server
+            if (btnMetricas) {
+                if (sesion && sesion.tipo === 'admin') {
+                    btnMetricas.style.display = enEmergencia ? 'none' : 'inline-flex';
+                } else {
+                    btnMetricas.style.display = 'none';
+                }
+            }
+
+            // Detrás de cámara: requiere server para cargar el feed.
+            // Solo lo ocultamos si hay fotos de detrás (si no, ya está oculto).
+            if (btnDetras) {
+                if (enEmergencia) {
+                    btnDetras.style.display = 'none';
+                } else if (detrasCamaraTotal > 0) {
+                    btnDetras.style.display = 'inline-flex';
+                } else {
+                    btnDetras.style.display = 'none';
+                }
             }
         }
 
@@ -4196,19 +4172,18 @@
                 emoji.textContent = '👑';
                 titulo.textContent = 'Bienvenido a OVJ Studio';
                 beneficios = `
-        <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:16px; font-size:0.95rem; letter-spacing:0.3px;">
-            GRACIAS POR CONTRATAR NUESTRO SERVICIO
-        </div>
-        <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
-            Eres administrador del evento.
-        </div>
-        <div style="line-height:1.9;">
-            • Descargas ilimitadas de todas las fotos<br>
-            • Compartir tus redes sociales a tus invitados<br>
-            • Acceso a los QRs del evento<br>
-            • Ver las métricas del evento en vivo
-        </div>
-    `;
+    <div style="text-align:center; color:#e8c47a; font-weight:700; margin-bottom:16px; font-size:0.95rem; letter-spacing:0.3px;">
+        GRACIAS POR CONTRATAR NUESTRO SERVICIO
+    </div>
+    <div style="text-align:center; margin-bottom:18px; color:#fff; font-weight:600;">
+        Eres administrador del evento.
+    </div>
+    <div style="line-height:1.9;">
+        • Descargas ilimitadas de todas las fotos<br>
+        • Acceso a los QRs del evento<br>
+        • Ver las métricas del evento en vivo
+    </div>
+`;
             } else {
                 emoji.textContent = '✨';
                 titulo.textContent = 'Bienvenido a OVJ Studio';
@@ -4301,93 +4276,6 @@
         }, { passive: true });
 
         // ==========================================
-        // 🔥 BANNER DE REDES DEL CLIENTE EN LA GALERÍA
-        // ==========================================
-        function renderizarBannerRedesGaleria() {
-            const cont = document.getElementById('bannerRedesGaleriaContainer');
-            if (!cont) return;
-
-            // Solo se muestra si:
-            // - Hay banners configurados
-            // - No se mostró ya en esta sesión
-            // - No hay un banner previo (ya visible)
-            if (!bannersRedesActual) {
-                cont.innerHTML = '';
-                return;
-            }
-
-            const tieneLinks = bannersRedesActual.instagram
-                || bannersRedesActual.facebook
-                || bannersRedesActual.tiktok;
-
-            if (!tieneLinks) {
-                cont.innerHTML = '';
-                return;
-            }
-
-            // Mostrar solo después de las primeras 3 fotos (o si hay 3+)
-            if (fotosCache.length < 3) {
-                cont.innerHTML = '';
-                return;
-            }
-
-            if (_bannerRedesMostradoEnSesion) {
-                return;
-            }
-
-            _bannerRedesMostradoEnSesion = true;
-
-            const textoCustom = bannersRedesActual.texto || '';
-
-            let botones = '';
-            if (bannersRedesActual.instagram) {
-                botones += `<button class="btn-red instagram" onclick="abrirRedBanner('instagram')">📷 Instagram</button>`;
-            }
-            if (bannersRedesActual.facebook) {
-                botones += `<button class="btn-red facebook" onclick="abrirRedBanner('facebook')">👍 Facebook</button>`;
-            }
-            if (bannersRedesActual.tiktok) {
-                botones += `<button class="btn-red tiktok" onclick="abrirRedBanner('tiktok')">🎵 TikTok</button>`;
-            }
-
-            cont.innerHTML = `
-                <div class="banner-redes-galeria">
-                    <div class="titulo">🔗 Seguime en mis redes</div>
-                    ${textoCustom ? `<div class="texto-custom">${escapeHtml(textoCustom)}</div>` : ''}
-                    <div class="botones">${botones}</div>
-                    <button class="btn-cerrar-banner-redes" onclick="cerrarBannerRedesGaleria()">Cerrar</button>
-                </div>
-            `;
-        }
-
-        function abrirRedBanner(red) {
-            if (!bannersRedesActual) return;
-            const url = bannersRedesActual[red];
-            if (!url) return;
-
-            registrarClicBanner(red);
-            window.open(url, '_blank');
-        }
-
-        function registrarClicBanner(red) {
-            if (!EVENTO_ID || !TOKEN) return;
-            try {
-                const url = `${URL_CLOUDFLARE}/banners-redes/clic?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ red })
-                }).catch(() => { });
-            } catch (e) { }
-        }
-
-        function cerrarBannerRedesGaleria() {
-            document.getElementById('bannerRedesGaleriaContainer').innerHTML = '';
-        }
-
-        // ==========================================
         // GALERÍA
         // ==========================================
         async function cargarFotos() {
@@ -4433,6 +4321,7 @@
                             respuesta = await fetch(urlWorker, { cache: 'no-store' });
                             vinoDelWorker = true;
                             servidorOnline = false;
+                            actualizarBotonesModoEmergencia();
                         }
                     } else {
                         const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -4441,6 +4330,7 @@
                         respuesta = await fetch(urlWorker, { cache: 'no-store' });
                         vinoDelWorker = true;
                         servidorOnline = false;
+                        actualizarBotonesModoEmergencia();
                     }
                 }
 
@@ -4467,6 +4357,7 @@
                         fotosCache = [];
                         actualizarChipEnVivo();
                         actualizarBotonPrincipal();
+                        actualizarBotonesModoEmergencia();
                     }
                 }
 
@@ -4482,9 +4373,6 @@
                         document.getElementById("eventoTitulo").textContent = eventoTexto;
                     }
                 }
-
-                // 🔥 Banners de redes del cliente
-                bannersRedesActual = data.bannersRedes || null;
 
                 if (typeof data.mirando === 'number') {
                     actualizarContadorMirando(data.mirando);
@@ -4557,9 +4445,6 @@
                 actualizarBotonPrincipal();
                 actualizarChipEnVivo();
 
-                // 🔥 Renderizar banner de redes si aplica
-                renderizarBannerRedesGaleria();
-
                 consultarCofre();
 
             } catch (error) {
@@ -4567,6 +4452,7 @@
                 servidorOnline = false;
                 actualizarChipEnVivo();
                 actualizarBotonPrincipal();
+                actualizarBotonesModoEmergencia();
 
                 clearTimeout(window._pollTimer);
                 window._pollTimer = setTimeout(cargarFotos, 30000);
@@ -4647,8 +4533,6 @@
             const contador = document.getElementById('contadorDetrasBtn');
 
             if (total > 0) {
-                btnDetras.style.display = 'inline-flex';
-
                 if (contador) {
                     contador.textContent = String(total);
                     contador.style.display = 'inline-block';
@@ -4662,12 +4546,17 @@
                     badgeNovedad.style.display = 'none';
                 }
             } else {
-                btnDetras.style.display = 'none';
+                if (contador) contador.style.display = 'none';
+                if (badgeNovedad) badgeNovedad.style.display = 'none';
             }
 
             detrasCamaraTotal = total;
             detrasCamaraUltima = ultima;
 
+            // El display del botón lo maneja actualizarBotonesModoEmergencia()
+            actualizarBotonesModoEmergencia();
+
+            actualizarMenuLateral();
         }
 
         function tiempoRelativo(fechaISO) {
@@ -4686,6 +4575,10 @@
         }
 
         async function abrirDetrasCamara() {
+            if (servidorOnline === false) {
+                mostrarToast('📡 Función no disponible sin conexión al servidor', 'warning');
+                return;
+            }
             const modal = document.getElementById('modalDetras');
             const cont = document.getElementById('detrasListaContainer');
 
@@ -5240,6 +5133,10 @@
         // QR GENERAL (para admin)
         // ==========================================
         async function abrirQrGeneral() {
+            if (servidorOnline === false) {
+                mostrarToast('📡 Función no disponible sin conexión al servidor', 'warning');
+                return;
+            }
             const modal = document.getElementById('modalQrGeneral');
             const wrapper = document.getElementById('qrGeneralWrapper');
             const urlBox = document.getElementById('urlQrGeneral');
@@ -5318,18 +5215,20 @@
         // MÉTRICAS
         // ==========================================
         async function abrirModalMetricas() {
+            if (servidorOnline === false) {
+                mostrarToast('📡 Función no disponible sin conexión al servidor', 'warning');
+                return;
+            }
             document.getElementById('modalMetricas').classList.add('activo');
 
             const subtitulo = document.getElementById('metricasSubtitulo');
             const elActivos = document.getElementById('metricaActivos');
             const elDescargas = document.getElementById('metricaDescargas');
-            const elClics = document.getElementById('metricaClicsBanners');
             const elTickets = document.getElementById('metricaTickets');
 
             subtitulo.textContent = 'Cargando...';
             elActivos.textContent = '—';
             elDescargas.textContent = '—';
-            elClics.textContent = '—';
             elTickets.textContent = '—';
 
             try {
@@ -5347,7 +5246,6 @@
 
                 elActivos.textContent = data.totalActivos || 0;
                 elDescargas.textContent = data.metricas?.descargasTotales || 0;
-                elClics.textContent = data.metricas?.clicsBanners || 0;
                 elTickets.textContent = data.metricas?.ticketsEmitidos || 0;
 
                 subtitulo.textContent = 'Métricas del evento en vivo';
@@ -5461,10 +5359,6 @@
                 }
                 if (document.getElementById('modalBeneficios').classList.contains('activo')) {
                     cerrarModalInfo('modalBeneficios');
-                    return;
-                }
-                if (document.getElementById('modalMisRedes').classList.contains('activo')) {
-                    cerrarModalInfo('modalMisRedes');
                     return;
                 }
 
@@ -5660,9 +5554,6 @@
                         <strong style="color:#e8c47a;">⚡ Ultra-fast photos</strong><br>
                         Your guests see the photos in the moment, from their phone.
                         <br><br>
-                        <strong style="color:#e8c47a;">🔗 Your social media</strong><br>
-                        Share your networks with all your guests.
-                        <br><br>
                         <strong style="color:#e8c47a;">📊 Live metrics</strong><br>
                         Downloads, clicks and activity of your event in real time.
                         <br><br>
@@ -5686,7 +5577,6 @@
                         • Live photos, during the event<br>
                         • Customized web gallery<br>
                         • Real-time metrics<br>
-                        • Your guests follow you<br>
                         • One-tap download
                     </div>
                 `;
@@ -5695,9 +5585,6 @@
                     <div style="line-height:1.9; margin-bottom:22px;">
                         <strong style="color:#e8c47a;">⚡ 超快速照片</strong><br>
                         您的嘉宾在活动现场即可用手机查看照片。
-                        <br><br>
-                        <strong style="color:#e8c47a;">🔗 您的社交媒体</strong><br>
-                        与所有嘉宾分享您的社交账号。
                         <br><br>
                         <strong style="color:#e8c47a;">📊 实时数据</strong><br>
                         实时查看活动的下载量、点击量和动态。
@@ -5722,7 +5609,6 @@
                         • 活动现场实时照片<br>
                         • 个性化网页画廊<br>
                         • 实时数据统计<br>
-                        • 嘉宾关注您的社交账号<br>
                         • 一键下载
                     </div>
                 `;
@@ -5731,9 +5617,6 @@
                     <div style="line-height:1.9; margin-bottom:22px;">
                         <strong style="color:#e8c47a;">⚡ Fotos ultrarrápidas</strong><br>
                         Tus invitados ven las fotos en el momento, desde su celular.
-                        <br><br>
-                        <strong style="color:#e8c47a;">🔗 Tus redes sociales</strong><br>
-                        Compartí tus redes con todos tus invitados.
                         <br><br>
                         <strong style="color:#e8c47a;">📊 Métricas en vivo</strong><br>
                         Descargas, clics y actividad de tu evento en tiempo real.
@@ -5758,7 +5641,6 @@
                         • Fotos en vivo, durante el evento<br>
                         • Galería web personalizada<br>
                         • Métricas en tiempo real<br>
-                        • Tus invitados te siguen<br>
                         • Descarga con un solo toque
                     </div>
                 `;
@@ -5778,140 +5660,6 @@
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
-        // ==========================================
-        // MIS REDES (solo Admin Cliente)
-        // ==========================================
-        async function abrirMisRedes() {
-            if (!sesion || sesion.tipo !== 'admin') return;
-
-            const aviso = document.getElementById('redAviso');
-            aviso.style.display = 'none';
-            aviso.className = 'red-aviso';
-
-            document.getElementById('inputLinkInstagram').value = '';
-            document.getElementById('inputLinkFacebook').value = '';
-            document.getElementById('inputLinkTiktok').value = '';
-            document.getElementById('inputLinkTexto').value = '';
-
-            abrirModalInfo('modalMisRedes');
-
-            try {
-                const url = `${URL_CLOUDFLARE}/admin/banners-redes?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url);
-                const data = await resp.json();
-
-                if (resp.ok && data.ok && data.bannersRedes) {
-                    const br = data.bannersRedes;
-                    const tieneLinks = br.instagram || br.facebook || br.tiktok;
-
-                    if (tieneLinks) {
-                        const redesGuardadas = [];
-                        if (br.instagram) redesGuardadas.push('Instagram');
-                        if (br.facebook) redesGuardadas.push('Facebook');
-                        if (br.tiktok) redesGuardadas.push('TikTok');
-
-                        aviso.textContent = `✓ Ya tenés links de ${redesGuardadas.join(', ')}. Los nuevos reemplazarán a los anteriores.`;
-                        aviso.style.display = 'block';
-                    }
-                }
-            } catch (e) {
-                console.warn('⚠️ No se pudieron cargar los banners:', e.message);
-            }
-        }
-
-        async function guardarMisRedes() {
-            if (!sesion || sesion.tipo !== 'admin') return;
-
-            const btn = document.getElementById('btnGuardarRedes');
-            const aviso = document.getElementById('redAviso');
-
-            const instagram = document.getElementById('inputLinkInstagram').value.trim();
-            const facebook = document.getElementById('inputLinkFacebook').value.trim();
-            const tiktok = document.getElementById('inputLinkTiktok').value.trim();
-            const texto = document.getElementById('inputLinkTexto').value.trim();
-
-            const validarUrl = (u) => !u || /^https?:\/\/.+/i.test(u);
-
-            if (!validarUrl(instagram)) {
-                aviso.textContent = 'La URL de Instagram debe empezar con https://';
-                aviso.className = 'red-aviso error';
-                aviso.style.display = 'block';
-                return;
-            }
-            if (!validarUrl(facebook)) {
-                aviso.textContent = 'La URL de Facebook debe empezar con https://';
-                aviso.className = 'red-aviso error';
-                aviso.style.display = 'block';
-                return;
-            }
-            if (!validarUrl(tiktok)) {
-                aviso.textContent = 'La URL de TikTok debe empezar con https://';
-                aviso.className = 'red-aviso error';
-                aviso.style.display = 'block';
-                return;
-            }
-
-            if (!instagram && !facebook && !tiktok) {
-                aviso.textContent = 'Ingresá al menos un link';
-                aviso.className = 'red-aviso error';
-                aviso.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = 'Guardando...';
-
-            try {
-                const url = `${URL_CLOUDFLARE}/admin/banners-redes?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ instagram, facebook, tiktok, texto })
-                });
-
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    aviso.textContent = data.error || 'No se pudo guardar. Intentá de nuevo.';
-                    aviso.className = 'red-aviso error';
-                    aviso.style.display = 'block';
-                    btn.disabled = false;
-                    btn.textContent = '💾 Guardar';
-                    return;
-                }
-
-                bannersRedesActual = data.bannersRedes || bannersRedesActual;
-
-                aviso.textContent = '✓ Guardado. Tus invitados verán estos links en la galería.';
-                aviso.className = 'red-aviso';
-                aviso.style.display = 'block';
-
-                btn.disabled = false;
-                btn.textContent = '💾 Guardar';
-
-                setTimeout(() => {
-                    cerrarModalInfo('modalMisRedes');
-                    mostrarToast('🔗 Redes guardadas', 'success');
-                    // Forzar que se vuelva a mostrar el banner de la galería
-                    _bannerRedesMostradoEnSesion = false;
-                    renderizarBannerRedesGaleria();
-                }, 1200);
-
-            } catch (e) {
-                console.error('Error guardando banners:', e);
-                aviso.textContent = 'No se pudo conectar. Intentá de nuevo.';
-                aviso.className = 'red-aviso error';
-                aviso.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = '💾 Guardar';
-            }
-        }
 
         // ==========================================
         // MI REGALO
@@ -5924,6 +5672,8 @@
 
             cont.innerHTML = '<div class="regalo-vacio">Cargando...</div>';
 
+            // 🔥 PRIMERO: si hay ticket guardado en localStorage, mostrarlo.
+            // Funciona incluso en modo emergencia (no necesita el server).
             const ticketLocal = localStorage.getItem('ovj_ticket_' + EVENTO_ID);
 
             if (ticketLocal) {
@@ -5931,9 +5681,20 @@
                     const t = JSON.parse(ticketLocal);
                     renderizarTicketEnRegalo(t);
                     return;
-                } catch (e) { }
+                } catch (e) {
+                    // JSON corrupto, seguimos
+                }
             }
 
+            // 🔥 Si estamos en emergencia y NO hay ticket guardado, no podemos
+            // consultar al server. Avisamos y salimos.
+            if (servidorOnline === false) {
+                cont.innerHTML = '<div class="regalo-vacio">📡 No disponible sin conexión al servidor.<br><br>Volvé a intentar cuando el server esté activo.</div>';
+                emoji.textContent = '🎁';
+                return;
+            }
+
+            // Si no hay ticket guardado y el server está online, consultamos
             try {
                 const url = `${URL_CLOUDFLARE}/cofre?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
