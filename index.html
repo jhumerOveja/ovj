@@ -5125,6 +5125,11 @@
                 return;
             }
 
+            // 🔥 FIX A: pausar el polling mientras se descarga.
+            // Evita que un fetch a /fotos compita por ancho de banda con la descarga del blob.
+            clearTimeout(window._pollTimer);
+            window._pollTimer = null;
+
             const btn = document.getElementById('btnPedir');
             const texto = document.getElementById('btnPedirTexto');
             const textoOriginal = texto.textContent;
@@ -5228,6 +5233,12 @@
             } finally {
                 btn.classList.remove('cargando-btn');
                 texto.textContent = textoOriginal;
+
+                // 🔥 FIX A: reprogramar el polling después de la descarga.
+                // Si el evento sigue activo y no hay otra carga en curso, vuelve a pollear.
+                if (!window._pollTimer && !cargando) {
+                    cargarFotos();
+                }
             }
         }
 
