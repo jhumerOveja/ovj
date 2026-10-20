@@ -2662,26 +2662,32 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 8px;
-            width: 34px;
+            width: 40px;
             height: 34px;
-            font-size: 1rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--texto-suave);
             cursor: pointer;
             transition: all 0.25s ease;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: inherit;
         }
 
         .menu-lang-btn:hover {
             background: rgba(232, 196, 122, 0.15);
             border-color: rgba(232, 196, 122, 0.4);
+            color: var(--champagne);
             transform: scale(1.08);
         }
 
         .menu-lang-btn.activo {
             background: rgba(232, 196, 122, 0.2);
             border-color: rgba(232, 196, 122, 0.6);
+            color: var(--champagne);
             box-shadow: 0 0 12px rgba(232, 196, 122, 0.3);
         }
 
@@ -3264,9 +3270,9 @@
                 <span class="menu-lateral-emoji">🌐</span>
                 <span class="menu-lateral-texto" data-i18n="menuIdioma">Idioma</span>
                 <div class="menu-lateral-langs">
-                    <button class="menu-lang-btn" data-lang="es" onclick="cambiarIdioma('es')">🇧🇴</button>
-                    <button class="menu-lang-btn" data-lang="en" onclick="cambiarIdioma('en')">🇺🇸</button>
-                    <button class="menu-lang-btn" data-lang="zh" onclick="cambiarIdioma('zh')">🇨🇳</button>
+                    <button class="menu-lang-btn" data-lang="es" onclick="cambiarIdioma('es')">ES</button>
+                    <button class="menu-lang-btn" data-lang="en" onclick="cambiarIdioma('en')">EN</button>
+                    <button class="menu-lang-btn" data-lang="zh" onclick="cambiarIdioma('zh')">ZH</button>
                 </div>
             </div>
 
@@ -3627,7 +3633,7 @@
                 fotosMas: "fotos más",
                 porDescubrir: "por descubrir",
                 hasVistoTodo: "Has visto todas las fotos disponibles",
-                descargarFoto: "Descargar Alta calidad",
+                descargarFoto: "Descargar",
                 descargando: "Preparando descarga...",
                 offlineTitulo: "Galería no disponible",
                 offlineMensaje: "La galería se está preparando.<br>Intenta de nuevo en unos minutos.",
@@ -3707,7 +3713,7 @@
                 fotosMas: "more photos",
                 porDescubrir: "to discover",
                 hasVistoTodo: "You've seen all available photos",
-                descargarFoto: "Download High quality",
+                descargarFoto: "Download",
                 descargando: "Preparing download...",
                 offlineTitulo: "Gallery not available",
                 offlineMensaje: "The gallery is being prepared.<br>Try again in a few minutes.",
@@ -3787,7 +3793,7 @@
                 fotosMas: "张照片",
                 porDescubrir: "待查看",
                 hasVistoTodo: "你已看完全部照片",
-                descargarFoto: "下载高清原图",
+                descargarFoto: "下载",
                 descargando: "正在准备下载...",
                 offlineTitulo: "画廊暂不可用",
                 offlineMensaje: "画廊正在准备中。<br>请稍后再试。",
@@ -4776,14 +4782,10 @@
             const btn = document.getElementById('btnPedir');
             const icono = document.getElementById('btnIcono');
             const texto = document.getElementById('btnPedirTexto');
+            if (!btn || !icono || !texto) return;
 
-            if (sesion && (sesion.tipo === 'admin' || sesion.tipo === 'vip')) {
-                icono.textContent = "⬇️";
-                texto.textContent = 'Descargar Alta calidad';
-                return;
-            }
-
-            icono.textContent = "⬇️";
+            // 🔥 FIX: siempre usar t('descargarFoto'). El rol no cambia el texto.
+            icono.textContent = '📥';
             texto.textContent = t('descargarFoto');
         }
 
