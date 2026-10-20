@@ -2522,16 +2522,12 @@
 
         function renderItemTicket(t, esSimbolico = false) {
             const cobrado = !!t.cobrado;
-            const reclamado = !!t.reclamado;
-            const abierto = !!t.abierto;
 
             const colorBorde = cobrado ? 'rgba(74,222,128,0.25)' : (esSimbolico ? 'rgba(255,255,255,0.06)' : 'rgba(232,196,122,0.25)');
             const colorFondo = cobrado ? 'rgba(74,222,128,0.04)' : (esSimbolico ? 'rgba(255,255,255,0.02)' : 'rgba(232,196,122,0.03)');
 
             let badges = '';
             if (cobrado) badges += `<span style="background:rgba(74,222,128,0.15); color:#4ade80; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px;">COBRADO</span>`;
-            if (reclamado && !cobrado) badges += `<span style="background:rgba(96,165,250,0.15); color:#93c5fd; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px; margin-left:4px;">RECLAMADO</span>`;
-            if (abierto && !reclamado && !cobrado) badges += `<span style="background:rgba(255,255,255,0.06); color:#aaa; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; letter-spacing:0.5px; margin-left:4px;">ABIERTO</span>`;
 
             return `
         <div style="background:${colorFondo}; border:1px solid ${colorBorde}; border-radius:12px; padding:12px 14px; margin-bottom:8px;">
@@ -2552,7 +2548,6 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.62rem; color:#666;">
                 <span>Emitido: ${formatearHora(t.emitidoEn)}</span>
-                <span>Vence: ${new Date(t.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
             </div>
 
             ${!cobrado && !esSimbolico ? `
