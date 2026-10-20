@@ -5644,7 +5644,7 @@
                 if (ticketGuardado) {
                     try {
                         const t = JSON.parse(ticketGuardado);
-                        if (t && t.tipo !== 'simbolico' && !t.reclamado) {
+                        if (t && t.tipo !== 'simbolico') {
                             badgeRegalo.style.display = 'inline-block';
                         } else {
                             badgeRegalo.style.display = 'none';
@@ -5878,14 +5878,11 @@
             emoji.textContent = '🎁';
             titulo.textContent = idiomaActual === 'en' ? 'My gift' : idiomaActual === 'zh' ? '我的礼物' : 'Mi regalo';
 
-            const fechaVenc = t.expiraEn
-                ? new Date(t.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })
-                : '';
-
-            const yaReclamado = !!t.reclamado;
-            const textoBoton = yaReclamado
-                ? (idiomaActual === 'en' ? '✓ Sent' : idiomaActual === 'zh' ? '✓ 已发送' : '✓ Enviado')
-                : (idiomaActual === 'en' ? '📲 Claim via WhatsApp' : idiomaActual === 'zh' ? '📲 通过 WhatsApp 领取' : '📲 Reclamar por WhatsApp');
+            const textoBoton = idiomaActual === 'en'
+                ? '📲 Claim via WhatsApp'
+                : idiomaActual === 'zh'
+                    ? '📲 通过 WhatsApp 领取'
+                    : '📲 Reclamar por WhatsApp';
 
             const textoCompartir = idiomaActual === 'en'
                 ? '🤝 Share with someone'
@@ -5898,10 +5895,9 @@
             <div class="regalo-ticket-titulo">${escapeHtml(t.titulo)}</div>
             <div class="regalo-ticket-desc">${escapeHtml(t.descripcion)}</div>
             <div class="regalo-ticket-token">${escapeHtml(t.token)}</div>
-            <button class="regalo-ticket-btn" onclick="reclamarTicketWhatsApp()" ${yaReclamado ? 'disabled style="opacity:0.6; cursor:default;"' : ''}>
+            <button class="regalo-ticket-btn" onclick="reclamarTicketWhatsApp()">
                 ${textoBoton}
             </button>
-            <div class="regalo-ticket-venc">${idiomaActual === 'en' ? 'Expires' : idiomaActual === 'zh' ? '有效期至' : 'Vence'}: ${fechaVenc}</div>
         </div>
 
         <button class="regalo-ticket-btn" onclick="compartirTicketWhatsApp()" style="background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.1);">
@@ -5933,21 +5929,6 @@
                 `Gracias!`;
 
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
-
-            t.reclamado = true;
-            localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(t));
-
-            try {
-                const url = `${URL_CLOUDFLARE}/cofre/reclamar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-                fetch(url, { method: 'POST' }).catch(() => { });
-            } catch (e) { }
-
-            setTimeout(() => {
-                renderizarTicketEnRegalo(t);
-                actualizarMenuLateral();
-            }, 500);
         }
 
         function compartirTicketWhatsApp() {
@@ -6043,7 +6024,6 @@
                     if (data.ticket) {
                         localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify({
                             ...data.ticket,
-                            reclamado: !!data.reclamado,
                             abierto: true
                         }));
                     }
@@ -6212,7 +6192,6 @@
             if (cofreActual && cofreActual.ticket) {
                 const ticketGuardado = {
                     ...cofreActual.ticket,
-                    reclamado: false,
                     abierto: true
                 };
                 localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(ticketGuardado));
@@ -6285,6 +6264,9 @@
         <button class="cofre-btn-reclamar" onclick="reclamarCofreWhatsApp()">
             📲 Reclamar por WhatsApp
         </button>
+        <button class="cofre-btn-reclamar" style="background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.12);" onclick="compartirCofreWhatsApp()">
+            🤝 Compartir con alguien
+        </button>
         <button class="cofre-btn-cerrar" onclick="cerrarCofre()">
             Guardar y cerrar
         </button>
@@ -6305,27 +6287,51 @@
                 `Gracias!`;
 
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
 
-            try {
-                const url = `${URL_CLOUDFLARE}/cofre/reclamar?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                    `&e=${encodeURIComponent(EVENTO_ID)}` +
-                    `&t=${encodeURIComponent(TOKEN)}`;
-                fetch(url, { method: 'POST' }).catch(() => { });
-            } catch (e) { }
+        function compartirCofreWhatsApp() {
+            if (!cofreActual || !cofreActual.ticket) return;
 
-            const ticketGuardado = JSON.parse(localStorage.getItem('ovj_ticket_' + EVENTO_ID) || '{}');
-            ticketGuardado.reclamado = true;
-            localStorage.setItem('ovj_ticket_' + EVENTO_ID, JSON.stringify(ticketGuardado));
+            const t = cofreActual.ticket;
+            const nombreEvento = document.getElementById('eventoTitulo')?.textContent || 'el evento';
 
-            const btn = document.querySelector('.cofre-btn-reclamar');
-            if (btn) {
-                btn.textContent = '✓ Enviado';
-                btn.disabled = true;
-                btn.style.opacity = '0.6';
-                btn.style.cursor = 'default';
+            const textoParaOvj = idiomaActual === 'en'
+                ? 'Hi! Someone shared an OVJ Studio gift with me. I want to know more.'
+                : idiomaActual === 'zh'
+                    ? '你好！有人分享了 OVJ Studio 的礼物给我。我想了解更多。'
+                    : '¡Hola! Me compartieron un regalo de OVJ Studio. Quiero saber más.';
+
+            const linkContacto = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoParaOvj)}`;
+
+            let mensaje;
+            if (idiomaActual === 'en') {
+                mensaje =
+                    `Look at the gift I won at the event!\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 Event: ${nombreEvento}\n\n` +
+                    `If you want to take advantage of it, message OVJ Studio:\n` +
+                    `${linkContacto}\n\n` +
+                    `— Shared from OVJ Studio`;
+            } else if (idiomaActual === 'zh') {
+                mensaje =
+                    `看看我在活动上赢得的礼物！\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 活动：${nombreEvento}\n\n` +
+                    `如果你想利用它，请联系 OVJ Studio：\n` +
+                    `${linkContacto}\n\n` +
+                    `— 分享自 OVJ Studio`;
+            } else {
+                mensaje =
+                    `¡Mirá el regalo que gané en el evento!\n\n` +
+                    `🎁 ${t.titulo}\n` +
+                    `🎉 Evento: ${nombreEvento}\n\n` +
+                    `Si lo querés aprovechar, escribile a OVJ Studio:\n` +
+                    `${linkContacto}\n\n` +
+                    `— Compartido desde OVJ Studio`;
             }
 
-            actualizarMenuLateral();
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            mostrarToast('🤝 Mensaje listo para compartir', 'success', 3000);
         }
 
         function cerrarCofre() {
