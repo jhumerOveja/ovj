@@ -1781,34 +1781,49 @@
                 ? `<button class="btn btn-chico btn-whatsapp-cliente" onclick="contactarCliente('${escapeHtml(e.whatsappCliente)}')">💬 Cliente</button>`
                 : '';
 
+            const botonCarpetaEntrega = `
+        <button class="btn btn-chico btn-secundario" id="btnCarpeta_${escapeHtml(e.id)}" onclick="generarCarpetaEntrega('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}')">
+            📁 Generar Carpeta Entrega
+        </button>
+    `;
+
+            const textoCarpetaEstado = `
+        <div id="carpetaEstado_${escapeHtml(e.id)}" style="font-size:0.62rem; color:#666; margin-top:4px; line-height:1.3; display:none;"></div>
+    `;
+
             if (e.estado === 'agendado') {
                 acciones = `
         <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
         ${botonWhatsApp}
+        ${botonCarpetaEntrega}
         <button class="btn btn-chico btn-peligro" onclick="confirmarCancelarEvento('${escapeHtml(e.id)}','${escapeHtml(e.evento)}')">🗑️ Cancelar</button>
     `;
             } else if (e.estado === 'activo') {
                 acciones = `
         <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
         ${botonWhatsApp}
+        ${botonCarpetaEntrega}
     `;
             } else {
-                acciones = botonWhatsApp;
+                acciones = `
+        ${botonWhatsApp}
+        ${botonCarpetaEntrega}
+    `;
             }
 
             return `
-                <div class="card card-evento">
-                    <div class="cabecera">
-                        <div>
-                            <div class="titulo">${escapeHtml(e.evento)}</div>
-                            <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
-                        </div>
-                        <span class="badge ${badgeClase}">${badgeTexto}</span>
-                    </div>
-                    <div class="meta">${meta}</div>
-                    ${acciones ? `<div class="acciones">${acciones}</div>` : ''}
+        <div class="card card-evento">
+            <div class="cabecera">
+                <div>
+                    <div class="titulo">${escapeHtml(e.evento)}</div>
+                    <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
                 </div>
-            `;
+                <span class="badge ${badgeClase}">${badgeTexto}</span>
+            </div>
+            <div class="meta">${meta}</div>
+            ${acciones ? `<div class="acciones">${acciones}</div>${textoCarpetaEstado}` : ''}
+        </div>
+    `;
         }
 
         async function abrirNuevoEvento() {
@@ -2291,6 +2306,62 @@
                 toast('Error: ' + e.message, 'error');
             } finally {
                 loader(false);
+            }
+        }
+
+        async function generarCarpetaEntrega(fotografo, eventoId) {
+            const btn = document.getElementById('btnCarpeta_' + eventoId);
+            const estado = document.getElementById('carpetaEstado_' + eventoId);
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Generando...';
+            }
+
+            loader(true);
+            try {
+                const data = await apiFetch(
+                    `/admin/eventos/${encodeURIComponent(eventoId)}/generar-carpeta-entrega?f=${encodeURIComponent(fotografo)}`,
+                    { method: 'POST' }
+                );
+
+                if (data.ok) {
+                    if (data.descargadas > 0) {
+                        toast(`✅ Carpeta completa · ${data.descargadas} descargadas · ${data.yaEstaban} ya estaban`, 'ok');
+                    } else {
+                        toast(`✅ Carpeta ya estaba completa (${data.yaEstaban} originales)`, 'ok');
+                    }
+
+                    if (estado) {
+                        const textoErrores = data.errores > 0 ? ` · ⚠️ ${data.errores} errores` : '';
+                        estado.innerHTML = `📁 <strong style="color:#e8c47a;">${data.yaEstaban + data.descargadas}</strong> originales locales · ${data.descargadas} descargadas${textoErrores}<br><span style="font-family:monospace; font-size:0.58rem; color:#555;">${escapeHtml(data.ruta)}</span>`;
+                        estado.style.display = 'block';
+                    }
+
+                    if (data.detallesErrores && data.detallesErrores.length > 0) {
+                        console.warn('⚠️ Errores en carpeta de entrega:', data.detallesErrores);
+                    }
+                } else {
+                    toast('❌ ' + (data.error || 'Error desconocido'), 'error');
+                    if (estado) {
+                        estado.textContent = '❌ ' + (data.error || 'Error desconocido');
+                        estado.style.color = '#e74c3c';
+                        estado.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                toast('❌ Error: ' + e.message, 'error');
+                if (estado) {
+                    estado.textContent = '❌ ' + e.message;
+                    estado.style.color = '#e74c3c';
+                    estado.style.display = 'block';
+                }
+            } finally {
+                loader(false);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '📁 Generar Carpeta Entrega';
+                }
             }
         }
 
