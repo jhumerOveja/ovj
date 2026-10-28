@@ -4525,9 +4525,9 @@
                     // Disparar el goteo (revela atrasadas de golpe + arranca el timer)
                     _asegurarGoteoActivo();
 
-                    // Contar para el botón flotante (solo cuenta, NO dispara confeti)
-                    _fotosNuevasPendientes += recienLlegadas.length;
-                    actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+                    // ⚠️ NO sumamos a _fotosNuevasPendientes acá.
+                    // El botón "Ver N fotos nuevas" se actualiza SOLO cuando la foto se revela
+                    // (dentro de _revelarUnaFoto o _revelarFotosAtrasadas).
                 }
 
                 guardarFotosVistas(fotosVistas);
@@ -4887,20 +4887,19 @@
             _colaGoteo = pendientes;
 
             if (atrasadas.length > 0) {
-                // Las atrasadas vienen en orden de llegada (más vieja primero).
-                // Las metemos con unshift en orden inverso para que la más nueva quede arriba.
                 const atrasadasInvertidas = [...atrasadas].reverse();
                 atrasadasInvertidas.forEach(f => fotosCache.unshift(f));
 
                 fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
                 renderizarGaleria();
 
-                if (_fotosNuevasPendientes > 0) {
-                    _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - atrasadas.length);
+                // 🔥 Sumar al contador del botón cuando se revelan.
+                // Solo si el invitado está abajo (si está arriba, no hace falta avisarle).
+                const scrollY = window.scrollY || window.pageYOffset;
+                if (scrollY >= 100) {
+                    _fotosNuevasPendientes += atrasadas.length;
                     actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                 }
-
-                // ⚠️ NO confeti ni badge: son fotos viejas, no novedad.
             }
         }
 
@@ -4943,14 +4942,17 @@
 
             renderizarGaleria();
 
-            // 🔥 Confeti solo si el invitado está arriba.
             const scrollY = window.scrollY || window.pageYOffset;
+
+            // 🔥 Confeti solo si el invitado está arriba.
             if (scrollY < 100) {
                 lanzarConfeti();
             }
 
-            if (_fotosNuevasPendientes > 0) {
-                _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - 1);
+            // 🔥 Botón "Ver N fotos nuevas" solo si el invitado está abajo.
+            // Así el botón aparece cuando la foto se revela, no cuando llega a la cola.
+            if (scrollY >= 100) {
+                _fotosNuevasPendientes += 1;
                 actualizarBotonFotosNuevas(_fotosNuevasPendientes);
             }
 
