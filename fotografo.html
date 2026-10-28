@@ -3009,10 +3009,6 @@
         let _fotoDetrasSeleccionada = null;
 
         function abrirDetras() {
-            if (servidorOnline === false) {
-                toast('⚠️ Server caído. Intentá cuando vuelva.', 'error');
-                return;
-            }
             if (!eventoActivo || !eventoActivo.id) {
                 toast('No hay evento activo', 'error');
                 return;
@@ -3023,6 +3019,7 @@
             document.getElementById('inputTextoDetras').value = '';
             document.getElementById('previewDetras').style.display = 'none';
             document.getElementById('btnSubirDetras').disabled = true;
+            document.getElementById('btnSubirDetras').textContent = 'Subir foto';
 
             const input = document.getElementById('inputDetras');
             if (!input._inicializado) {
