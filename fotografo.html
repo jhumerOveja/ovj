@@ -1431,14 +1431,14 @@
             <div id="seccionAgendados"></div>
             <div id="seccionFinalizados"></div>
 
-            <!-- Sección: Emergencia (oculta por defecto) -->
+            <!-- Sección: Subir fotos (visible siempre que haya evento activo) -->
             <div id="seccionEmergencia" style="display:none;">
                 <div class="seccion">
-                    <div class="seccion-titulo">🔑 Modo Emergencia</div>
+                    <div class="seccion-titulo">📤 Subir fotos</div>
 
-                    <div class="aviso-emergencia" id="avisoEmergencia">
-                        ⚠️ <strong>Server caído.</strong><br>
-                        Subí fotos desde acá. Se sincronizarán cuando el server vuelva.
+                    <div class="aviso-emergencia" id="avisoEmergencia"
+                        style="background:rgba(46,204,113,0.08); border-color:rgba(46,204,113,0.3); color:#2ecc71;">
+                        Subí las fotos del evento. Se suben directo a la nube y aparecen en la galería.
                     </div>
 
                     <div class="zona-drop" id="zonaDropEmergencia"
@@ -1854,7 +1854,13 @@
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
 
-                ocultarSeccionEmergencia();
+                // 🔥 La sección de subida se muestra siempre que haya evento activo,
+                // esté el server vivo o caído.
+                if (eventoActivo && eventoActivo.id) {
+                    mostrarSeccionEmergencia();
+                } else {
+                    ocultarSeccionEmergencia();
+                }
 
                 marcarServidor('ok');
 
@@ -1883,7 +1889,13 @@
                             renderAgendados(eventos2.agendados || []);
                             renderFinalizados(eventos2.finalizadosHoy || []);
 
-                            ocultarSeccionEmergencia();
+                            // 🔥 Misma lógica en el reintento exitoso.
+                            if (eventoActivo && eventoActivo.id) {
+                                mostrarSeccionEmergencia();
+                            } else {
+                                ocultarSeccionEmergencia();
+                            }
+
                             marcarServidor('ok');
 
                             console.log('✅ Reintento exitoso con URL nueva');
@@ -1896,7 +1908,22 @@
 
                 marcarServidor('error');
 
-                mostrarSeccionEmergencia();
+                // 🔥 Si el server está caído, mostramos la sección de subida solo si
+                // hay evento activo (en memoria o en localStorage).
+                if (!eventoActivo || !eventoActivo.id) {
+                    try {
+                        const guardado = localStorage.getItem('ovj_fotografo_evento_activo');
+                        if (guardado) {
+                            eventoActivo = JSON.parse(guardado);
+                        }
+                    } catch (err) { }
+                }
+
+                if (eventoActivo && eventoActivo.id) {
+                    mostrarSeccionEmergencia();
+                } else {
+                    ocultarSeccionEmergencia();
+                }
             }
         }
 
@@ -2649,30 +2676,17 @@
                 }
             }
 
-            const seccionActivo = document.getElementById('seccionActivo');
-            const seccionAgendados = document.getElementById('seccionAgendados');
-            const seccionVacio = document.getElementById('seccionVacio');
-            const seccionFinalizados = document.getElementById('seccionFinalizados');
-
-            if (seccionActivo) seccionActivo.style.display = 'none';
-            if (seccionAgendados) seccionAgendados.style.display = 'none';
-            if (seccionVacio) seccionVacio.style.display = 'none';
-            if (seccionFinalizados) seccionFinalizados.style.display = 'none';
+            // Si no hay evento activo, no mostramos la sección de subida.
+            if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
+                seccion.style.display = 'none';
+                return;
+            }
 
             seccion.style.display = 'block';
 
             const aviso = document.getElementById('avisoEmergencia');
-            if (aviso && eventoActivoEmergencia) {
-                aviso.innerHTML = `
-                    ⚠️ <strong>Server caído.</strong><br>
-                    Subí fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>.<br>
-                    Se sincronizarán cuando el server vuelva.
-                `;
-            } else if (aviso) {
-                aviso.innerHTML = `
-                    ⚠️ <strong>Server caído.</strong><br>
-                    No hay evento activo conocido. Activá el evento cuando el server vuelva.
-                `;
+            if (aviso) {
+                aviso.innerHTML = `Subí las fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>. Se suben directo a la nube y aparecen en la galería.`;
             }
 
             const input = document.getElementById('inputEmergencia');
@@ -2685,18 +2699,7 @@
         function ocultarSeccionEmergencia() {
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
-
             seccion.style.display = 'none';
-
-            const seccionActivo = document.getElementById('seccionActivo');
-            const seccionAgendados = document.getElementById('seccionAgendados');
-            const seccionVacio = document.getElementById('seccionVacio');
-            const seccionFinalizados = document.getElementById('seccionFinalizados');
-
-            if (seccionActivo) seccionActivo.style.display = '';
-            if (seccionAgendados) seccionAgendados.style.display = '';
-            if (seccionVacio) seccionVacio.style.display = '';
-            if (seccionFinalizados) seccionFinalizados.style.display = '';
         }
 
         function manejarSeleccionEmergencia(e) {
