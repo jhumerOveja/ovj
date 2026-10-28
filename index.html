@@ -4504,7 +4504,6 @@
                 const nuevasFotos = data.fotos || [];
 
                 // 🔥 La lista viene del server/Worker ordenada por subidoEn ascendente.
-                // No invertimos: el goteo local respeta el orden original.
                 const fotosOrdenadas = [...nuevasFotos];
 
                 // 🔥 Identificar cuáles son nuevas respecto a lo que ya conocemos
@@ -4516,37 +4515,18 @@
                 const recienLlegadas = fotosOrdenadas.filter(f => !nombresConocidos.has(f.nombre));
 
                 if (recienLlegadas.length > 0) {
-                    // Las nuevas se agregan AL FINAL de la cola de goteo.
+                    // 🔥 Las nuevas se agregan AL FINAL de la cola de goteo.
+                    // ⚠️ NO marcamos el badge acá: se marca al revelar (en _revelarUnaFoto).
                     recienLlegadas.forEach(f => {
                         _colaGoteo.push(f);
-                        fotosNuevasMap.set(f.nombre, Date.now());
                         fotosVistas.add(f.nombre);
                     });
 
-                    // Límite de badges (como antes)
-                    if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
-                        const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
-                        const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
-                        sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
-                    }
-
-                    // Limpiar badges viejos
-                    const ahora = Date.now();
-                    for (const [nombre, ts] of fotosNuevasMap) {
-                        if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
-                            fotosNuevasMap.delete(nombre);
-                        }
-                    }
-
-                    // Disparar el goteo
+                    // Disparar el goteo (revela atrasadas de golpe + arranca el timer)
                     _asegurarGoteoActivo();
 
-                    // Contar para el botón flotante
+                    // Contar para el botón flotante (solo cuenta, NO dispara confeti)
                     _fotosNuevasPendientes += recienLlegadas.length;
-                    const scrollY = window.scrollY || window.pageYOffset;
-                    if (scrollY < 100 && fotosCache.length > 0) {
-                        lanzarConfeti();
-                    }
                     actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                 }
 
@@ -4872,15 +4852,14 @@
         // ==========================================
         // 🔥 GOTEO LOCAL
         // Cada minuto se revela 1 foto de la cola.
+        // La última foto revelada va ARRIBA en la galería.
         // ==========================================
 
         const ANTIGUEDAD_MINIMA_MS = 60 * 1000; // 1 minuto
 
         function _asegurarGoteoActivo() {
-            // Primero: revelar de golpe todas las que ya "deberían estar reveladas".
             _revelarFotosAtrasadas();
 
-            // Después: arrancar el timer para las que van llegando.
             if (_timerGoteo) return;
             if (_colaGoteo.length === 0) return;
 
@@ -4908,15 +4887,20 @@
             _colaGoteo = pendientes;
 
             if (atrasadas.length > 0) {
-                fotosCache.push(...atrasadas);
+                // Las atrasadas vienen en orden de llegada (más vieja primero).
+                // Las metemos con unshift en orden inverso para que la más nueva quede arriba.
+                const atrasadasInvertidas = [...atrasadas].reverse();
+                atrasadasInvertidas.forEach(f => fotosCache.unshift(f));
+
                 fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
                 renderizarGaleria();
 
-                // Refrescar el contador de "N fotos nuevas".
                 if (_fotosNuevasPendientes > 0) {
                     _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - atrasadas.length);
                     actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                 }
+
+                // ⚠️ NO confeti ni badge: son fotos viejas, no novedad.
             }
         }
 
@@ -4937,10 +4921,33 @@
             }
 
             _colaGoteo.shift();
-            fotosCache.push(siguiente);
+            fotosCache.unshift(siguiente);
             fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
 
+            // 🔥 Marcar como nueva AHORA que se revela.
+            fotosNuevasMap.set(siguiente.nombre, Date.now());
+
+            // Limitar a MAX_BADGES_NUEVOS badges simultáneos.
+            if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
+                const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
+                const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
+                sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
+            }
+
+            // Limpiar badges viejos.
+            for (const [nombre, ts] of fotosNuevasMap) {
+                if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
+                    fotosNuevasMap.delete(nombre);
+                }
+            }
+
             renderizarGaleria();
+
+            // 🔥 Confeti solo si el invitado está arriba.
+            const scrollY = window.scrollY || window.pageYOffset;
+            if (scrollY < 100) {
+                lanzarConfeti();
+            }
 
             if (_fotosNuevasPendientes > 0) {
                 _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - 1);
