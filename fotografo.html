@@ -1427,9 +1427,7 @@
         </div>
 
         <div class="contenedor">
-            <div id="seccionActivo"></div>
-            <div id="seccionAgendados"></div>
-            <div id="seccionFinalizados"></div>
+
 
             <!-- Sección: Subir fotos (visible siempre que haya evento activo) -->
             <div id="seccionEmergencia" style="display:none;">
@@ -1474,6 +1472,9 @@
                     </div>
                 </div>
             </div>
+            <div id="seccionActivo"></div>
+            <div id="seccionAgendados"></div>
+            <div id="seccionFinalizados"></div>
         </div>
     </div>
 
@@ -1547,6 +1548,44 @@
                 🗑️ Borrar mensaje activo
             </button>
             <button class="btn-secundario" onclick="cerrarMensaje()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
+    <div class="modal" id="modalDetras">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarDetras()">✕</button>
+            <div class="titulo">📸 Detrás de cámara</div>
+            <div class="subtitulo">
+                Subí una foto del backstage. Aparece en el feed de "Detrás de cámara" de la galería.<br>
+                Podés agregar un texto opcional como pie de foto.
+            </div>
+
+            <div class="zona-drop" id="zonaDropDetras" onclick="document.getElementById('inputDetras').click()">
+                <span class="icono">📸</span>
+                <div class="texto">Seleccionar foto</div>
+                <div class="subtexto">Una sola foto por vez</div>
+            </div>
+
+            <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
+
+            <div id="previewDetras" style="display:none; margin-bottom:14px;">
+                <img id="imgPreviewDetras"
+                    style="width:100%; max-height:200px; object-fit:contain; border-radius:10px; background:#000;" />
+            </div>
+
+            <textarea id="inputTextoDetras" placeholder="Pie de foto (opcional, máx 200 caracteres)"
+                maxlength="200"></textarea>
+
+            <div class="ayuda"
+                style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
+                Máximo 200 caracteres. Opcional.
+            </div>
+
+            <button class="btn-primario" id="btnSubirDetras" onclick="subirDetras()" disabled>
+                Subir foto
+            </button>
+            <button class="btn-secundario" onclick="cerrarDetras()">Cancelar</button>
         </div>
     </div>
 
@@ -2036,20 +2075,23 @@
                 ${avisoTiempoHtml}
                 ${mensajeHtml}
 
-                <div class="acciones-grid">
-                    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
-                        💬 Mensaje
-                    </button>
-                    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                        🔗 Link Cliente
-                    </button>
-                    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
-                        🎫 QR General
-                    </button>
-                    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
-                        🏁 Finalizar evento
-                    </button>
-                </div>
+<div class="acciones-grid">
+    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+        💬 Mensaje
+    </button>
+    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
+        🔗 Link Cliente
+    </button>
+    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
+        🎫 QR General
+    </button>
+    <button class="btn-accion btn-detras" onclick="abrirDetras()">
+        📸 Detrás de cámara
+    </button>
+    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
+        🏁 Finalizar evento
+    </button>
+</div>
             </div>
         </div>
     `;
@@ -2959,6 +3001,196 @@
             }
 
             return data;
+        }
+
+        // ==========================================
+        // 📸 DETRÁS DE CÁMARA
+        // ==========================================
+        let _fotoDetrasSeleccionada = null;
+
+        function abrirDetras() {
+            if (servidorOnline === false) {
+                toast('⚠️ Server caído. Intentá cuando vuelva.', 'error');
+                return;
+            }
+            if (!eventoActivo || !eventoActivo.id) {
+                toast('No hay evento activo', 'error');
+                return;
+            }
+
+            _fotoDetrasSeleccionada = null;
+            document.getElementById('inputDetras').value = '';
+            document.getElementById('inputTextoDetras').value = '';
+            document.getElementById('previewDetras').style.display = 'none';
+            document.getElementById('btnSubirDetras').disabled = true;
+
+            const input = document.getElementById('inputDetras');
+            if (!input._inicializado) {
+                input.addEventListener('change', _manejarSeleccionDetras);
+                input._inicializado = true;
+            }
+
+            document.getElementById('modalDetras').classList.add('activo');
+        }
+
+        function cerrarDetras() {
+            document.getElementById('modalDetras').classList.remove('activo');
+            _fotoDetrasSeleccionada = null;
+        }
+
+        function _manejarSeleccionDetras(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                toast('El archivo no es una imagen', 'error');
+                return;
+            }
+
+            if (file.size > 15 * 1024 * 1024) {
+                toast('La foto es muy grande (máx 15 MB)', 'error');
+                return;
+            }
+
+            _fotoDetrasSeleccionada = file;
+
+            const url = URL.createObjectURL(file);
+            document.getElementById('imgPreviewDetras').src = url;
+            document.getElementById('previewDetras').style.display = 'block';
+            document.getElementById('btnSubirDetras').disabled = false;
+        }
+
+        async function subirDetras() {
+            if (!_fotoDetrasSeleccionada) {
+                toast('Primero seleccioná una foto', 'error');
+                return;
+            }
+
+            if (!eventoActivo || !eventoActivo.id) {
+                toast('No hay evento activo', 'error');
+                return;
+            }
+
+            const texto = document.getElementById('inputTextoDetras').value.trim();
+            if (texto.length > 200) {
+                toast('El pie de foto es muy largo (máx 200)', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnSubirDetras');
+            btn.disabled = true;
+            btn.textContent = 'Subiendo...';
+
+            loader(true);
+
+            try {
+                // 1. Generar preview con Canvas
+                const previewBlob = await _generarPreviewDetras(_fotoDetrasSeleccionada);
+
+                // 2. Generar nombres
+                const base = _generarNombreFotoDetras();
+                const nombreOriginal = `${base}_detras.jpg`;
+                const nombrePreview = `${base}_detras_web.jpg`;
+
+                // 3. Subir al Worker
+                const formData = new FormData();
+                formData.append('original', _fotoDetrasSeleccionada, nombreOriginal);
+                formData.append('preview', previewBlob, nombrePreview);
+                formData.append('nombreOriginal', nombreOriginal);
+                formData.append('nombrePreview', nombrePreview);
+                formData.append('esDetras', '1');
+                formData.append('texto', texto);
+
+                const resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Evento-Id': eventoActivo.id,
+                        'X-Fotografo': nombreFotografoActual
+                    },
+                    body: formData
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok || !data.ok) {
+                    throw new Error(data.error || `HTTP ${resp.status}`);
+                }
+
+                // 4. Confirmar en el server para que registre en el feed
+                try {
+                    await apiFetch('/fotografo/detras-camara/confirmar', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            key: `eventos/${nombreFotografoActual}/${eventoActivo.id}/${nombreOriginal}`,
+                            texto: texto
+                        })
+                    });
+                } catch (e) {
+                    console.warn('⚠️ No se pudo confirmar al server:', e.message);
+                }
+
+                toast('✅ Detrás de cámara publicado', 'ok');
+                cerrarDetras();
+                await cargarTodo();
+
+            } catch (e) {
+                console.error('Error subiendo detrás:', e);
+                toast('Error: ' + e.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Subir foto';
+            } finally {
+                loader(false);
+            }
+        }
+
+        async function _generarPreviewDetras(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+
+                    const ratio = img.width > 900 ? 900 / img.width : 1;
+                    const w = Math.round(img.width * ratio);
+                    const h = Math.round(img.height * ratio);
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('No se pudo generar la preview'));
+                            return;
+                        }
+                        resolve(blob);
+                    }, 'image/jpeg', 0.8);
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('No se pudo leer la imagen'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        function _generarNombreFotoDetras() {
+            const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 30) || 'EVENTO';
+
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 6);
+
+            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
         }
 
         // ==========================================
