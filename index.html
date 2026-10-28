@@ -3500,6 +3500,12 @@
         let sesion = null;
         let fotosCache = [];
         let fotosVisibles = FOTOS_POR_CARGA;
+        // 🔥 GOTEO LOCAL: la web revela 1 foto por minuto.
+        // Antes lo hacía el server; ahora lo hace cada invitado.
+        const FOTOS_POR_MINUTO = 1;
+        const INTERVALO_GOTEO_MS = Math.round(60000 / FOTOS_POR_MINUTO);
+        let _colaGoteo = [];             // fotos que todavía no se revelaron
+        let _timerGoteo = null;          // setInterval del goteo
         let fotoSeleccionadaIndex = -1;
 
         // 🎬 Efecto vivo
@@ -4383,9 +4389,6 @@
             }
         }, { passive: true });
 
-        // ==========================================
-        // GALERÍA
-        // ==========================================
         async function cargarFotos() {
             if (cargando) return;
             cargando = true;
@@ -4500,59 +4503,56 @@
 
                 const nuevasFotos = data.fotos || [];
 
-                const ahora = Date.now();
-                const fotosRecienLlegadas = [];
+                // 🔥 La lista viene del server/Worker ordenada por subidoEn ascendente.
+                // No invertimos: el goteo local respeta el orden original.
+                const fotosOrdenadas = [...nuevasFotos];
 
-                nuevasFotos.forEach(f => {
-                    if (!fotosVistas.has(f.nombre)) {
-                        fotosRecienLlegadas.push(f);
-                        fotosNuevasMap.set(f.nombre, ahora);
+                // 🔥 Identificar cuáles son nuevas respecto a lo que ya conocemos
+                // (las que ya están en el cache o en la cola de goteo).
+                const nombresConocidos = new Set();
+                fotosCache.forEach(f => nombresConocidos.add(f.nombre));
+                _colaGoteo.forEach(f => nombresConocidos.add(f.nombre));
+
+                const recienLlegadas = fotosOrdenadas.filter(f => !nombresConocidos.has(f.nombre));
+
+                if (recienLlegadas.length > 0) {
+                    // Las nuevas se agregan AL FINAL de la cola de goteo.
+                    recienLlegadas.forEach(f => {
+                        _colaGoteo.push(f);
+                        fotosNuevasMap.set(f.nombre, Date.now());
                         fotosVistas.add(f.nombre);
-                    }
-                });
+                    });
 
-                if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
-                    const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
-                    const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
-                    sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
-                }
-
-                for (const [nombre, ts] of fotosNuevasMap) {
-                    if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
-                        fotosNuevasMap.delete(nombre);
-                    }
-                }
-
-                const fotosInvertidas = [...nuevasFotos].reverse();
-
-                const huboCambio = JSON.stringify(fotosInvertidas) !== JSON.stringify(fotosCache);
-
-                if (huboCambio) {
-                    fotosCache = fotosInvertidas;
-
-                    if (fotoSeleccionadaIndex >= fotosCache.length) {
-                        fotoSeleccionadaIndex = -1;
+                    // Límite de badges (como antes)
+                    if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
+                        const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
+                        const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
+                        sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
                     }
 
-                    renderizarGaleria();
-
-                    if (fotosRecienLlegadas.length > 0) {
-                        _fotosNuevasPendientes += fotosRecienLlegadas.length;
-
-                        const scrollY = window.scrollY || window.pageYOffset;
-                        if (scrollY < 100) {
-                            lanzarConfeti();
+                    // Limpiar badges viejos
+                    const ahora = Date.now();
+                    for (const [nombre, ts] of fotosNuevasMap) {
+                        if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
+                            fotosNuevasMap.delete(nombre);
                         }
-
-                        actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                     }
+
+                    // Disparar el goteo
+                    _asegurarGoteoActivo();
+
+                    // Contar para el botón flotante
+                    _fotosNuevasPendientes += recienLlegadas.length;
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    if (scrollY < 100 && fotosCache.length > 0) {
+                        lanzarConfeti();
+                    }
+                    actualizarBotonFotosNuevas(_fotosNuevasPendientes);
                 }
 
                 guardarFotosVistas(fotosVistas);
-
                 actualizarBotonPrincipal();
                 actualizarChipEnVivo();
-
                 consultarCofre();
 
             } catch (error) {
@@ -4867,6 +4867,96 @@
             galeria.innerHTML = html;
             cargarImagenesSecuencialmente();
             observarFotosViewport();
+        }
+
+        // ==========================================
+        // 🔥 GOTEO LOCAL
+        // Cada minuto se revela 1 foto de la cola.
+        // ==========================================
+
+        const ANTIGUEDAD_MINIMA_MS = 60 * 1000; // 1 minuto
+
+        function _asegurarGoteoActivo() {
+            // Primero: revelar de golpe todas las que ya "deberían estar reveladas".
+            _revelarFotosAtrasadas();
+
+            // Después: arrancar el timer para las que van llegando.
+            if (_timerGoteo) return;
+            if (_colaGoteo.length === 0) return;
+
+            _timerGoteo = setInterval(_revelarUnaFoto, INTERVALO_GOTEO_MS);
+        }
+
+        function _revelarFotosAtrasadas() {
+            if (_colaGoteo.length === 0) return;
+
+            const ahora = Date.now();
+            const atrasadas = [];
+            const pendientes = [];
+
+            for (const foto of _colaGoteo) {
+                const subidoEnMs = foto.subidoEn ? new Date(foto.subidoEn).getTime() : 0;
+                const antiguedad = ahora - subidoEnMs;
+
+                if (subidoEnMs > 0 && antiguedad >= ANTIGUEDAD_MINIMA_MS) {
+                    atrasadas.push(foto);
+                } else {
+                    pendientes.push(foto);
+                }
+            }
+
+            _colaGoteo = pendientes;
+
+            if (atrasadas.length > 0) {
+                fotosCache.push(...atrasadas);
+                fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
+                renderizarGaleria();
+
+                // Refrescar el contador de "N fotos nuevas".
+                if (_fotosNuevasPendientes > 0) {
+                    _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - atrasadas.length);
+                    actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+                }
+            }
+        }
+
+        function _revelarUnaFoto() {
+            if (_colaGoteo.length === 0) {
+                _detenerGoteo();
+                return;
+            }
+
+            const ahora = Date.now();
+            const siguiente = _colaGoteo[0];
+            const subidoEnMs = siguiente.subidoEn ? new Date(siguiente.subidoEn).getTime() : 0;
+            const antiguedad = ahora - subidoEnMs;
+
+            // Si todavía no pasó el minuto, esperar al próximo tick.
+            if (subidoEnMs > 0 && antiguedad < ANTIGUEDAD_MINIMA_MS) {
+                return;
+            }
+
+            _colaGoteo.shift();
+            fotosCache.push(siguiente);
+            fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
+
+            renderizarGaleria();
+
+            if (_fotosNuevasPendientes > 0) {
+                _fotosNuevasPendientes = Math.max(0, _fotosNuevasPendientes - 1);
+                actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+            }
+
+            if (_colaGoteo.length === 0) {
+                _detenerGoteo();
+            }
+        }
+
+        function _detenerGoteo() {
+            if (_timerGoteo) {
+                clearInterval(_timerGoteo);
+                _timerGoteo = null;
+            }
         }
 
         let _observerFotos = null;
