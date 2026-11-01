@@ -2933,17 +2933,17 @@
         }
 
         async function subirParAlWorkerEmergencia(originalFile, previewBlob, nombreOriginal, nombrePreview) {
+            // 🔥 Ahora sube al SERVER por el túnel (canal principal), no al Worker.
             const formData = new FormData();
             formData.append('original', originalFile, nombreOriginal);
             formData.append('preview', previewBlob, nombrePreview);
             formData.append('nombreOriginal', nombreOriginal);
             formData.append('nombrePreview', nombrePreview);
 
-            const resp = await fetch(`${WORKER_BASE_EMERGENCIA}/api/emergencia-upload`, {
+            const resp = await fetch(`${URL_API}/fotografo/subir-foto`, {
                 method: 'POST',
                 headers: {
-                    'X-Evento-Id': eventoActivoEmergencia.id,
-                    'X-Fotografo': nombreFotografoActual
+                    'Authorization': 'Bearer ' + tokenSesion
                 },
                 body: formData
             });
