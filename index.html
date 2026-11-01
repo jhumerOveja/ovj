@@ -4527,11 +4527,27 @@
 
                 const nuevasFotos = data.fotos || [];
 
-                // 🔥 GUARDAR SIEMPRE EN LOCALSTORAGE (no solo en emergencia).
-                // Así, si el server se apaga después, las fotos siguen en el cache local.
+                // 🔥 FUSIONAR con el cache existente (no sobreescribir).
+                // Así, si el server devuelve 5 fotos y el Worker devuelve 2, el cache
+                // final tiene 7 (5 normales + 2 de emergencia). Sin perder ninguna.
                 if (nuevasFotos.length > 0) {
                     try {
-                        localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(nuevasFotos));
+                        const cachePrev = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
+                        let fotosFusionadas = [...nuevasFotos];
+
+                        if (cachePrev) {
+                            const previas = JSON.parse(cachePrev);
+                            if (Array.isArray(previas)) {
+                                const nombresActuales = new Set(nuevasFotos.map(f => f.nombre));
+                                previas.forEach(f => {
+                                    if (!nombresActuales.has(f.nombre)) {
+                                        fotosFusionadas.push(f);
+                                    }
+                                });
+                            }
+                        }
+
+                        localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotosFusionadas));
                     } catch (e) { }
                 }
 
