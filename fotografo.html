@@ -1854,7 +1854,13 @@
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
 
-                ocultarSeccionEmergencia();
+                // 🔥 La sección de subida se muestra SIEMPRE que haya evento activo,
+                // esté el server vivo o caído. Ahora es el canal principal.
+                if (eventoActivo && eventoActivo.id) {
+                    mostrarSeccionEmergencia();
+                } else {
+                    ocultarSeccionEmergencia();
+                }
 
                 marcarServidor('ok');
 
@@ -1883,7 +1889,13 @@
                             renderAgendados(eventos2.agendados || []);
                             renderFinalizados(eventos2.finalizadosHoy || []);
 
-                            ocultarSeccionEmergencia();
+                            // 🔥 Misma lógica en el reintento exitoso.
+                            if (eventoActivo && eventoActivo.id) {
+                                mostrarSeccionEmergencia();
+                            } else {
+                                ocultarSeccionEmergencia();
+                            }
+
                             marcarServidor('ok');
 
                             console.log('✅ Reintento exitoso con URL nueva');
@@ -1896,7 +1908,22 @@
 
                 marcarServidor('error');
 
-                mostrarSeccionEmergencia();
+                // 🔥 Si el server está caído, mostramos la sección de subida solo si
+                // hay evento activo (en memoria o en localStorage).
+                if (!eventoActivo || !eventoActivo.id) {
+                    try {
+                        const guardado = localStorage.getItem('ovj_fotografo_evento_activo');
+                        if (guardado) {
+                            eventoActivo = JSON.parse(guardado);
+                        }
+                    } catch (err) { }
+                }
+
+                if (eventoActivo && eventoActivo.id) {
+                    mostrarSeccionEmergencia();
+                } else {
+                    ocultarSeccionEmergencia();
+                }
             }
         }
 
