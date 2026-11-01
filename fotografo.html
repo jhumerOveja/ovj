@@ -2649,30 +2649,16 @@
                 }
             }
 
-            const seccionActivo = document.getElementById('seccionActivo');
-            const seccionAgendados = document.getElementById('seccionAgendados');
-            const seccionVacio = document.getElementById('seccionVacio');
-            const seccionFinalizados = document.getElementById('seccionFinalizados');
-
-            if (seccionActivo) seccionActivo.style.display = 'none';
-            if (seccionAgendados) seccionAgendados.style.display = 'none';
-            if (seccionVacio) seccionVacio.style.display = 'none';
-            if (seccionFinalizados) seccionFinalizados.style.display = 'none';
+            if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
+                seccion.style.display = 'none';
+                return;
+            }
 
             seccion.style.display = 'block';
 
             const aviso = document.getElementById('avisoEmergencia');
-            if (aviso && eventoActivoEmergencia) {
-                aviso.innerHTML = `
-                    ⚠️ <strong>Server caído.</strong><br>
-                    Subí fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>.<br>
-                    Se sincronizarán cuando el server vuelva.
-                `;
-            } else if (aviso) {
-                aviso.innerHTML = `
-                    ⚠️ <strong>Server caído.</strong><br>
-                    No hay evento activo conocido. Activá el evento cuando el server vuelva.
-                `;
+            if (aviso) {
+                aviso.innerHTML = `Subí las fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>. Se suben directo a la nube y aparecen en la galería.`;
             }
 
             const input = document.getElementById('inputEmergencia');
