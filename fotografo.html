@@ -2987,29 +2987,43 @@
         }
 
         async function subirParAlWorkerEmergencia(originalFile, previewBlob, nombreOriginal, nombrePreview) {
-            // 🔥 Ahora sube al SERVER por el túnel (canal principal), no al Worker.
             const formData = new FormData();
             formData.append('original', originalFile, nombreOriginal);
             formData.append('preview', previewBlob, nombrePreview);
             formData.append('nombreOriginal', nombreOriginal);
             formData.append('nombrePreview', nombrePreview);
 
-            const resp = await fetch(`${URL_API}/fotografo/subir-foto`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + tokenSesion
-                },
-                body: formData
-            });
+            let resp;
+            let vinoDelWorker = false;
+
+            try {
+                resp = await fetch(`${URL_API}/fotografo/subir-foto`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + tokenSesion },
+                    body: formData
+                });
+
+                if (!resp.ok) throw new Error(`Server HTTP ${resp.status}`);
+            } catch (eServer) {
+                console.warn('⚠️ Server no responde, usando Worker (emergencia):', eServer.message);
+
+                resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Evento-Id': eventoActivoEmergencia.id,
+                        'X-Fotografo': nombreFotografoActual
+                    },
+                    body: formData
+                });
+                vinoDelWorker = true;
+            }
 
             let data = {};
             try { data = await resp.json(); } catch (e) { }
 
-            if (!resp.ok || !data.ok) {
-                throw new Error(data.error || `HTTP ${resp.status}`);
-            }
+            if (!resp.ok || !data.ok) throw new Error(data.error || `HTTP ${resp.status}`);
 
-            return data;
+            return { ...data, vinoDelWorker };
         }
 
         // ==========================================
