@@ -4552,9 +4552,23 @@
                 }
 
                 const fotosOrdenadas = [...nuevasFotos];
+
+                // Identificar cuáles son nuevas (no están en cache ni en cola).
                 const nombresConocidos = new Set();
                 fotosCache.forEach(f => nombresConocidos.add(f.nombre));
                 _colaGoteo.forEach(f => nombresConocidos.add(f.nombre));
+
+                // 🔥 Incluir también el cache de localStorage para no duplicar.
+                try {
+                    const cachePrev = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
+                    if (cachePrev) {
+                        const previas = JSON.parse(cachePrev);
+                        if (Array.isArray(previas)) {
+                            previas.forEach(f => nombresConocidos.add(f.nombre));
+                        }
+                    }
+                } catch (e) { }
+
                 const recienLlegadas = fotosOrdenadas.filter(f => !nombresConocidos.has(f.nombre));
 
                 if (recienLlegadas.length > 0) {
@@ -4927,6 +4941,18 @@
                 atrasadasInvertidas.forEach(f => fotosCache.unshift(f));
 
                 fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
+
+                // 🔥 Guardar en localStorage después de revelar atrasadas.
+                try {
+                    const fotos = fotosCache.map(f => ({
+                        nombre: f.nombre,
+                        url: f.url,
+                        subidoEn: f.subidoEn,
+                        esReciente: f.esReciente
+                    }));
+                    localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotos));
+                } catch (e) { }
+
                 renderizarGaleria();
 
                 // Si el invitado está abajo, sumar al botón de "N fotos nuevas".
@@ -4957,6 +4983,17 @@
             _colaGoteo.shift();
             fotosCache.unshift(siguiente);
             fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
+
+            // 🔥 Guardar en localStorage cuando se revela.
+            try {
+                const fotos = fotosCache.map(f => ({
+                    nombre: f.nombre,
+                    url: f.url,
+                    subidoEn: f.subidoEn,
+                    esReciente: f.esReciente
+                }));
+                localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotos));
+            } catch (e) { }
 
             // 🔥 Marcar como nueva AHORA que se revela.
             fotosNuevasMap.set(siguiente.nombre, Date.now());
