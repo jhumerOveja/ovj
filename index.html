@@ -4478,6 +4478,18 @@
                 }
 
                 if (respuesta.status === 404) {
+                    // 🔥 FIX: distinguir 404 del server (evento finalizado) del 404 del Worker
+                    // (status.json no publicado todavía). Solo cerramos si es del server.
+                    if (vinoDelWorker) {
+                        console.warn('⚠️ Worker sin status.json. Mantengo cache local y reintento.');
+                        // No cerramos. Mantenemos las fotos que haya en pantalla.
+                        // Reintentamos en 30s para no martillar.
+                        cargando = false;
+                        clearTimeout(window._pollTimer);
+                        window._pollTimer = setTimeout(cargarFotos, 30000);
+                        return;
+                    }
+
                     detenerTodoYMostrarCierre();
                     cargando = false;
                     return;
@@ -4488,10 +4500,20 @@
 
                 const data = await respuesta.json();
 
+                // 🔥 FIX: si el Worker responde "sin status", no procesamos como galería.
+                // Mantenemos el cache local y reintentamos en 30s.
+                if (data.sinStatus === true) {
+                    console.warn('⚠️ Worker sin status.json. Mantengo cache local.');
+                    cargando = false;
+                    clearTimeout(window._pollTimer);
+                    window._pollTimer = setTimeout(cargarFotos, 30000);
+                    return;
+                }
+
                 if (!vinoDelWorker) {
                     if (!servidorOnline) {
                         servidorOnline = true;
-                        fotosCache = [];
+                        // 🔥 No borramos fotosCache acá. El próximo render las actualiza.
                         actualizarChipEnVivo();
                         actualizarBotonPrincipal();
                         actualizarBotonesModoEmergencia();
@@ -4793,6 +4815,15 @@
         // RENDER
         // ==========================================
         function detenerTodoYMostrarCierre() {
+            // 🔥 FIX: si ya estamos mostrando el cierre, no hacer nada.
+            const bloqueo = document.getElementById('bloqueo');
+            if (bloqueo && bloqueo.classList.contains('activo')) {
+                const titulo = document.getElementById('bloqueoTitulo');
+                if (titulo && titulo.textContent === 'Evento finalizado') {
+                    return;
+                }
+            }
+
             detenerEfectoVivo();
 
             if (window._pollTimer) {
