@@ -1037,6 +1037,331 @@
             line-height: 1.4;
         }
 
+        /* ===== DETRÁS DE CÁMARA (normal, por el túnel) ===== */
+        .zona-detras {
+            border: 2px dashed rgba(155, 89, 182, 0.4);
+            border-radius: 14px;
+            padding: 24px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(155, 89, 182, 0.04);
+            margin-bottom: 12px;
+        }
+
+        .zona-detras:hover {
+            border-color: rgba(155, 89, 182, 0.7);
+            background: rgba(155, 89, 182, 0.08);
+        }
+
+        .zona-detras-icono {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .zona-detras-texto {
+            font-size: 0.88rem;
+            color: #e9d5ff;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .zona-detras-sub {
+            font-size: 0.7rem;
+            color: #b794f4;
+        }
+
+        .detras-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(155, 89, 182, 0.06);
+            border: 1px solid rgba(155, 89, 182, 0.3);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .detras-preview-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+        .detras-preview-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .detras-preview-nombre {
+            font-size: 0.72rem;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .detras-preview-quitar {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            font-size: 0.8rem;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .detras-preview-quitar:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        .detras-texto-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(155, 89, 182, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.82rem;
+            outline: none;
+            font-family: inherit;
+            resize: none;
+            min-height: 56px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .detras-texto-input::placeholder {
+            color: #666;
+        }
+
+        .detras-texto-input:focus {
+            border-color: rgba(155, 89, 182, 0.6);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .lista-detras {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .item-detras {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(155, 89, 182, 0.04);
+            border: 1px solid rgba(155, 89, 182, 0.2);
+            border-radius: 10px;
+        }
+
+        .item-detras-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+        .item-detras-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-detras-hora {
+            font-size: 0.65rem;
+            color: #888;
+            margin-bottom: 2px;
+        }
+
+        .item-detras-texto {
+            font-size: 0.75rem;
+            color: #ddd;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+
+
+        /* ===== SUBIDA DE FOTOS (normal, por el túnel) ===== */
+        .zona-subida {
+            border: 2px dashed rgba(52, 152, 219, 0.4);
+            border-radius: 14px;
+            padding: 24px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(52, 152, 219, 0.04);
+            margin-bottom: 12px;
+        }
+
+        .zona-subida:hover {
+            border-color: rgba(52, 152, 219, 0.7);
+            background: rgba(52, 152, 219, 0.08);
+        }
+
+        .zona-subida-icono {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .zona-subida-texto {
+            font-size: 0.88rem;
+            color: #d1e9ff;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .zona-subida-sub {
+            font-size: 0.7rem;
+            color: #7aa9c9;
+        }
+
+        .progreso-subida {
+            background: rgba(52, 152, 219, 0.06);
+            border: 1px solid rgba(52, 152, 219, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+
+        .progreso-subida-texto {
+            font-size: 0.78rem;
+            color: #93c5fd;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progreso-subida-barra {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progreso-subida-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #5dade2);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .lista-subida {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .item-subida {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(52, 152, 219, 0.04);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            border-radius: 10px;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .item-subida.ok {
+            border-color: rgba(46, 204, 113, 0.4);
+            background: rgba(46, 204, 113, 0.04);
+        }
+
+        .item-subida.error {
+            border-color: rgba(231, 76, 60, 0.4);
+            background: rgba(231, 76, 60, 0.04);
+        }
+
+        .item-subida.subiendo {
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .item-subida-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+        .item-subida-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-subida-nombre {
+            font-size: 0.72rem;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .item-subida-error {
+            font-size: 0.62rem;
+            color: #e74c3c;
+        }
+
+        .item-subida-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .item-subida-badge.pendiente {
+            background: rgba(255, 255, 255, 0.06);
+            color: #888;
+        }
+
+        .item-subida-badge.subiendo {
+            background: rgba(52, 152, 219, 0.15);
+            color: #5dade2;
+        }
+
+        .item-subida-badge.ok {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+        }
+
+        .item-subida-badge.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+        }
+
+
+
         /* Subir fotos */
         .zona-drop {
             border: 2px dashed rgba(46, 204, 113, 0.3);
@@ -1434,11 +1759,11 @@
             <!-- Sección: Emergencia (oculta por defecto) -->
             <div id="seccionEmergencia" style="display:none;">
                 <div class="seccion">
-                    <div class="seccion-titulo">📤 Subir fotos</div>
+                    <div class="seccion-titulo">🔑 Modo Emergencia</div>
 
-                    <div class="aviso-emergencia" id="avisoEmergencia"
-                        style="background:rgba(46,204,113,0.08); border-color:rgba(46,204,113,0.3); color:#2ecc71;">
-                        Subí las fotos del evento. Se suben directo a la nube y aparecen en la galería.
+                    <div class="aviso-emergencia" id="avisoEmergencia">
+                        ⚠️ <strong>Server caído.</strong><br>
+                        Subí fotos desde acá. Se sincronizarán cuando el server vuelva.
                     </div>
 
                     <div class="zona-drop" id="zonaDropEmergencia"
@@ -1547,44 +1872,6 @@
                 🗑️ Borrar mensaje activo
             </button>
             <button class="btn-secundario" onclick="cerrarMensaje()">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- ===== MODAL DETRÁS DE CÁMARA ===== -->
-    <div class="modal" id="modalDetras">
-        <div class="modal-contenido">
-            <button class="btn-cerrar" onclick="cerrarDetras()">✕</button>
-            <div class="titulo">📸 Detrás de cámara</div>
-            <div class="subtitulo">
-                Subí una foto del backstage. Aparece en el feed de "Detrás de cámara" de la galería.<br>
-                Podés agregar un texto opcional como pie de foto.
-            </div>
-
-            <div class="zona-drop" id="zonaDropDetras" onclick="document.getElementById('inputDetras').click()">
-                <span class="icono">📸</span>
-                <div class="texto">Seleccionar foto</div>
-                <div class="subtexto">Una sola foto por vez</div>
-            </div>
-
-            <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
-
-            <div id="previewDetras" style="display:none; margin-bottom:14px;">
-                <img id="imgPreviewDetras"
-                    style="width:100%; max-height:200px; object-fit:contain; border-radius:10px; background:#000;" />
-            </div>
-
-            <textarea id="inputTextoDetras" placeholder="Pie de foto (opcional, máx 200 caracteres)"
-                maxlength="200"></textarea>
-
-            <div class="ayuda"
-                style="font-size:0.65rem; color:#666; margin-top:-10px; margin-bottom:14px; padding-left:4px;">
-                Máximo 200 caracteres. Opcional.
-            </div>
-
-            <button class="btn-primario" id="btnSubirDetras" onclick="subirDetras()" disabled>
-                Subir foto
-            </button>
-            <button class="btn-secundario" onclick="cerrarDetras()">Cancelar</button>
         </div>
     </div>
 
@@ -1892,13 +2179,7 @@
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
 
-                // 🔥 La sección de subida se muestra SIEMPRE que haya evento activo,
-                // esté el server vivo o caído. Ahora es el canal principal.
-                if (eventoActivo && eventoActivo.id) {
-                    mostrarSeccionEmergencia();
-                } else {
-                    ocultarSeccionEmergencia();
-                }
+                ocultarSeccionEmergencia();
 
                 marcarServidor('ok');
 
@@ -1927,13 +2208,7 @@
                             renderAgendados(eventos2.agendados || []);
                             renderFinalizados(eventos2.finalizadosHoy || []);
 
-                            // 🔥 Misma lógica en el reintento exitoso.
-                            if (eventoActivo && eventoActivo.id) {
-                                mostrarSeccionEmergencia();
-                            } else {
-                                ocultarSeccionEmergencia();
-                            }
-
+                            ocultarSeccionEmergencia();
                             marcarServidor('ok');
 
                             console.log('✅ Reintento exitoso con URL nueva');
@@ -1946,22 +2221,7 @@
 
                 marcarServidor('error');
 
-                // 🔥 Si el server está caído, mostramos la sección de subida solo si
-                // hay evento activo (en memoria o en localStorage).
-                if (!eventoActivo || !eventoActivo.id) {
-                    try {
-                        const guardado = localStorage.getItem('ovj_fotografo_evento_activo');
-                        if (guardado) {
-                            eventoActivo = JSON.parse(guardado);
-                        }
-                    } catch (err) { }
-                }
-
-                if (eventoActivo && eventoActivo.id) {
-                    mostrarSeccionEmergencia();
-                } else {
-                    ocultarSeccionEmergencia();
-                }
+                mostrarSeccionEmergencia();
             }
         }
 
@@ -2074,26 +2334,89 @@
                 ${avisoTiempoHtml}
                 ${mensajeHtml}
 
-<div class="acciones-grid">
-    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
-        💬 Mensaje
-    </button>
-    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-        🔗 Link Cliente
-    </button>
-    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
-        🎫 QR General
-    </button>
-    <button class="btn-accion btn-detras" onclick="abrirDetras()">
-        📸 Detrás de cámara
-    </button>
-    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
-        🏁 Finalizar evento
-    </button>
-</div>
+                <div class="seccion-titulo" style="margin-top:18px;">📸 Subir fotos</div>
+
+                <div class="zona-subida" id="zonaSubida"
+                     onclick="document.getElementById('inputSubida').click()">
+                    <span class="zona-subida-icono">📸</span>
+                    <div class="zona-subida-texto">Tocar para elegir fotos</div>
+                    <div class="zona-subida-sub">Podés elegir varias de una vez</div>
+                </div>
+
+                <input type="file" id="inputSubida" accept="image/*" multiple style="display:none;" />
+
+                <div class="progreso-subida" id="progresoSubida" style="display:none;">
+                    <div class="progreso-subida-texto" id="progresoTextoSubida">Subiendo...</div>
+                    <div class="progreso-subida-barra">
+                        <div class="progreso-subida-fill" id="progresoFillSubida" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="lista-subida" id="listaSubida"></div>
+
+                <div class="seccion-titulo" style="margin-top:18px;">📸 Detrás de cámara</div>
+
+                <div class="zona-detras" id="zonaDetras"
+                     onclick="document.getElementById('inputDetras').click()">
+                    <span class="zona-detras-icono">🎭</span>
+                    <div class="zona-detras-texto">Tocar para elegir una foto</div>
+                    <div class="zona-detras-sub">Se publica en el feed de detrás de cámara</div>
+                </div>
+
+                <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
+
+                <div id="detrasPreviewContainer" style="display:none; margin-bottom:12px;">
+                    <div class="detras-preview">
+                        <img class="detras-preview-img" id="detrasPreviewImg" alt="" />
+                        <div class="detras-preview-info">
+                            <div class="detras-preview-nombre" id="detrasPreviewNombre"></div>
+                            <button class="detras-preview-quitar" onclick="cancelarDetras()">✕</button>
+                        </div>
+                    </div>
+
+                    <textarea class="detras-texto-input" id="detrasTextoInput"
+                              placeholder="Agregá un texto (opcional)"
+                              maxlength="200"></textarea>
+
+                    <button class="btn-accion btn-detras" id="btnSubirDetras" onclick="subirFotoDetras()">
+                        📸 Publicar foto de detrás
+                    </button>
+                </div>
+
+                <div class="lista-detras" id="listaDetras"></div>
+
+                <div class="acciones-grid" style="margin-top:16px;">
+                    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+                        💬 Mensaje
+                    </button>
+                    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
+                        🔗 Link Cliente
+                    </button>
+                    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
+                        🎫 QR General
+                    </button>
+                    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
+                        🏁 Finalizar evento
+                    </button>
+                </div>
             </div>
         </div>
     `;
+
+            const inputSubida = document.getElementById('inputSubida');
+            if (inputSubida && !inputSubida._inicializado) {
+                inputSubida.addEventListener('change', manejarSeleccionSubida);
+                inputSubida._inicializado = true;
+            }
+
+            const inputDetras = document.getElementById('inputDetras');
+            if (inputDetras && !inputDetras._inicializado) {
+                inputDetras.addEventListener('change', manejarSeleccionDetras);
+                inputDetras._inicializado = true;
+            }
+
+            renderizarListaSubida();
+            renderizarListaDetras();
         }
 
         function renderAgendados(agendados) {
@@ -2687,8 +3010,326 @@
         });
 
         // ==========================================
-        // 🔑 MODO EMERGENCIA
+        // 📸 SUBIDA DE FOTOS POR EL TÚNEL
+        // (reemplaza al bot de fotógrafos)
         // ==========================================
+
+        let fotosSubida = [];
+        let subiendoFotos = false;
+
+        function manejarSeleccionSubida(e) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                fotosSubida.push({
+                    id: 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                    file,
+                    thumbUrl: URL.createObjectURL(file),
+                    estado: 'pendiente',
+                    error: null
+                });
+            });
+
+            e.target.value = '';
+            renderizarListaSubida();
+            subirTodasLasFotos();
+        }
+
+        function renderizarListaSubida() {
+            const cont = document.getElementById('listaSubida');
+            if (!cont) return;
+
+            if (fotosSubida.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            fotosSubida.forEach(foto => {
+                const badgeTexto = {
+                    pendiente: 'En cola',
+                    subiendo: 'Subiendo',
+                    ok: '✓ Subida',
+                    error: '✗ Error'
+                }[foto.estado] || foto.estado;
+
+                html += `
+                    <div class="item-subida ${foto.estado}">
+                        <img class="item-subida-thumb" src="${foto.thumbUrl}" alt="" />
+                        <div class="item-subida-info">
+                            <div class="item-subida-nombre">${escapeHtml(foto.file.name)}</div>
+                            ${foto.error ? `<div class="item-subida-error">${escapeHtml(foto.error)}</div>` : ''}
+                        </div>
+                        <span class="item-subida-badge ${foto.estado}">${badgeTexto}</span>
+                    </div>
+                `;
+            });
+
+            cont.innerHTML = html;
+        }
+
+        function actualizarProgresoSubida(actual, total, texto) {
+            const pct = Math.round((actual / total) * 100);
+            const fill = document.getElementById('progresoFillSubida');
+            const textoEl = document.getElementById('progresoTextoSubida');
+            if (fill) fill.style.width = pct + '%';
+            if (textoEl) textoEl.textContent = texto;
+        }
+
+        async function subirTodasLasFotos() {
+            if (subiendoFotos) return;
+
+            const pendientes = fotosSubida.filter(f => f.estado === 'pendiente' || f.estado === 'error');
+            if (pendientes.length === 0) return;
+
+            subiendoFotos = true;
+
+            const progreso = document.getElementById('progresoSubida');
+            if (progreso) progreso.style.display = 'block';
+
+            let ok = 0;
+            let errores = 0;
+            const total = pendientes.length;
+
+            for (let i = 0; i < total; i++) {
+                const foto = pendientes[i];
+                foto.estado = 'subiendo';
+                foto.error = null;
+                renderizarListaSubida();
+                actualizarProgresoSubida(i, total, `Subiendo ${i + 1} / ${total}`);
+
+                try {
+                    const formData = new FormData();
+                    formData.append('foto', foto.file, foto.file.name);
+
+                    const resp = await fetch(URL_API + '/fotografo/subir-foto', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + tokenSesion
+                        },
+                        body: formData
+                    });
+
+                    const data = await resp.json().catch(() => ({}));
+
+                    if (!resp.ok || !data.ok) {
+                        throw new Error(data.error || `HTTP ${resp.status}`);
+                    }
+
+                    foto.estado = 'ok';
+                    ok++;
+
+                } catch (e) {
+                    console.error('Error subiendo foto:', e);
+                    foto.estado = 'error';
+                    foto.error = e.message || 'Error desconocido';
+                    errores++;
+                }
+
+                renderizarListaSubida();
+                actualizarProgresoSubida(i + 1, total, `Procesadas ${i + 1} / ${total}`);
+
+                // Pausa de 1.5s entre fotos (igual que el bot)
+                if (i < total - 1) {
+                    await new Promise(r => setTimeout(r, 1500));
+                }
+            }
+
+            if (progreso) progreso.style.display = 'none';
+            subiendoFotos = false;
+
+            if (errores === 0) {
+                toast(`✅ ${ok} foto${ok === 1 ? '' : 's'} subida${ok === 1 ? '' : 's'}`, 'ok');
+
+                setTimeout(() => {
+                    fotosSubida = fotosSubida.filter(f => f.estado !== 'ok');
+                    renderizarListaSubida();
+                }, 3000);
+            } else {
+                toast(`⚠️ ${ok} OK · ${errores} con error`, 'error');
+            }
+
+            cargarTodo();
+        }
+
+        // ==========================================
+        // 📸 DETRÁS DE CÁMARA POR EL TÚNEL
+        // (reemplaza al comando /detras del bot)
+        // ==========================================
+
+        let fotoDetrasPendiente = null;
+        let subiendoDetras = false;
+
+        function manejarSeleccionDetras(e) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                toast('El archivo no es una imagen', 'error');
+                e.target.value = '';
+                return;
+            }
+
+            if (fotoDetrasPendiente && fotoDetrasPendiente.thumbUrl) {
+                try { URL.revokeObjectURL(fotoDetrasPendiente.thumbUrl); } catch (err) { }
+            }
+
+            fotoDetrasPendiente = {
+                file,
+                thumbUrl: URL.createObjectURL(file)
+            };
+
+            e.target.value = '';
+
+            const cont = document.getElementById('detrasPreviewContainer');
+            const img = document.getElementById('detrasPreviewImg');
+            const nombre = document.getElementById('detrasPreviewNombre');
+            const textoInput = document.getElementById('detrasTextoInput');
+
+            if (cont && img && nombre) {
+                img.src = fotoDetrasPendiente.thumbUrl;
+                nombre.textContent = file.name;
+                if (textoInput) textoInput.value = '';
+                cont.style.display = 'block';
+            }
+        }
+
+        function cancelarDetras() {
+            if (subiendoDetras) return;
+
+            if (fotoDetrasPendiente && fotoDetrasPendiente.thumbUrl) {
+                try { URL.revokeObjectURL(fotoDetrasPendiente.thumbUrl); } catch (err) { }
+            }
+            fotoDetrasPendiente = null;
+
+            const cont = document.getElementById('detrasPreviewContainer');
+            const img = document.getElementById('detrasPreviewImg');
+            const nombre = document.getElementById('detrasPreviewNombre');
+            const textoInput = document.getElementById('detrasTextoInput');
+
+            if (cont) cont.style.display = 'none';
+            if (img) img.src = '';
+            if (nombre) nombre.textContent = '';
+            if (textoInput) textoInput.value = '';
+        }
+
+        async function subirFotoDetras() {
+            if (subiendoDetras) return;
+            if (!fotoDetrasPendiente) {
+                toast('Elegí una foto primero', 'error');
+                return;
+            }
+
+            subiendoDetras = true;
+
+            const btn = document.getElementById('btnSubirDetras');
+            const textoInput = document.getElementById('detrasTextoInput');
+            const textoOriginal = btn ? btn.textContent : '';
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Publicando...';
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('foto', fotoDetrasPendiente.file, fotoDetrasPendiente.file.name);
+
+                const texto = textoInput ? textoInput.value.trim() : '';
+                if (texto) {
+                    formData.append('texto', texto);
+                }
+
+                const resp = await fetch(URL_API + '/fotografo/subir-detras', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + tokenSesion
+                    },
+                    body: formData
+                });
+
+                const data = await resp.json().catch(() => ({}));
+
+                if (!resp.ok || !data.ok) {
+                    throw new Error(data.error || `HTTP ${resp.status}`);
+                }
+
+                toast('📸 Foto de detrás publicada', 'ok');
+
+                cancelarDetras();
+                await cargarListaDetras();
+
+            } catch (e) {
+                console.error('Error subiendo detrás:', e);
+                toast('Error: ' + (e.message || 'Desconocido'), 'error');
+            } finally {
+                subiendoDetras = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = textoOriginal;
+                }
+            }
+        }
+
+        async function cargarListaDetras() {
+            if (!eventoActivo || !eventoActivo.id) {
+                renderizarListaDetras([]);
+                return;
+            }
+
+            if (servidorOnline === false) {
+                renderizarListaDetras([]);
+                return;
+            }
+
+            try {
+                const resp = await apiFetch('/fotografo/detras-camara');
+                if (!resp.ok) {
+                    renderizarListaDetras([]);
+                    return;
+                }
+                const items = resp.items || [];
+                renderizarListaDetras(items);
+            } catch (e) {
+                console.warn('⚠️ cargarListaDetras:', e.message);
+                renderizarListaDetras([]);
+            }
+        }
+
+        function renderizarListaDetras(items) {
+            const cont = document.getElementById('listaDetras');
+            if (!cont) return;
+
+            if (!items || items.length === 0) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            const ultimas = items.slice(-6).reverse();
+
+            let html = '';
+            ultimas.forEach(item => {
+                const texto = item.texto ? `<div class="item-detras-texto">${escapeHtml(item.texto)}</div>` : '';
+                html += `
+                    <div class="item-detras">
+                        <img class="item-detras-thumb" src="${item.url}" alt="" loading="lazy" />
+                        <div class="item-detras-info">
+                            <div class="item-detras-hora">${tiempoRelativo(item.subidoEn)}</div>
+                            ${texto}
+                        </div>
+                    </div>
+                `;
+            });
+
+            cont.innerHTML = html;
+        }
+
+
+
 
         const WORKER_BASE_EMERGENCIA = 'https://ovj-b2-proxy.jhumerali2.workers.dev';
         const MAX_ORIGINAL_MB_EMERGENCIA = 15;
@@ -2717,16 +3358,30 @@
                 }
             }
 
-            if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
-                seccion.style.display = 'none';
-                return;
-            }
+            const seccionActivo = document.getElementById('seccionActivo');
+            const seccionAgendados = document.getElementById('seccionAgendados');
+            const seccionVacio = document.getElementById('seccionVacio');
+            const seccionFinalizados = document.getElementById('seccionFinalizados');
+
+            if (seccionActivo) seccionActivo.style.display = 'none';
+            if (seccionAgendados) seccionAgendados.style.display = 'none';
+            if (seccionVacio) seccionVacio.style.display = 'none';
+            if (seccionFinalizados) seccionFinalizados.style.display = 'none';
 
             seccion.style.display = 'block';
 
             const aviso = document.getElementById('avisoEmergencia');
-            if (aviso) {
-                aviso.innerHTML = `Subí las fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>. Se suben directo a la nube y aparecen en la galería.`;
+            if (aviso && eventoActivoEmergencia) {
+                aviso.innerHTML = `
+                    ⚠️ <strong>Server caído.</strong><br>
+                    Subí fotos para <strong>${escapeHtml(eventoActivoEmergencia.evento)}</strong>.<br>
+                    Se sincronizarán cuando el server vuelva.
+                `;
+            } else if (aviso) {
+                aviso.innerHTML = `
+                    ⚠️ <strong>Server caído.</strong><br>
+                    No hay evento activo conocido. Activá el evento cuando el server vuelva.
+                `;
             }
 
             const input = document.getElementById('inputEmergencia');
@@ -2993,224 +3648,23 @@
             formData.append('nombreOriginal', nombreOriginal);
             formData.append('nombrePreview', nombrePreview);
 
-            let resp;
-            let vinoDelWorker = false;
-
-            try {
-                resp = await fetch(`${URL_API}/fotografo/subir-foto`, {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + tokenSesion },
-                    body: formData
-                });
-
-                if (!resp.ok) throw new Error(`Server HTTP ${resp.status}`);
-            } catch (eServer) {
-                console.warn('⚠️ Server no responde, usando Worker (emergencia):', eServer.message);
-
-                resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
-                    method: 'POST',
-                    headers: {
-                        'X-Evento-Id': eventoActivoEmergencia.id,
-                        'X-Fotografo': nombreFotografoActual
-                    },
-                    body: formData
-                });
-                vinoDelWorker = true;
-            }
+            const resp = await fetch(`${WORKER_BASE_EMERGENCIA}/api/emergencia-upload`, {
+                method: 'POST',
+                headers: {
+                    'X-Evento-Id': eventoActivoEmergencia.id,
+                    'X-Fotografo': nombreFotografoActual
+                },
+                body: formData
+            });
 
             let data = {};
             try { data = await resp.json(); } catch (e) { }
 
-            if (!resp.ok || !data.ok) throw new Error(data.error || `HTTP ${resp.status}`);
-
-            return { ...data, vinoDelWorker };
-        }
-
-        // ==========================================
-        // 📸 DETRÁS DE CÁMARA
-        // ==========================================
-        let _fotoDetrasSeleccionada = null;
-
-        function abrirDetras() {
-            if (!eventoActivo || !eventoActivo.id) {
-                toast('No hay evento activo', 'error');
-                return;
+            if (!resp.ok || !data.ok) {
+                throw new Error(data.error || `HTTP ${resp.status}`);
             }
 
-            _fotoDetrasSeleccionada = null;
-            document.getElementById('inputDetras').value = '';
-            document.getElementById('inputTextoDetras').value = '';
-            document.getElementById('previewDetras').style.display = 'none';
-            document.getElementById('btnSubirDetras').disabled = true;
-            document.getElementById('btnSubirDetras').textContent = 'Subir foto';
-
-            const input = document.getElementById('inputDetras');
-            if (!input._inicializado) {
-                input.addEventListener('change', _manejarSeleccionDetras);
-                input._inicializado = true;
-            }
-
-            document.getElementById('modalDetras').classList.add('activo');
-        }
-
-        function cerrarDetras() {
-            document.getElementById('modalDetras').classList.remove('activo');
-            _fotoDetrasSeleccionada = null;
-        }
-
-        function _manejarSeleccionDetras(e) {
-            const file = e.target.files && e.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                toast('El archivo no es una imagen', 'error');
-                return;
-            }
-
-            if (file.size > 15 * 1024 * 1024) {
-                toast('La foto es muy grande (máx 15 MB)', 'error');
-                return;
-            }
-
-            _fotoDetrasSeleccionada = file;
-
-            const url = URL.createObjectURL(file);
-            document.getElementById('imgPreviewDetras').src = url;
-            document.getElementById('previewDetras').style.display = 'block';
-            document.getElementById('btnSubirDetras').disabled = false;
-        }
-
-        async function subirDetras() {
-            if (!_fotoDetrasSeleccionada) {
-                toast('Primero seleccioná una foto', 'error');
-                return;
-            }
-
-            if (!eventoActivo || !eventoActivo.id) {
-                toast('No hay evento activo', 'error');
-                return;
-            }
-
-            const texto = document.getElementById('inputTextoDetras').value.trim();
-            if (texto.length > 200) {
-                toast('El pie de foto es muy largo (máx 200)', 'error');
-                return;
-            }
-
-            const btn = document.getElementById('btnSubirDetras');
-            btn.disabled = true;
-            btn.textContent = 'Subiendo...';
-
-            loader(true);
-
-            try {
-                // 1. Generar preview con Canvas
-                const previewBlob = await _generarPreviewDetras(_fotoDetrasSeleccionada);
-
-                // 2. Generar nombres
-                const base = _generarNombreFotoDetras();
-                const nombreOriginal = `${base}_detras.jpg`;
-                const nombrePreview = `${base}_detras_web.jpg`;
-
-                // 3. Subir al Worker (no al server, porque el Worker procesa esDetras)
-                const formData = new FormData();
-                formData.append('original', _fotoDetrasSeleccionada, nombreOriginal);
-                formData.append('preview', previewBlob, nombrePreview);
-                formData.append('nombreOriginal', nombreOriginal);
-                formData.append('nombrePreview', nombrePreview);
-                formData.append('esDetras', '1');
-                formData.append('texto', texto);
-
-                const resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
-                    method: 'POST',
-                    headers: {
-                        'X-Evento-Id': eventoActivo.id,
-                        'X-Fotografo': nombreFotografoActual
-                    },
-                    body: formData
-                });
-
-                const data = await resp.json();
-
-                if (!resp.ok || !data.ok) {
-                    throw new Error(data.error || `HTTP ${resp.status}`);
-                }
-
-                // 4. Confirmar en el server para que registre en el feed
-                try {
-                    await apiFetch('/fotografo/detras-camara/confirmar', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            key: `eventos/${String(nombreFotografoActual).replace(/[^a-zA-Z0-9_-]/g, '')}/${String(eventoActivo.id).replace(/[^a-zA-Z0-9_-]/g, '')}/${nombreOriginal}`,
-                            texto: texto
-                        })
-                    });
-                } catch (e) {
-                    console.warn('⚠️ No se pudo confirmar al server:', e.message);
-                }
-
-                toast('✅ Detrás de cámara publicado', 'ok');
-                cerrarDetras();
-                await cargarTodo();
-
-            } catch (e) {
-                console.error('Error subiendo detrás:', e);
-                toast('Error: ' + e.message, 'error');
-                btn.disabled = false;
-                btn.textContent = 'Subir foto';
-            } finally {
-                loader(false);
-            }
-        }
-
-        async function _generarPreviewDetras(file) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                const url = URL.createObjectURL(file);
-
-                img.onload = () => {
-                    URL.revokeObjectURL(url);
-
-                    const ratio = img.width > 900 ? 900 / img.width : 1;
-                    const w = Math.round(img.width * ratio);
-                    const h = Math.round(img.height * ratio);
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = w;
-                    canvas.height = h;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-
-                    canvas.toBlob((blob) => {
-                        if (!blob) {
-                            reject(new Error('No se pudo generar la preview'));
-                            return;
-                        }
-                        resolve(blob);
-                    }, 'image/jpeg', 0.8);
-                };
-
-                img.onerror = () => {
-                    URL.revokeObjectURL(url);
-                    reject(new Error('No se pudo leer la imagen'));
-                };
-
-                img.src = url;
-            });
-        }
-
-        function _generarNombreFotoDetras() {
-            const eventoSlug = String(eventoActivo?.evento || 'EVENTO')
-                .toUpperCase()
-                .replace(/[^A-Z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .slice(0, 30) || 'EVENTO';
-
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 6);
-
-            return `OVJStudio_${eventoSlug}_${timestamp}_${random}`;
+            return data;
         }
 
         // ==========================================
