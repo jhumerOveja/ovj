@@ -3872,6 +3872,19 @@
         // INICIALIZACIÓN
         // ==========================================
         async function inicializar() {
+            // 🔥 Solo para testing: ?forceLogout=1 limpia la sesión y muestra login
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('forceLogout') === '1') {
+                localStorage.removeItem('ovj_fotografo_token');
+                localStorage.removeItem('ovj_fotografo_nombre');
+                localStorage.removeItem('ovj_fotografo_expira');
+                localStorage.removeItem('ovj_fotografo_es_offline');
+                localStorage.removeItem('ovj_fotografo_evento_activo');
+                window.history.replaceState({}, '', window.location.pathname);
+                mostrarLogin();
+                return;
+            }
+
             if (cargarSesionLocal()) {
                 mostrarPanel();
                 await cargarTodo();
