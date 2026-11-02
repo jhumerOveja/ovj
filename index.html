@@ -4574,7 +4574,36 @@
                     }
                 }
 
-                const fotosInvertidas = [...nuevasFotos].reverse();
+                let fotosInvertidas;
+
+                if (vinoDelWorker) {
+                    // 🔥 FIX CRÍTICO: si la respuesta vino del Worker, puede que
+                    // el status.json de B2 esté desactualizado (server caído antes
+                    // de publicar). NO pisamos el cache local. Solo AGREGAMOS las
+                    // fotos nuevas (típicamente las de emergencia).
+                    const nombresCache = new Set(fotosCache.map(f => f.nombre));
+                    const fotosAgregadas = [];
+
+                    // Recorremos las fotos del Worker en orden inverso (más nuevas primero)
+                    for (const foto of nuevasFotos) {
+                        if (!nombresCache.has(foto.nombre)) {
+                            fotosAgregadas.push(foto);
+                            nombresCache.add(foto.nombre);
+                        }
+                    }
+
+                    if (fotosAgregadas.length > 0) {
+                        // Las nuevas van al principio (más recientes primero)
+                        fotosInvertidas = [...fotosAgregadas.reverse(), ...fotosCache];
+                        console.log(`🔀 Worker: agregadas ${fotosAgregadas.length} fotos al cache (total: ${fotosInvertidas.length})`);
+                    } else {
+                        // No hay fotos nuevas. Mantenemos el cache tal cual.
+                        fotosInvertidas = fotosCache;
+                    }
+                } else {
+                    // Server vivo: confiamos en lo que devuelve. Es la fuente de verdad.
+                    fotosInvertidas = [...nuevasFotos].reverse();
+                }
 
                 const huboCambio = JSON.stringify(fotosInvertidas) !== JSON.stringify(fotosCache);
 
