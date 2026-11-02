@@ -4457,14 +4457,17 @@
                 }
 
                 if (respuesta.status === 404) {
-                    // 🔥 En modo emergencia, si el Worker devuelve 404, usar el cache local.
+                    // 🔥 En modo emergencia, si el Worker devuelve 404 pero hay
+                    // cache local, mostrar las fotos del cache y NO cerrar la galería.
+                    let hayCacheLocal = false;
+
                     if (vinoDelWorker) {
                         const cacheLocal = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
                         if (cacheLocal) {
                             try {
                                 const fotosCacheLocal = JSON.parse(cacheLocal);
                                 if (Array.isArray(fotosCacheLocal) && fotosCacheLocal.length > 0) {
-                                    console.log('📦 Usando cache local de fotos (modo emergencia)');
+                                    console.log('📦 Usando cache local de fotos (modo emergencia):', fotosCacheLocal.length, 'fotos');
                                     fotosCacheLocal.forEach(f => {
                                         if (!fotosCache.find(x => x.nombre === f.nombre) &&
                                             !_colaGoteo.find(x => x.nombre === f.nombre)) {
@@ -4472,10 +4475,28 @@
                                         }
                                     });
                                     _asegurarGoteoActivo();
+                                    hayCacheLocal = true;
                                 }
-                            } catch (e) { }
+                            } catch (e) {
+                                console.warn('⚠️ Error leyendo cache local:', e.message);
+                            }
                         }
                     }
+
+                    // Si hay cache local, NO cerrar. Solo seguir polleando.
+                    if (hayCacheLocal) {
+                        servidorOnline = false;
+                        actualizarBotonesModoEmergencia();
+                        actualizarChipEnVivo();
+                        cargando = false;
+
+                        // Reprogramar el poll en 30s para reintentar contra el Worker.
+                        clearTimeout(window._pollTimer);
+                        window._pollTimer = setTimeout(cargarFotos, 30000);
+                        return;
+                    }
+
+                    // Sin cache local: sí cerrar (evento finalizado de verdad).
                     detenerTodoYMostrarCierre();
                     cargando = false;
                     return;
