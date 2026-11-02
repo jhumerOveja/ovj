@@ -3502,14 +3502,6 @@
         let fotosVisibles = FOTOS_POR_CARGA;
         let fotoSeleccionadaIndex = -1;
 
-        // 🔥 GOTEO LOCAL: la web revela 1 foto por minuto.
-        // El server devuelve la lista completa; acá decidimos cuándo mostrar cada una.
-        const FOTOS_POR_MINUTO = 1;
-        const INTERVALO_GOTEO_MS = Math.round(60000 / FOTOS_POR_MINUTO);
-        const ANTIGUEDAD_MINIMA_MS = 60 * 1000; // 1 minuto
-        let _colaGoteo = [];             // fotos que todavía no se revelaron
-        let _timerGoteo = null;          // setInterval del goteo
-
         // 🎬 Efecto vivo
         let _efectoTimer = null;
         let _efectoActivo = false;
@@ -4457,25 +4449,6 @@
                 }
 
                 if (respuesta.status === 404) {
-                    // 🔥 En modo emergencia, si el Worker devuelve 404, usar el cache local.
-                    if (vinoDelWorker) {
-                        const cacheLocal = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
-                        if (cacheLocal) {
-                            try {
-                                const fotosCacheLocal = JSON.parse(cacheLocal);
-                                if (Array.isArray(fotosCacheLocal) && fotosCacheLocal.length > 0) {
-                                    console.log('📦 Usando cache local de fotos (modo emergencia)');
-                                    fotosCacheLocal.forEach(f => {
-                                        if (!fotosCache.find(x => x.nombre === f.nombre) &&
-                                            !_colaGoteo.find(x => x.nombre === f.nombre)) {
-                                            _colaGoteo.push(f);
-                                        }
-                                    });
-                                    _asegurarGoteoActivo();
-                                }
-                            } catch (e) { }
-                        }
-                    }
                     detenerTodoYMostrarCierre();
                     cargando = false;
                     return;
@@ -4527,61 +4500,59 @@
 
                 const nuevasFotos = data.fotos || [];
 
-                // 🔥 FUSIONAR con el cache existente (no sobreescribir).
-                // Así, si el server devuelve 5 fotos y el Worker devuelve 2, el cache
-                // final tiene 7 (5 normales + 2 de emergencia). Sin perder ninguna.
-                if (nuevasFotos.length > 0) {
-                    try {
-                        const cachePrev = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
-                        let fotosFusionadas = [...nuevasFotos];
+                const ahora = Date.now();
+                const fotosRecienLlegadas = [];
 
-                        if (cachePrev) {
-                            const previas = JSON.parse(cachePrev);
-                            if (Array.isArray(previas)) {
-                                const nombresActuales = new Set(nuevasFotos.map(f => f.nombre));
-                                previas.forEach(f => {
-                                    if (!nombresActuales.has(f.nombre)) {
-                                        fotosFusionadas.push(f);
-                                    }
-                                });
-                            }
-                        }
+                nuevasFotos.forEach(f => {
+                    if (!fotosVistas.has(f.nombre)) {
+                        fotosRecienLlegadas.push(f);
+                        fotosNuevasMap.set(f.nombre, ahora);
+                        fotosVistas.add(f.nombre);
+                    }
+                });
 
-                        localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotosFusionadas));
-                    } catch (e) { }
+                if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
+                    const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
+                    const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
+                    sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
                 }
 
-                const fotosOrdenadas = [...nuevasFotos];
-
-                // Identificar cuáles son nuevas (no están en cache ni en cola).
-                const nombresConocidos = new Set();
-                fotosCache.forEach(f => nombresConocidos.add(f.nombre));
-                _colaGoteo.forEach(f => nombresConocidos.add(f.nombre));
-
-                // 🔥 Incluir también el cache de localStorage para no duplicar.
-                try {
-                    const cachePrev = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
-                    if (cachePrev) {
-                        const previas = JSON.parse(cachePrev);
-                        if (Array.isArray(previas)) {
-                            previas.forEach(f => nombresConocidos.add(f.nombre));
-                        }
+                for (const [nombre, ts] of fotosNuevasMap) {
+                    if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
+                        fotosNuevasMap.delete(nombre);
                     }
-                } catch (e) { }
+                }
 
-                const recienLlegadas = fotosOrdenadas.filter(f => !nombresConocidos.has(f.nombre));
+                const fotosInvertidas = [...nuevasFotos].reverse();
 
-                if (recienLlegadas.length > 0) {
-                    recienLlegadas.forEach(f => {
-                        _colaGoteo.push(f);
-                        fotosVistas.add(f.nombre);
-                    });
-                    _asegurarGoteoActivo();
+                const huboCambio = JSON.stringify(fotosInvertidas) !== JSON.stringify(fotosCache);
+
+                if (huboCambio) {
+                    fotosCache = fotosInvertidas;
+
+                    if (fotoSeleccionadaIndex >= fotosCache.length) {
+                        fotoSeleccionadaIndex = -1;
+                    }
+
+                    renderizarGaleria();
+
+                    if (fotosRecienLlegadas.length > 0) {
+                        _fotosNuevasPendientes += fotosRecienLlegadas.length;
+
+                        const scrollY = window.scrollY || window.pageYOffset;
+                        if (scrollY < 100) {
+                            lanzarConfeti();
+                        }
+
+                        actualizarBotonFotosNuevas(_fotosNuevasPendientes);
+                    }
                 }
 
                 guardarFotosVistas(fotosVistas);
+
                 actualizarBotonPrincipal();
                 actualizarChipEnVivo();
+
                 consultarCofre();
 
             } catch (error) {
@@ -4897,148 +4868,6 @@
             cargarImagenesSecuencialmente();
             observarFotosViewport();
         }
-
-        // ==========================================
-        // 🔥 GOTEO LOCAL
-        // Cada minuto se revela 1 foto de la cola.
-        // La última foto revelada va ARRIBA en la galería.
-        // ==========================================
-        function _asegurarGoteoActivo() {
-            // Primero: revelar de golpe todas las que ya "deberían estar reveladas".
-            _revelarFotosAtrasadas();
-
-            // Después: arrancar el timer para las que van llegando.
-            if (_timerGoteo) return;
-            if (_colaGoteo.length === 0) return;
-
-            _timerGoteo = setInterval(_revelarUnaFoto, INTERVALO_GOTEO_MS);
-        }
-
-        function _revelarFotosAtrasadas() {
-            if (_colaGoteo.length === 0) return;
-
-            const ahora = Date.now();
-            const atrasadas = [];
-            const pendientes = [];
-
-            for (const foto of _colaGoteo) {
-                const subidoEnMs = foto.subidoEn ? new Date(foto.subidoEn).getTime() : 0;
-                const antiguedad = ahora - subidoEnMs;
-
-                if (subidoEnMs > 0 && antiguedad >= ANTIGUEDAD_MINIMA_MS) {
-                    atrasadas.push(foto);
-                } else {
-                    pendientes.push(foto);
-                }
-            }
-
-            _colaGoteo = pendientes;
-
-            if (atrasadas.length > 0) {
-                // Las atrasadas vienen en orden de llegada (más vieja primero).
-                // Las metemos con unshift en orden inverso para que la más nueva quede arriba.
-                const atrasadasInvertidas = [...atrasadas].reverse();
-                atrasadasInvertidas.forEach(f => fotosCache.unshift(f));
-
-                fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
-
-                // 🔥 Guardar en localStorage después de revelar atrasadas.
-                try {
-                    const fotos = fotosCache.map(f => ({
-                        nombre: f.nombre,
-                        url: f.url,
-                        subidoEn: f.subidoEn,
-                        esReciente: f.esReciente
-                    }));
-                    localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotos));
-                } catch (e) { }
-
-                renderizarGaleria();
-
-                // Si el invitado está abajo, sumar al botón de "N fotos nuevas".
-                const scrollY = window.scrollY || window.pageYOffset;
-                if (scrollY >= 100) {
-                    _fotosNuevasPendientes += atrasadas.length;
-                    actualizarBotonFotosNuevas(_fotosNuevasPendientes);
-                }
-            }
-        }
-
-        function _revelarUnaFoto() {
-            if (_colaGoteo.length === 0) {
-                _detenerGoteo();
-                return;
-            }
-
-            const ahora = Date.now();
-            const siguiente = _colaGoteo[0];
-            const subidoEnMs = siguiente.subidoEn ? new Date(siguiente.subidoEn).getTime() : 0;
-            const antiguedad = ahora - subidoEnMs;
-
-            // Si todavía no pasó el minuto, esperar al próximo tick.
-            if (subidoEnMs > 0 && antiguedad < ANTIGUEDAD_MINIMA_MS) {
-                return;
-            }
-
-            _colaGoteo.shift();
-            fotosCache.unshift(siguiente);
-            fotosVisibles = Math.max(fotosVisibles, fotosCache.length);
-
-            // 🔥 Guardar en localStorage cuando se revela.
-            try {
-                const fotos = fotosCache.map(f => ({
-                    nombre: f.nombre,
-                    url: f.url,
-                    subidoEn: f.subidoEn,
-                    esReciente: f.esReciente
-                }));
-                localStorage.setItem('ovj_fotos_cache_' + EVENTO_ID, JSON.stringify(fotos));
-            } catch (e) { }
-
-            // 🔥 Marcar como nueva AHORA que se revela.
-            fotosNuevasMap.set(siguiente.nombre, Date.now());
-
-            // Limitar a MAX_BADGES_NUEVOS badges simultáneos.
-            if (fotosNuevasMap.size > MAX_BADGES_NUEVOS) {
-                const ordenadas = Array.from(fotosNuevasMap.entries()).sort((a, b) => a[1] - b[1]);
-                const sobrantes = ordenadas.slice(0, ordenadas.length - MAX_BADGES_NUEVOS);
-                sobrantes.forEach(([nombre]) => fotosNuevasMap.delete(nombre));
-            }
-
-            // Limpiar badges viejos.
-            for (const [nombre, ts] of fotosNuevasMap) {
-                if (ahora - ts > DURACION_BADGE_NUEVA_MS) {
-                    fotosNuevasMap.delete(nombre);
-                }
-            }
-
-            renderizarGaleria();
-
-            const scrollY = window.scrollY || window.pageYOffset;
-
-            // Confeti solo si el invitado está arriba.
-            if (scrollY < 100) {
-                lanzarConfeti();
-            }
-
-            // Botón "N fotos nuevas" solo si el invitado está abajo.
-            if (scrollY >= 100) {
-                _fotosNuevasPendientes += 1;
-                actualizarBotonFotosNuevas(_fotosNuevasPendientes);
-            }
-
-            if (_colaGoteo.length === 0) {
-                _detenerGoteo();
-            }
-        }
-
-        function _detenerGoteo() {
-            if (_timerGoteo) {
-                clearInterval(_timerGoteo);
-                _timerGoteo = null;
-            }
-        }
-
 
         let _observerFotos = null;
 
@@ -5736,29 +5565,6 @@
                     mostrarToast(t('tipRecarga'), 'warning', 6000);
                 }
             })();
-
-            // 🔥 Cargar cache local de fotos (modo emergencia, recargas).
-            // Si el invitado recargó y el server/Worker no responde con fotos,
-            // al menos ve las que ya tenía cacheadas en localStorage.
-            try {
-                const cacheLocal = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
-                if (cacheLocal) {
-                    const fotosCacheLocal = JSON.parse(cacheLocal);
-                    if (Array.isArray(fotosCacheLocal)) {
-                        fotosCacheLocal.forEach(f => {
-                            if (!fotosCache.find(x => x.nombre === f.nombre) &&
-                                !_colaGoteo.find(x => x.nombre === f.nombre)) {
-                                _colaGoteo.push(f);
-                            }
-                        });
-                        if (_colaGoteo.length > 0) {
-                            _asegurarGoteoActivo();
-                        }
-                    }
-                }
-            } catch (e) {
-                console.warn('⚠️ No se pudo cargar cache local de fotos:', e.message);
-            }
 
             cargarFotos();
             iniciarAvisosRotativos();
