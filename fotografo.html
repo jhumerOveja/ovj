@@ -344,7 +344,7 @@
             background: linear-gradient(135deg, rgba(46, 204, 113, 0.06), rgba(46, 204, 113, 0.02));
             border: 1px solid rgba(46, 204, 113, 0.25);
             border-radius: 18px;
-            padding: 22px 20px;
+            padding: 18px 16px;
             margin-bottom: 16px;
         }
 
@@ -364,12 +364,12 @@
         }
 
         .card-activo .titulo {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: #fff;
             letter-spacing: 1px;
             line-height: 1.2;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             word-break: break-word;
         }
 
@@ -377,7 +377,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px 14px;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
         .card-activo .meta-item {
@@ -487,10 +487,11 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 14px 16px;
+            padding: 12px 14px;
+            min-height: 48px;
             border-radius: 12px;
             border: none;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -1039,37 +1040,37 @@
 
         /* ===== DETRÁS DE CÁMARA (normal, por el túnel) ===== */
         .zona-detras {
-            border: 2px dashed rgba(155, 89, 182, 0.4);
-            border-radius: 14px;
-            padding: 24px 18px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1.5px dashed rgba(155, 89, 182, 0.5);
+            background: rgba(155, 89, 182, 0.05);
             cursor: pointer;
-            transition: all 0.25s;
-            background: rgba(155, 89, 182, 0.04);
-            margin-bottom: 12px;
+            transition: all 0.2s;
+            text-align: center;
         }
 
         .zona-detras:hover {
-            border-color: rgba(155, 89, 182, 0.7);
-            background: rgba(155, 89, 182, 0.08);
+            border-color: rgba(155, 89, 182, 0.8);
+            background: rgba(155, 89, 182, 0.1);
         }
 
         .zona-detras-icono {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 6px;
+            font-size: 1.2rem;
+            line-height: 1;
         }
 
         .zona-detras-texto {
-            font-size: 0.88rem;
-            color: #e9d5ff;
+            font-size: 0.82rem;
+            color: #b794f4;
             font-weight: 600;
-            margin-bottom: 4px;
         }
 
         .zona-detras-sub {
-            font-size: 0.7rem;
-            color: #b794f4;
+            display: none;
         }
 
         .detras-preview {
@@ -1204,40 +1205,53 @@
             word-break: break-word;
         }
 
-
-        /* ===== SUBIDA DE FOTOS (normal, por el túnel) ===== */
-        .zona-subida {
-            border: 2px dashed rgba(52, 152, 219, 0.4);
-            border-radius: 14px;
-            padding: 24px 18px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.25s;
-            background: rgba(52, 152, 219, 0.04);
+        .zonas-subida-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
             margin-bottom: 12px;
         }
 
+        @media (max-width: 400px) {
+            .zonas-subida-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* ===== SUBIDA DE FOTOS (normal, por el túnel) ===== */
+        .zona-subida {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1.5px dashed rgba(52, 152, 219, 0.5);
+            background: rgba(52, 152, 219, 0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
         .zona-subida:hover {
-            border-color: rgba(52, 152, 219, 0.7);
-            background: rgba(52, 152, 219, 0.08);
+            border-color: rgba(52, 152, 219, 0.8);
+            background: rgba(52, 152, 219, 0.1);
         }
 
         .zona-subida-icono {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 6px;
+            font-size: 1.2rem;
+            line-height: 1;
         }
 
         .zona-subida-texto {
-            font-size: 0.88rem;
-            color: #d1e9ff;
+            font-size: 0.82rem;
+            color: #93c5fd;
             font-weight: 600;
-            margin-bottom: 4px;
         }
 
         .zona-subida-sub {
-            font-size: 0.7rem;
-            color: #7aa9c9;
+            display: none;
         }
 
         .progreso-subida {
@@ -2334,16 +2348,23 @@
                 ${avisoTiempoHtml}
                 ${mensajeHtml}
 
-                <div class="seccion-titulo" style="margin-top:18px;">📸 Subir fotos</div>
+                <div class="seccion-titulo" style="margin-top:16px;">📸 Subir contenido</div>
 
-                <div class="zona-subida" id="zonaSubida"
-                     onclick="document.getElementById('inputSubida').click()">
-                    <span class="zona-subida-icono">📸</span>
-                    <div class="zona-subida-texto">Tocar para elegir fotos</div>
-                    <div class="zona-subida-sub">Podés elegir varias de una vez</div>
+                <div class="zonas-subida-grid">
+                    <div class="zona-subida" id="zonaSubida"
+                         onclick="document.getElementById('inputSubida').click()">
+                        <span class="zona-subida-icono">📸</span>
+                        <span class="zona-subida-texto">Fotos</span>
+                    </div>
+                    <div class="zona-detras" id="zonaDetras"
+                         onclick="document.getElementById('inputDetras').click()">
+                        <span class="zona-detras-icono">🎭</span>
+                        <span class="zona-detras-texto">Detrás</span>
+                    </div>
                 </div>
 
                 <input type="file" id="inputSubida" accept="image/*" multiple style="display:none;" />
+                <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
 
                 <div class="progreso-subida" id="progresoSubida" style="display:none;">
                     <div class="progreso-subida-texto" id="progresoTextoSubida">Subiendo...</div>
@@ -2354,17 +2375,6 @@
 
                 <div class="lista-subida" id="listaSubida"></div>
 
-                <div class="seccion-titulo" style="margin-top:18px;">📸 Detrás de cámara</div>
-
-                <div class="zona-detras" id="zonaDetras"
-                     onclick="document.getElementById('inputDetras').click()">
-                    <span class="zona-detras-icono">🎭</span>
-                    <div class="zona-detras-texto">Tocar para elegir una foto</div>
-                    <div class="zona-detras-sub">Se publica en el feed de detrás de cámara</div>
-                </div>
-
-                <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
-
                 <div id="detrasPreviewContainer" style="display:none; margin-bottom:12px;">
                     <div class="detras-preview">
                         <img class="detras-preview-img" id="detrasPreviewImg" alt="" />
@@ -2373,19 +2383,16 @@
                             <button class="detras-preview-quitar" onclick="cancelarDetras()">✕</button>
                         </div>
                     </div>
-
                     <textarea class="detras-texto-input" id="detrasTextoInput"
-                              placeholder="Agregá un texto (opcional)"
-                              maxlength="200"></textarea>
-
+                              placeholder="Texto opcional" maxlength="200"></textarea>
                     <button class="btn-accion btn-detras" id="btnSubirDetras" onclick="subirFotoDetras()">
-                        📸 Publicar foto de detrás
+                        📸 Publicar
                     </button>
                 </div>
 
                 <div class="lista-detras" id="listaDetras"></div>
 
-                <div class="acciones-grid" style="margin-top:16px;">
+                <div class="acciones-grid" style="margin-top:12px;">
                     <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
                         💬 Mensaje
                     </button>
@@ -2395,8 +2402,8 @@
                     <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
                         🎫 QR General
                     </button>
-                    <button class="btn-accion btn-finalizar full" onclick="confirmarFinalizar()">
-                        🏁 Finalizar evento
+                    <button class="btn-accion btn-finalizar" onclick="confirmarFinalizar()">
+                        🏁 Finalizar
                     </button>
                 </div>
             </div>
@@ -3277,11 +3284,6 @@
 
         async function cargarListaDetras() {
             if (!eventoActivo || !eventoActivo.id) {
-                renderizarListaDetras([]);
-                return;
-            }
-
-            if (servidorOnline === false) {
                 renderizarListaDetras([]);
                 return;
             }
