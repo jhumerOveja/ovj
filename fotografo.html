@@ -2111,7 +2111,8 @@
                 const resp = await fetch(URL_API + '/fotografo/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, pin })
+                    body: JSON.stringify({ nombre, pin }),
+                    signal: AbortSignal.timeout(8000)
                 });
 
                 const data = await resp.json();
@@ -2128,14 +2129,47 @@
                 tokenSesion = data.token;
                 nombreFotografoActual = data.fotografo;
 
+                localStorage.removeItem('ovj_fotografo_es_offline');
+
                 mostrarPanel();
                 cargarTodo();
 
             } catch (e) {
-                err.textContent = 'Error de conexión. Intenta de nuevo.';
-                err.classList.add('activo');
-                btn.disabled = false;
-                btn.textContent = 'Entrar';
+                console.warn('⚠️ Server no responde, intentando login offline:', e.message);
+
+                try {
+                    const respWorker = await fetch(`${WORKER_BASE}/api/login-fotografo`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre, pin }),
+                        signal: AbortSignal.timeout(10000)
+                    });
+
+                    const dataWorker = await respWorker.json();
+
+                    if (!respWorker.ok || !dataWorker.ok) {
+                        err.textContent = dataWorker.error || 'Credenciales inválidas';
+                        err.classList.add('activo');
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    guardarSesion(dataWorker.token, dataWorker.fotografo, Date.now() + 24 * 60 * 60 * 1000);
+                    tokenSesion = dataWorker.token;
+                    nombreFotografoActual = dataWorker.fotografo;
+
+                    localStorage.setItem('ovj_fotografo_es_offline', '1');
+
+                    mostrarPanel();
+                    cargarTodo();
+
+                } catch (eWorker) {
+                    err.textContent = 'Sin conexión. No pudimos validar tus credenciales.';
+                    err.classList.add('activo');
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                }
             }
         }
 
@@ -2189,6 +2223,8 @@
                     localStorage.removeItem('ovj_fotografo_evento_activo');
                 }
 
+                localStorage.removeItem('ovj_fotografo_es_offline');
+
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
@@ -2218,6 +2254,8 @@
                                 localStorage.removeItem('ovj_fotografo_evento_activo');
                             }
 
+                            localStorage.removeItem('ovj_fotografo_es_offline');
+
                             renderActivo(eventoActivo, estado2);
                             renderAgendados(eventos2.agendados || []);
                             renderFinalizados(eventos2.finalizadosHoy || []);
@@ -2234,6 +2272,10 @@
                 }
 
                 marcarServidor('error');
+
+                if (localStorage.getItem('ovj_fotografo_es_offline') === '1') {
+                    await cargarEventosOffline();
+                }
 
                 mostrarSeccionEmergencia();
             }
@@ -3347,6 +3389,8 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
+            const esOffline = localStorage.getItem('ovj_fotografo_es_offline') === '1';
+
             if (eventoActivo && eventoActivo.id) {
                 eventoActivoEmergencia = eventoActivo;
             } else {
@@ -3382,8 +3426,15 @@
             } else if (aviso) {
                 aviso.innerHTML = `
                     ⚠️ <strong>Server caído.</strong><br>
-                    No hay evento activo conocido. Activá el evento cuando el server vuelva.
+                    Elegí un evento abajo para empezar a subir fotos.
                 `;
+            }
+
+            const selectorExistente = document.getElementById('selectorEventoOffline');
+            if (selectorExistente) selectorExistente.remove();
+
+            if (esOffline) {
+                renderSelectorEventoOffline();
             }
 
             const input = document.getElementById('inputEmergencia');
@@ -3409,6 +3460,146 @@
             if (seccionVacio) seccionVacio.style.display = '';
             if (seccionFinalizados) seccionFinalizados.style.display = '';
         }
+
+        // ==========================================
+        // 🔥 MODO OFFLINE: selector de evento
+        // ==========================================
+        let eventosOffline = [];
+        let eventoOfflineSeleccionado = null;
+
+        async function cargarEventosOffline() {
+            try {
+                const resp = await fetch(`${WORKER_BASE}/api/eventos?f=${encodeURIComponent(nombreFotografoActual)}`, {
+                    cache: 'no-store',
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (!resp.ok) {
+                    eventosOffline = [];
+                    return;
+                }
+
+                const data = await resp.json();
+                eventosOffline = (data.eventos || []).filter(e => {
+                    if (e.estado === 'cancelado') return false;
+                    return _eventoEnVentana(e);
+                });
+
+                if (eventosOffline.length === 1) {
+                    seleccionarEventoOffline(eventosOffline[0].id);
+                }
+
+            } catch (e) {
+                console.warn('⚠️ cargarEventosOffline:', e.message);
+                eventosOffline = [];
+            }
+        }
+
+        function _eventoEnVentana(evento) {
+            try {
+                const fechaBase = evento.fechaProgramada;
+                const horaBase = evento.horaInicio;
+                const duracion = evento.duracion || 0;
+
+                if (!fechaBase || !horaBase) return true;
+
+                const inicioEvento = new Date(`${fechaBase}T${horaBase}:00`);
+                if (isNaN(inicioEvento.getTime())) return true;
+
+                const desde = inicioEvento.getTime() - 2 * 60 * 60 * 1000;
+                const hasta = inicioEvento.getTime() + (duracion + 2) * 60 * 60 * 1000;
+
+                return Date.now() >= desde && Date.now() <= hasta;
+            } catch (e) {
+                return true;
+            }
+        }
+
+        function renderSelectorEventoOffline() {
+            const seccion = document.getElementById('seccionEmergencia');
+            if (!seccion) return;
+
+            const div = document.createElement('div');
+            div.id = 'selectorEventoOffline';
+            div.style.cssText = 'background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:14px;margin-bottom:14px;';
+
+            if (eventosOffline.length === 0) {
+                div.innerHTML = `
+                    <div style="font-size:0.8rem;font-weight:700;color:#93c5fd;margin-bottom:6px;">📋 Sin eventos disponibles</div>
+                    <div style="font-size:0.72rem;color:#888;line-height:1.4;">
+                        No hay eventos agendados en la ventana horaria actual.<br>
+                        Esperá la hora del evento o verificá el agendamiento.
+                    </div>
+                `;
+            } else {
+                const opciones = eventosOffline.map(e => {
+                    const sel = (eventoOfflineSeleccionado && eventoOfflineSeleccionado.id === e.id) ? 'selected' : '';
+                    return `<option value="${escapeHtml(e.id)}" ${sel}>${escapeHtml(e.evento)} · ${escapeHtml(e.horaInicio)}</option>`;
+                }).join('');
+
+                div.innerHTML = `
+                    <div style="font-size:0.8rem;font-weight:700;color:#93c5fd;margin-bottom:8px;">📋 Elegí el evento a operar</div>
+                    <select id="selectEventoOffline" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(52,152,219,0.3);background:rgba(255,255,255,0.04);color:#fff;font-size:0.85rem;font-family:inherit;outline:none;margin-bottom:8px;">
+                        ${opciones}
+                    </select>
+                    <div id="estadoEventoOffline" style="font-size:0.72rem;color:#888;"></div>
+                `;
+
+                setTimeout(() => {
+                    const select = document.getElementById('selectEventoOffline');
+                    if (select) {
+                        select.addEventListener('change', (ev) => {
+                            seleccionarEventoOffline(ev.target.value);
+                        });
+
+                        if (eventoOfflineSeleccionado) {
+                            select.value = eventoOfflineSeleccionado.id;
+                        } else if (eventosOffline.length > 0) {
+                            seleccionarEventoOffline(eventosOffline[0].id);
+                            select.value = eventosOffline[0].id;
+                        }
+                    }
+                }, 0);
+            }
+
+            seccion.insertBefore(div, seccion.firstChild);
+        }
+
+        function seleccionarEventoOffline(eventoId) {
+            const evento = eventosOffline.find(e => e.id === eventoId);
+            if (!evento) return;
+
+            eventoOfflineSeleccionado = evento;
+            eventoActivoEmergencia = {
+                id: evento.id,
+                evento: evento.evento,
+                fotografo: evento.fotografo
+            };
+
+            const aviso = document.getElementById('avisoEmergencia');
+            if (aviso) {
+                const enVentana = _eventoEnVentana(evento);
+                const color = enVentana ? '#4ade80' : '#f39c12';
+                const texto = enVentana
+                    ? '✅ Dentro de la ventana horaria. Podés subir fotos.'
+                    : '⚠️ Fuera de la ventana horaria. Esperá la hora del evento.';
+
+                aviso.innerHTML = `
+                    ⚠️ <strong>Server caído · Modo offline.</strong><br>
+                    Subiendo para <strong>${escapeHtml(evento.evento)}</strong>.<br>
+                    <span style="color:${color};font-size:0.75rem;">${texto}</span>
+                `;
+            }
+
+            const estadoEl = document.getElementById('estadoEventoOffline');
+            if (estadoEl) {
+                const enVentana = _eventoEnVentana(evento);
+                estadoEl.innerHTML = enVentana
+                    ? '<span style="color:#4ade80;">✅ Listo para subir</span>'
+                    : '<span style="color:#f39c12;">⚠️ Fuera de ventana horaria</span>';
+            }
+        }
+
 
         function manejarSeleccionEmergencia(e) {
             const files = Array.from(e.target.files || []);
@@ -3502,8 +3693,16 @@
             if (subiendoEmergencia) return;
 
             if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
-                toast('⚠️ No hay evento activo', 'error');
+                toast('⚠️ Elegí un evento primero', 'error');
                 return;
+            }
+
+            const esOffline = localStorage.getItem('ovj_fotografo_es_offline') === '1';
+            if (esOffline && eventoOfflineSeleccionado) {
+                if (!_eventoEnVentana(eventoOfflineSeleccionado)) {
+                    toast('⚠️ Fuera de la ventana horaria del evento', 'error');
+                    return;
+                }
             }
 
             const pendientes = fotosEmergencia.filter(f => f.estado === 'pendiente' || f.estado === 'error');
