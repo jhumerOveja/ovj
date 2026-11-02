@@ -4062,13 +4062,16 @@
 
             const dispositivoId = getDispositivoId();
 
+            // 🔥 1. Intentar contra el server
             try {
                 const url = `${URL_CLOUDFLARE}/acceso?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                     `&e=${encodeURIComponent(EVENTO_ID)}` +
                     `&t=${encodeURIComponent(TOKEN)}` +
                     `&d=${encodeURIComponent(dispositivoId)}`;
 
-                const respuesta = await fetch(url);
+                const respuesta = await fetch(url, {
+                    signal: AbortSignal.timeout(8000)
+                });
                 const data = await respuesta.json();
 
                 if (!respuesta.ok || !data.valido) {
@@ -4140,16 +4143,86 @@
                 return true;
 
             } catch (error) {
-                console.error('⚠️ Error de red validando acceso:', error);
+                console.warn('⚠️ Server no responde en /acceso, intentando Worker:', error.message);
 
-                const restaurado = restaurarSesionDesdeCache();
-                if (restaurado) {
-                    console.log('✅ Sesión restaurada desde cache');
+                // 🔥 2. Fallback al Worker
+                try {
+                    const urlWorker = `${WORKER_BASE}/api/acceso?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                        `&e=${encodeURIComponent(EVENTO_ID)}` +
+                        `&t=${encodeURIComponent(TOKEN)}` +
+                        `&d=${encodeURIComponent(dispositivoId)}`;
+
+                    const respWorker = await fetch(urlWorker, {
+                        cache: 'no-store',
+                        signal: AbortSignal.timeout(10000)
+                    });
+
+                    const dataWorker = await respWorker.json().catch(() => ({}));
+
+                    if (!respWorker.ok || !dataWorker.valido) {
+                        const motivoW = dataWorker?.motivo;
+
+                        if (motivoW === 'fuera_de_ventana') {
+                            mostrarBloqueo('error',
+                                'La galería todavía no está disponible.<br>' +
+                                'Volvé a intentar más cerca de la hora del evento.');
+                            return false;
+                        }
+
+                        if (motivoW === 'evento_cancelado') {
+                            mostrarBloqueo('eventoFinalizado');
+                            return false;
+                        }
+
+                        // Si falla el Worker, último intento con cache
+                        const restaurado = restaurarSesionDesdeCache();
+                        if (restaurado) {
+                            console.log('✅ Sesión restaurada desde cache (Worker rechazó)');
+                            return true;
+                        }
+
+                        mostrarBloqueo('invalido', t('bloqueoInvalido'));
+                        return false;
+                    }
+
+                    // Worker validó OK
+                    sesion = {
+                        tipo: dataWorker.tipo,
+                        nombre: dataWorker.nombre || 'Invitado',
+                        id: dataWorker.id || null,
+                        ilimitado: dataWorker.ilimitado === true
+                    };
+
+                    window._modoOffline = true;
+                    servidorOnline = false;
+
+                    localStorage.setItem('ovj_token', TOKEN);
+                    localStorage.setItem('ovj_tipo', dataWorker.tipo);
+                    localStorage.setItem('ovj_rol_nombre', dataWorker.nombre || '');
+                    localStorage.setItem('ovj_rol_id', dataWorker.id || '');
+
+                    try {
+                        localStorage.setItem('ovj_sesion_cache_' + EVENTO_ID, JSON.stringify({
+                            sesion: sesion,
+                            guardadoEn: Date.now()
+                        }));
+                    } catch (e) { }
+
+                    console.log('✅ Acceso validado por el Worker (offline)');
                     return true;
-                }
 
-                mostrarBloqueo('error', 'No pudimos validar tu acceso.<br>Reintentá en un momento.');
-                return false;
+                } catch (eWorker) {
+                    console.warn('⚠️ Worker tampoco responde:', eWorker.message);
+
+                    const restaurado = restaurarSesionDesdeCache();
+                    if (restaurado) {
+                        console.log('✅ Sesión restaurada desde cache');
+                        return true;
+                    }
+
+                    mostrarBloqueo('error', 'No pudimos validar tu acceso.<br>Reintentá en un momento.');
+                    return false;
+                }
             }
         }
 
