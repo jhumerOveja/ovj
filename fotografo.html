@@ -2032,6 +2032,13 @@
         }
 
         async function apiFetch(ruta, opciones = {}) {
+            // 🔥 FIX: si el token es offline, el server no lo reconoce.
+            // No hacer apiFetch contra el server: fallar rápido para que
+            // cargarTodo() caiga al modo emergencia.
+            if (tokenSesion && tokenSesion.startsWith('offline_')) {
+                throw new Error('Sesión offline (server no disponible)');
+            }
+
             const headers = opciones.headers || {};
             headers['Content-Type'] = 'application/json';
             if (tokenSesion) headers['Authorization'] = 'Bearer ' + tokenSesion;
@@ -2039,9 +2046,12 @@
             const resp = await fetch(URL_API + ruta, { ...opciones, headers });
 
             if (resp.status === 401) {
-                cerrarSesionLocal();
-                toast('Tu sesión expiró. Vuelve a entrar.', 'error');
-                throw new Error('Sesión expirada');
+                // 🔥 FIX: si el token no es offline pero el server responde 401,
+                // puede ser que el server se reinició y perdió las sesiones en memoria.
+                // Mantener la sesión local (no cerrar) y dejar que cargarTodo()
+                // decida qué hacer (probablemente caer al modo emergencia).
+                console.warn('⚠️ Server respondió 401. Mantengo sesión local.');
+                throw new Error('Sesión rechazada por el server (401)');
             }
 
             const data = await resp.json().catch(() => ({}));
@@ -3385,8 +3395,6 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
-            const esOffline = localStorage.getItem('ovj_fotografo_es_offline') === '1';
-
             if (eventoActivo && eventoActivo.id) {
                 eventoActivoEmergencia = eventoActivo;
             } else {
@@ -3429,9 +3437,10 @@
             const selectorExistente = document.getElementById('selectorEventoOffline');
             if (selectorExistente) selectorExistente.remove();
 
-            if (esOffline) {
-                renderSelectorEventoOffline();
-            }
+            // 🔥 FIX: siempre mostrar el selector, sin importar si hubo login offline
+            // o si la sesión viene del server. Si el server falla, estamos en emergencia,
+            // y el fotógrafo tiene que poder elegir el evento.
+            renderSelectorEventoOffline();
 
             const input = document.getElementById('inputEmergencia');
             if (input && !input._inicializado) {
