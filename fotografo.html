@@ -2155,7 +2155,7 @@
                         return;
                     }
 
-                    guardarSesion(dataWorker.token, dataWorker.fotografo, Date.now() + 24 * 60 * 60 * 1000);
+                    guardarSesion(dataWorker.token, dataWorker.fotografo, Date.now() + 30 * 24 * 60 * 60 * 1000);
                     tokenSesion = dataWorker.token;
                     nombreFotografoActual = dataWorker.fotografo;
 
@@ -2223,8 +2223,6 @@
                     localStorage.removeItem('ovj_fotografo_evento_activo');
                 }
 
-                localStorage.removeItem('ovj_fotografo_es_offline');
-
                 renderActivo(eventoActivo, estado);
                 renderAgendados(eventos.agendados || []);
                 renderFinalizados(eventos.finalizadosHoy || []);
@@ -2254,8 +2252,6 @@
                                 localStorage.removeItem('ovj_fotografo_evento_activo');
                             }
 
-                            localStorage.removeItem('ovj_fotografo_es_offline');
-
                             renderActivo(eventoActivo, estado2);
                             renderAgendados(eventos2.agendados || []);
                             renderFinalizados(eventos2.finalizadosHoy || []);
@@ -2273,9 +2269,9 @@
 
                 marcarServidor('error');
 
-                if (localStorage.getItem('ovj_fotografo_es_offline') === '1') {
-                    await cargarEventosOffline();
-                }
+                // 🔥 FIX 2a: SIEMPRE cargar eventos offline al fallar,
+                // sin importar si hubo login offline o sesión guardada.
+                await cargarEventosOffline();
 
                 mostrarSeccionEmergencia();
             }
