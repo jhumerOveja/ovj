@@ -4545,6 +4545,20 @@
                 }
 
                 if (respuesta.status === 403) {
+                    // 🔥 FIX: si veníamos del Worker (modo offline) y hay cache local,
+                    // NO cerrar. El 403 puede ser transitorio (server recién arrancado,
+                    // evento no reconciliado todavía). Mantener cache y reintentar.
+                    const hayCacheLocal = fotosCache.length > 0;
+
+                    if (vinoDelWorker || (window._modoOffline === true && hayCacheLocal)) {
+                        console.warn('⚠️ 403 transitorio del server. Mantengo cache y reintento en 30s.');
+                        cargando = false;
+                        clearTimeout(window._pollTimer);
+                        window._pollTimer = setTimeout(cargarFotos, 30000);
+                        return;
+                    }
+
+                    // Sin cache y sin modo offline: sí, es un token inválido real.
                     cerrarSesionYBloquear();
                     cargando = false;
                     return;
@@ -4552,11 +4566,20 @@
 
                 if (respuesta.status === 404) {
                     // 🔥 FIX: distinguir 404 del server (evento finalizado) del 404 del Worker
-                    // (status.json no publicado todavía). Solo cerramos si es del server.
+                    // (status.json no publicado todavía).
                     if (vinoDelWorker) {
                         console.warn('⚠️ Worker sin status.json. Mantengo cache local y reintento.');
-                        // No cerramos. Mantenemos las fotos que haya en pantalla.
-                        // Reintentamos en 30s para no martillar.
+                        cargando = false;
+                        clearTimeout(window._pollTimer);
+                        window._pollTimer = setTimeout(cargarFotos, 30000);
+                        return;
+                    }
+
+                    // 🔥 FIX: si hay cache local, el 404 puede ser transitorio
+                    // (server recién arrancado, evento no reconciliado todavía).
+                    // Mantener cache y reintentar. Solo cerrar si no hay cache.
+                    if (fotosCache.length > 0) {
+                        console.warn('⚠️ 404 transitorio del server (evento no reconciliado). Mantengo cache y reintento en 30s.');
                         cargando = false;
                         clearTimeout(window._pollTimer);
                         window._pollTimer = setTimeout(cargarFotos, 30000);
