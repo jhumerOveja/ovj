@@ -4480,9 +4480,6 @@
                 } catch (eServer) {
                     console.warn('⚠️ Server no responde al primer intento:', eServer.message);
 
-                    // 🔥 FIX 3: reintentar el server 2 veces antes de caer al Worker.
-                    // Evita que un hipo de red de 1 segundo haga que la galería
-                    // se vacíe (Worker lee status.json viejo de B2).
                     let reintentoOk = false;
 
                     for (let intento = 0; intento < 2; intento++) {
@@ -4544,10 +4541,8 @@
                     }
                 }
 
+                // Manejo de 403 (token inválido o transitorio)
                 if (respuesta.status === 403) {
-                    // 🔥 FIX: si veníamos del Worker (modo offline) y hay cache local,
-                    // NO cerrar. El 403 puede ser transitorio (server recién arrancado,
-                    // evento no reconciliado todavía). Mantener cache y reintentar.
                     const hayCacheLocal = fotosCache.length > 0;
 
                     if (vinoDelWorker || (window._modoOffline === true && hayCacheLocal)) {
@@ -4558,15 +4553,13 @@
                         return;
                     }
 
-                    // Sin cache y sin modo offline: sí, es un token inválido real.
                     cerrarSesionYBloquear();
                     cargando = false;
                     return;
                 }
 
+                // Manejo de 404
                 if (respuesta.status === 404) {
-                    // 🔥 FIX: distinguir 404 del server (evento finalizado) del 404 del Worker
-                    // (status.json no publicado todavía).
                     if (vinoDelWorker) {
                         console.warn('⚠️ Worker sin status.json. Mantengo cache local y reintento.');
                         cargando = false;
@@ -4575,9 +4568,6 @@
                         return;
                     }
 
-                    // 🔥 FIX: si hay cache local, el 404 puede ser transitorio
-                    // (server recién arrancado, evento no reconciliado todavía).
-                    // Mantener cache y reintentar. Solo cerrar si no hay cache.
                     if (fotosCache.length > 0) {
                         console.warn('⚠️ 404 transitorio del server (evento no reconciliado). Mantengo cache y reintento en 30s.');
                         cargando = false;
@@ -4596,8 +4586,6 @@
 
                 const data = await respuesta.json();
 
-                // 🔥 FIX: si el Worker responde "sin status", no procesamos como galería.
-                // Mantenemos el cache local y reintentamos en 30s.
                 if (data.sinStatus === true) {
                     console.warn('⚠️ Worker sin status.json. Mantengo cache local.');
                     cargando = false;
@@ -4606,13 +4594,19 @@
                     return;
                 }
 
+                // 🔥 FIX: cuando el server responde, limpiar el modo offline
                 if (!vinoDelWorker) {
                     if (!servidorOnline) {
                         servidorOnline = true;
-                        // 🔥 No borramos fotosCache acá. El próximo render las actualiza.
                         actualizarChipEnVivo();
                         actualizarBotonPrincipal();
                         actualizarBotonesModoEmergencia();
+                    }
+
+                    // 🔥 Resetear modo offline
+                    if (window._modoOffline === true) {
+                        window._modoOffline = false;
+                        console.log('🟢 Server recuperado. Modo online restaurado.');
                     }
                 }
 
@@ -4633,6 +4627,7 @@
                     actualizarContadorMirando(data.mirando);
                 }
 
+                // 🔥 FIX: el poll del server siempre se usa cuando viene del server
                 if (data.poll) {
                     window._ultimoPoll = data.poll;
                 } else if (vinoDelWorker) {
@@ -4673,14 +4668,9 @@
                 let fotosInvertidas;
 
                 if (vinoDelWorker) {
-                    // 🔥 FIX CRÍTICO: si la respuesta vino del Worker, puede que
-                    // el status.json de B2 esté desactualizado (server caído antes
-                    // de publicar). NO pisamos el cache local. Solo AGREGAMOS las
-                    // fotos nuevas (típicamente las de emergencia).
                     const nombresCache = new Set(fotosCache.map(f => f.nombre));
                     const fotosAgregadas = [];
 
-                    // Recorremos las fotos del Worker en orden inverso (más nuevas primero)
                     for (const foto of nuevasFotos) {
                         if (!nombresCache.has(foto.nombre)) {
                             fotosAgregadas.push(foto);
@@ -4689,30 +4679,21 @@
                     }
 
                     if (fotosAgregadas.length > 0) {
-                        // Las nuevas van al principio (más recientes primero)
                         fotosInvertidas = [...fotosAgregadas.reverse(), ...fotosCache];
                         console.log(`🔀 Worker: agregadas ${fotosAgregadas.length} fotos al cache (total: ${fotosInvertidas.length})`);
                     } else {
-                        // No hay fotos nuevas. Mantenemos el cache tal cual.
                         fotosInvertidas = fotosCache;
                     }
                 } else {
-                    // 🔥 FIX NUEVO: si el server devuelve MENOS fotos que el cache
-                    // local (porque la fusión de B2 todavía no corrió, o el server
-                    // se acaba de prender y no tiene todo el goteo), NO pisamos el
-                    // cache. Mantenemos las del cache que faltan en el server y
-                    // agregamos las nuevas del server.
+                    // Server vivo
                     if (nuevasFotos.length < fotosCache.length && fotosCache.length > 0) {
                         console.log(`🔀 Server devolvió ${nuevasFotos.length} fotos, cache local tiene ${fotosCache.length}. Manteniendo cache.`);
 
                         const nombresServer = new Set(nuevasFotos.map(f => f.nombre));
                         const fotosSoloEnCache = fotosCache.filter(f => !nombresServer.has(f.nombre));
 
-                        // Las del cache que no están en el server van primero (más recientes)
-                        // y después las nuevas del server.
                         fotosInvertidas = [...fotosSoloEnCache, ...[...nuevasFotos].reverse()];
 
-                        // Deduplicar por nombre
                         const vistos = new Set();
                         fotosInvertidas = fotosInvertidas.filter(f => {
                             if (vistos.has(f.nombre)) return false;
@@ -4721,7 +4702,6 @@
                         });
 
                     } else {
-                        // Server devolvió igual o más: usar lo del server
                         fotosInvertidas = [...nuevasFotos].reverse();
                     }
                 }
@@ -4731,15 +4711,12 @@
                 if (huboCambio) {
                     fotosCache = fotosInvertidas;
 
-                    // 🔥 FIX 2: guardar el estado en localStorage para recargas.
                     try {
                         localStorage.setItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'), JSON.stringify({
                             fotos: fotosInvertidas,
                             guardadoEn: Date.now()
                         }));
-                    } catch (e) {
-                        // localStorage lleno o bloqueado: no es crítico
-                    }
+                    } catch (e) { }
 
                     if (fotoSeleccionadaIndex >= fotosCache.length) {
                         fotoSeleccionadaIndex = -1;
@@ -5671,9 +5648,20 @@
                 clearTimeout(window._pollTimer);
                 window._pollTimer = null;
             } else {
+                // 🔥 FIX: siempre reprogramar al volver a la pestaña.
+                // Si `cargando` es true, el poll en vuelo se va a encargar
+                // de reprogramar. Pero si por algún motivo no lo hizo,
+                // forzamos un poll ahora.
+                clearTimeout(window._pollTimer);
+                window._pollTimer = null;
                 if (!cargando) {
-                    clearTimeout(window._pollTimer);
                     cargarFotos();
+                } else {
+                    // El poll en vuelo va a reprogramar. Pero por si acaso,
+                    // forzamos uno en 5s.
+                    window._pollTimer = setTimeout(() => {
+                        if (!cargando) cargarFotos();
+                    }, 5000);
                 }
             }
         });
