@@ -4674,8 +4674,33 @@
                         fotosInvertidas = fotosCache;
                     }
                 } else {
-                    // Server vivo: confiamos en lo que devuelve. Es la fuente de verdad.
-                    fotosInvertidas = [...nuevasFotos].reverse();
+                    // 🔥 FIX NUEVO: si el server devuelve MENOS fotos que el cache
+                    // local (porque la fusión de B2 todavía no corrió, o el server
+                    // se acaba de prender y no tiene todo el goteo), NO pisamos el
+                    // cache. Mantenemos las del cache que faltan en el server y
+                    // agregamos las nuevas del server.
+                    if (nuevasFotos.length < fotosCache.length && fotosCache.length > 0) {
+                        console.log(`🔀 Server devolvió ${nuevasFotos.length} fotos, cache local tiene ${fotosCache.length}. Manteniendo cache.`);
+
+                        const nombresServer = new Set(nuevasFotos.map(f => f.nombre));
+                        const fotosSoloEnCache = fotosCache.filter(f => !nombresServer.has(f.nombre));
+
+                        // Las del cache que no están en el server van primero (más recientes)
+                        // y después las nuevas del server.
+                        fotosInvertidas = [...fotosSoloEnCache, ...[...nuevasFotos].reverse()];
+
+                        // Deduplicar por nombre
+                        const vistos = new Set();
+                        fotosInvertidas = fotosInvertidas.filter(f => {
+                            if (vistos.has(f.nombre)) return false;
+                            vistos.add(f.nombre);
+                            return true;
+                        });
+
+                    } else {
+                        // Server devolvió igual o más: usar lo del server
+                        fotosInvertidas = [...nuevasFotos].reverse();
+                    }
                 }
 
                 const huboCambio = JSON.stringify(fotosInvertidas) !== JSON.stringify(fotosCache);
