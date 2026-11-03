@@ -4505,31 +4505,32 @@
                     if (!reintentoOk) {
                         console.warn('⚠️ Server no respondió tras 2 reintentos, usando Worker');
 
-                        const consulta = await consultarDonde();
+                        // 🔥 FIX: consultar /api/donde para actualizar URL_CLOUDFLARE
+                        // (por si el túnel se reinició), y SIEMPRE reintentar el server
+                        // con la URL actual. El server puede haberse recuperado con la
+                        // misma URL, o con una nueva.
+                        await consultarDonde();
 
-                        if (consulta.ok && consulta.cambio) {
-                            try {
-                                const urlServerRetry = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                                    `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                                    `&t=${encodeURIComponent(TOKEN || '')}`;
+                        try {
+                            const urlServerRetry = `${URL_CLOUDFLARE}/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
+                                `&e=${encodeURIComponent(EVENTO_ID || '')}` +
+                                `&t=${encodeURIComponent(TOKEN || '')}`;
 
-                                const respRetry = await fetch(urlServerRetry, { cache: 'no-store' });
+                            const respRetry = await fetch(urlServerRetry, { cache: 'no-store' });
 
-                                if (respRetry.ok) {
-                                    respuesta = respRetry;
-                                } else {
-                                    throw new Error(`Reintento HTTP ${respRetry.status}`);
-                                }
-                            } catch (eRetry) {
-                                const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
-                                    `&e=${encodeURIComponent(EVENTO_ID || '')}` +
-                                    `&t=${encodeURIComponent(TOKEN || '')}`;
-                                respuesta = await fetch(urlWorker, { cache: 'no-store' });
-                                vinoDelWorker = true;
-                                servidorOnline = false;
-                                actualizarBotonesModoEmergencia();
+                            if (respRetry.ok) {
+                                respuesta = respRetry;
+                                console.log('✅ Server recuperado, usando respuesta del server');
+                            } else if (respRetry.status === 403) {
+                                // 🔥 FIX: 403 en el reintento significa que el server está vivo
+                                // pero rechaza el token (porque no fue reconciliado).
+                                // Tratarlo como "transitorio" para que el flujo de 403 lo maneje.
+                                respuesta = respRetry;
+                                console.log('⚠️ Server vivo pero rechaza token (403). Manteniendo cache.');
+                            } else {
+                                throw new Error(`Reintento HTTP ${respRetry.status}`);
                             }
-                        } else {
+                        } catch (eRetry) {
                             const urlWorker = `${WORKER_BASE}/api/fotos?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
                                 `&e=${encodeURIComponent(EVENTO_ID || '')}` +
                                 `&t=${encodeURIComponent(TOKEN || '')}`;
@@ -4594,7 +4595,6 @@
                     return;
                 }
 
-                // 🔥 FIX: cuando el server responde, limpiar el modo offline
                 if (!vinoDelWorker) {
                     if (!servidorOnline) {
                         servidorOnline = true;
@@ -4603,10 +4603,15 @@
                         actualizarBotonesModoEmergencia();
                     }
 
-                    // 🔥 Resetear modo offline
                     if (window._modoOffline === true) {
                         window._modoOffline = false;
                         console.log('🟢 Server recuperado. Modo online restaurado.');
+                    }
+
+                    // 🔥 FIX: actualizar el poll al del server
+                    if (data.poll && data.poll.intervaloBaseSeg > 0) {
+                        window._ultimoPoll = data.poll;
+                        console.log(`⏱️ Poll actualizado al del server: ${data.poll.intervaloBaseSeg}s`);
                     }
                 }
 
