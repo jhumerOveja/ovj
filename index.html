@@ -4151,6 +4151,15 @@
                         return false;
                     }
 
+                    // 🔥 FIX: si el evento terminó, mostrar cierre (no "Galería privada")
+                    if (motivo === 'evento_finalizado' || respuesta.status === 410) {
+                        try {
+                            localStorage.removeItem('ovj_fotos_cache_' + EVENTO_ID);
+                        } catch (e) { }
+                        detenerTodoYMostrarCierre();
+                        return false;
+                    }
+
                     const es404EventoNoEncontrado =
                         respuesta.status === 404 &&
                         typeof data?.error === 'string' &&
@@ -4303,8 +4312,11 @@
                 const cache = JSON.parse(raw);
                 if (!cache || !cache.sesion) return false;
 
-                const UNA_HORA_MS = 24 * 60 * 60 * 1000;
-                if (cache.guardadoEn && (Date.now() - cache.guardadoEn) > UNA_HORA_MS) {
+                // 🔥 FIX: el cache de sesión dura 4 horas (un evento típico).
+                // Antes duraba 24 horas, lo que hacía que el invitado siguiera
+                // viendo el evento después de que terminó.
+                const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
+                if (cache.guardadoEn && (Date.now() - cache.guardadoEn) > CUATRO_HORAS_MS) {
                     localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
                     return false;
                 }
@@ -4657,7 +4669,19 @@
                 const data = await respuesta.json();
 
                 if (data.sinStatus === true) {
-                    console.warn('⚠️ Worker sin status.json. Mantengo cache local.');
+                    // 🔥 FIX: si el evento terminó o se canceló, cerrar.
+                    // Si no, mantener cache y reintentar.
+                    if (data.estadoEvento === 'finalizado' || data.estadoEvento === 'cancelado') {
+                        console.log('🎬 Evento finalizado/cancelado. Cerrando galería.');
+                        try {
+                            localStorage.removeItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
+                        } catch (e) { }
+                        detenerTodoYMostrarCierre();
+                        cargando = false;
+                        return;
+                    }
+
+                    console.warn('⚠️ Worker sin status.json (evento todavía activo). Mantengo cache local.');
                     cargando = false;
                     clearTimeout(window._pollTimer);
                     window._pollTimer = setTimeout(cargarFotos, 30000);
@@ -5849,7 +5873,15 @@
                 const cacheFotos = localStorage.getItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
                 if (cacheFotos) {
                     const dataCache = JSON.parse(cacheFotos);
-                    if (dataCache && Array.isArray(dataCache.fotos) && dataCache.fotos.length > 0) {
+
+                    // 🔥 FIX: el cache de fotos dura 4 horas. Si es más viejo, ignorarlo.
+                    const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
+                    const esCacheViejo = dataCache.guardadoEn && (Date.now() - dataCache.guardadoEn) > CUATRO_HORAS_MS;
+
+                    if (esCacheViejo) {
+                        console.log('📦 Cache de fotos viejo (>4h), ignorando.');
+                        localStorage.removeItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
+                    } else if (dataCache && Array.isArray(dataCache.fotos) && dataCache.fotos.length > 0) {
                         fotosCache = dataCache.fotos;
                         fotosVisibles = Math.min(FOTOS_POR_CARGA, fotosCache.length);
                         renderizarGaleria();
