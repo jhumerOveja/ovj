@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <link rel="stylesheet" href="style.css">
+    <title>OVJ Play · 2048</title>
+</head>
+<body>
+    <div id="header">
+        <div class="logo">OVJ <span>Studio</span></div>
+        <div class="titulo">2048</div>
+        <div id="puntaje">Puntaje: <strong>0</strong></div>
+    </div>
+
+    <div id="gameArea">
+        <div class="board" id="board"></div>
+
+        <div class="arrow-keys">
+            <div class="key" id="keyup"><span>▲</span></div>
+            <div class="key-row">
+                <div class="key" id="keyleft"><span>◀</span></div>
+                <div class="key" id="keydown"><span>▼</span></div>
+                <div class="key" id="keyright"><span>▶</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <p>Powered by <strong style="color: #e8c47a;">OVJ Studio</strong></p>
+        <p>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank">
+                ¿Querés tu galería en vivo? → WhatsApp
+            </a>
+        </p>
+        <p class="creditos">Basado en 2048 de <a href="https://play2048.co/" target="_blank">Gabriele Cirulli</a>. Port JS por <a href="https://github.com/BasimAhmedKhan" target="_blank">Basim Khan</a>.</p>
+    </div>
+
+    <!-- Modal de inicio -->
+    <div class="ovj-modal-overlay activo" id="modalInicio">
+        <div class="ovj-modal">
+            <div class="logo">OVJ <span>Studio</span></div>
+            <div class="titulo">2048</div>
+            <div class="subtitulo">Uní los números y llegá al 2048.</div>
+            <div class="instrucciones">
+                <strong>Controles:</strong><br>
+                Deslizá el dedo o usá las flechas.<br>
+                <strong>Teclado:</strong> Flechas de dirección.
+            </div>
+            <button class="btn-ovj" id="btnEmpezar">JUGAR</button>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank" class="link-ovj">
+                ✨ ¿Querés tu galería en vivo?<br>
+                <strong>Hacé tu evento con OVJ Studio</strong>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal de Game Over -->
+    <div class="ovj-modal-overlay" id="modalGameOver">
+        <div class="ovj-modal">
+            <div class="logo">OVJ <span>Studio</span></div>
+            <div class="titulo" style="color: #e74c3c;">¡Perdiste!</div>
+            <div class="subtitulo">Puntaje: <strong id="puntajeFinal" style="color: #e8c47a;">0</strong></div>
+            <button class="btn-ovj" id="btnReiniciar">JUGAR DE NUEVO</button>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank" class="link-ovj">
+                ✨ ¿Querés tu galería en vivo?<br>
+                <strong>Hacé tu evento con OVJ Studio</strong>
+            </a>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
