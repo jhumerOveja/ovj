@@ -8,7 +8,7 @@ class Game {
     static BORDER_COLOR = "rgba(232, 196, 122, 0.15)";
     static DELETED_ROW_COLOR = "#e8c47a";
     static TIMEOUT_LOCK_PUT_NEXT_PIECE = 300;  // Espera más antes de fijar la pieza
-    static PIECE_SPEED = 600;                   // Más lento (antes 350ms)
+    static PIECE_SPEED = 400;                   // Más lento (antes 350ms)
     static DELETE_ROW_ANIMATION = 400;
     static PER_SQUARE_SCORE = 1;
 
