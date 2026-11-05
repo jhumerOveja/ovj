@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <title>OVJ Play · Tetris</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        #header {
+            width: 100%;
+            padding: 12px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(232, 196, 122, 0.15);
+            background: rgba(10, 10, 10, 0.95);
+            flex-shrink: 0;
+        }
+        #header .logo {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        #header .logo span {
+            font-weight: 800;
+            background: linear-gradient(135deg, #f9d976, #d4a94a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #header .titulo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #e8c47a;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+        #puntaje {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+        #puntaje strong { color: #e8c47a; }
+        #gameArea {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            width: 100%;
+            gap: 12px;
+        }
+        #canvas {
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(232, 196, 122, 0.15);
+            background: #000;
+            display: block;
+        }
+        #controles {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 420px;
+            padding: 0 8px;
+        }
+        .btn-ctrl {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(232, 196, 122, 0.25);
+            background: rgba(232, 196, 122, 0.08);
+            color: #e8c47a;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .btn-ctrl:hover, .btn-ctrl:active {
+            background: rgba(232, 196, 122, 0.25);
+            border-color: #e8c47a;
+            transform: scale(1.03);
+        }
+        .btn-ctrl.danger {
+            border-color: rgba(231, 76, 60, 0.3);
+            background: rgba(231, 76, 60, 0.08);
+            color: #e74c3c;
+        }
+        .btn-ctrl.danger:hover, .btn-ctrl.danger:active {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+        .btn-ctrl.success {
+            border-color: rgba(46, 204, 113, 0.3);
+            background: rgba(46, 204, 113, 0.08);
+            color: #2ecc71;
+        }
+        .btn-ctrl.success:hover, .btn-ctrl.success:active {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+        }
+        #footer {
+            width: 100%;
+            padding: 10px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(232, 196, 122, 0.15);
+            background: rgba(10, 10, 10, 0.95);
+            flex-shrink: 0;
+        }
+        #footer p {
+            font-size: 0.72rem;
+            color: #666;
+            margin: 3px 0;
+        }
+        #footer a {
+            color: #e8c47a;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+        }
+        #footer a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(232, 196, 122, 0.5);
+        }
+        /* Modales OVJ */
+        .ovj-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .ovj-modal-overlay.activo {
+            display: flex;
+        }
+        .ovj-modal {
+            background: #141414;
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 20px;
+            padding: 30px 24px;
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .ovj-modal .logo {
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .ovj-modal .logo span {
+            font-weight: 800;
+            background: linear-gradient(135deg, #f9d976, #d4a94a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ovj-modal .titulo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #e8c47a;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .ovj-modal .subtitulo {
+            font-size: 0.88rem;
+            color: #aaa;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+        .ovj-modal .instrucciones {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.78rem;
+            color: #bbb;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .ovj-modal .instrucciones strong { color: #e8c47a; }
+        .ovj-modal .btn-ovj {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #e8c47a, #d4a94a);
+            color: #0a0a0a;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 12px;
+        }
+        .ovj-modal .btn-ovj:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(232, 196, 122, 0.4);
+        }
+        .ovj-modal .link-ovj {
+            display: block;
+            margin-top: 14px;
+            font-size: 0.75rem;
+            color: #e8c47a;
+            text-decoration: none;
+            padding: 10px;
+            border: 1px solid rgba(232, 196, 122, 0.3);
+            border-radius: 10px;
+            background: rgba(232, 196, 122, 0.05);
+        }
+        .ovj-modal .link-ovj strong { color: #fff; display: block; margin-top: 2px; font-size: 0.85rem; }
+        .ovj-modal .link-ovj:hover { background: rgba(232, 196, 122, 0.15); }
+        @media (max-width: 400px) {
+            #header .titulo { font-size: 1.3rem; }
+            #controles { gap: 6px; }
+            .btn-ctrl { padding: 12px 0; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div class="logo">OVJ <span>Studio</span></div>
+        <div class="titulo">TETRIS</div>
+        <div id="puntaje">Puntaje: <strong>0</strong></div>
+    </div>
+
+    <div id="gameArea">
+        <canvas id="canvas"></canvas>
+        <div id="controles">
+            <button class="btn-ctrl" id="btnIzquierda" aria-label="Izquierda">◀</button>
+            <button class="btn-ctrl" id="btnRotar" aria-label="Rotar">⟳</button>
+            <button class="btn-ctrl" id="btnAbajo" aria-label="Abajo">▼</button>
+            <button class="btn-ctrl" id="btnDerecha" aria-label="Derecha">▶</button>
+            <button class="btn-ctrl success" id="btnIniciar" aria-label="Jugar">▶</button>
+        </div>
+        <div id="controles2" style="display: flex; gap: 8px; width: 100%; max-width: 420px; padding: 0 8px;">
+            <button class="btn-ctrl" id="btnPausar" style="flex: 1; display: none;" aria-label="Pausar">⏸</button>
+            <button class="btn-ctrl danger" id="reset" style="flex: 1;" aria-label="Reiniciar">✕</button>
+        </div>
+    </div>
+
+    <div id="footer">
+        <p>Powered by <strong style="color: #e8c47a;">OVJ Studio</strong></p>
+        <p>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank">
+                ¿Querés tu galería en vivo? → WhatsApp
+            </a>
+        </p>
+    </div>
+
+    <!-- Modal de inicio -->
+    <div class="ovj-modal-overlay activo" id="modalInicio">
+        <div class="ovj-modal">
+            <div class="logo">OVJ <span>Studio</span></div>
+            <div class="titulo">Tetris</div>
+            <div class="subtitulo">Completá líneas y sumá puntos.</div>
+            <div class="instrucciones">
+                <strong>Controles:</strong><br>
+                ◀ ▶ → Mover pieza<br>
+                ▼ → Bajar más rápido<br>
+                ⟳ → Rotar pieza<br>
+                <strong>Teclado:</strong> Flechas + R para rotar.<br>
+                <strong>P</strong> para pausar / reanudar.
+            </div>
+            <button class="btn-ovj" id="btnEmpezar">JUGAR</button>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank" class="link-ovj">
+                ✨ ¿Querés tu galería en vivo?<br>
+                <strong>Hacé tu evento con OVJ Studio</strong>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal de Game Over -->
+    <div class="ovj-modal-overlay" id="modalGameOver">
+        <div class="ovj-modal">
+            <div class="logo">OVJ <span>Studio</span></div>
+            <div class="titulo" style="color: #e74c3c;">¡Perdiste!</div>
+            <div class="subtitulo">Puntaje: <strong id="puntajeFinal" style="color: #e8c47a;">0</strong></div>
+            <button class="btn-ovj" id="btnReiniciar">JUGAR DE NUEVO</button>
+            <a href="https://wa.me/59160004962?text=Hola,%20quiero%20una%20galer%C3%ADa%20en%20vivo%20para%20mi%20evento" target="_blank" class="link-ovj">
+                ✨ ¿Querés tu galería en vivo?<br>
+                <strong>Hacé tu evento con OVJ Studio</strong>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/tetris.js"></script>
+</body>
+</html>
