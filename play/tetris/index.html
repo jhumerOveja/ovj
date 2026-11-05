@@ -20,48 +20,44 @@
             user-select: none;
         }
         #header {
-            width: 100%;
-            padding: 12px 20px;
+            padding: 8px 20px 4px; /* Reducido */
             text-align: center;
             border-bottom: 1px solid rgba(232, 196, 122, 0.15);
             background: rgba(10, 10, 10, 0.95);
             flex-shrink: 0;
         }
-        #header .logo {
-            font-size: 1.3rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
+        #header .logo { font-size: 1.1rem; margin-bottom: 2px; }
         #header .logo span {
             font-weight: 800;
             background: linear-gradient(135deg, #f9d976, #d4a94a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        #header .titulo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #e8c47a;
-            letter-spacing: 2px;
-            margin-top: 4px;
-        }
-        #puntaje {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #fff;
-            margin-top: 6px;
-            letter-spacing: 1px;
-        }
+        #header .titulo { font-size: 1.2rem; margin-top: 2px; letter-spacing: 1px; }
+        #puntaje { font-size: 1rem; margin-top: 2px; }
         #puntaje strong { color: #e8c47a; }
         #gameArea {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 10px;
+            justify-content: center; /* Centra verticalmente */
+            padding: 8px;
             width: 100%;
-            gap: 12px;
+            gap: 10px;
+            min-height: 0; /* Clave para que flex no se desborde */
+            overflow: hidden;
+        }
+
+        #cruceta {
+            grid-column: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 8px;
+            justify-self: center;
+            width: 100%;
+            max-width: 170px; /* Un poco más grande */
         }
         #canvas {
             border-radius: 12px;
@@ -328,6 +324,16 @@
             background: rgba(46, 204, 113, 0.2);
             border-color: #2ecc71;
         }
+
+        .btn-ctrl.warning {
+            border-color: rgba(243, 156, 18, 0.3);
+            background: rgba(243, 156, 18, 0.08);
+            color: #f39c12;
+        }
+        .btn-ctrl.warning:hover, .btn-ctrl.warning:active {
+            background: rgba(243, 156, 18, 0.2);
+            border-color: #f39c12;
+        }
     </style>
 </head>
 <body>
@@ -341,19 +347,15 @@
         <canvas id="canvas"></canvas>
 
         <div id="controles-principales">
-            <!-- Botón pausa a la izquierda (oculto al inicio) -->
-            <button class="btn-ctrl success" id="btnPausar" style="display: none;" aria-label="Pausar">⏸</button>
-            <button class="btn-ctrl success" id="btnIniciar" aria-label="Jugar">▶</button>
+            <button class="btn-ctrl" id="btnToggle" aria-label="Pausar">⏸</button>
 
-            <!-- Cruceta de movimiento -->
             <div id="cruceta">
                 <button class="btn-ctrl" id="btnRotar" aria-label="Rotar">⟳</button>
-                <button class="btn-ctrl" id="btnAbajo" aria-label="Abajo">▼</button>
                 <button class="btn-ctrl" id="btnIzquierda" aria-label="Izquierda">◀</button>
+                <button class="btn-ctrl" id="btnAbajo" aria-label="Abajo">▼</button>
                 <button class="btn-ctrl" id="btnDerecha" aria-label="Derecha">▶</button>
             </div>
 
-            <!-- Botón reiniciar a la derecha -->
             <button class="btn-ctrl danger" id="reset" aria-label="Reiniciar">✕</button>
         </div>
     </div>
@@ -404,5 +406,19 @@
     </div>
 
     <script src="js/tetris.js"></script>
+    <script>
+        document.getElementById("btnEmpezar").addEventListener("click", () => {
+            document.getElementById("modalInicio").classList.remove("activo");
+            game.resumeGame();
+        });
+
+        document.getElementById("btnReiniciar").addEventListener("click", () => {
+            window.location.reload();
+        });
+
+        document.getElementById("reset").addEventListener("click", () => {
+            if (confirm("¿Reiniciar el juego?")) window.location.reload();
+        });
+    </script>
 </body>
 </html>

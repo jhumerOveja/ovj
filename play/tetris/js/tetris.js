@@ -1,5 +1,5 @@
 class Game {
-    static SQUARE_LENGTH = screen.width > 420 ? 30 : 20;
+    static SQUARE_LENGTH = screen.width > 420 ? 34 : 22; // Antes era 30 : 20
     static COLUMNS = 10;
     static ROWS = 20;
     static CANVAS_WIDTH = this.SQUARE_LENGTH * this.COLUMNS;
@@ -48,6 +48,9 @@ class Game {
 
     init() {
         this.initDomElements();
+        this.$btnToggle.innerHTML = "⏸";
+        this.$btnToggle.classList.remove("success");
+        this.$btnToggle.classList.add("warning");
         this.initSounds();
         this.resetGame();
         this.draw();
@@ -87,9 +90,7 @@ class Game {
         this.$btnRight.addEventListener("click", () => { if (this.canPlay) this.attemptMoveRight(); });
         this.$btnLeft.addEventListener("click", () => { if (this.canPlay) this.attemptMoveLeft(); });
         this.$btnRotate.addEventListener("click", () => { if (this.canPlay) this.attemptRotate(); });
-        [this.$btnPause, this.$btnResume].forEach($btn => $btn.addEventListener("click", () => {
-            this.pauseOrResumeGame();
-        }));
+        this.$btnToggle.addEventListener("click", () => { this.pauseOrResumeGame(); });
     }
 
     attemptMoveRight() { if (this.figureCanMoveRight()) this.globalX++; }
@@ -100,14 +101,16 @@ class Game {
     pauseOrResumeGame() {
         if (this.paused) {
             this.resumeGame();
-            this.$btnResume.hidden = true;
-            this.$btnPause.hidden = false;
-            this.$btnPause.style.display = "flex";
+            this.$btnToggle.innerHTML = "⏸";
+            this.$btnToggle.classList.remove("success");
+            this.$btnToggle.classList.add("warning");
+            this.$btnToggle.setAttribute("aria-label", "Pausar");
         } else {
             this.pauseGame();
-            this.$btnResume.hidden = false;
-            this.$btnPause.hidden = true;
-            this.$btnPause.style.display = "none";
+            this.$btnToggle.innerHTML = "▶";
+            this.$btnToggle.classList.remove("warning");
+            this.$btnToggle.classList.add("success");
+            this.$btnToggle.setAttribute("aria-label", "Reanudar");
         }
     }
 
@@ -294,8 +297,7 @@ class Game {
     initDomElements() {
         this.$canvas = document.querySelector("#" + this.canvasId);
         this.$score = document.querySelector("#puntaje");
-        this.$btnPause = document.querySelector("#btnPausar");
-        this.$btnResume = document.querySelector("#btnIniciar");
+        this.$btnToggle = document.querySelector("#btnToggle"); // <-- NUEVO
         this.$btnRotate = document.querySelector("#btnRotar");
         this.$btnDown = document.querySelector("#btnAbajo");
         this.$btnRight = document.querySelector("#btnDerecha");
