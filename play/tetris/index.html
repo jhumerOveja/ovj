@@ -69,14 +69,7 @@
             background: #000;
             display: block;
         }
-        #controles {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            width: 100%;
-            max-width: 420px;
-            padding: 0 8px;
-        }
+
         .btn-ctrl {
             display: flex;
             align-items: center;
@@ -243,6 +236,98 @@
             #controles { gap: 6px; }
             .btn-ctrl { padding: 12px 0; font-size: 1.1rem; }
         }
+
+        #controles-principales {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 columnas: pausa | cruceta | reset */
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            padding: 0 8px;
+            align-items: center;
+        }
+
+        /* La cruceta: 3 columnas, 2 filas */
+        #cruceta {
+            grid-column: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 8px;
+            justify-self: center;
+            width: 100%;
+            max-width: 160px;
+        }
+        /* Botón rotar arriba al centro */
+        #cruceta #btnRotar {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        /* Botón izquierda abajo a la izquierda */
+        #cruceta #btnIzquierda {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        /* Botón abajo abajo al centro */
+        #cruceta #btnAbajo {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        /* Botón derecha abajo a la derecha */
+        #cruceta #btnDerecha {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        #btnPausar, #btnIniciar, #reset {
+            grid-column: 1;
+            justify-self: start;
+        }
+        #reset {
+            grid-column: 3;
+            justify-self: end;
+        }
+
+        .btn-ctrl {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(232, 196, 122, 0.25);
+            background: rgba(232, 196, 122, 0.08);
+            color: #e8c47a;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-width: 50px;
+        }
+        .btn-ctrl:hover, .btn-ctrl:active {
+            background: rgba(232, 196, 122, 0.25);
+            border-color: #e8c47a;
+            transform: scale(1.05);
+        }
+        .btn-ctrl.danger {
+            border-color: rgba(231, 76, 60, 0.3);
+            background: rgba(231, 76, 60, 0.08);
+            color: #e74c3c;
+        }
+        .btn-ctrl.danger:hover, .btn-ctrl.danger:active {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+        .btn-ctrl.success {
+            border-color: rgba(46, 204, 113, 0.3);
+            background: rgba(46, 204, 113, 0.08);
+            color: #2ecc71;
+        }
+        .btn-ctrl.success:hover, .btn-ctrl.success:active {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+        }
     </style>
 </head>
 <body>
@@ -254,16 +339,22 @@
 
     <div id="gameArea">
         <canvas id="canvas"></canvas>
-        <div id="controles">
-            <button class="btn-ctrl" id="btnIzquierda" aria-label="Izquierda">◀</button>
-            <button class="btn-ctrl" id="btnRotar" aria-label="Rotar">⟳</button>
-            <button class="btn-ctrl" id="btnAbajo" aria-label="Abajo">▼</button>
-            <button class="btn-ctrl" id="btnDerecha" aria-label="Derecha">▶</button>
+
+        <div id="controles-principales">
+            <!-- Botón pausa a la izquierda (oculto al inicio) -->
+            <button class="btn-ctrl success" id="btnPausar" style="display: none;" aria-label="Pausar">⏸</button>
             <button class="btn-ctrl success" id="btnIniciar" aria-label="Jugar">▶</button>
-        </div>
-        <div id="controles2" style="display: flex; gap: 8px; width: 100%; max-width: 420px; padding: 0 8px;">
-            <button class="btn-ctrl" id="btnPausar" style="flex: 1; display: none;" aria-label="Pausar">⏸</button>
-            <button class="btn-ctrl danger" id="reset" style="flex: 1;" aria-label="Reiniciar">✕</button>
+
+            <!-- Cruceta de movimiento -->
+            <div id="cruceta">
+                <button class="btn-ctrl" id="btnRotar" aria-label="Rotar">⟳</button>
+                <button class="btn-ctrl" id="btnAbajo" aria-label="Abajo">▼</button>
+                <button class="btn-ctrl" id="btnIzquierda" aria-label="Izquierda">◀</button>
+                <button class="btn-ctrl" id="btnDerecha" aria-label="Derecha">▶</button>
+            </div>
+
+            <!-- Botón reiniciar a la derecha -->
+            <button class="btn-ctrl danger" id="reset" aria-label="Reiniciar">✕</button>
         </div>
     </div>
 
