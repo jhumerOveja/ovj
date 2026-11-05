@@ -7,8 +7,8 @@ class Game {
     static EMPTY_COLOR = "#0a0a0a";
     static BORDER_COLOR = "rgba(232, 196, 122, 0.15)";
     static DELETED_ROW_COLOR = "#e8c47a";
-    static TIMEOUT_LOCK_PUT_NEXT_PIECE = 200;
-    static PIECE_SPEED = 350;
+    static TIMEOUT_LOCK_PUT_NEXT_PIECE = 300;  // Espera más antes de fijar la pieza
+    static PIECE_SPEED = 600;                   // Más lento (antes 350ms)
     static DELETE_ROW_ANIMATION = 400;
     static PER_SQUARE_SCORE = 1;
 
@@ -215,6 +215,14 @@ class Game {
 
     mainLoop() {
         if (!this.canPlay) return;
+
+        // Evitar doble tick: solo procesar si pasó suficiente tiempo
+        const ahora = Date.now();
+        if (this._ultimoTick && (ahora - this._ultimoTick) < (Game.PIECE_SPEED - 50)) {
+            return;
+        }
+        this._ultimoTick = ahora;
+
         if (this.figureCanMoveDown()) {
             this.globalY++;
         } else {
