@@ -3079,6 +3079,9 @@
                     style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
+                <button class="btn-admin-mini" id="btnJuegos" onclick="abrirModalJuegos()" style="background: rgba(155, 89, 182, 0.12); border: 1px solid rgba(155, 89, 182, 0.35); color: #b794f4;">
+                    🎮 <span class="btn-admin-texto">Juegos</span><span class="btn-admin-texto-corto">Juegos</span>
+                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -3262,30 +3265,6 @@
                 <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
             </button>
 
-            <div class="menu-lateral-separador"></div>
-
-            <button class="menu-lateral-item" onclick="window.open('play/flappybird/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🐦</span>
-                <span class="menu-lateral-texto" data-i18n="menuFlappy">Flappy Bird</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/crossyroad/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🐔</span>
-                <span class="menu-lateral-texto" data-i18n="menuCrossy">Crossy Road</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/tetris/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🧱</span>
-                <span class="menu-lateral-texto" data-i18n="menuTetris">Tetris</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/2048/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🔢</span>
-                <span class="menu-lateral-texto" data-i18n="menu2048">2048</span>
-            </button>
-
-            <div class="menu-lateral-separador"></div>
-
             <button class="menu-lateral-item" onclick="menuAccion('sobre')">
                 <span class="menu-lateral-emoji">ℹ️</span>
                 <span class="menu-lateral-texto" data-i18n="menuSobre">Sobre nosotros</span>
@@ -3329,6 +3308,39 @@
             <div class="modal-info-titulo" data-i18n="sobreTitulo">Sobre nosotros</div>
             <div class="modal-info-texto" data-i18n="sobreTexto"></div>
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalSobre')" data-i18n="cerrar">Cerrar</button>
+        </div>
+    </div>
+    <!-- ===== MODAL DE MINIJUEGOS ===== -->
+    <div class="modal-info" id="modalJuegos">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalJuegos')">✕</button>
+            <span class="modal-info-emoji">🎮</span>
+            <div class="modal-info-titulo" data-i18n="menuJuegos">Minijuegos</div>
+            <div class="modal-info-texto" style="text-align:center; margin-bottom:20px;">
+                Elige un juego para entretenerte mientras esperas.
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button class="menu-lateral-item" onclick="window.open('play/flappybird/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
+                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🐦</span>
+                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuFlappy">Flappy Bird</span>
+                </button>
+
+                <button class="menu-lateral-item" onclick="window.open('play/crossyroad/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
+                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🐔</span>
+                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuCrossy">Crossy Road</span>
+                </button>
+
+                <button class="menu-lateral-item" onclick="window.open('play/tetris/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
+                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🧱</span>
+                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuTetris">Tetris</span>
+                </button>
+
+                <button class="menu-lateral-item" onclick="window.open('play/2048/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
+                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🔢</span>
+                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menu2048">2048</span>
+                </button>
+            </div>
         </div>
     </div>
 
