@@ -3381,7 +3381,7 @@
 
 
 
-        const WORKER_BASE_EMERGENCIA = 'https://ovj-b2-proxy.jhumerali2.workers.dev';
+
         const MAX_ORIGINAL_MB_EMERGENCIA = 15;
         const MAX_PREVIEW_MB_EMERGENCIA = 2;
         const PREVIEW_WIDTH_EMERGENCIA = 900;
@@ -3854,7 +3854,7 @@
             formData.append('nombreOriginal', nombreOriginal);
             formData.append('nombrePreview', nombrePreview);
 
-            const resp = await fetch(`${WORKER_BASE_EMERGENCIA}/api/emergencia-upload`, {
+            const resp = await fetch(`${WORKER_BASE}/api/emergencia-upload`, {
                 method: 'POST',
                 headers: {
                     'X-Evento-Id': eventoActivoEmergencia.id,
