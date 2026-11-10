@@ -3229,6 +3229,11 @@
                     <div class="valor" id="metricaTickets">—</div>
                     <div class="etiqueta">Tickets</div>
                 </div>
+                <div class="metrica-card">
+                    <span class="emoji">📸</span>
+                    <div class="valor" id="metricaFotos">—</div>
+                    <div class="etiqueta">Fotos</div>
+                </div>
             </div>
 
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalMetricas')">
@@ -5687,11 +5692,13 @@
             const elActivos = document.getElementById('metricaActivos');
             const elDescargas = document.getElementById('metricaDescargas');
             const elTickets = document.getElementById('metricaTickets');
+            const elFotos = document.getElementById('metricaFotos'); // 🔥 NUEVO
 
             subtitulo.textContent = 'Cargando...';
             elActivos.textContent = '—';
             elDescargas.textContent = '—';
             elTickets.textContent = '—';
+            if (elFotos) elFotos.textContent = '—'; // 🔥 NUEVO
 
             try {
                 const url = `${URL_CLOUDFLARE}/admin/metricas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -5709,6 +5716,7 @@
                 elActivos.textContent = data.totalActivos || 0;
                 elDescargas.textContent = data.metricas?.descargasTotales || 0;
                 elTickets.textContent = data.metricas?.ticketsEmitidos || 0;
+                if (elFotos) elFotos.textContent = data.totalFotos || 0; // 🔥 NUEVO
 
                 subtitulo.textContent = 'Métricas del evento en vivo';
 
