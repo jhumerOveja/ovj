@@ -3079,7 +3079,7 @@
                     style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
-                <button class="btn-admin-mini" id="btnJuegos" onclick="abrirModalJuegos()" style="background: rgba(155, 89, 182, 0.12); border: 1px solid rgba(155, 89, 182, 0.35); color: #b794f4;">
+                <button class="btn-admin-mini" id="btnJuegos" onclick="abrirModalInfo('modalJuegos')" style="background: rgba(155, 89, 182, 0.12); border: 1px solid rgba(155, 89, 182, 0.35); color: #b794f4;">
                     🎮 <span class="btn-admin-texto">Juegos</span><span class="btn-admin-texto-corto">Juegos</span>
                 </button>
             </div>
@@ -5840,6 +5840,10 @@
                 }
                 if (document.getElementById('modalBeneficios').classList.contains('activo')) {
                     cerrarModalInfo('modalBeneficios');
+                    return;
+                }
+                if (document.getElementById('modalJuegos').classList.contains('activo')) {
+                    cerrarModalInfo('modalJuegos');
                     return;
                 }
 
