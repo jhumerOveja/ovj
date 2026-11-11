@@ -46,18 +46,22 @@
         }
 
         html {
+            background-color: #050506;
+            color-scheme: dark;
             scroll-behavior: smooth;
         }
 
         body {
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(ellipse at top, var(--bg-2) 0%, var(--bg) 50%, #050506 100%);
+            background-color: #050506;
+            background-image: radial-gradient(ellipse at top, var(--bg-2) 0%, var(--bg) 50%, #050506 100%);
             background-attachment: fixed;
             color: var(--texto);
             min-height: 100vh;
             padding: 12px 16px 20px;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            overscroll-behavior-y: none;
             -webkit-user-select: none;
             user-select: none;
             -webkit-touch-callout: none;
@@ -394,7 +398,7 @@
             border: 1px solid rgba(155, 89, 182, 0.35);
             color: #b794f4;
         }
-        
+
         .btn-admin-mini.juegos:hover {
             background: rgba(155, 89, 182, 0.22);
             box-shadow: 0 6px 20px rgba(155, 89, 182, 0.2);
@@ -3187,7 +3191,7 @@
             <div style="font-size:0.8rem; color:#aaa; text-align:center; margin-bottom:18px; line-height:1.5;">
                 <span data-i18n="juegosSubtitulo">Elegí un juego para entretenerte mientras esperás las fotos.</span>
             </div>
-    
+
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
                 <button onclick="abrirJuego('flappybird')" style="background:rgba(74,222,128,0.08); border:1.5px solid rgba(74,222,128,0.35); border-radius:14px; padding:20px 10px; cursor:pointer; font-family:inherit; color:#fff; transition:all 0.25s; text-align:center;">
                     <div style="font-size:2.2rem; margin-bottom:6px;">🐦</div>
@@ -3206,7 +3210,7 @@
                     <div style="font-size:0.85rem; font-weight:700;">2048</div>
                 </button>
             </div>
-    
+
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalJuegos')" data-i18n="cerrar">Cerrar</button>
         </div>
     </div>
@@ -3302,7 +3306,7 @@
                 <span class="menu-lateral-emoji">✨</span>
                 <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
             </button>
-            
+
             <div class="menu-lateral-separador"></div>
 
             <button class="menu-lateral-item" onclick="menuAccion('sobre')">
@@ -6091,7 +6095,7 @@
         function abrirJuegos() {
             abrirModalInfo('modalJuegos');
         }
-        
+
         function abrirJuego(nombre) {
             const rutas = {
                 flappybird: 'play/flappybird/index.html',
@@ -6099,10 +6103,10 @@
                 tetris: 'play/tetris/index.html',
                 '2048': 'play/2048/index.html'
             };
-        
+
             const ruta = rutas[nombre];
             if (!ruta) return;
-        
+
             window.open(ruta, '_blank');
             cerrarModalInfo('modalJuegos');
         }
