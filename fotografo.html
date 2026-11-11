@@ -2241,6 +2241,19 @@
 
                 marcarServidor('ok');
 
+                // Si hay fotos en cola de subida, refrescar más seguido (cada 5s)
+                if (estado.colaSubidas && estado.colaSubidas.enCola > 0) {
+                    if (window._refreshColaTimer) clearTimeout(window._refreshColaTimer);
+                    window._refreshColaTimer = setTimeout(() => {
+                        if (eventoActivo && eventoActivo.id) cargarTodo();
+                    }, 5000);
+                } else {
+                    if (window._refreshColaTimer) {
+                        clearTimeout(window._refreshColaTimer);
+                        window._refreshColaTimer = null;
+                    }
+                }
+
             } catch (e) {
                 console.error('Error cargando:', e.message);
 
@@ -2279,8 +2292,6 @@
 
                 marcarServidor('error');
 
-                // 🔥 FIX 2a: SIEMPRE cargar eventos offline al fallar,
-                // sin importar si hubo login offline o sesión guardada.
                 await cargarEventosOffline();
 
                 mostrarSeccionEmergencia();
@@ -2353,110 +2364,125 @@
             if (tiempoEvento) {
                 if (tiempoEvento.yaTermino) {
                     avisoTiempoHtml = `
-                <div class="aviso-tiempo terminado">
-                    <span class="emoji">⏰</span>
-                    <div>
-                        <strong>El tiempo programado ya se agotó.</strong><br>
-                        Finalizá el evento cuando corresponda.
-                    </div>
-                </div>
-            `;
+                        <div class="aviso-tiempo terminado">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>El tiempo programado ya se agotó.</strong><br>
+                                Finalizá el evento cuando corresponda.
+                            </div>
+                        </div>
+                    `;
                 } else if (tiempoEvento.tiempoRestanteMin <= UMBRAL_AVISO_MIN) {
                     avisoTiempoHtml = `
-                <div class="aviso-tiempo urgente">
-                    <span class="emoji">⏰</span>
-                    <div>
-                        <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
-                    </div>
-                </div>
-            `;
+                        <div class="aviso-tiempo urgente">
+                            <span class="emoji">⏰</span>
+                            <div>
+                                <strong>Faltan ${tiempoEvento.tiempoRestanteMin} min</strong> para el final programado (${tiempoEvento.horaFinFormateada}).
+                            </div>
+                        </div>
+                    `;
                 }
+            }
+
+            let colaSubidasHtml = '';
+            const colaInfo = estado?.colaSubidas;
+            if (colaInfo && colaInfo.enCola > 0) {
+                colaSubidasHtml = `
+                    <div class="aviso-tiempo" style="background:rgba(52,152,219,0.08); border-color:rgba(52,152,219,0.3); color:#93c5fd;">
+                        <span class="emoji">⏳</span>
+                        <div>
+                            <strong>${colaInfo.enCola}</strong> foto${colaInfo.enCola === 1 ? '' : 's'} subiendo al servidor...
+                            <br><span style="font-size:0.72rem; color:#888;">Se están procesando en background. No cierres esta página.</span>
+                        </div>
+                    </div>
+                `;
             }
 
             let mensajeHtml = '';
             if (mensajeInfo && mensajeInfo.activo) {
                 mensajeHtml = `
-            <div class="card-mensaje">
-                <span class="emoji">💬</span>
-                <div class="info">
-                    <div class="titulo">Mensaje en vivo</div>
-                    <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
-                </div>
-            </div>
-        `;
+                    <div class="card-mensaje">
+                        <span class="emoji">💬</span>
+                        <div class="info">
+                            <div class="titulo">Mensaje en vivo</div>
+                            <div class="texto">"${escapeHtml(mensajeInfo.texto)}"</div>
+                        </div>
+                    </div>
+                `;
             }
 
             cont.innerHTML = `
-        <div class="seccion">
-            <div class="seccion-titulo">Evento activo</div>
-            <div class="card-activo">
-                <div class="titulo">${escapeHtml(activo.evento)}</div>
-                <div class="meta">${metaHtml}</div>
+                <div class="seccion">
+                    <div class="seccion-titulo">Evento activo</div>
+                    <div class="card-activo">
+                        <div class="titulo">${escapeHtml(activo.evento)}</div>
+                        <div class="meta">${metaHtml}</div>
 
-                ${avisoTiempoHtml}
-                ${mensajeHtml}
+                        ${avisoTiempoHtml}
+                        ${colaSubidasHtml}
+                        ${mensajeHtml}
 
-                <div class="seccion-titulo" style="margin-top:16px;">📸 Subir contenido</div>
+                        <div class="seccion-titulo" style="margin-top:16px;">📸 Subir contenido</div>
 
-                <div class="zonas-subida-grid">
-                    <div class="zona-subida" id="zonaSubida"
-                         onclick="document.getElementById('inputSubida').click()">
-                        <span class="zona-subida-icono">📸</span>
-                        <span class="zona-subida-texto">Fotos</span>
-                    </div>
-                    <div class="zona-detras" id="zonaDetras"
-                         onclick="document.getElementById('inputDetras').click()">
-                        <span class="zona-detras-icono">🎭</span>
-                        <span class="zona-detras-texto">Detrás</span>
-                    </div>
-                </div>
+                        <div class="zonas-subida-grid">
+                            <div class="zona-subida" id="zonaSubida"
+                                 onclick="document.getElementById('inputSubida').click()">
+                                <span class="zona-subida-icono">📸</span>
+                                <span class="zona-subida-texto">Fotos</span>
+                            </div>
+                            <div class="zona-detras" id="zonaDetras"
+                                 onclick="document.getElementById('inputDetras').click()">
+                                <span class="zona-detras-icono">🎭</span>
+                                <span class="zona-detras-texto">Detrás</span>
+                            </div>
+                        </div>
 
-                <input type="file" id="inputSubida" accept="image/*" multiple style="display:none;" />
-                <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
+                        <input type="file" id="inputSubida" accept="image/*" multiple style="display:none;" />
+                        <input type="file" id="inputDetras" accept="image/*" style="display:none;" />
 
-                <div class="progreso-subida" id="progresoSubida" style="display:none;">
-                    <div class="progreso-subida-texto" id="progresoTextoSubida">Subiendo...</div>
-                    <div class="progreso-subida-barra">
-                        <div class="progreso-subida-fill" id="progresoFillSubida" style="width:0%"></div>
-                    </div>
-                </div>
+                        <div class="progreso-subida" id="progresoSubida" style="display:none;">
+                            <div class="progreso-subida-texto" id="progresoTextoSubida">Subiendo...</div>
+                            <div class="progreso-subida-barra">
+                                <div class="progreso-subida-fill" id="progresoFillSubida" style="width:0%"></div>
+                            </div>
+                        </div>
 
-                <div class="lista-subida" id="listaSubida"></div>
+                        <div class="lista-subida" id="listaSubida"></div>
 
-                <div id="detrasPreviewContainer" style="display:none; margin-bottom:12px;">
-                    <div class="detras-preview">
-                        <img class="detras-preview-img" id="detrasPreviewImg" alt="" />
-                        <div class="detras-preview-info">
-                            <div class="detras-preview-nombre" id="detrasPreviewNombre"></div>
-                            <button class="detras-preview-quitar" onclick="cancelarDetras()">✕</button>
+                        <div id="detrasPreviewContainer" style="display:none; margin-bottom:12px;">
+                            <div class="detras-preview">
+                                <img class="detras-preview-img" id="detrasPreviewImg" alt="" />
+                                <div class="detras-preview-info">
+                                    <div class="detras-preview-nombre" id="detrasPreviewNombre"></div>
+                                    <button class="detras-preview-quitar" onclick="cancelarDetras()">✕</button>
+                                </div>
+                            </div>
+                            <textarea class="detras-texto-input" id="detrasTextoInput"
+                                      placeholder="Texto opcional" maxlength="200"></textarea>
+                            <button class="btn-accion btn-detras" id="btnSubirDetras" onclick="subirFotoDetras()">
+                                📸 Publicar
+                            </button>
+                        </div>
+
+                        <div class="lista-detras" id="listaDetras"></div>
+
+                        <div class="acciones-grid" style="margin-top:12px;">
+                            <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
+                                💬 Mensaje
+                            </button>
+                            <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
+                                🔗 Link Cliente
+                            </button>
+                            <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
+                                🎫 QR General
+                            </button>
+                            <button class="btn-accion btn-finalizar" onclick="confirmarFinalizar()">
+                                🏁 Finalizar
+                            </button>
                         </div>
                     </div>
-                    <textarea class="detras-texto-input" id="detrasTextoInput"
-                              placeholder="Texto opcional" maxlength="200"></textarea>
-                    <button class="btn-accion btn-detras" id="btnSubirDetras" onclick="subirFotoDetras()">
-                        📸 Publicar
-                    </button>
                 </div>
-
-                <div class="lista-detras" id="listaDetras"></div>
-
-                <div class="acciones-grid" style="margin-top:12px;">
-                    <button class="btn-accion btn-mensaje" onclick="abrirMensaje()">
-                        💬 Mensaje
-                    </button>
-                    <button class="btn-accion btn-admin" onclick="abrirLinkAdmin()">
-                        🔗 Link Cliente
-                    </button>
-                    <button class="btn-accion btn-qr" onclick="abrirTokenGeneral()">
-                        🎫 QR General
-                    </button>
-                    <button class="btn-accion btn-finalizar" onclick="confirmarFinalizar()">
-                        🏁 Finalizar
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
+            `;
 
             const inputSubida = document.getElementById('inputSubida');
             if (inputSubida && !inputSubida._inicializado) {
