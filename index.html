@@ -3079,9 +3079,6 @@
                     style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
-                <button class="btn-admin-mini" id="btnJuegos" onclick="abrirModalInfo('modalJuegos')" style="background: rgba(155, 89, 182, 0.12); border: 1px solid rgba(155, 89, 182, 0.35); color: #b794f4;">
-                    🎮 <span class="btn-admin-texto">Juegos</span><span class="btn-admin-texto-corto">Juegos</span>
-                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -3229,11 +3226,6 @@
                     <div class="valor" id="metricaTickets">—</div>
                     <div class="etiqueta">Tickets</div>
                 </div>
-                <div class="metrica-card">
-                    <span class="emoji">📸</span>
-                    <div class="valor" id="metricaFotos">—</div>
-                    <div class="etiqueta">Fotos</div>
-                </div>
             </div>
 
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalMetricas')">
@@ -3269,6 +3261,30 @@
                 <span class="menu-lateral-emoji">✨</span>
                 <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
             </button>
+
+            <div class="menu-lateral-separador"></div>
+
+            <button class="menu-lateral-item" onclick="window.open('play/flappybird/index.html', '_blank')">
+                <span class="menu-lateral-emoji">🐦</span>
+                <span class="menu-lateral-texto" data-i18n="menuFlappy">Flappy Bird</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="window.open('play/crossyroad/index.html', '_blank')">
+                <span class="menu-lateral-emoji">🐔</span>
+                <span class="menu-lateral-texto" data-i18n="menuCrossy">Crossy Road</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="window.open('play/tetris/index.html', '_blank')">
+                <span class="menu-lateral-emoji">🧱</span>
+                <span class="menu-lateral-texto" data-i18n="menuTetris">Tetris</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="window.open('play/2048/index.html', '_blank')">
+                <span class="menu-lateral-emoji">🔢</span>
+                <span class="menu-lateral-texto" data-i18n="menu2048">2048</span>
+            </button>
+
+            <div class="menu-lateral-separador"></div>
 
             <button class="menu-lateral-item" onclick="menuAccion('sobre')">
                 <span class="menu-lateral-emoji">ℹ️</span>
@@ -3313,39 +3329,6 @@
             <div class="modal-info-titulo" data-i18n="sobreTitulo">Sobre nosotros</div>
             <div class="modal-info-texto" data-i18n="sobreTexto"></div>
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalSobre')" data-i18n="cerrar">Cerrar</button>
-        </div>
-    </div>
-    <!-- ===== MODAL DE MINIJUEGOS ===== -->
-    <div class="modal-info" id="modalJuegos">
-        <div class="modal-info-contenido">
-            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalJuegos')">✕</button>
-            <span class="modal-info-emoji">🎮</span>
-            <div class="modal-info-titulo" data-i18n="menuJuegos">Minijuegos</div>
-            <div class="modal-info-texto" style="text-align:center; margin-bottom:20px;">
-                Elige un juego para entretenerte mientras esperas.
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <button class="menu-lateral-item" onclick="window.open('play/flappybird/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
-                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🐦</span>
-                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuFlappy">Flappy Bird</span>
-                </button>
-
-                <button class="menu-lateral-item" onclick="window.open('play/crossyroad/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
-                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🐔</span>
-                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuCrossy">Crossy Road</span>
-                </button>
-
-                <button class="menu-lateral-item" onclick="window.open('play/tetris/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
-                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🧱</span>
-                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menuTetris">Tetris</span>
-                </button>
-
-                <button class="menu-lateral-item" onclick="window.open('play/2048/index.html', '_blank')" style="flex-direction: column; padding: 20px 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--borde); border-radius: 12px;">
-                    <span class="menu-lateral-emoji" style="font-size: 2rem; margin-bottom: 8px;">🔢</span>
-                    <span class="menu-lateral-texto" style="font-weight:600; text-align:center;" data-i18n="menu2048">2048</span>
-                </button>
-            </div>
         </div>
     </div>
 
@@ -4274,6 +4257,47 @@
                         const motivoW = dataWorker?.motivo;
 
                         if (motivoW === 'fuera_de_ventana') {
+                            // 🔥 FIX: si hay cache local, mantener la galería y reintentar.
+                            // La ventana horaria del Worker puede estar desfasada por timezone.
+                            // Si ya estábamos dentro del evento, no expulsar al invitado.
+                            const hayCacheSesion = (function () {
+                                try {
+                                    const raw = localStorage.getItem('ovj_sesion_cache_' + EVENTO_ID);
+                                    if (!raw) return false;
+                                    const c = JSON.parse(raw);
+                                    const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
+                                    return c && c.sesion && c.guardadoEn && (Date.now() - c.guardadoEn) < CUATRO_HORAS_MS;
+                                } catch (e) { return false; }
+                            })();
+
+                            const hayCacheFotos = (function () {
+                                try {
+                                    const raw = localStorage.getItem('ovj_fotos_cache_' + EVENTO_ID);
+                                    if (!raw) return false;
+                                    const c = JSON.parse(raw);
+                                    const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
+                                    return c && Array.isArray(c.fotos) && c.fotos.length > 0
+                                        && c.guardadoEn && (Date.now() - c.guardadoEn) < CUATRO_HORAS_MS;
+                                } catch (e) { return false; }
+                            })();
+
+                            if (hayCacheSesion) {
+                                const restaurado = restaurarSesionDesdeCache();
+                                if (restaurado) {
+                                    console.log('⚠️ Worker dice fuera_de_ventana, pero hay cache. Mantiendo sesión y reintentando.');
+                                    // No bloqueamos. Seguimos como offline con cache.
+                                    return true;
+                                }
+                            }
+
+                            if (hayCacheFotos) {
+                                // Si hay fotos cacheadas pero no sesión, al menos dejar ver la galería
+                                // (sin sesión no se puede descargar, pero no se bloquea la vista).
+                                console.log('⚠️ Worker dice fuera_de_ventana, pero hay fotos cacheadas. Mantiendo vista.');
+                                const restaurado = restaurarSesionDesdeCache();
+                                if (restaurado) return true;
+                            }
+
                             mostrarBloqueo('error',
                                 'La galería todavía no está disponible.<br>' +
                                 'Volvé a intentar más cerca de la hora del evento.');
@@ -5692,13 +5716,11 @@
             const elActivos = document.getElementById('metricaActivos');
             const elDescargas = document.getElementById('metricaDescargas');
             const elTickets = document.getElementById('metricaTickets');
-            const elFotos = document.getElementById('metricaFotos'); // 🔥 NUEVO
 
             subtitulo.textContent = 'Cargando...';
             elActivos.textContent = '—';
             elDescargas.textContent = '—';
             elTickets.textContent = '—';
-            if (elFotos) elFotos.textContent = '—'; // 🔥 NUEVO
 
             try {
                 const url = `${URL_CLOUDFLARE}/admin/metricas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -5716,7 +5738,6 @@
                 elActivos.textContent = data.totalActivos || 0;
                 elDescargas.textContent = data.metricas?.descargasTotales || 0;
                 elTickets.textContent = data.metricas?.ticketsEmitidos || 0;
-                if (elFotos) elFotos.textContent = data.totalFotos || 0; // 🔥 NUEVO
 
                 subtitulo.textContent = 'Métricas del evento en vivo';
 
@@ -5840,10 +5861,6 @@
                 }
                 if (document.getElementById('modalBeneficios').classList.contains('activo')) {
                     cerrarModalInfo('modalBeneficios');
-                    return;
-                }
-                if (document.getElementById('modalJuegos').classList.contains('activo')) {
-                    cerrarModalInfo('modalJuegos');
                     return;
                 }
 
