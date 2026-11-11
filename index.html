@@ -3262,6 +3262,11 @@
                     <div class="etiqueta">Personas</div>
                 </div>
                 <div class="metrica-card">
+                    <span class="emoji">📸</span>
+                    <div class="valor" id="metricaFotos">—</div>
+                    <div class="etiqueta">Fotos</div>
+                </div>
+                <div class="metrica-card">
                     <span class="emoji">📥</span>
                     <div class="valor" id="metricaDescargas">—</div>
                     <div class="etiqueta">Descargas</div>
@@ -5744,11 +5749,13 @@
 
             const subtitulo = document.getElementById('metricasSubtitulo');
             const elActivos = document.getElementById('metricaActivos');
+            const elFotos = document.getElementById('metricaFotos');
             const elDescargas = document.getElementById('metricaDescargas');
             const elTickets = document.getElementById('metricaTickets');
 
             subtitulo.textContent = 'Cargando...';
             elActivos.textContent = '—';
+            elFotos.textContent = '—';
             elDescargas.textContent = '—';
             elTickets.textContent = '—';
 
@@ -5766,6 +5773,7 @@
                 }
 
                 elActivos.textContent = data.totalActivos || 0;
+                elFotos.textContent = data.fotosTotal || 0;
                 elDescargas.textContent = data.metricas?.descargasTotales || 0;
                 elTickets.textContent = data.metricas?.ticketsEmitidos || 0;
 
