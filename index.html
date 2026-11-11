@@ -2456,13 +2456,14 @@
             gap: 4px;
             width: 38px;
             height: 38px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--borde);
+            background: rgba(232, 196, 122, 0.12);
+            border: 1.5px solid rgba(232, 196, 122, 0.5);
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             padding: 0;
             flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(232, 196, 122, 0.2);
         }
 
         .btn-menu-lateral:hover {
@@ -2475,13 +2476,79 @@
             display: block;
             width: 18px;
             height: 2px;
-            background: var(--texto-suave);
+            background: var(--champagne);
             border-radius: 2px;
             transition: all 0.3s ease;
+            box-shadow: 0 0 4px rgba(232, 196, 122, 0.6);
         }
 
         .btn-menu-lateral:hover .linea-menu {
-            background: var(--champagne);
+            background: #f9d976;
+            box-shadow: 0 0 8px rgba(232, 196, 122, 0.9);
+        }
+        /* Onda expansiva cada 4s */
+        .btn-menu-lateral::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 12px;
+            border: 2px solid rgba(232, 196, 122, 0.6);
+            animation: ondaMenu 4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ondaMenu {
+            0% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            70% {
+                opacity: 0;
+                transform: scale(1.6);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.6);
+            }
+        }
+
+        /* Tooltip "MENÚ" que aparece al cargar y se va a los 7s */
+        .tooltip-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 6px;
+            background: linear-gradient(135deg, var(--champagne), #d4a94a);
+            color: #0a0a0a;
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            animation: tooltipMenu 7s ease-in-out forwards;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(232, 196, 122, 0.4);
+        }
+
+        @keyframes tooltipMenu {
+            0% {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            85% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
         }
 
         .btn-menu-lateral.llamar-atencion {
@@ -3070,6 +3137,7 @@
                         <span class="linea-menu"></span>
                         <span class="linea-menu"></span>
                         <span class="linea-menu"></span>
+                        <span class="tooltip-menu" id="tooltipMenu">MENÚ</span>
                     </button>
                 </div>
             </div>
@@ -5992,7 +6060,14 @@
                     mostrarToast(t('tipRecarga'), 'warning', 6000);
                 }
             })();
-
+            // 🔥 Si es la primera vez que entra, mostrar badge de "primer toque" en el menú
+            if (!localStorage.getItem('ovj_menu_tocado')) {
+                document.getElementById('btnMenuLateral').classList.add('llamar-atencion');
+            } else {
+                // Si ya lo tocó antes, ocultar el tooltip
+                const tooltip = document.getElementById('tooltipMenu');
+                if (tooltip) tooltip.style.display = 'none';
+            }
             cargarFotos();
             iniciarAvisosRotativos();
         }
@@ -6022,6 +6097,13 @@
             document.getElementById('menuLateral').classList.add('activo');
             document.getElementById('menuLateralOverlay').classList.add('activo');
             document.body.style.overflow = 'hidden';
+
+            // 🔥 Quitar el badge de "primer toque" y el tooltip
+            localStorage.setItem('ovj_menu_tocado', '1');
+            document.getElementById('btnMenuLateral').classList.remove('llamar-atencion');
+            const tooltip = document.getElementById('tooltipMenu');
+            if (tooltip) tooltip.style.display = 'none';
+
             actualizarMenuLateral();
         }
 
