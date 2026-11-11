@@ -389,6 +389,16 @@
             border: 1px solid rgba(96, 165, 250, 0.3);
             color: #93c5fd;
         }
+        .btn-admin-mini.juegos {
+            background: rgba(155, 89, 182, 0.12);
+            border: 1px solid rgba(155, 89, 182, 0.35);
+            color: #b794f4;
+        }
+        
+        .btn-admin-mini.juegos:hover {
+            background: rgba(155, 89, 182, 0.22);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.2);
+        }
 
         .btn-admin-mini.metricas:hover {
             background: rgba(96, 165, 250, 0.2);
@@ -1283,14 +1293,11 @@
         @keyframes entradaCinematografica {
             0% {
                 opacity: 0;
-                transform: scale(0.7) rotateX(15deg) translateY(40px);
-                filter: blur(8px);
+                transform: scale(0.85) translateY(20px);
             }
-
             100% {
                 opacity: 1;
-                transform: scale(1) rotateX(0) translateY(0);
-                filter: blur(0px);
+                transform: scale(1) translateY(0);
             }
         }
 
@@ -3072,6 +3079,9 @@
                     <span class="btn-detras-contador" id="contadorDetrasBtn" style="display: none;">0</span>
                     <span class="btn-detras-punto" id="badgeNovedadDetras" style="display: none;"></span>
                 </button>
+                <button class="btn-admin-mini juegos" id="btnJuegos" onclick="abrirJuegos()">
+                    🎮 <span class="btn-admin-texto">Juegos</span><span class="btn-admin-texto-corto">Juegos</span>
+                </button>
                 <button class="btn-admin-mini qr" id="btnQrGeneral" onclick="abrirQrGeneral()" style="display: none;">
                     🎫 <span class="btn-admin-texto">QR</span><span class="btn-admin-texto-corto">QR</span>
                 </button>
@@ -3169,6 +3179,37 @@
             </div>
         </div>
     </div>
+    <div class="modal-info" id="modalJuegos">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalJuegos')">✕</button>
+            <span class="modal-info-emoji">🎮</span>
+            <div class="modal-info-titulo" data-i18n="juegosTitulo">Juegos</div>
+            <div style="font-size:0.8rem; color:#aaa; text-align:center; margin-bottom:18px; line-height:1.5;">
+                <span data-i18n="juegosSubtitulo">Elegí un juego para entretenerte mientras esperás las fotos.</span>
+            </div>
+    
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+                <button onclick="abrirJuego('flappybird')" style="background:rgba(74,222,128,0.08); border:1.5px solid rgba(74,222,128,0.35); border-radius:14px; padding:20px 10px; cursor:pointer; font-family:inherit; color:#fff; transition:all 0.25s; text-align:center;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🐦</div>
+                    <div style="font-size:0.85rem; font-weight:700;">Flappy Bird</div>
+                </button>
+                <button onclick="abrirJuego('crossyroad')" style="background:rgba(251,191,36,0.08); border:1.5px solid rgba(251,191,36,0.35); border-radius:14px; padding:20px 10px; cursor:pointer; font-family:inherit; color:#fff; transition:all 0.25s; text-align:center;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🐔</div>
+                    <div style="font-size:0.85rem; font-weight:700;">Crossy Road</div>
+                </button>
+                <button onclick="abrirJuego('tetris')" style="background:rgba(96,165,250,0.08); border:1.5px solid rgba(96,165,250,0.35); border-radius:14px; padding:20px 10px; cursor:pointer; font-family:inherit; color:#fff; transition:all 0.25s; text-align:center;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🧱</div>
+                    <div style="font-size:0.85rem; font-weight:700;">Tetris</div>
+                </button>
+                <button onclick="abrirJuego('2048')" style="background:rgba(232,196,122,0.08); border:1.5px solid rgba(232,196,122,0.35); border-radius:14px; padding:20px 10px; cursor:pointer; font-family:inherit; color:#fff; transition:all 0.25s; text-align:center;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🔢</div>
+                    <div style="font-size:0.85rem; font-weight:700;">2048</div>
+                </button>
+            </div>
+    
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalJuegos')" data-i18n="cerrar">Cerrar</button>
+        </div>
+    </div>
 
     <div class="cofre-overlay" id="cofreOverlay">
         <div class="cofre-fase" id="cofreFaseCerrado">
@@ -3261,29 +3302,7 @@
                 <span class="menu-lateral-emoji">✨</span>
                 <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
             </button>
-
-            <div class="menu-lateral-separador"></div>
-
-            <button class="menu-lateral-item" onclick="window.open('play/flappybird/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🐦</span>
-                <span class="menu-lateral-texto" data-i18n="menuFlappy">Flappy Bird</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/crossyroad/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🐔</span>
-                <span class="menu-lateral-texto" data-i18n="menuCrossy">Crossy Road</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/tetris/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🧱</span>
-                <span class="menu-lateral-texto" data-i18n="menuTetris">Tetris</span>
-            </button>
-
-            <button class="menu-lateral-item" onclick="window.open('play/2048/index.html', '_blank')">
-                <span class="menu-lateral-emoji">🔢</span>
-                <span class="menu-lateral-texto" data-i18n="menu2048">2048</span>
-            </button>
-
+            
             <div class="menu-lateral-separador"></div>
 
             <button class="menu-lateral-item" onclick="menuAccion('sobre')">
@@ -3733,10 +3752,8 @@
                 menuIdioma: "Idioma",
                 menuTerminos: "Términos y condiciones",
                 sobreTitulo: "Sobre nosotros",
-                menuFlappy: "Flappy Bird",
-                menuCrossy: "Crossy Road",
-                menuTetris: "Tetris",
-                menu2048: "2048",
+                juegosTitulo: "Juegos",
+                juegosSubtitulo: "Elegí un juego para entretenerte mientras esperás las fotos.",
                 sobreTexto: `
     <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
         OVJ Studio es una <strong style="color:#e8c47a;">plataforma de galerías fotográficas en vivo</strong> para eventos sociales. Lo que en el modelo tradicional llega días después, acá aparece <strong style="color:#fff;">en el momento</strong>.
@@ -3817,10 +3834,8 @@
                 menuIdioma: "Language",
                 menuTerminos: "Terms and conditions",
                 sobreTitulo: "About us",
-                menuFlappy: "Flappy Bird",
-                menuCrossy: "Crossy Road",
-                menuTetris: "Tetris",
-                menu2048: "2048",
+                juegosTitulo: "Games",
+                juegosSubtitulo: "Pick a game to have fun while you wait for the photos.",
                 sobreTexto: `
     <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
         OVJ Studio is a <strong style="color:#e8c47a;">live photo gallery platform</strong> for social events. What in the traditional model arrives days later, here appears <strong style="color:#fff;">in the moment</strong>.
@@ -3901,10 +3916,8 @@
                 menuIdioma: "语言",
                 menuTerminos: "条款和条件",
                 sobreTitulo: "关于我们",
-                menuFlappy: "Flappy Bird",
-                menuCrossy: "Crossy Road",
-                menuTetris: "Tetris",
-                menu2048: "2048",
+                juegosTitulo: "游戏",
+                juegosSubtitulo: "在等待照片时选择一个游戏消遣。",
                 sobreTexto: `
     <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
         OVJ Studio 是一个面向社交活动的 <strong style="color:#e8c47a;">现场照片画廊平台</strong>。传统模式要等好几天才送达，而这里 <strong style="color:#fff;">即时呈现</strong>。
@@ -4201,7 +4214,10 @@
                             return false;
                         }
                     }
-
+                    if (hayCacheLocal()) {
+                        console.log('⚠️ Server rechazó pero hay cache. Mantengo galería.');
+                        return true;
+                    }
                     mostrarBloqueo('invalido', t('bloqueoInvalido'));
                     return false;
                 }
@@ -4255,6 +4271,10 @@
 
                     if (!respWorker.ok || !dataWorker.valido) {
                         const motivoW = dataWorker?.motivo;
+                        if (hayCacheLocal()) {
+                            console.log('⚠️ Worker rechazó pero hay cache. Mantengo galería.');
+                            return true;
+                        }
 
                         if (motivoW === 'fuera_de_ventana') {
                             // 🔥 FIX: si hay cache local, mantener la galería y reintentar.
@@ -4369,15 +4389,6 @@
                 const cache = JSON.parse(raw);
                 if (!cache || !cache.sesion) return false;
 
-                // 🔥 FIX: el cache de sesión dura 4 horas (un evento típico).
-                // Antes duraba 24 horas, lo que hacía que el invitado siguiera
-                // viendo el evento después de que terminó.
-                const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
-                if (cache.guardadoEn && (Date.now() - cache.guardadoEn) > CUATRO_HORAS_MS) {
-                    localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
-                    return false;
-                }
-
                 sesion = cache.sesion;
                 window._modoOffline = true;
                 return true;
@@ -4385,6 +4396,19 @@
             } catch (e) {
                 return false;
             }
+        }
+
+        function hayCacheLocal() {
+            try {
+                if (localStorage.getItem('ovj_sesion_cache_' + EVENTO_ID)) return true;
+                if (fotosCache && fotosCache.length > 0) return true;
+                const raw = localStorage.getItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
+                if (raw) {
+                    const c = JSON.parse(raw);
+                    if (c && Array.isArray(c.fotos) && c.fotos.length > 0) return true;
+                }
+            } catch (e) { }
+            return false;
         }
 
         function activarApp() {
@@ -4726,18 +4750,20 @@
                 const data = await respuesta.json();
 
                 if (data.sinStatus === true) {
-                    // 🔥 FIX: si el evento terminó o se canceló, cerrar.
-                    // Si no, mantener cache y reintentar.
+                    // 🔥 CIERRE DEFINITIVO: si el evento terminó o se canceló, cerrar SIEMPRE.
+                    //    Sin importar si hay cache o no. Esto es el botón Finalizar del fotógrafo.
                     if (data.estadoEvento === 'finalizado' || data.estadoEvento === 'cancelado') {
                         console.log('🎬 Evento finalizado/cancelado. Cerrando galería.');
                         try {
                             localStorage.removeItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
+                            localStorage.removeItem('ovj_sesion_cache_' + EVENTO_ID);
                         } catch (e) { }
                         detenerTodoYMostrarCierre();
                         cargando = false;
                         return;
                     }
 
+                    // Si no terminó (evento activo pero sin status.json todavía), mantener y reintentar
                     console.warn('⚠️ Worker sin status.json (evento todavía activo). Mantengo cache local.');
                     cargando = false;
                     clearTimeout(window._pollTimer);
@@ -5932,13 +5958,7 @@
                     const dataCache = JSON.parse(cacheFotos);
 
                     // 🔥 FIX: el cache de fotos dura 4 horas. Si es más viejo, ignorarlo.
-                    const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
-                    const esCacheViejo = dataCache.guardadoEn && (Date.now() - dataCache.guardadoEn) > CUATRO_HORAS_MS;
-
-                    if (esCacheViejo) {
-                        console.log('📦 Cache de fotos viejo (>4h), ignorando.');
-                        localStorage.removeItem('ovj_fotos_cache_' + (EVENTO_ID || 'default'));
-                    } else if (dataCache && Array.isArray(dataCache.fotos) && dataCache.fotos.length > 0) {
+                    if (dataCache && Array.isArray(dataCache.fotos) && dataCache.fotos.length > 0) {
                         fotosCache = dataCache.fotos;
                         fotosVisibles = Math.min(FOTOS_POR_CARGA, fotosCache.length);
                         renderizarGaleria();
@@ -6067,6 +6087,24 @@
 
         function cerrarModalInfo(id) {
             document.getElementById(id).classList.remove('activo');
+        }
+        function abrirJuegos() {
+            abrirModalInfo('modalJuegos');
+        }
+        
+        function abrirJuego(nombre) {
+            const rutas = {
+                flappybird: 'play/flappybird/index.html',
+                crossyroad: 'play/crossyroad/index.html',
+                tetris: 'play/tetris/index.html',
+                '2048': 'play/2048/index.html'
+            };
+        
+            const ruta = rutas[nombre];
+            if (!ruta) return;
+        
+            window.open(ruta, '_blank');
+            cerrarModalInfo('modalJuegos');
         }
 
         function abrirBeneficios() {
