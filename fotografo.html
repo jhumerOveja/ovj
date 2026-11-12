@@ -3513,6 +3513,8 @@
                 const data = await resp.json();
                 eventosOffline = (data.eventos || []).filter(e => {
                     if (e.estado === 'cancelado') return false;
+                    if (e.estado === 'activo') return true;  // 🔥 NUEVO
+                    if (e.estado === 'finalizado') return false;
                     return _eventoEnVentana(e);
                 });
 
@@ -3726,14 +3728,6 @@
             if (!eventoActivoEmergencia || !eventoActivoEmergencia.id) {
                 toast('⚠️ Elegí un evento primero', 'error');
                 return;
-            }
-
-            const esOffline = localStorage.getItem('ovj_fotografo_es_offline') === '1';
-            if (esOffline && eventoOfflineSeleccionado) {
-                if (!_eventoEnVentana(eventoOfflineSeleccionado)) {
-                    toast('⚠️ Fuera de la ventana horaria del evento', 'error');
-                    return;
-                }
             }
 
             const pendientes = fotosEmergencia.filter(f => f.estado === 'pendiente' || f.estado === 'error');
