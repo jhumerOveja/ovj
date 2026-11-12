@@ -1567,13 +1567,13 @@
                 <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
                 <div class="titulo">➕ Nuevo Fotógrafo</div>
                 <div class="subtitulo">Se generará un PIN de 4 dígitos automáticamente.</div>
-        
+
                 <div class="campo">
                     <label>Nombre de usuario</label>
                     <input type="text" id="inputNombreFotografo" placeholder="ej: jhumer" autocomplete="off" style="text-transform:lowercase" />
                     <div class="ayuda">3-30 caracteres. Solo minúsculas, números, guion y guion bajo.</div>
                 </div>
-        
+
                 <button class="btn-primario" id="btnCrearFotografo" onclick="crearFotografo()">Crear fotógrafo</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
@@ -1845,7 +1845,13 @@
                 `<option value="${escapeHtml(f.nombre)}">${escapeHtml(f.nombre)}</option>`
             ).join('');
 
-            const hoy = new Date().toISOString().slice(0, 10);
+            const hoy = (function() {
+                const d = new Date();
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const dia = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${dia}`;
+            })();
 
             abrirModal(`
                 <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
