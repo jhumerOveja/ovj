@@ -3460,13 +3460,16 @@
                 `;
             }
 
+            // Quitar bloques anteriores (selector + QR)
             const selectorExistente = document.getElementById('selectorEventoOffline');
             if (selectorExistente) selectorExistente.remove();
+            const qrExistente = document.getElementById('qrGeneralOffline');
+            if (qrExistente) qrExistente.remove();
 
-            // 🔥 FIX: siempre mostrar el selector, sin importar si hubo login offline
-            // o si la sesión viene del server. Si el server falla, estamos en emergencia,
-            // y el fotógrafo tiene que poder elegir el evento.
             renderSelectorEventoOffline();
+
+            // 🔥 NUEVO: mostrar QR general (si hay evento con token)
+            renderQRGeneralOffline();
 
             const input = document.getElementById('inputEmergencia');
             if (input && !input._inicializado) {
@@ -3631,6 +3634,82 @@
                     ? '<span style="color:#4ade80;">✅ Listo para subir</span>'
                     : '<span style="color:#f39c12;">⚠️ Fuera de ventana horaria</span>';
             }
+            renderQRGeneralOffline();
+        }
+        function renderQRGeneralOffline() {
+            const seccion = document.getElementById('seccionEmergencia');
+            if (!seccion) return;
+
+            const anterior = document.getElementById('qrGeneralOffline');
+            if (anterior) anterior.remove();
+
+            const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
+            if (!evento) return;
+
+            const tokenGeneral = evento.tokenGeneral;
+            if (!tokenGeneral) return;
+
+            const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(evento.id)}&t=${encodeURIComponent(tokenGeneral)}`;
+            window._urlGeneralOffline = urlGeneral;
+            window._nombreEventoOffline = evento.evento || 'el evento';
+
+            const div = document.createElement('div');
+            div.id = 'qrGeneralOffline';
+            div.style.cssText = 'background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:14px;margin-bottom:14px;';
+
+            div.innerHTML = `
+                <div style="font-size:0.8rem;font-weight:700;color:#93c5fd;margin-bottom:8px;">🎫 QR General del evento</div>
+                <div style="font-size:0.72rem;color:#888;margin-bottom:10px;line-height:1.4;">Compartilo con tus invitados para que entren a la galería.</div>
+                <div id="qrGeneralOfflineWrapper" style="background:#fff;border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;width:220px;height:220px;margin:0 auto 10px;"></div>
+                <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 10px;font-size:0.62rem;color:#888;word-break:break-all;font-family:monospace;line-height:1.4;margin-bottom:10px;text-align:left;" id="urlGeneralOffline"></div>
+                <button onclick="copiarUrlGeneralOffline()" style="width:100%;padding:10px 14px;border-radius:10px;border:none;background:rgba(255,255,255,0.06);color:#ccc;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:6px;">📋 Copiar link</button>
+                <button onclick="compartirUrlGeneralOffline()" style="width:100%;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,#4ade80,#22c55e);color:#0a0a0a;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">💬 Compartir por WhatsApp</button>
+            `;
+
+            const selector = document.getElementById('selectorEventoOffline');
+            if (selector && selector.nextSibling) {
+                seccion.insertBefore(div, selector.nextSibling);
+            } else {
+                seccion.insertBefore(div, seccion.firstChild);
+            }
+
+            try {
+                const qr = window.qrcode(0, 'M');
+                qr.addData(urlGeneral);
+                qr.make();
+
+                const wrapper = document.getElementById('qrGeneralOfflineWrapper');
+                wrapper.innerHTML = qr.createImgTag(6, 12);
+                const img = wrapper.querySelector('img');
+                if (img) {
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.borderRadius = '4px';
+                }
+            } catch (e) {
+                console.error('Error generando QR offline:', e);
+                const wrapper = document.getElementById('qrGeneralOfflineWrapper');
+                if (wrapper) wrapper.innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.</div>';
+            }
+
+            const urlBox = document.getElementById('urlGeneralOffline');
+            if (urlBox) urlBox.textContent = urlGeneral;
+        }
+
+        function copiarUrlGeneralOffline() {
+            if (!window._urlGeneralOffline) return;
+            navigator.clipboard.writeText(window._urlGeneralOffline).then(() => {
+                toast('✅ Link copiado', 'ok');
+            }).catch(() => {
+                toast('No se pudo copiar', 'error');
+            });
+        }
+
+        function compartirUrlGeneralOffline() {
+            if (!window._urlGeneralOffline) return;
+            const nombreEvento = window._nombreEventoOffline || 'el evento';
+            const mensaje = `¡Hola! Te comparto el acceso a la galería en vivo de ${nombreEvento}.\n\n📸 Entrá acá:\n${window._urlGeneralOffline}\n\n— OVJ Studio`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
 
