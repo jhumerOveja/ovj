@@ -2059,7 +2059,8 @@
                         data.evento.evento,
                         data.tokenGeneral,
                         fotografo,
-                        data.evento.id
+                        data.evento.id,
+                        data.urlAdminCliente
                     ), 300);
                 } else {
                     toast('✅ Evento agendado', 'ok');
@@ -2076,31 +2077,45 @@
         // ==========================================
         // 🎫 TOKEN GENERAL: MODAL CON QR
         // ==========================================
-        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId) {
+        function mostrarTokenGeneral(nombreEvento, token, fotografo, eventoId, urlAdminCliente) {
             const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(fotografo)}&e=${encodeURIComponent(eventoId)}&t=${encodeURIComponent(token)}`;
 
-            // 🔥 Guardar datos para el botón "Descargar QR"
             window._ultimaUrlGeneral = urlGeneral;
             window._nombreEventoActual = nombreEvento;
+            window._ultimaUrlAdminCliente = urlAdminCliente || null;
 
             abrirModal(`
-        <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
-        <div class="titulo">🎫 QR del evento</div>
+                <button class="btn-cerrar" onclick="cerrarModal(); renderEventos();">✕</button>
+                <div class="titulo">✅ Evento agendado</div>
+                <div class="subtitulo">Compartí estos links con tus invitados y con el cliente.</div>
 
-        <div class="qr-token-wrapper" id="qrTokenWrapper" style="margin: 20px auto;"></div>
+                <div style="background:rgba(52,152,219,0.06); border:1px solid rgba(52,152,219,0.25); border-radius:14px; padding:16px; margin-bottom:14px;">
+                    <div style="font-size:0.75rem; font-weight:700; color:#93c5fd; margin-bottom:8px;">🎫 QR GENERAL (para invitados)</div>
+                    <div class="qr-token-wrapper" id="qrTokenWrapper" style="margin: 12px auto; background:#fff; border-radius:10px; padding:10px; width:240px; height:240px; display:flex; align-items:center; justify-content:center;"></div>
+                    <div class="token-box" style="font-size:0.65rem; margin-bottom:10px;">${escapeHtml(urlGeneral)}</div>
+                    <button class="btn-secundario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')" style="width:100%; padding:10px; font-size:0.8rem; margin-bottom:6px;">📋 Copiar link general</button>
+                    <button class="btn-secundario" onclick="compartirUrlGeneral('${escapeHtml(urlGeneral)}', '${escapeHtml(nombreEvento)}')" style="width:100%; padding:10px; font-size:0.8rem; background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.35); color:#4ade80;">💬 Compartir QR general por WhatsApp</button>
+                </div>
 
-        <button class="btn-primario" onclick="descargarQR(window._ultimaUrlGeneral)">
-            🖨️ Descargar QR
-        </button>
-        <button class="btn-secundario" onclick="copiarUrlGeneral('${escapeHtml(urlGeneral)}')">
-            📋 Copiar URL
-        </button>
-        <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
-            Listo
-        </button>
-    `);
+                ${urlAdminCliente ? `
+                <div style="background:rgba(232,196,122,0.06); border:1px solid rgba(232,196,122,0.3); border-radius:14px; padding:16px; margin-bottom:14px;">
+                    <div style="font-size:0.75rem; font-weight:700; color:#e8c47a; margin-bottom:8px;">👑 LINK DEL ADMIN CLIENTE</div>
+                    <div style="font-size:0.7rem; color:#aaa; margin-bottom:10px; line-height:1.4;">Este link es para el cliente del evento. Es de un solo uso por dispositivo.</div>
+                    <div class="token-box" style="font-size:0.65rem; margin-bottom:10px;">${escapeHtml(urlAdminCliente)}</div>
+                    <button class="btn-secundario" onclick="copiarUrlAdminCliente()" style="width:100%; padding:10px; font-size:0.8rem; margin-bottom:6px;">📋 Copiar link del cliente</button>
+                    <button class="btn-secundario" onclick="compartirUrlAdminCliente('${escapeHtml(nombreEvento)}')" style="width:100%; padding:10px; font-size:0.8rem; background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.35); color:#4ade80;">💬 Compartir link del cliente por WhatsApp</button>
+                </div>
+                ` : ''}
 
-            // Generar el QR en el wrapper
+                <button class="btn-primario" onclick="descargarQR(window._ultimaUrlGeneral)">
+                    🖨️ Descargar QR general como PNG
+                </button>
+                <button class="btn-secundario" onclick="cerrarModal(); renderEventos();">
+                    Listo
+                </button>
+            `);
+
+            // Generar el QR general
             try {
                 const qr = window.qrcode(0, 'M');
                 qr.addData(urlGeneral);
@@ -2110,14 +2125,14 @@
                 wrapper.innerHTML = qr.createImgTag(6, 12);
                 const img = wrapper.querySelector('img');
                 if (img) {
-                    img.style.width = '240px';
-                    img.style.height = '240px';
+                    img.style.width = '220px';
+                    img.style.height = '220px';
                     img.style.borderRadius = '4px';
                     img.alt = 'QR Token General';
                 }
             } catch (error) {
                 console.error('Error generando QR local:', error);
-                $('qrTokenWrapper').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.<br>Usa el botón copiar.</div>';
+                $('qrTokenWrapper').innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.</div>';
             }
         }
 
@@ -2127,6 +2142,25 @@
             }).catch(() => {
                 toast('No se pudo copiar', 'error');
             });
+        }
+        function compartirUrlGeneral(url, nombreEvento) {
+            const mensaje = `¡Hola! Te comparto el acceso a la galería en vivo de ${nombreEvento}.\n\n📸 Entrá acá:\n${url}\n\n— OVJ Studio`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function copiarUrlAdminCliente() {
+            if (!window._ultimaUrlAdminCliente) return;
+            navigator.clipboard.writeText(window._ultimaUrlAdminCliente).then(() => {
+                toast('✅ Link del cliente copiado', 'ok');
+            }).catch(() => {
+                toast('No se pudo copiar', 'error');
+            });
+        }
+
+        function compartirUrlAdminCliente(nombreEvento) {
+            if (!window._ultimaUrlAdminCliente) return;
+            const mensaje = `¡Hola! Soy de OVJ Studio.\n\nTe comparto tu link de administrador para el evento "${nombreEvento}".\n\nCon este link vas a poder ver las fotos en vivo, descargarlas y compartir el QR con tus invitados.\n\n👑 Link de administrador:\n${window._ultimaUrlAdminCliente}\n\n⚠️ Importante: es de un solo uso. Guardalo bien.\n\n— OVJ Studio`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
         async function descargarQR(url) {
             const nombreEvento = window._nombreEventoActual || 'Evento';
