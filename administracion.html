@@ -2614,13 +2614,7 @@
                 <div class="titulo">🎁 Ticket de regalo</div>
                 <div class="subtitulo">
                     Evento: <strong>${escapeHtml(nombreEvento)}</strong><br>
-                    Generá tickets para que el cliente los comparta.
-                </div>
-
-                <div class="campo">
-                    <label>Cantidad de tickets</label>
-                    <input type="number" id="inputTicketsCantidad" value="3" min="1" max="50" />
-                    <div class="ayuda">Máximo 50 por vez.</div>
+                    Generá un ticket para que el cliente lo comparta o lo guarde.
                 </div>
 
                 <div class="campo">
@@ -2630,19 +2624,13 @@
                     </select>
                 </div>
 
-                <button class="btn-primario" id="btnGenerarTicketsManuales" onclick="generarTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', '${escapeHtml(nombreEvento)}')">Generar tickets</button>
+                <button class="btn-primario" id="btnGenerarTicketsManuales" onclick="generarTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', '${escapeHtml(nombreEvento)}')">Generar ticket</button>
                 <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
         }
 
         async function generarTicketsManuales(fotografo, eventoId, nombreEvento) {
-            const cantidad = parseInt($('inputTicketsCantidad').value, 10);
             const premioKey = $('inputTicketsPremio').value;
-
-            if (!cantidad || cantidad < 1) {
-                toast('Cantidad inválida', 'error');
-                return;
-            }
 
             const btn = $('btnGenerarTicketsManuales');
             btn.disabled = true;
@@ -2651,36 +2639,46 @@
             try {
                 const data = await apiFetch('/admin/tickets/manual?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId), {
                     method: 'POST',
-                    body: JSON.stringify({ cantidad, premioKey })
+                    body: JSON.stringify({ premioKey })
                 });
 
-                const textoCopiar = data.tickets.map(t => t.token).join('\n');
+                const ticket = data.ticket;
+
+                // 🔥 El mensaje exacto que pediste
+                const textoCopiar =
+                    `HOLA ESTE ES UN TICKET DIGITAL DE DESCUENTO PARA LOS SERVICIOS DE OVJ ESTUDIO\n\n` +
+                    `🎁 *Premio:* ${ticket.titulo}\n` +
+                    `📅 *Válido por:* 6 meses\n\n` +
+                    `Aquí está tu código:\n\n` +
+                    `1️⃣ ${ticket.token}\n\n` +
+                    `PARA RECLAMAR EL TICKET DIGITAL SOLO REENVIA ESTE MENSAJE A OVJ STUDIO\n\n` +
+                    `— OVJ Studio`;
 
                 abrirModal(`
                     <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-                    <div class="titulo" style="color:#4ade80;">✅ Tickets generados</div>
-                    <div class="subtitulo">Copiá estos tokens y envialos a tu cliente para que los comparta.</div>
+                    <div class="titulo" style="color:#4ade80;">✅ Ticket generado</div>
+                    <div class="subtitulo">Copiá el mensaje y envialo a tu cliente.</div>
 
-                    <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; font-family:monospace; font-size:0.75rem; color:#93c5fd; word-break:break-all; line-height:1.6; margin-bottom:14px; max-height:200px; overflow-y:auto;">
-                        ${data.tickets.map(t => `<div>${t.token}</div>`).join('')}
+                    <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; font-family:monospace; font-size:0.75rem; color:#93c5fd; word-break:break-all; line-height:1.6; margin-bottom:14px;">
+                        ${ticket.token}
                     </div>
 
-                    <button class="btn-primario" onclick="copiarTokensManuales('${btoa(textoCopiar)}')">📋 Copiar todos los tokens</button>
+                    <button class="btn-primario" onclick="copiarTokensManuales('${btoa(unescape(encodeURIComponent(textoCopiar)))}')">📋 Copiar mensaje para WhatsApp</button>
                     <button class="btn-secundario" onclick="cerrarModal()">Listo</button>
                 `);
 
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
                 btn.disabled = false;
-                btn.textContent = 'Generar tickets';
+                btn.textContent = 'Generar ticket';
             }
         }
 
-        function copiarTokensManuales(tokensB64) {
+        function copiarTokensManuales(textoB64) {
             try {
-                const tokens = atob(tokensB64);
-                navigator.clipboard.writeText(tokens).then(() => {
-                    toast('✅ Tokens copiados', 'ok');
+                const texto = decodeURIComponent(escape(atob(textoB64)));
+                navigator.clipboard.writeText(texto).then(() => {
+                    toast('✅ Mensaje copiado. Pegalo en WhatsApp.', 'ok');
                 }).catch(() => {
                     toast('No se pudo copiar', 'error');
                 });
