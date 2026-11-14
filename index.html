@@ -3103,6 +3103,390 @@
             line-height: 1.4;
         }
 
+        /* ===== MODAL PAQUETES ===== */
+        .modal-paquetes {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2800;
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(12px);
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .modal-paquetes.activo {
+            display: flex;
+        }
+
+        .paquetes-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .paquete-slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 50px 22px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .paquete-slide.esencial {
+            background: linear-gradient(180deg, rgba(184, 115, 51, 0.15) 0%, rgba(10, 10, 12, 0.98) 40%);
+        }
+
+        .paquete-slide.premium {
+            background: linear-gradient(180deg, rgba(192, 192, 192, 0.12) 0%, rgba(10, 10, 12, 0.98) 40%);
+        }
+
+        .paquete-slide.signature {
+            background: linear-gradient(180deg, rgba(232, 196, 122, 0.15) 0%, rgba(10, 10, 12, 0.98) 40%);
+        }
+
+        .paquete-contenido {
+            width: 100%;
+            max-width: 480px;
+            margin: auto 0;
+        }
+
+        .paquete-nombre {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 6px;
+            line-height: 1.1;
+        }
+
+        .paquete-slide.esencial .paquete-nombre {
+            color: #cd7f32;
+            text-shadow: 0 0 30px rgba(205, 127, 50, 0.5);
+        }
+
+        .paquete-slide.premium .paquete-nombre {
+            color: #e8e8e8;
+            text-shadow: 0 0 30px rgba(232, 232, 232, 0.5);
+        }
+
+        .paquete-slide.signature .paquete-nombre {
+            color: #e8c47a;
+            text-shadow: 0 0 30px rgba(232, 196, 122, 0.6);
+        }
+
+        .paquete-linea {
+            width: 80px;
+            height: 2px;
+            margin: 0 auto 18px;
+        }
+
+        .paquete-slide.esencial .paquete-linea {
+            background: linear-gradient(90deg, transparent, #cd7f32, transparent);
+        }
+
+        .paquete-slide.premium .paquete-linea {
+            background: linear-gradient(90deg, transparent, #e8e8e8, transparent);
+        }
+
+        .paquete-slide.signature .paquete-linea {
+            background: linear-gradient(90deg, transparent, #e8c47a, transparent);
+        }
+
+        .paquete-hint {
+            font-size: 0.72rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            animation: pulseHint 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .paquete-subtitulo {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .paquete-descripcion {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 22px;
+            font-style: italic;
+        }
+
+        .paquete-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .paquete-lista li {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #ddd;
+            line-height: 1.5;
+            padding-left: 4px;
+        }
+
+        .paquete-lista li::before {
+            content: '•';
+            flex-shrink: 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.3;
+        }
+
+        .paquete-slide.esencial .paquete-lista li::before {
+            color: #cd7f32;
+        }
+
+        .paquete-slide.premium .paquete-lista li::before {
+            color: #e8e8e8;
+        }
+
+        .paquete-slide.signature .paquete-lista li::before {
+            color: #e8c47a;
+        }
+
+        .paquete-lista li strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .paquete-ideal {
+            font-size: 0.78rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.5;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .paquete-ideal strong {
+            color: #ccc;
+        }
+
+        .paquete-footer {
+            width: 100%;
+            max-width: 480px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .paquete-proximo-texto {
+            font-size: 0.72rem;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .paquete-btn-siguiente {
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 14px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            animation: pulseBoton 2s ease-in-out infinite;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .paquete-slide.esencial .paquete-btn-siguiente {
+            background: linear-gradient(135deg, #cd7f32, #b87333);
+            color: #0a0a0a;
+            box-shadow: 0 4px 20px rgba(205, 127, 50, 0.4);
+        }
+
+        .paquete-slide.premium .paquete-btn-siguiente {
+            background: linear-gradient(135deg, #e8e8e8, #c0c0c0);
+            color: #0a0a0a;
+            box-shadow: 0 4px 20px rgba(232, 232, 232, 0.3);
+        }
+
+        .paquete-btn-siguiente:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        @keyframes pulseBoton {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .paquete-btn-whatsapp {
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a0a;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .paquete-btn-whatsapp:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.5);
+        }
+
+        .paquetes-puntos {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .paquete-punto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .paquete-punto.activo {
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .paquete-slide.esencial .paquete-punto.activo {
+            background: #cd7f32;
+            box-shadow: 0 0 10px rgba(205, 127, 50, 0.6);
+        }
+
+        .paquete-slide.premium .paquete-punto.activo {
+            background: #e8e8e8;
+            box-shadow: 0 0 10px rgba(232, 232, 232, 0.6);
+        }
+
+        .paquete-slide.signature .paquete-punto.activo {
+            background: #e8c47a;
+            box-shadow: 0 0 10px rgba(232, 196, 122, 0.6);
+        }
+
+        .paquetes-cerrar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .paquetes-cerrar:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: rotate(90deg);
+        }
+
+        .paquetes-flecha {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .paquetes-flecha:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .paquetes-flecha.izq {
+            left: 10px;
+        }
+
+        .paquetes-flecha.der {
+            right: 10px;
+        }
+
+        .paquetes-flecha.oculto {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .paquete-slide {
+                padding: 60px 18px 90px;
+            }
+
+            .paquete-nombre {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+
+            .paquete-subtitulo {
+                font-size: 0.92rem;
+            }
+
+            .paquete-lista li {
+                font-size: 0.8rem;
+            }
+
+            .paquetes-flecha {
+                display: none;
+            }
+        }
+
         /* (Modales de desbloqueo e invitación eliminados) */
     </style>
 </head>
@@ -3283,6 +3667,123 @@
         </div>
     </div>
 
+    <div class="modal-paquetes" id="modalPaquetes">
+        <button class="paquetes-cerrar" onclick="cerrarPaquetes()">✕</button>
+        <button class="paquetes-flecha izq oculto" id="paquetesFlechaIzq" onclick="anteriorPaquete()">‹</button>
+        <button class="paquetes-flecha der" id="paquetesFlechaDer" onclick="siguientePaquete()">›</button>
+
+        <div class="paquetes-slider" id="paquetesSlider">
+
+            <!-- SLIDE 1: ESENCIAL -->
+            <div class="paquete-slide esencial">
+                <div class="paquete-contenido">
+                    <div class="paquete-nombre">ESENCIAL</div>
+                    <div class="paquete-linea"></div>
+                    <div class="paquete-hint">Deslizá para ver los 3 paquetes →</div>
+
+                    <div class="paquete-subtitulo">Fotografía profesional con entrega digital</div>
+                    <div class="paquete-descripcion">Ideal para eventos íntimos o que no necesitan la galería en vivo.</div>
+
+                    <ul class="paquete-lista">
+                        <li>Cobertura fotográfica profesional del evento.</li>
+                        <li>Entrega de las fotografías digitales <strong>al día siguiente</strong>.</li>
+                        <li>Fotos en alta calidad, sin marca de agua.</li>
+                    </ul>
+
+                    <div class="paquete-ideal">
+                        <strong>Ideal para:</strong> cumpleaños íntimos, reuniones familiares, eventos que no requieren cobertura en vivo.
+                    </div>
+                </div>
+
+                <div class="paquete-footer">
+                    <div class="paquete-proximo-texto">Próximo: Premium</div>
+                    <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Premium →</button>
+                    <div class="paquetes-puntos">
+                        <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: PREMIUM -->
+            <div class="paquete-slide premium">
+                <div class="paquete-contenido">
+                    <div class="paquete-nombre">PREMIUM</div>
+                    <div class="paquete-linea"></div>
+
+                    <div class="paquete-subtitulo">Fotografía profesional + GALERÍA EN VIVO</div>
+                    <div class="paquete-descripcion">Todo lo del Esencial, pero con la tecnología que ningún fotógrafo tradicional tiene.</div>
+
+                    <ul class="paquete-lista">
+                        <li>Todo lo del Paquete Esencial.</li>
+                        <li><strong>Galería web privada</strong> con el nombre de tu evento.</li>
+                        <li><strong>Acceso con QR único</strong> para todos tus invitados.</li>
+                        <li><strong>Descargas ilimitadas</strong> para todos los invitados.</li>
+                        <li><strong>Fotos en tiempo real</strong>, aparecen en la galería mientras el evento sucede.</li>
+                        <li><strong>¿Tus seres queridos no pueden asistir?</strong> (están enfermos, viven lejos, son mayores). <strong>No te preocupes:</strong> enviales su invitación OVJ Studio y podrán ver la galería desde cualquier parte del mundo.</li>
+                        <li><strong>Juegos</strong> para tus invitados mientras esperan las fotos.</li>
+                        <li><strong>Métricas del evento en vivo</strong> (personas, fotos, descargas).</li>
+                        <li><strong>Detrás de cámara</strong> y <strong>mensajes en vivo</strong> del fotógrafo.</li>
+                        <li><strong>Cofres-regalo</strong> con premios reales y simbólicos.</li>
+                        <li><strong>Ningún servicio de fotografía tradicional tiene esta tecnología.</strong></li>
+                    </ul>
+
+                    <div class="paquete-ideal">
+                        <strong>Ideal para:</strong> bodas, quince años, aniversarios, eventos donde la experiencia importa.
+                    </div>
+                </div>
+
+                <div class="paquete-footer">
+                    <div class="paquete-proximo-texto">Próximo: Signature</div>
+                    <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Signature →</button>
+                    <div class="paquetes-puntos">
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: SIGNATURE -->
+            <div class="paquete-slide signature">
+                <div class="paquete-contenido">
+                    <div class="paquete-nombre">SIGNATURE</div>
+                    <div class="paquete-linea"></div>
+
+                    <div class="paquete-subtitulo">TODO lo del Premium + VIDEO RECAP + Tickets para compartir</div>
+                    <div class="paquete-descripcion">El "wow" completo. Tu evento trasciende el día.</div>
+
+                    <ul class="paquete-lista">
+                        <li>Todo lo del Paquete Premium.</li>
+                        <li><strong>VIDEO RECAP:</strong> un resumen de tu evento en video, <strong>formato vertical</strong> para redes sociales, emotivo, entregado <strong>en menos de 24 horas</strong>.</li>
+                        <li><strong>Tickets digitales de descuento</strong> para que compartas con tus conocidos o familiares.
+                            <ul style="margin-top:6px;padding-left:16px;list-style:circle;color:#aaa;font-size:0.78rem;">
+                                <li><strong>Vos no los podés usar en este evento</strong>, pero sí en uno próximo.</li>
+                                <li><strong>Ahorrás dinero y tiempo</strong> al compartirlos.</li>
+                                <li><strong>Tu gente querida también vive la experiencia OVJ Studio.</strong></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <div class="paquete-ideal">
+                        <strong>Ideal para:</strong> clientes que quieren el "wow" completo, dejar marca, y que su evento trascienda.
+                    </div>
+                </div>
+
+                <div class="paquete-footer">
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp()">Consultar por WhatsApp</button>
+                    <div class="paquetes-puntos">
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto activo"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="cofre-overlay" id="cofreOverlay">
         <div class="cofre-fase" id="cofreFaseCerrado">
             <div class="cofre-instruccion-top" id="cofreInstruccionTop">
@@ -3378,6 +3879,11 @@
             <button class="menu-lateral-item" onclick="menuAccion('beneficios')">
                 <span class="menu-lateral-emoji">✨</span>
                 <span class="menu-lateral-texto" data-i18n="menuBeneficios">Beneficios</span>
+            </button>
+
+            <button class="menu-lateral-item" onclick="menuAccion('paquetes')">
+                <span class="menu-lateral-emoji">📦</span>
+                <span class="menu-lateral-texto" data-i18n="menuPaquetes">Nuestros Paquetes</span>
             </button>
 
             <div class="menu-lateral-separador"></div>
@@ -3824,6 +4330,7 @@
                 menuDetras: "Detrás de cámara",
                 menuRegalo: "Mi regalo",
                 menuBeneficios: "Beneficios",
+                menuPaquetes: "Nuestros Paquetes",
                 menuSobre: "Sobre nosotros",
                 menuContacto: "Contactanos",
                 menuIdioma: "Idioma",
@@ -3906,6 +4413,7 @@
                 menuDetras: "Behind the scenes",
                 menuRegalo: "My gift",
                 menuBeneficios: "Benefits",
+                menuPaquetes: "Our Packages",
                 menuSobre: "About us",
                 menuContacto: "Contact us",
                 menuIdioma: "Language",
@@ -3988,6 +4496,7 @@
                 menuDetras: "幕后花絮",
                 menuRegalo: "我的礼物",
                 menuBeneficios: "服务优势",
+                menuPaquetes: "我们的套餐",
                 menuSobre: "关于我们",
                 menuContacto: "联系我们",
                 menuIdioma: "语言",
@@ -6125,6 +6634,9 @@
                     case 'beneficios':
                         abrirBeneficios();
                         break;
+                    case 'paquetes':
+                        abrirPaquetes();
+                        break;
                     case 'sobre':
                         abrirModalInfo('modalSobre');
                         break;
@@ -6309,6 +6821,96 @@
 
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
+
+        // ==========================================
+        // PAQUETES
+        // ==========================================
+        let paqueteActual = 0;
+        const TOTAL_PAQUETES = 3;
+
+        function abrirPaquetes() {
+            paqueteActual = 0;
+            document.getElementById('modalPaquetes').classList.add('activo');
+            document.body.style.overflow = 'hidden';
+            actualizarPaquete();
+        }
+
+        function cerrarPaquetes() {
+            document.getElementById('modalPaquetes').classList.remove('activo');
+            document.body.style.overflow = '';
+        }
+
+        function irAPaquete(n) {
+            if (n < 0 || n >= TOTAL_PAQUETES) return;
+            paqueteActual = n;
+            actualizarPaquete();
+        }
+
+        function siguientePaquete() {
+            if (paqueteActual < TOTAL_PAQUETES - 1) {
+                irAPaquete(paqueteActual + 1);
+            } else {
+                cerrarPaquetes();
+            }
+        }
+
+        function anteriorPaquete() {
+            if (paqueteActual > 0) {
+                irAPaquete(paqueteActual - 1);
+            }
+        }
+
+        function actualizarPaquete() {
+            const slider = document.getElementById('paquetesSlider');
+            if (!slider) return;
+
+            slider.style.transform = `translateX(-${paqueteActual * 100}%)`;
+
+            const flechaIzq = document.getElementById('paquetesFlechaIzq');
+            const flechaDer = document.getElementById('paquetesFlechaDer');
+
+            if (flechaIzq) flechaIzq.classList.toggle('oculto', paqueteActual === 0);
+            if (flechaDer) flechaDer.classList.toggle('oculto', paqueteActual === TOTAL_PAQUETES - 1);
+        }
+
+        function consultarPaqueteWhatsApp() {
+            const mensaje = '¡Hola! Vi los paquetes de OVJ Studio y me interesa saber más. ¿Me podés pasar más información?';
+            window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        // Swipe táctil
+        (function () {
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                const modal = document.getElementById('modalPaquetes');
+                if (modal && modal.classList.contains('activo')) {
+                    touchStartX = e.changedTouches[0].screenX;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                const modal = document.getElementById('modalPaquetes');
+                if (modal && modal.classList.contains('activo')) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const diff = touchStartX - touchEndX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) siguientePaquete();
+                        else anteriorPaquete();
+                    }
+                }
+            }, { passive: true });
+        })();
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('modalPaquetes');
+            if (!modal || !modal.classList.contains('activo')) return;
+            if (e.key === 'ArrowRight') siguientePaquete();
+            if (e.key === 'ArrowLeft') anteriorPaquete();
+            if (e.key === 'Escape') cerrarPaquetes();
+        });
 
 
         // ==========================================
