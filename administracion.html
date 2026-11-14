@@ -2448,61 +2448,194 @@
         async function renderTickets() {
             $('contenidoPrincipal').innerHTML = `
                 <div class="page-header">
-                    <div><h1>🎁 Tickets</h1><div class="subtitulo">Historial de tickets por evento</div></div>
+                    <div><h1>🎁 Tickets</h1><div class="subtitulo">Validación y búsqueda global</div></div>
                     <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
                 </div>
-                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando eventos...</div></div>
+
+                <div class="card" style="margin-bottom:20px; padding:20px;">
+                    <div style="font-size:1.1rem; font-weight:700; color:#e8c47a; margin-bottom:10px;">🔍 Buscar Ticket</div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <input type="text" id="inputBuscarTicket" placeholder="Pega el código completo o parte de él..." style="flex:1; min-width:200px; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); color:#fff; font-family:monospace; font-size:0.9rem; outline:none;">
+                        <button class="btn btn-primario" onclick="buscarTicketGlobal()" style="white-space:nowrap;">Buscar</button>
+                    </div>
+                    <div style="font-size:0.7rem; color:#888; margin-top:8px;">El código está en el ticket que te envió tu cliente.</div>
+                </div>
+
+                <div id="resultadoBusquedaTicket" style="margin-bottom:20px;"></div>
+
+                <div class="seccion-titulo-form" style="margin-top:0;padding-top:0;border-top:none;">📜 Historial de Tickets Manuales</div>
+
+                <div id="listaTicketsManualesGlobal">
+                    <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando historial...</div></div>
+                </div>
             `;
+
+            cargarTicketsManualesGlobales();
+        }
+
+        async function cargarTicketsManualesGlobales() {
+            const cont = document.getElementById('listaTicketsManualesGlobal');
+            if (!cont) return;
 
             try {
                 const data = await apiFetch('/admin/eventos');
                 const eventos = data.eventos || [];
 
-                // 🔥 AHORA MOSTRAMOS TODOS LOS EVENTOS, no solo los que tienen cofres
-                if (eventos.length === 0) {
-                    $('contenidoPrincipal').innerHTML = `
-                        <div class="page-header">
-                            <div><h1>🎁 Tickets</h1><div class="subtitulo">Historial de tickets por evento</div></div>
-                            <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
-                        </div>
-                        <div class="vacio">
-                            <span class="emoji">🎁</span>
-                            <div class="titulo">No hay eventos registrados</div>
-                            <div class="subtitulo">Agendá un evento para empezar.</div>
+                let html = '';
+                let totalManuales = 0;
+
+                // Recorremos los eventos y pedimos sus tickets (en paralelo sería ideal, pero secuencial está bien para pocos)
+                for (const ev of eventos) {
+                    try {
+                        const resp = await apiFetch('/admin/tickets?f=' + encodeURIComponent(ev.fotografo) + '&e=' + encodeURIComponent(ev.id));
+                        const tickets = resp.tickets || [];
+                        const manuales = tickets.filter(t => t.manual === true);
+
+                        if (manuales.length > 0) {
+                            manuales.forEach(t => {
+                                totalManuales++;
+                                const cobrado = !!t.cobrado;
+                                const colorBorde = cobrado ? 'rgba(74,222,128,0.25)' : 'rgba(232,196,122,0.25)';
+                                const colorFondo = cobrado ? 'rgba(74,222,128,0.04)' : 'rgba(232,196,122,0.03)';
+
+                                let badges = '';
+                                if (cobrado) badges += `<span style="background:rgba(74,222,128,0.15); color:#4ade80; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; margin-left:6px;">COBRADO</span>`;
+
+                                html += `
+                                    <div style="background:${colorFondo}; border:1px solid ${colorBorde}; border-radius:12px; padding:12px 14px; margin-bottom:8px;">
+                                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+                                            <div style="flex:1; min-width:0;">
+                                                <div style="font-size:0.85rem; font-weight:700; color:#fff; word-break:break-word;">
+                                                    ${escapeHtml(ev.evento)}
+                                                    ${badges}
+                                                </div>
+                                                <div style="font-size:0.62rem; color:#666; margin-top:2px;">👤 ${escapeHtml(ev.fotografo)}</div>
+                                            </div>
+                                        </div>
+                                        <div style="font-size:0.78rem; color:#e8c47a; margin-bottom:4px;">🎁 ${escapeHtml(t.titulo)}</div>
+                                        <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:6px 10px; margin-bottom:8px; font-family:monospace; font-size:0.68rem; color:#93c5fd; word-break:break-all;">
+                                            ${escapeHtml(t.token)}
+                                        </div>
+                                        ${!cobrado ? `
+                                            <button class="btn btn-chico btn-verde" onclick="cobrarTicketGlobal('${escapeHtml(ev.fotografo)}', '${escapeHtml(ev.id)}', '${escapeHtml(t.id)}')" style="width:100%;">✅ Marcar como cobrado</button>
+                                        ` : `
+                                            <div style="font-size:0.65rem; color:#4ade80; text-align:center;">✅ Cobrado el ${formatearHora(t.cobradoEn)}</div>
+                                        `}
+                                    </div>
+                                `;
+                            });
+                        }
+                    } catch (e) { }
+                }
+
+                if (totalManuales === 0) {
+                    cont.innerHTML = `<div class="vacio"><span class="emoji">📭</span><div class="titulo">No hay tickets manuales emitidos</div></div>`;
+                } else {
+                    cont.innerHTML = html;
+                }
+            } catch (e) {
+                cont.innerHTML = `<div class="vacio"><span class="emoji">❌</span><div class="titulo">Error cargando historial</div></div>`;
+            }
+        }
+
+        async function buscarTicketGlobal() {
+            const input = document.getElementById('inputBuscarTicket');
+            const codigo = input.value.trim();
+            const cont = document.getElementById('resultadoBusquedaTicket');
+
+            if (!codigo) {
+                cont.innerHTML = '';
+                return;
+            }
+
+            cont.innerHTML = `<div class="vacio" style="padding:20px;"><div class="titulo">Buscando...</div></div>`;
+            cont.style.display = 'block';
+
+            try {
+                // Buscar en todos los eventos
+                const data = await apiFetch('/admin/eventos');
+                const eventos = data.eventos || [];
+
+                let encontrado = null;
+
+                for (const ev of eventos) {
+                    try {
+                        const resp = await apiFetch('/admin/tickets?f=' + encodeURIComponent(ev.fotografo) + '&e=' + encodeURIComponent(ev.id));
+                        const tickets = resp.tickets || [];
+
+                        // Buscamos si el código enviado está contenido en el token (por si mandan solo una parte)
+                        const match = tickets.find(t => t.token.includes(codigo) || codigo.includes(t.token));
+                        if (match) {
+                            encontrado = { ticket: match, evento: ev };
+                            break;
+                        }
+                    } catch (e) { }
+                }
+
+                if (!encontrado) {
+                    cont.innerHTML = `
+                        <div class="card" style="border-color:rgba(231,76,60,0.4); background:rgba(231,76,60,0.05); padding:16px;">
+                            <div style="color:#e74c3c; font-weight:700; margin-bottom:4px;">❌ Ticket no encontrado</div>
+                            <div style="color:#aaa; font-size:0.8rem;">El código no existe o fue escrito incorrectamente.</div>
                         </div>
                     `;
                     return;
                 }
 
-                // Ordenar: activos primero, luego agendados, luego el resto
-                eventos.sort((a, b) => {
-                    const prioridad = (e) => e.estado === 'activo' ? 0 : (e.estado === 'agendado' ? 1 : 2);
-                    const pa = prioridad(a);
-                    const pb = prioridad(b);
-                    if (pa !== pb) return pa - pb;
-                    return new Date(b.fechaProgramada) - new Date(a.fechaProgramada);
-                });
+                const t = encontrado.ticket;
+                const ev = encontrado.evento;
+                const cobrado = !!t.cobrado;
 
-                let html = `
-                    <div class="page-header">
-                        <div><h1>🎁 Tickets</h1><div class="subtitulo">${eventos.length} evento${eventos.length === 1 ? '' : 's'} en total</div></div>
-                        <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+                cont.innerHTML = `
+                    <div class="card" style="border-color:rgba(74,222,128,0.5); background:rgba(74,222,128,0.05); padding:16px;">
+                        <div style="color:#4ade80; font-weight:700; margin-bottom:12px; font-size:1rem;">✅ Ticket Encontrado</div>
+
+                        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Evento:</div>
+                        <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:12px;">${escapeHtml(ev.evento)}</div>
+
+                        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Premio:</div>
+                        <div style="font-size:0.95rem; font-weight:700; color:#e8c47a; margin-bottom:12px;">${escapeHtml(t.titulo)}</div>
+
+                        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Token:</div>
+                        <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px 10px; font-family:monospace; font-size:0.75rem; color:#93c5fd; margin-bottom:16px; word-break:break-all;">
+                            ${escapeHtml(t.token)}
+                        </div>
+
+                        ${cobrado ? `
+                            <div style="background:rgba(74,222,128,0.15); color:#4ade80; padding:12px; border-radius:8px; text-align:center; font-weight:700;">
+                                ✅ YA FUE COBRADO (${formatearHora(t.cobradoEn)})
+                            </div>
+                        ` : `
+                            <button class="btn btn-primario" onclick="cobrarTicketGlobal('${escapeHtml(ev.fotografo)}', '${escapeHtml(ev.id)}', '${escapeHtml(t.id)}')" style="width:100%; padding:14px; font-size:0.9rem; background:linear-gradient(135deg,#4ade80,#22c55e);">
+                                ✅ Aprobar y Marcar como Cobrado
+                            </button>
+                        `}
                     </div>
-                    <div class="grid grid-2">
                 `;
-
-                eventos.forEach(e => {
-                    html += renderCardEventoConCofres(e);
-                });
-
-                html += `</div>`;
-                $('contenidoPrincipal').innerHTML = html;
 
             } catch (e) {
-                $('contenidoPrincipal').innerHTML = `
-                    <div class="page-header"><div><h1>🎁 Tickets</h1></div></div>
-                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-                `;
+                cont.innerHTML = `<div class="vacio" style="padding:20px;"><div class="titulo">Error de conexión</div></div>`;
+            }
+        }
+
+        async function cobrarTicketGlobal(fotografo, eventoId, ticketId) {
+            if (!confirm('¿Marcar este ticket como cobrado?\n\nDespués de esto no se puede deshacer.')) return;
+
+            loader(true);
+            try {
+                await apiFetch('/admin/tickets/' + encodeURIComponent(ticketId) + '/cobrar?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId), {
+                    method: 'POST'
+                });
+
+                toast('✅ Ticket marcado como cobrado', 'ok');
+
+                // Refrescar la vista
+                renderTickets();
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
             }
         }
 
