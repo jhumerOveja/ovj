@@ -1799,10 +1799,11 @@
     `;
             } else if (e.estado === 'activo') {
                 acciones = `
-        <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
-        ${botonWhatsApp}
-        ${botonCarpetaEntrega}
-    `;
+                    <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                    ${botonWhatsApp}
+                    ${botonCarpetaEntrega}
+                    <button class="btn btn-chico btn-peligro" onclick="confirmarFinalizarAdmin('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">🏁 Finalizar</button>
+                `;
             } else {
                 acciones = `
         ${botonWhatsApp}
@@ -1823,6 +1824,41 @@
             ${acciones ? `<div class="acciones">${acciones}</div>${textoCarpetaEstado}` : ''}
         </div>
     `;
+        }
+
+        function confirmarFinalizarAdmin(id, nombre) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo" style="color:#e74c3c;">🏁 Finalizar evento</div>
+                <div class="subtitulo">
+                    ¿Finalizar <strong>${escapeHtml(nombre)}</strong>?<br><br>
+                    Se cerrará el evento, se borrarán los accesos (invitaciones) y el status.json de B2.<br><br>
+                    <strong>Los tickets NO se borran.</strong><br><br>
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </div>
+                <button class="btn-peligro" onclick="ejecutarFinalizarAdmin('${escapeHtml(id)}')">Sí, finalizar</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+            `);
+        }
+
+        async function ejecutarFinalizarAdmin(id) {
+            loader(true);
+            cerrarModal();
+            try {
+                const data = await apiFetch('/admin/eventos/' + encodeURIComponent(id) + '/finalizar', {
+                    method: 'POST'
+                });
+
+                const horas = Math.floor(data.duracionHoras);
+                const mins = Math.round((data.duracionHoras - horas) * 60);
+
+                toast(`✅ Evento finalizado · ${horas}h ${mins}min`, 'ok');
+                renderEventos();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
         }
 
         async function abrirNuevoEvento() {
