@@ -2447,35 +2447,35 @@
         // ==========================================
         async function renderTickets() {
             $('contenidoPrincipal').innerHTML = `
-        <div class="page-header">
-            <div><h1>🎁 Tickets</h1><div class="subtitulo">Cofres-regalo emitidos por evento</div></div>
-            <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
-        </div>
-        <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando eventos...</div></div>
-    `;
+                <div class="page-header">
+                    <div><h1>🎁 Tickets</h1><div class="subtitulo">Historial de tickets por evento</div></div>
+                    <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+                </div>
+                <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando eventos...</div></div>
+            `;
 
             try {
                 const data = await apiFetch('/admin/eventos');
                 const eventos = data.eventos || [];
 
-                const conCofres = eventos.filter(e => e.cofres && e.cofres.activo === true);
-
-                if (conCofres.length === 0) {
+                // 🔥 AHORA MOSTRAMOS TODOS LOS EVENTOS, no solo los que tienen cofres
+                if (eventos.length === 0) {
                     $('contenidoPrincipal').innerHTML = `
-                <div class="page-header">
-                    <div><h1>🎁 Tickets</h1><div class="subtitulo">Cofres-regalo emitidos por evento</div></div>
-                    <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
-                </div>
-                <div class="vacio">
-                    <span class="emoji">🎁</span>
-                    <div class="titulo">No hay eventos con cofres activados</div>
-                    <div class="subtitulo">Al agendar un evento, activá los cofres para que los invitados puedan recibir tickets.</div>
-                </div>
-            `;
+                        <div class="page-header">
+                            <div><h1>🎁 Tickets</h1><div class="subtitulo">Historial de tickets por evento</div></div>
+                            <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+                        </div>
+                        <div class="vacio">
+                            <span class="emoji">🎁</span>
+                            <div class="titulo">No hay eventos registrados</div>
+                            <div class="subtitulo">Agendá un evento para empezar.</div>
+                        </div>
+                    `;
                     return;
                 }
 
-                conCofres.sort((a, b) => {
+                // Ordenar: activos primero, luego agendados, luego el resto
+                eventos.sort((a, b) => {
                     const prioridad = (e) => e.estado === 'activo' ? 0 : (e.estado === 'agendado' ? 1 : 2);
                     const pa = prioridad(a);
                     const pb = prioridad(b);
@@ -2484,14 +2484,14 @@
                 });
 
                 let html = `
-            <div class="page-header">
-                <div><h1>🎁 Tickets</h1><div class="subtitulo">${conCofres.length} evento${conCofres.length === 1 ? '' : 's'} con cofres</div></div>
-                <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
-            </div>
-            <div class="grid grid-2">
-        `;
+                    <div class="page-header">
+                        <div><h1>🎁 Tickets</h1><div class="subtitulo">${eventos.length} evento${eventos.length === 1 ? '' : 's'} en total</div></div>
+                        <div class="acciones"><button class="btn btn-secundario" onclick="renderTickets()">🔄 Refrescar</button></div>
+                    </div>
+                    <div class="grid grid-2">
+                `;
 
-                conCofres.forEach(e => {
+                eventos.forEach(e => {
                     html += renderCardEventoConCofres(e);
                 });
 
@@ -2500,9 +2500,9 @@
 
             } catch (e) {
                 $('contenidoPrincipal').innerHTML = `
-            <div class="page-header"><div><h1>🎁 Tickets</h1></div></div>
-            <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
-        `;
+                    <div class="page-header"><div><h1>🎁 Tickets</h1></div></div>
+                    <div class="vacio"><span class="emoji">❌</span><div class="titulo">Error</div><div class="subtitulo">${escapeHtml(e.message)}</div></div>
+                `;
             }
         }
 
@@ -2511,66 +2511,50 @@
             const badgeTexto = e.estado === 'activo' ? '● Activo' : e.estado === 'agendado' ? '⏳ Agendado' : '✔ Finalizado';
 
             const cofres = e.cofres || {};
+            const tieneCofres = cofres.activo === true;
             const cantidadTickets = cofres.cantidadTickets || 0;
             const horaEntrega = cofres.horaEntrega || '—';
             const emitidosEn = cofres.emitidosEn;
-            const premios = Array.isArray(cofres.premios) ? cofres.premios : [];
 
             let estadoEmision = '';
-            if (emitidosEn) {
-                estadoEmision = `<div class="fila" style="color:#4ade80;">✅ Emitidos: ${formatearHora(emitidosEn)}</div>`;
-            } else if (e.estado === 'activo') {
-                estadoEmision = `<div class="fila" style="color:#f39c12;">⏳ Pendiente: se emitirán a las ${horaEntrega}</div>`;
-            } else if (e.estado === 'agendado') {
-                estadoEmision = `<div class="fila" style="color:#5dade2;">📅 Se emitirán a las ${horaEntrega}</div>`;
-            } else {
-                estadoEmision = `<div class="fila" style="color:#888;">— No emitidos</div>`;
+            if (tieneCofres) {
+                if (emitidosEn) {
+                    estadoEmision = `<div class="fila" style="color:#4ade80;">✅ Emitidos: ${formatearHora(emitidosEn)}</div>`;
+                } else if (e.estado === 'activo') {
+                    estadoEmision = `<div class="fila" style="color:#f39c12;">⏳ Pendiente: se emitirán a las ${horaEntrega}</div>`;
+                } else if (e.estado === 'agendado') {
+                    estadoEmision = `<div class="fila" style="color:#5dade2;">📅 Se emitirán a las ${horaEntrega}</div>`;
+                } else {
+                    estadoEmision = `<div class="fila" style="color:#888;">— No emitidos</div>`;
+                }
             }
 
-            const mapaEtiquetas = {
-                extra_30min: '+30 min',
-                extra_1hora: '+1 hora',
-                extra_2horas: '+2 horas',
-                descuento_50bs: '-50 Bs',
-                descuento_100bs: '-100 Bs',
-                descuento_150bs: '-150 Bs',
-                descuento_200bs: '-200 Bs',
-                jackpot_combo: '🎰 +1h + -100 Bs'
-            };
-
-            const etiquetasPremiosHtml = premios.map(p => {
-                const etiqueta = mapaEtiquetas[p] || p;
-                const esJackpot = p.startsWith('jackpot');
-                return `<span style="display:inline-block; background:${esJackpot ? 'rgba(232,196,122,0.15)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${esJackpot ? 'rgba(232,196,122,0.4)' : 'rgba(255,255,255,0.1)'}; color:${esJackpot ? '#e8c47a' : '#aaa'}; font-size:0.62rem; padding:3px 8px; border-radius:50px; margin:2px 4px 2px 0;">${etiqueta}</span>`;
-            }).join('');
-
             return `
-        <div class="card card-evento">
-            <div class="cabecera">
-                <div>
-                    <div class="titulo">${escapeHtml(e.evento)}</div>
-                    <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
+                <div class="card card-evento">
+                    <div class="cabecera">
+                        <div>
+                            <div class="titulo">${escapeHtml(e.evento)}</div>
+                            <div class="fotografo">👤 ${escapeHtml(e.fotografo)}</div>
+                        </div>
+                        <span class="badge ${badgeClase}">${badgeTexto}</span>
+                    </div>
+                    <div class="meta">
+                        ${tieneCofres ? `
+                            <div class="fila">🎁 <strong>${cantidadTickets}</strong> ticket${cantidadTickets === 1 ? '' : 's'} de sorteo</div>
+                            <div class="fila">🕐 Hora de entrega: <strong>${horaEntrega}</strong></div>
+                            ${estadoEmision}
+                        ` : `
+                            <div class="fila" style="color:#888;">Sin sorteo de cofres para invitados</div>
+                        `}
+                    </div>
+
+                    <div class="acciones">
+                        <button class="btn btn-chico btn-secundario" onclick="verTicketsEvento('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">
+                            🎁 Ver tickets
+                        </button>
+                    </div>
                 </div>
-                <span class="badge ${badgeClase}">${badgeTexto}</span>
-            </div>
-            <div class="meta">
-                <div class="fila">🎁 <strong>${cantidadTickets}</strong> ticket${cantidadTickets === 1 ? '' : 's'} reales</div>
-                <div class="fila">🕐 Hora de entrega: <strong>${horaEntrega}</strong></div>
-                ${estadoEmision}
-            </div>
-            ${premios.length > 0 ? `
-                <div style="margin-top:8px;">
-                    <div style="font-size:0.62rem; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Premios disponibles</div>
-                    <div>${etiquetasPremiosHtml}</div>
-                </div>
-            ` : ''}
-            <div class="acciones">
-                <button class="btn btn-chico btn-secundario" onclick="verTicketsEvento('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">
-                    🎁 Ver tickets
-                </button>
-            </div>
-        </div>
-    `;
+            `;
         }
 
         // ==========================================
