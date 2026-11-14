@@ -3263,20 +3263,23 @@
         }
 
         .paquete-lista li {
-            display: flex;
-            gap: 8px;
+            display: block;
             font-size: 0.78rem;
             color: #ddd;
-            line-height: 1.4;
-            padding-left: 2px;
+            line-height: 1.5;
+            padding-left: 14px;
+            position: relative;
+            margin-bottom: 4px;
         }
 
         .paquete-lista li::before {
             content: '•';
-            flex-shrink: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
             font-weight: 700;
             font-size: 1rem;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .paquete-slide.esencial .paquete-lista li::before {
