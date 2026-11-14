@@ -2591,16 +2591,44 @@
             await cargarListaTickets(fotografo, eventoId);
         }
 
-        function abrirModalTicketsManuales(fotografo, eventoId, nombreEvento) {
-            if (cacheCatalogoPremios.length === 0) {
-                apiFetch('/admin/catalogo-premios').then(data => {
-                    cacheCatalogoPremios = data.catalogo || [];
+        async function abrirModalTicketsManuales(fotografo, eventoId, nombreEvento) {
+            loader(true);
+            try {
+                // 1. Consultar si ya existe un ticket manual para este evento
+                const data = await apiFetch('/admin/tickets?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId));
+                const tickets = data.tickets || [];
+                const ticketExistente = tickets.find(t => t.manual === true);
+
+                if (ticketExistente) {
+                    // 2. Si ya existe, mostrar la imagen generada directamente
+                    abrirModal(`
+                        <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                        <div class="titulo" style="color:#4ade80;">🎁 Ticket de regalo</div>
+                        <div class="subtitulo">Este evento ya tiene un ticket manual generado.</div>
+
+                        <div style="background:#000; border-radius:12px; padding:10px; margin-bottom:16px; text-align:center;">
+                            <canvas id="canvasTicket" style="max-width:100%; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                        </div>
+
+                        <button class="btn-primario" onclick="descargarImagenTicket('${escapeHtml(ticketExistente.token)}', '${escapeHtml(ticketExistente.titulo)}', '${escapeHtml(nombreEvento)}')">📥 Descargar Imagen</button>
+                        <button class="btn-secundario" onclick="cerrarModal()">Cerrar</button>
+                    `);
+
+                    // Generar la imagen en el Canvas con los datos del ticket existente
+                    generarCanvasTicket(ticketExistente.token, ticketExistente.titulo, nombreEvento);
+
+                } else {
+                    // 3. Si no existe, abrir el modal para crear uno nuevo
+                    if (cacheCatalogoPremios.length === 0) {
+                        const dataPremios = await apiFetch('/admin/catalogo-premios');
+                        cacheCatalogoPremios = dataPremios.catalogo || [];
+                    }
                     renderModalTicketsManuales(fotografo, eventoId, nombreEvento);
-                }).catch(() => {
-                    toast('Error cargando premios', 'error');
-                });
-            } else {
-                renderModalTicketsManuales(fotografo, eventoId, nombreEvento);
+                }
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
             }
         }
 
