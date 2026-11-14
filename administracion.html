@@ -2643,16 +2643,14 @@
                 });
 
                 const ticket = data.ticket;
-
-                // 🔥 El mensaje exacto que pediste
+                // 🔥 Mensaje compacto
                 const textoCopiar =
-                    `HOLA ESTE ES UN TICKET DIGITAL DE DESCUENTO PARA LOS SERVICIOS DE OVJ ESTUDIO\n\n` +
-                    `🎁 *Premio:* ${ticket.titulo}\n` +
-                    `📅 *Válido por:* 6 meses\n\n` +
-                    `Aquí está tu código:\n\n` +
+                    `HOLA, ESTE ES UN TICKET DIGITAL DE DESCUENTO PARA OVJ STUDIO\n\n` +
+                    `🎁 Premio: ${ticket.titulo}\n` +
+                    `📅 Válido por: 6 meses\n\n` +
+                    `Código:\n` +
                     `1️⃣ ${ticket.token}\n\n` +
-                    `PARA RECLAMAR EL TICKET DIGITAL SOLO REENVIA ESTE MENSAJE A OVJ STUDIO\n\n` +
-                    `— OVJ Studio`;
+                    `PARA RECLAMARLO, SOLO REENVÍA ESTE MENSAJE A OVJ STUDIO.`;
 
                 abrirModal(`
                     <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
