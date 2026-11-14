@@ -2643,33 +2643,108 @@
                 });
 
                 const ticket = data.ticket;
-                // 🔥 Mensaje compacto
-                const textoCopiar =
-                    `HOLA, ESTE ES UN TICKET DIGITAL DE DESCUENTO PARA OVJ STUDIO\n\n` +
-                    `🎁 Premio: ${ticket.titulo}\n` +
-                    `📅 Válido por: 6 meses\n\n` +
-                    `Código:\n` +
-                    `1️⃣ ${ticket.token}\n\n` +
-                    `PARA RECLAMARLO, SOLO REENVÍA ESTE MENSAJE A OVJ STUDIO.`;
 
+                // Mostramos el modal con el Canvas
                 abrirModal(`
                     <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
                     <div class="titulo" style="color:#4ade80;">✅ Ticket generado</div>
-                    <div class="subtitulo">Copiá el mensaje y envialo a tu cliente.</div>
+                    <div class="subtitulo">Descargá la imagen y enviala a tu cliente.</div>
 
-                    <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; font-family:monospace; font-size:0.75rem; color:#93c5fd; word-break:break-all; line-height:1.6; margin-bottom:14px;">
-                        ${ticket.token}
+                    <div style="background:#000; border-radius:12px; padding:10px; margin-bottom:16px; text-align:center;">
+                        <canvas id="canvasTicket" style="max-width:100%; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);"></canvas>
                     </div>
 
-                    <button class="btn-primario" onclick="copiarTokensManuales('${btoa(unescape(encodeURIComponent(textoCopiar)))}')">📋 Copiar mensaje para WhatsApp</button>
+                    <button class="btn-primario" onclick="descargarImagenTicket('${escapeHtml(ticket.token)}', '${escapeHtml(ticket.titulo)}', '${escapeHtml(nombreEvento)}')">📥 Descargar Imagen</button>
                     <button class="btn-secundario" onclick="cerrarModal()">Listo</button>
                 `);
+
+                // Generar la imagen en el Canvas
+                generarCanvasTicket(ticket.token, ticket.titulo, nombreEvento);
 
             } catch (e) {
                 toast('Error: ' + e.message, 'error');
                 btn.disabled = false;
                 btn.textContent = 'Generar ticket';
             }
+        }
+
+        function generarCanvasTicket(token, premio, nombreEvento) {
+            const canvas = document.getElementById('canvasTicket');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            // Resolución alta para que se vea nítido
+            canvas.width = 800;
+            canvas.height = 400;
+
+            // 1. Fondo oscuro
+            ctx.fillStyle = '#0a0a0c';
+            ctx.fillRect(0, 0, 800, 400);
+
+            // 2. Borde dorado
+            ctx.strokeStyle = '#e8c47a';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(10, 10, 780, 380);
+
+            // 3. Marca OVJ
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 40px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('OVJ STUDIO', 400, 80);
+
+            // 4. Línea punteada central (efecto ticket)
+            ctx.beginPath();
+            ctx.setLineDash([10, 10]);
+            ctx.moveTo(50, 200);
+            ctx.lineTo(750, 200);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.setLineDash([]); // Resetear
+
+            // 5. Premio y Validez (Arriba de la línea)
+            ctx.fillStyle = '#e8c47a';
+            ctx.font = '700 28px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText(premio, 400, 140);
+
+            ctx.fillStyle = '#a1a1aa';
+            ctx.font = '400 18px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('Válido por 6 meses', 400, 175);
+
+            // 6. El Código (Abajo de la línea)
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '400 16px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('CÓDIGO ÚNICO:', 400, 245);
+
+            ctx.fillStyle = '#93c5fd'; // Azul para el token
+            ctx.font = '700 24px monospace'; // Monospace para el token
+            ctx.fillText(token, 400, 280);
+
+            // 7. Instrucción de reclamo
+            ctx.fillStyle = '#666666';
+            ctx.font = '400 16px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('Para reclamar, reenviá esta imagen a OVJ Studio', 400, 350);
+        }
+
+        function descargarImagenTicket(token, premio, nombreEvento) {
+            const canvas = document.getElementById('canvasTicket');
+            if (!canvas) return;
+
+            // Convertir canvas a imagen PNG y descargar
+            const dataUrl = canvas.toDataURL('image/png');
+
+            // Crear un link temporal para descargar
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `Ticket_OVJ_${nombreEvento.replace(/[^a-zA-Z0-9]/g, '_')}_${token.substring(0, 6)}.png`;
+            document.body.appendChild(a);
+            a.click();
+
+            setTimeout(() => {
+                document.body.removeChild(a);
+            }, 100);
+
+            toast('✅ Imagen descargada', 'ok');
         }
 
         function copiarTokensManuales(textoB64) {
