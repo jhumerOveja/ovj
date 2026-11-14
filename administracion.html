@@ -1800,15 +1800,17 @@
             } else if (e.estado === 'activo') {
                 acciones = `
                     <button class="btn btn-chico btn-secundario" onclick="verTokenGeneral('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}', '${escapeHtml(e.fotografo)}')">🎫 Ver QR</button>
+                    <button class="btn btn-chico btn-primario" onclick="abrirModalTicketsManuales('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">🎁 Ticket de regalo</button>
                     ${botonWhatsApp}
                     ${botonCarpetaEntrega}
                     <button class="btn btn-chico btn-peligro" onclick="confirmarFinalizarAdmin('${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">🏁 Finalizar</button>
                 `;
             } else {
                 acciones = `
-        ${botonWhatsApp}
-        ${botonCarpetaEntrega}
-    `;
+                    <button class="btn btn-chico btn-primario" onclick="abrirModalTicketsManuales('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', '${escapeHtml(e.evento)}')">🎁 Ticket de regalo</button>
+                    ${botonWhatsApp}
+                    ${botonCarpetaEntrega}
+                `;
             }
 
             return `
@@ -2581,13 +2583,6 @@
                 <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
                 <div class="titulo">🎁 Tickets: ${escapeHtml(nombreEvento)}</div>
                 <div class="subtitulo">Cargando...</div>
-
-                <div style="margin-bottom: 14px;">
-                    <button class="btn btn-secundario" onclick="abrirModalTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}')" style="width:100%;">
-                        ➕ Emitir tickets manuales
-                    </button>
-                </div>
-
                 <div id="listaTicketsContainer">
                     <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
                 </div>
@@ -2596,29 +2591,31 @@
             await cargarListaTickets(fotografo, eventoId);
         }
 
-        function abrirModalTicketsManuales(fotografo, eventoId) {
-            // Cargar catálogo de premios si no está cargado
+        function abrirModalTicketsManuales(fotografo, eventoId, nombreEvento) {
             if (cacheCatalogoPremios.length === 0) {
                 apiFetch('/admin/catalogo-premios').then(data => {
                     cacheCatalogoPremios = data.catalogo || [];
-                    renderModalTicketsManuales(fotografo, eventoId);
+                    renderModalTicketsManuales(fotografo, eventoId, nombreEvento);
                 }).catch(() => {
                     toast('Error cargando premios', 'error');
                 });
             } else {
-                renderModalTicketsManuales(fotografo, eventoId);
+                renderModalTicketsManuales(fotografo, eventoId, nombreEvento);
             }
         }
 
-        function renderModalTicketsManuales(fotografo, eventoId) {
+        function renderModalTicketsManuales(fotografo, eventoId, nombreEvento) {
             const opcionesPremios = cacheCatalogoPremios.map(p =>
                 `<option value="${p.key}">${escapeHtml(p.titulo)}</option>`
             ).join('');
 
             abrirModal(`
-                <button class="btn-cerrar" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">✕</button>
-                <div class="titulo">➕ Tickets Manuales</div>
-                <div class="subtitulo">Generá tickets para que el cliente los regale.</div>
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🎁 Ticket de regalo</div>
+                <div class="subtitulo">
+                    Evento: <strong>${escapeHtml(nombreEvento)}</strong><br>
+                    Generá tickets para que el cliente los comparta.
+                </div>
 
                 <div class="campo">
                     <label>Cantidad de tickets</label>
@@ -2633,12 +2630,12 @@
                     </select>
                 </div>
 
-                <button class="btn-primario" id="btnGenerarTicketsManuales" onclick="generarTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}')">Generar tickets</button>
-                <button class="btn-secundario" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">Volver</button>
+                <button class="btn-primario" id="btnGenerarTicketsManuales" onclick="generarTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', '${escapeHtml(nombreEvento)}')">Generar tickets</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
             `);
         }
 
-        async function generarTicketsManuales(fotografo, eventoId) {
+        async function generarTicketsManuales(fotografo, eventoId, nombreEvento) {
             const cantidad = parseInt($('inputTicketsCantidad').value, 10);
             const premioKey = $('inputTicketsPremio').value;
 
@@ -2657,11 +2654,10 @@
                     body: JSON.stringify({ cantidad, premioKey })
                 });
 
-                // Crear el texto para copiar
                 const textoCopiar = data.tickets.map(t => t.token).join('\n');
 
                 abrirModal(`
-                    <button class="btn-cerrar" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">✕</button>
+                    <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
                     <div class="titulo" style="color:#4ade80;">✅ Tickets generados</div>
                     <div class="subtitulo">Copiá estos tokens y envialos a tu cliente para que los comparta.</div>
 
@@ -2670,7 +2666,7 @@
                     </div>
 
                     <button class="btn-primario" onclick="copiarTokensManuales('${btoa(textoCopiar)}')">📋 Copiar todos los tokens</button>
-                    <button class="btn-secundario" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">Listo</button>
+                    <button class="btn-secundario" onclick="cerrarModal()">Listo</button>
                 `);
 
             } catch (e) {
