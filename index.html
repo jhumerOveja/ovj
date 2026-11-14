@@ -7409,46 +7409,142 @@
 
             if (!ticket) {
                 document.getElementById('cofreRevelacionContenido').innerHTML = `
-            <div class="cofre-revelacion-emoji">🎁</div>
-            <div class="cofre-revelacion-titulo">¡Gracias!</div>
-            <div class="cofre-revelacion-desc">Gracias por ser parte de este evento.</div>
-            <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
-        `;
+                    <div class="cofre-revelacion-emoji">🎁</div>
+                    <div class="cofre-revelacion-titulo">¡Gracias!</div>
+                    <div class="cofre-revelacion-desc">Gracias por ser parte de este evento.</div>
+                    <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
+                `;
                 return;
             }
 
             if (ticket.tipo === 'simbolico') {
                 document.getElementById('cofreRevelacionContenido').innerHTML = `
-            <div class="cofre-revelacion-emoji">💛</div>
-            <div class="cofre-revelacion-titulo">Gracias por ser parte</div>
-            <div class="cofre-revelacion-desc">
-                ${escapeHtml(ticket.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}
-            </div>
-            <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
-        `;
+                    <div class="cofre-revelacion-emoji">💛</div>
+                    <div class="cofre-revelacion-titulo">Gracias por ser parte</div>
+                    <div class="cofre-revelacion-desc">
+                        ${escapeHtml(ticket.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}
+                    </div>
+                    <button class="cofre-btn-cerrar" onclick="cerrarCofre()">Cerrar</button>
+                `;
                 return;
             }
 
-            const fechaVenc = ticket.expiraEn
-                ? new Date(ticket.expiraEn).toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })
-                : '';
-
+            // 🔥 Para tickets reales: Mostramos la imagen del ticket generada por Canvas
             document.getElementById('cofreRevelacionContenido').innerHTML = `
-        <div class="cofre-revelacion-emoji">🎁</div>
-        <div class="cofre-revelacion-titulo">${escapeHtml(ticket.titulo)}</div>
-        <div class="cofre-revelacion-desc">${escapeHtml(ticket.descripcion)}</div>
-        <div class="cofre-revelacion-token">${escapeHtml(ticket.token)}</div>
-        <div class="cofre-revelacion-venc">Vence: ${fechaVenc}</div>
-        <button class="cofre-btn-reclamar" onclick="reclamarCofreWhatsApp()">
-            📲 Reclamar por WhatsApp
-        </button>
-        <button class="cofre-btn-reclamar" style="background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.12);" onclick="compartirCofreWhatsApp()">
-            🤝 Compartir con alguien
-        </button>
-        <button class="cofre-btn-cerrar" onclick="cerrarCofre()">
-            Guardar y cerrar
-        </button>
-    `;
+                <div class="cofre-revelacion-emoji">🎁</div>
+                <div class="cofre-revelacion-titulo">${escapeHtml(ticket.titulo)}</div>
+                <div class="cofre-revelacion-desc" style="margin-bottom:10px;">¡Ganaste un regalo! Descargá tu ticket y guardalo.</div>
+
+                <div style="background:#000; border-radius:12px; padding:10px; margin-bottom:14px; text-align:center;">
+                    <canvas id="canvasTicketInvitado" style="max-width:100%; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                </div>
+
+                <button class="cofre-btn-reclamar" style="background:linear-gradient(135deg,#e8c47a,#d4a94a); color:#0a0a0a;" onclick="descargarTicketInvitado('${escapeHtml(ticket.token)}', '${escapeHtml(ticket.titulo)}')">
+                    📥 Descargar Ticket
+                </button>
+                <button class="cofre-btn-cerrar" onclick="cerrarCofre()">
+                    Cerrar
+                </button>
+            `;
+
+            // Generar el Canvas con el QR
+            generarCanvasTicketInvitado(ticket.token, ticket.titulo, document.getElementById('eventoTitulo').textContent);
+        }
+
+        function descargarTicketInvitado(token, premio) {
+            const canvas = document.getElementById('canvasTicketInvitado');
+            if (!canvas) return;
+
+            const dataUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `Ticket_OVJ_${token}.png`;
+            document.body.appendChild(a);
+            a.click();
+
+            setTimeout(() => {
+                document.body.removeChild(a);
+            }, 100);
+
+            mostrarToast('✅ Ticket guardado en tu galería', 'success');
+        }
+
+        function generarCanvasTicketInvitado(token, premio, nombreEvento) {
+            const canvas = document.getElementById('canvasTicketInvitado');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 500;
+
+            // 1. Fondo oscuro y borde dorado
+            ctx.fillStyle = '#0a0a0c';
+            ctx.fillRect(0, 0, 800, 500);
+            ctx.strokeStyle = '#e8c47a';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(10, 10, 780, 480);
+
+            // 2. Marca OVJ
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 36px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('OVJ STUDIO', 400, 70);
+
+            // 3. Texto de evento y premio
+            ctx.fillStyle = '#a1a1aa';
+            ctx.font = '400 20px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText(nombreEvento.toUpperCase(), 400, 110);
+
+            ctx.fillStyle = '#e8c47a';
+            ctx.font = '700 32px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText(premio, 400, 160);
+
+            // 4. Línea punteada
+            ctx.beginPath();
+            ctx.setLineDash([10, 10]);
+            ctx.moveTo(50, 200);
+            ctx.lineTo(750, 200);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 5. Código
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '400 18px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('TU CÓDIGO ÚNICO:', 400, 250);
+
+            ctx.fillStyle = '#93c5fd';
+            ctx.font = '800 36px monospace';
+            ctx.fillText(token, 400, 300);
+
+            // 6. Instrucciones
+            ctx.fillStyle = '#888888';
+            ctx.font = '400 16px Segoe UI, Tahoma, sans-serif';
+            ctx.fillText('Escaneá el QR para reclamar cuando quieras.', 400, 360);
+            ctx.fillText('Válido por 6 meses.', 400, 385);
+
+            // 7. QR de WhatsApp
+            if (window.qrcode) {
+                // Armamos el mensaje automático
+                const textoWhatsApp = `Hola OVJ Studio! Gané el ticket ${token} en el evento. Me interesa usarlo para mi próximo evento.`;
+                const urlWhatsApp = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoWhatsApp)}`;
+
+                const qr = window.qrcode(0, 'M');
+                qr.addData(urlWhatsApp);
+                qr.make();
+
+                const qrImg = new Image();
+                qrImg.src = qr.createDataURL(6, 10);
+
+                qrImg.onload = () => {
+                    // Dibujamos el QR en el centro-abajo
+                    const qrSize = 110;
+                    const qrX = (canvas.width - qrSize) / 2;
+                    const qrY = 380; // Un poco más abajo de las instrucciones
+                    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+                };
+            }
         }
 
         function reclamarCofreWhatsApp() {
