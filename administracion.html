@@ -2578,15 +2578,119 @@
             ticketsEventoSeleccionado = { fotografo, eventoId, nombreEvento };
 
             abrirModal(`
-        <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-        <div class="titulo">🎁 Tickets: ${escapeHtml(nombreEvento)}</div>
-        <div class="subtitulo">Cargando...</div>
-        <div id="listaTicketsContainer">
-            <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
-        </div>
-    `);
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">🎁 Tickets: ${escapeHtml(nombreEvento)}</div>
+                <div class="subtitulo">Cargando...</div>
+
+                <div style="margin-bottom: 14px;">
+                    <button class="btn btn-secundario" onclick="abrirModalTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}')" style="width:100%;">
+                        ➕ Emitir tickets manuales
+                    </button>
+                </div>
+
+                <div id="listaTicketsContainer">
+                    <div class="vacio"><span class="emoji">⏳</span><div class="titulo">Cargando...</div></div>
+                </div>
+            `);
 
             await cargarListaTickets(fotografo, eventoId);
+        }
+
+        function abrirModalTicketsManuales(fotografo, eventoId) {
+            // Cargar catálogo de premios si no está cargado
+            if (cacheCatalogoPremios.length === 0) {
+                apiFetch('/admin/catalogo-premios').then(data => {
+                    cacheCatalogoPremios = data.catalogo || [];
+                    renderModalTicketsManuales(fotografo, eventoId);
+                }).catch(() => {
+                    toast('Error cargando premios', 'error');
+                });
+            } else {
+                renderModalTicketsManuales(fotografo, eventoId);
+            }
+        }
+
+        function renderModalTicketsManuales(fotografo, eventoId) {
+            const opcionesPremios = cacheCatalogoPremios.map(p =>
+                `<option value="${p.key}">${escapeHtml(p.titulo)}</option>`
+            ).join('');
+
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">✕</button>
+                <div class="titulo">➕ Tickets Manuales</div>
+                <div class="subtitulo">Generá tickets para que el cliente los regale.</div>
+
+                <div class="campo">
+                    <label>Cantidad de tickets</label>
+                    <input type="number" id="inputTicketsCantidad" value="3" min="1" max="50" />
+                    <div class="ayuda">Máximo 50 por vez.</div>
+                </div>
+
+                <div class="campo">
+                    <label>Premio</label>
+                    <select id="inputTicketsPremio">
+                        ${opcionesPremios}
+                    </select>
+                </div>
+
+                <button class="btn-primario" id="btnGenerarTicketsManuales" onclick="generarTicketsManuales('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}')">Generar tickets</button>
+                <button class="btn-secundario" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">Volver</button>
+            `);
+        }
+
+        async function generarTicketsManuales(fotografo, eventoId) {
+            const cantidad = parseInt($('inputTicketsCantidad').value, 10);
+            const premioKey = $('inputTicketsPremio').value;
+
+            if (!cantidad || cantidad < 1) {
+                toast('Cantidad inválida', 'error');
+                return;
+            }
+
+            const btn = $('btnGenerarTicketsManuales');
+            btn.disabled = true;
+            btn.textContent = 'Generando...';
+
+            try {
+                const data = await apiFetch('/admin/tickets/manual?f=' + encodeURIComponent(fotografo) + '&e=' + encodeURIComponent(eventoId), {
+                    method: 'POST',
+                    body: JSON.stringify({ cantidad, premioKey })
+                });
+
+                // Crear el texto para copiar
+                const textoCopiar = data.tickets.map(t => t.token).join('\n');
+
+                abrirModal(`
+                    <button class="btn-cerrar" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">✕</button>
+                    <div class="titulo" style="color:#4ade80;">✅ Tickets generados</div>
+                    <div class="subtitulo">Copiá estos tokens y envialos a tu cliente para que los comparta.</div>
+
+                    <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; font-family:monospace; font-size:0.75rem; color:#93c5fd; word-break:break-all; line-height:1.6; margin-bottom:14px; max-height:200px; overflow-y:auto;">
+                        ${data.tickets.map(t => `<div>${t.token}</div>`).join('')}
+                    </div>
+
+                    <button class="btn-primario" onclick="copiarTokensManuales('${btoa(textoCopiar)}')">📋 Copiar todos los tokens</button>
+                    <button class="btn-secundario" onclick="cerrarModal(); verTicketsEvento('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}', 'Evento')">Listo</button>
+                `);
+
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Generar tickets';
+            }
+        }
+
+        function copiarTokensManuales(tokensB64) {
+            try {
+                const tokens = atob(tokensB64);
+                navigator.clipboard.writeText(tokens).then(() => {
+                    toast('✅ Tokens copiados', 'ok');
+                }).catch(() => {
+                    toast('No se pudo copiar', 'error');
+                });
+            } catch (e) {
+                toast('Error al copiar', 'error');
+            }
         }
 
         async function cargarListaTickets(fotografo, eventoId) {
@@ -2679,8 +2783,11 @@
         <div style="background:${colorFondo}; border:1px solid ${colorBorde}; border-radius:12px; padding:12px 14px; margin-bottom:8px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
                 <div style="flex:1; min-width:0;">
-                    <div style="font-size:0.85rem; font-weight:700; color:#fff; word-break:break-word;">${escapeHtml(t.invitadoNombre || 'Invitado')}</div>
-                    <div style="font-size:0.62rem; color:#666; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px;">${escapeHtml(t.invitadoTipo || 'invitado')}</div>
+                <div style="font-size:0.85rem; font-weight:700; color:#fff; word-break:break-word;">
+                    ${escapeHtml(t.invitadoNombre || 'Invitado')}
+                    ${t.manual ? '<span style="background:rgba(232,196,122,0.2); color:#e8c47a; font-size:0.55rem; padding:2px 6px; border-radius:50px; margin-left:6px; vertical-align:middle;">MANUAL</span>' : ''}
+                </div>
+                <div style="font-size:0.62rem; color:#666; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px;">${escapeHtml(t.invitadoTipo || 'invitado')}</div>
                 </div>
                 <div>${badges}</div>
             </div>
