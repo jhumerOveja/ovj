@@ -2482,38 +2482,45 @@
                 const eventos = data.eventos || [];
 
                 let html = '';
-                let totalManuales = 0;
+                let totalTickets = 0;
 
-                // Recorremos los eventos y pedimos sus tickets (en paralelo sería ideal, pero secuencial está bien para pocos)
+                // Recorremos todos los eventos para juntar TODOS sus tickets
                 for (const ev of eventos) {
                     try {
                         const resp = await apiFetch('/admin/tickets?f=' + encodeURIComponent(ev.fotografo) + '&e=' + encodeURIComponent(ev.id));
                         const tickets = resp.tickets || [];
-                        const manuales = tickets.filter(t => t.manual === true);
 
-                        if (manuales.length > 0) {
-                            manuales.forEach(t => {
-                                totalManuales++;
+                        if (tickets.length > 0) {
+                            // Ordenar para que los más recientes salgan primero
+                            tickets.sort((a, b) => new Date(b.emitidoEn) - new Date(a.emitidoEn));
+
+                            tickets.forEach(t => {
+                                totalTickets++;
                                 const cobrado = !!t.cobrado;
-                                const colorBorde = cobrado ? 'rgba(74,222,128,0.25)' : 'rgba(232,196,122,0.25)';
-                                const colorFondo = cobrado ? 'rgba(74,222,128,0.04)' : 'rgba(232,196,122,0.03)';
+                                const esManual = t.manual === true;
+
+                                const colorBorde = cobrado ? 'rgba(74,222,128,0.25)' : (esManual ? 'rgba(232,196,122,0.25)' : 'rgba(52,152,219,0.25)');
+                                const colorFondo = cobrado ? 'rgba(74,222,128,0.04)' : (esManual ? 'rgba(232,196,122,0.03)' : 'rgba(52,152,219,0.03)');
 
                                 let badges = '';
                                 if (cobrado) badges += `<span style="background:rgba(74,222,128,0.15); color:#4ade80; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; margin-left:6px;">COBRADO</span>`;
+                                if (esManual) badges += `<span style="background:rgba(232,196,122,0.2); color:#e8c47a; font-size:0.58rem; font-weight:700; padding:2px 7px; border-radius:50px; margin-left:6px;">MANUAL</span>`;
+
+                                const tipoTexto = esManual ? 'Ticket de Regalo' : (t.invitadoNombre || 'Invitado');
 
                                 html += `
                                     <div style="background:${colorFondo}; border:1px solid ${colorBorde}; border-radius:12px; padding:12px 14px; margin-bottom:8px;">
                                         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
                                             <div style="flex:1; min-width:0;">
                                                 <div style="font-size:0.85rem; font-weight:700; color:#fff; word-break:break-word;">
-                                                    ${escapeHtml(ev.evento)}
+                                                    ${escapeHtml(tipoTexto)}
                                                     ${badges}
                                                 </div>
-                                                <div style="font-size:0.62rem; color:#666; margin-top:2px;">👤 ${escapeHtml(ev.fotografo)}</div>
+                                                <div style="font-size:0.62rem; color:#666; margin-top:2px;">Evento: ${escapeHtml(ev.evento)} · ${escapeHtml(ev.fotografo)}</div>
                                             </div>
                                         </div>
                                         <div style="font-size:0.78rem; color:#e8c47a; margin-bottom:4px;">🎁 ${escapeHtml(t.titulo)}</div>
-                                        <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:6px 10px; margin-bottom:8px; font-family:monospace; font-size:0.68rem; color:#93c5fd; word-break:break-all;">
+                                        <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:6px 10px; margin-bottom:8px; font-family:monospace; font-size:0.75rem; color:#93c5fd; word-break:break-all; letter-spacing:1px; font-weight:700;">
                                             ${escapeHtml(t.token)}
                                         </div>
                                         ${!cobrado ? `
@@ -2528,8 +2535,8 @@
                     } catch (e) { }
                 }
 
-                if (totalManuales === 0) {
-                    cont.innerHTML = `<div class="vacio"><span class="emoji">📭</span><div class="titulo">No hay tickets manuales emitidos</div></div>`;
+                if (totalTickets === 0) {
+                    cont.innerHTML = `<div class="vacio"><span class="emoji">📭</span><div class="titulo">No hay tickets emitidos</div><div class="subtitulo">Se emitirán en el próximo evento o puedes crear uno manual.</div></div>`;
                 } else {
                     cont.innerHTML = html;
                 }
