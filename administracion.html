@@ -2552,19 +2552,19 @@
             cont.style.display = 'block';
 
             try {
-                // Buscar en todos los eventos
                 const data = await apiFetch('/admin/eventos');
                 const eventos = data.eventos || [];
 
                 let encontrado = null;
+                const busquedaUpper = codigo.toUpperCase(); // Todo a mayúsculas para que no falle si escriben en minúsculas
 
                 for (const ev of eventos) {
                     try {
                         const resp = await apiFetch('/admin/tickets?f=' + encodeURIComponent(ev.fotografo) + '&e=' + encodeURIComponent(ev.id));
                         const tickets = resp.tickets || [];
 
-                        // Buscamos si el código enviado está contenido en el token (por si mandan solo una parte)
-                        const match = tickets.find(t => t.token.includes(codigo) || codigo.includes(t.token));
+                        // 🔥 BÚSQUEDA PARCIAL: Busca si el código enviado está dentro del token
+                        const match = tickets.find(t => t.token.toUpperCase().includes(busquedaUpper));
                         if (match) {
                             encontrado = { ticket: match, evento: ev };
                             break;
@@ -2596,8 +2596,8 @@
                         <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Premio:</div>
                         <div style="font-size:0.95rem; font-weight:700; color:#e8c47a; margin-bottom:12px;">${escapeHtml(t.titulo)}</div>
 
-                        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Token:</div>
-                        <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px 10px; font-family:monospace; font-size:0.75rem; color:#93c5fd; margin-bottom:16px; word-break:break-all;">
+                        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">Código:</div>
+                        <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px 10px; font-family:monospace; font-size:0.9rem; letter-spacing:2px; color:#93c5fd; margin-bottom:16px; font-weight:700;">
                             ${escapeHtml(t.token)}
                         </div>
 
