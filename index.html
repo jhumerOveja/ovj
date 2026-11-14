@@ -3133,13 +3133,16 @@
             flex: 0 0 100%;
             width: 100%;
             height: 100%;
-            overflow-y: auto;
-            padding: 50px 22px 100px;
+            padding: 56px 20px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             -webkit-overflow-scrolling: touch;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            overflow: hidden;
         }
 
         .paquete-slide.esencial {
@@ -3157,15 +3160,31 @@
         .paquete-contenido {
             width: 100%;
             max-width: 480px;
-            margin: auto 0;
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+        .paquete-contenido::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .paquete-contenido::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
         }
 
         .paquete-nombre {
-            font-size: 2.2rem;
+            font-size: 1.7rem;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             line-height: 1.1;
         }
 
@@ -3185,9 +3204,9 @@
         }
 
         .paquete-linea {
-            width: 80px;
+            width: 60px;
             height: 2px;
-            margin: 0 auto 18px;
+            margin: 0 auto 10px;
         }
 
         .paquete-slide.esencial .paquete-linea {
@@ -3203,11 +3222,11 @@
         }
 
         .paquete-hint {
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             color: #888;
             text-align: center;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
             animation: pulseHint 2s ease-in-out infinite;
         }
 
@@ -3217,47 +3236,47 @@
         }
 
         .paquete-subtitulo {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #fff;
             text-align: center;
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 6px;
+            line-height: 1.35;
         }
 
         .paquete-descripcion {
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: #aaa;
             text-align: center;
-            line-height: 1.5;
-            margin-bottom: 22px;
+            line-height: 1.4;
+            margin-bottom: 14px;
             font-style: italic;
         }
 
         .paquete-lista {
             list-style: none;
             padding: 0;
-            margin: 0 0 22px;
+            margin: 0 0 14px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 7px;
         }
 
         .paquete-lista li {
             display: flex;
-            gap: 10px;
-            font-size: 0.85rem;
+            gap: 8px;
+            font-size: 0.78rem;
             color: #ddd;
-            line-height: 1.5;
-            padding-left: 4px;
+            line-height: 1.4;
+            padding-left: 2px;
         }
 
         .paquete-lista li::before {
             content: '•';
             flex-shrink: 0;
             font-weight: 700;
-            font-size: 1.2rem;
-            line-height: 1.3;
+            font-size: 1rem;
+            line-height: 1.4;
         }
 
         .paquete-slide.esencial .paquete-lista li::before {
@@ -3278,15 +3297,15 @@
         }
 
         .paquete-ideal {
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             color: #888;
             text-align: center;
-            line-height: 1.5;
-            padding: 12px 14px;
+            line-height: 1.4;
+            padding: 10px 12px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            margin-bottom: 8px;
         }
 
         .paquete-ideal strong {
@@ -3296,29 +3315,30 @@
         .paquete-footer {
             width: 100%;
             max-width: 480px;
-            margin-top: 20px;
+            margin-top: 12px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .paquete-proximo-texto {
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             color: #888;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .paquete-btn-siguiente {
             width: 100%;
-            padding: 16px 24px;
-            border-radius: 14px;
+            padding: 13px 20px;
+            border-radius: 12px;
             border: none;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 800;
             cursor: pointer;
             font-family: inherit;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             animation: pulseBoton 2s ease-in-out infinite;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -3346,16 +3366,16 @@
 
         .paquete-btn-whatsapp {
             width: 100%;
-            padding: 16px 24px;
-            border-radius: 14px;
+            padding: 13px 20px;
+            border-radius: 12px;
             border: none;
             background: linear-gradient(135deg, #4ade80, #22c55e);
             color: #0a0a0a;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 800;
             cursor: pointer;
             font-family: inherit;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -3368,21 +3388,21 @@
         .paquetes-puntos {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-top: 18px;
+            gap: 6px;
+            margin-top: 10px;
         }
 
         .paquete-punto {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.2);
             transition: all 0.3s;
         }
 
         .paquete-punto.activo {
-            width: 24px;
-            border-radius: 4px;
+            width: 18px;
+            border-radius: 3px;
         }
 
         .paquete-slide.esencial .paquete-punto.activo {
@@ -3487,6 +3507,27 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .paquete-slide {
+                padding: 52px 16px 16px;
+            }
+
+            .paquete-nombre {
+                font-size: 1.5rem;
+            }
+
+            .paquete-subtitulo {
+                font-size: 0.82rem;
+            }
+
+            .paquete-lista li {
+                font-size: 0.74rem;
+            }
+
+            .paquetes-flecha {
+                display: none;
+            }
+        }
         /* (Modales de desbloqueo e invitación eliminados) */
     </style>
 </head>
@@ -3682,16 +3723,16 @@
                     <div class="paquete-hint">Deslizá para ver los 3 paquetes →</div>
 
                     <div class="paquete-subtitulo">Fotografía profesional con entrega digital</div>
-                    <div class="paquete-descripcion">Ideal para eventos íntimos o que no necesitan la galería en vivo.</div>
+                    <div class="paquete-descripcion">Ideal para eventos íntimos o que no necesitan galería en vivo.</div>
 
                     <ul class="paquete-lista">
                         <li>Cobertura fotográfica profesional del evento.</li>
-                        <li>Entrega de las fotografías digitales <strong>al día siguiente</strong>.</li>
-                        <li>Fotos en alta calidad, sin marca de agua.</li>
+                        <li>Fotografías digitales <strong>al día siguiente</strong>.</li>
+                        <li>Alta calidad, sin marca de agua.</li>
                     </ul>
 
                     <div class="paquete-ideal">
-                        <strong>Ideal para:</strong> cumpleaños íntimos, reuniones familiares, eventos que no requieren cobertura en vivo.
+                        <strong>Ideal para:</strong> cumpleaños íntimos, reuniones familiares, eventos sin cobertura en vivo.
                     </div>
                 </div>
 
@@ -3703,6 +3744,7 @@
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                     </div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('esencial')" style="margin-top:10px;">Consultar Esencial</button>
                 </div>
             </div>
 
@@ -3713,20 +3755,17 @@
                     <div class="paquete-linea"></div>
 
                     <div class="paquete-subtitulo">Fotografía profesional + GALERÍA EN VIVO</div>
-                    <div class="paquete-descripcion">Todo lo del Esencial, pero con la tecnología que ningún fotógrafo tradicional tiene.</div>
+                    <div class="paquete-descripcion">Todo lo del Esencial, con la tecnología que ningún fotógrafo tradicional tiene.</div>
 
                     <ul class="paquete-lista">
-                        <li>Todo lo del Paquete Esencial.</li>
+                        <li>Todo lo del Esencial.</li>
                         <li><strong>Galería web privada</strong> con el nombre de tu evento.</li>
-                        <li><strong>Acceso con QR único</strong> para todos tus invitados.</li>
-                        <li><strong>Descargas ilimitadas</strong> para todos los invitados.</li>
-                        <li><strong>Fotos en tiempo real</strong>, aparecen en la galería mientras el evento sucede.</li>
-                        <li><strong>¿Tus seres queridos no pueden asistir?</strong> (están enfermos, viven lejos, son mayores). <strong>No te preocupes:</strong> enviales su invitación OVJ Studio y podrán ver la galería desde cualquier parte del mundo.</li>
-                        <li><strong>Juegos</strong> para tus invitados mientras esperan las fotos.</li>
-                        <li><strong>Métricas del evento en vivo</strong> (personas, fotos, descargas).</li>
-                        <li><strong>Detrás de cámara</strong> y <strong>mensajes en vivo</strong> del fotógrafo.</li>
-                        <li><strong>Cofres-regalo</strong> con premios reales y simbólicos.</li>
-                        <li><strong>Ningún servicio de fotografía tradicional tiene esta tecnología.</strong></li>
+                        <li><strong>QR único</strong> para todos tus invitados.</li>
+                        <li><strong>Descargas ilimitadas</strong> para todos.</li>
+                        <li><strong>Fotos en tiempo real</strong>, mientras el evento sucede.</li>
+                        <li><strong>¿Tus seres queridos no pueden asistir?</strong> Enviales su invitación OVJ Studio y verán la galería desde cualquier parte del mundo.</li>
+                        <li><strong>Juegos</strong>, <strong>métricas en vivo</strong>, <strong>detrás de cámara</strong> y <strong>cofres-regalo</strong>.</li>
+                        <li><strong>Ningún servicio tradicional tiene esta tecnología.</strong></li>
                     </ul>
 
                     <div class="paquete-ideal">
@@ -3742,6 +3781,7 @@
                         <div class="paquete-punto activo"></div>
                         <div class="paquete-punto"></div>
                     </div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('premium')" style="margin-top:10px;">Consultar Premium</button>
                 </div>
             </div>
 
@@ -3751,28 +3791,25 @@
                     <div class="paquete-nombre">SIGNATURE</div>
                     <div class="paquete-linea"></div>
 
-                    <div class="paquete-subtitulo">TODO lo del Premium + VIDEO RECAP + Tickets para compartir</div>
+                    <div class="paquete-subtitulo">TODO el Premium + VIDEO RECAP + Tickets para compartir</div>
                     <div class="paquete-descripcion">El "wow" completo. Tu evento trasciende el día.</div>
 
                     <ul class="paquete-lista">
-                        <li>Todo lo del Paquete Premium.</li>
-                        <li><strong>VIDEO RECAP:</strong> un resumen de tu evento en video, <strong>formato vertical</strong> para redes sociales, emotivo, entregado <strong>en menos de 24 horas</strong>.</li>
-                        <li><strong>Tickets digitales de descuento</strong> para que compartas con tus conocidos o familiares.
-                            <ul style="margin-top:6px;padding-left:16px;list-style:circle;color:#aaa;font-size:0.78rem;">
-                                <li><strong>Vos no los podés usar en este evento</strong>, pero sí en uno próximo.</li>
-                                <li><strong>Ahorrás dinero y tiempo</strong> al compartirlos.</li>
-                                <li><strong>Tu gente querida también vive la experiencia OVJ Studio.</strong></li>
-                            </ul>
-                        </li>
+                        <li>Todo lo del Premium.</li>
+                        <li><strong>VIDEO RECAP:</strong> resumen vertical para redes, emotivo, <strong>en menos de 24 horas</strong>.</li>
+                        <li><strong>Tickets digitales de descuento</strong> para compartir con tus conocidos.</li>
+                        <li>No los podés usar en este evento, pero sí en uno próximo.</li>
+                        <li>Ahorrás dinero y tiempo al compartirlos. Tu gente también vive OVJ Studio.</li>
                     </ul>
 
                     <div class="paquete-ideal">
-                        <strong>Ideal para:</strong> clientes que quieren el "wow" completo, dejar marca, y que su evento trascienda.
+                        <strong>Ideal para:</strong> clientes que quieren el "wow" completo y que su evento trascienda.
                     </div>
                 </div>
 
                 <div class="paquete-footer">
-                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp()">Consultar por WhatsApp</button>
+                    <div class="paquete-proximo-texto">¿Te gusta este paquete?</div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('signature')">Consultar Signature</button>
                     <div class="paquetes-puntos">
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
@@ -6849,9 +6886,8 @@
         function siguientePaquete() {
             if (paqueteActual < TOTAL_PAQUETES - 1) {
                 irAPaquete(paqueteActual + 1);
-            } else {
-                cerrarPaquetes();
             }
+            // En el último slide, no hace nada. El usuario usa el botón de WhatsApp o cierra.
         }
 
         function anteriorPaquete() {
@@ -6873,32 +6909,40 @@
             if (flechaDer) flechaDer.classList.toggle('oculto', paqueteActual === TOTAL_PAQUETES - 1);
         }
 
-        function consultarPaqueteWhatsApp() {
-            const mensaje = '¡Hola! Vi los paquetes de OVJ Studio y me interesa saber más. ¿Me podés pasar más información?';
+        function consultarPaqueteWhatsApp(tipo) {
+            const mensajes = {
+                esencial: '¡Hola! Me interesa el paquete ESENCIAL para mi evento. ¿Me podés pasar más información?',
+                premium: '¡Hola! Me interesa el paquete PREMIUM para mi evento. ¿Me podés pasar más información?',
+                signature: '¡Hola! Me interesa el paquete SIGNATURE para mi evento. ¿Me podés pasar más información?'
+            };
+
+            const mensaje = mensajes[tipo] || mensajes.premium;
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
-        // Swipe táctil
+        // Swipe táctil (solo dentro del slider, no en el modal)
         (function () {
             let touchStartX = 0;
-            let touchEndX = 0;
+            let touchStartY = 0;
 
-            document.addEventListener('touchstart', (e) => {
-                const modal = document.getElementById('modalPaquetes');
-                if (modal && modal.classList.contains('activo')) {
-                    touchStartX = e.changedTouches[0].screenX;
-                }
+            const slider = document.getElementById('paquetesSlider');
+            if (!slider) return;
+
+            slider.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
             }, { passive: true });
 
-            document.addEventListener('touchend', (e) => {
-                const modal = document.getElementById('modalPaquetes');
-                if (modal && modal.classList.contains('activo')) {
-                    touchEndX = e.changedTouches[0].screenX;
-                    const diff = touchStartX - touchEndX;
-                    if (Math.abs(diff) > 50) {
-                        if (diff > 0) siguientePaquete();
-                        else anteriorPaquete();
-                    }
+            slider.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].screenX;
+                const touchEndY = e.changedTouches[0].screenY;
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
+
+                // Solo si el movimiento es horizontal (no vertical)
+                if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 0) siguientePaquete();
+                    else anteriorPaquete();
                 }
             }, { passive: true });
         })();
