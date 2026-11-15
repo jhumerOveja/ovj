@@ -7556,10 +7556,10 @@
                 qrImg.src = qr.createDataURL(6, 12);
 
                 qrImg.onload = () => {
-                    // 🔥 Aumentamos el tamaño del QR a 170x170
-                    const qrSize = 170;
-                    const qrX = (width * 0.75) - (qrSize / 2);
-                    const qrY = 240; // Subimos un poquito para que quede centrado en su bloque
+                  // 🔥 Último ajuste: QR a 185x185
+                  const qrSize = 185;
+                  const qrX = (width * 0.75) - (qrSize / 2);
+                  const qrY = 232; // Lo subimos un poquito más para que quepa perfecto
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
