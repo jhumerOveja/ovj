@@ -7434,8 +7434,8 @@
                 <div class="cofre-revelacion-titulo">${escapeHtml(ticket.titulo)}</div>
                 <div class="cofre-revelacion-desc" style="margin-bottom:10px;">¡Ganaste un regalo! Descargá tu ticket y guardalo.</div>
 
-                <div style="background:#000; border-radius:12px; padding:10px; margin-bottom:14px; text-align:center;">
-                    <canvas id="canvasTicketInvitado" style="max-width:100%; height:auto; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                <div style="background:#000; border-radius:12px; padding:10px; margin: 0 auto 14px; max-width: 320px; display: flex; justify-content: center;">
+                    <canvas id="canvasTicketInvitado" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);"></canvas>
                 </div>
 
                 <button class="cofre-btn-reclamar" style="background:linear-gradient(135deg,#e8c47a,#d4a94a); color:#0a0a0a;" onclick="descargarTicketInvitado('${escapeHtml(ticket.token)}')">
@@ -7480,21 +7480,21 @@
 
             const ctx = canvas.getContext('2d');
 
-            // 🔥 Calidad HD (Retina)
+            // 🔥 Formato Vertical (Ticket de Historia) con Calidad HD
             const dpr = window.devicePixelRatio || 1;
-            const width = 800;
-            const height = 480;
+            const width = 600;
+            const height = 900;
 
             canvas.width = width * dpr;
             canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
             ctx.scale(dpr, dpr);
 
-            // 1. Fondo oscuro con gradiente sutil
+            // 1. Fondo oscuro con gradiente
             const grad = ctx.createLinearGradient(0, 0, 0, height);
             grad.addColorStop(0, '#141414');
-            grad.addColorStop(1, '#0a0a0c');
+            grad.addColorStop(1, '#050506');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, width, height);
 
@@ -7503,55 +7503,53 @@
             ctx.lineWidth = 4;
             ctx.strokeRect(15, 15, width - 30, height - 30);
 
-            // 3. Marca OVJ (Arriba)
+            // 3. Marca OVJ
             ctx.textAlign = 'center';
             ctx.fillStyle = '#ffffff';
-            ctx.font = '900 38px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('OVJ STUDIO', width / 2, 65);
+            ctx.font = '900 48px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('OVJ STUDIO', width / 2, 100);
 
             // 4. Nombre del evento
             ctx.fillStyle = '#a1a1aa';
-            ctx.font = '600 18px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText(nombreEvento.toUpperCase(), width / 2, 100);
+            ctx.font = '600 22px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText(nombreEvento.toUpperCase(), width / 2, 150);
 
-            // 5. Premio (Destacado)
+            // 5. Premio (Muy destacado)
             ctx.fillStyle = '#e8c47a';
-            ctx.font = '800 32px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText(premio, width / 2, 155);
+            ctx.font = '800 42px "Segoe UI", Tahoma, sans-serif';
+
+            // Si el premio es muy largo, lo dividimos en dos líneas
+            if (premio.length > 22) {
+                const partes = premio.split(' (');
+                ctx.fillText(partes[0], width / 2, 240);
+                if (partes[1]) {
+                    ctx.font = '700 28px "Segoe UI", Tahoma, sans-serif';
+                    ctx.fillText('(' + partes[1], width / 2, 285);
+                }
+            } else {
+                ctx.fillText(premio, width / 2, 260);
+            }
 
             // 6. Línea punteada
             ctx.beginPath();
-            ctx.setLineDash([8, 8]);
-            ctx.moveTo(40, 195);
-            ctx.lineTo(width - 40, 195);
+            ctx.setLineDash([10, 10]);
+            ctx.moveTo(40, 340);
+            ctx.lineTo(width - 40, 340);
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // 7. Instrucciones (Izquierda)
-            ctx.textAlign = 'left';
+            // 7. Código Único (Centro)
             ctx.fillStyle = '#ffffff';
             ctx.font = '700 20px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('INSTRUCCIONES:', 60, 245);
-
-            ctx.fillStyle = '#888888';
-            ctx.font = '400 16px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('1. Guardá este ticket en tu galería.', 60, 280);
-            ctx.fillText('2. Escaneá el QR o guardá tu código.', 60, 310);
-            ctx.fillText('3. Reclamalo cuando quieras tu', 60, 340);
-            ctx.fillText('   próximo evento con OVJ Studio.', 60, 365);
-
-            // 8. Código (Izquierda)
-            ctx.fillStyle = '#a1a1aa';
-            ctx.font = '600 16px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('CÓDIGO ÚNICO:', 60, 420);
+            ctx.fillText('TU CÓDIGO ÚNICO', width / 2, 400);
 
             ctx.fillStyle = '#93c5fd';
-            ctx.font = '900 36px monospace';
-            ctx.fillText(token, 220, 424);
+            ctx.font = '900 56px monospace';
+            ctx.fillText(token, width / 2, 470);
 
-            // 9. QR de WhatsApp (Derecha)
+            // 8. QR (Centro)
             if (window.qrcode) {
                 const textoWhatsApp = `Hola OVJ Studio! Gané el ticket ${token} en el evento ${nombreEvento}. Me interesa usarlo para mi próximo evento.`;
                 const urlWhatsApp = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoWhatsApp)}`;
@@ -7561,26 +7559,37 @@
                 qr.make();
 
                 const qrImg = new Image();
-                qrImg.src = qr.createDataURL(6, 10);
+                qrImg.src = qr.createDataURL(8, 20);
 
                 qrImg.onload = () => {
-                    const qrSize = 130;
-                    // Lo ponemos a la derecha
-                    const qrX = width - qrSize - 60;
-                    const qrY = 220;
+                    const qrSize = 200;
+                    const qrX = (width - qrSize) / 2;
+                    const qrY = 520;
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+                    ctx.fillRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
 
                     ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#888888';
-                    ctx.font = '600 14px "Segoe UI", Tahoma, sans-serif';
-                    ctx.fillText('Escaneá para reclamar', qrX + qrSize/2, qrY + qrSize + 25);
+                    ctx.font = '600 16px "Segoe UI", Tahoma, sans-serif';
+                    ctx.fillText('Escaneá el QR para reclamar', width / 2, qrY + qrSize + 40);
                 };
             }
+
+            // 9. Instrucciones (Abajo)
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 18px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('INSTRUCCIONES:', 50, 790);
+
+            ctx.fillStyle = '#888888';
+            ctx.font = '400 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('1. Guardá esta imagen en tu galería.', 50, 825);
+            ctx.fillText('2. Escaneá el código QR cuando quieras.', 50, 850);
+            ctx.fillText('3. Válido por 6 meses.', 50, 875);
         }
 
         function reclamarCofreWhatsApp() {
