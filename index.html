@@ -7044,48 +7044,185 @@
                 emoji.textContent = '💛';
                 titulo.textContent = idiomaActual === 'en' ? 'A memory' : idiomaActual === 'zh' ? '一份回忆' : 'Un recuerdo';
                 cont.innerHTML = `
-            <div class="regalo-ticket" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border-color:rgba(255,255,255,0.15);">
-                <div class="regalo-ticket-titulo" style="color:#fff;">${escapeHtml(t.titulo || 'Gracias por ser parte')}</div>
-                <div class="regalo-ticket-desc">${escapeHtml(t.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}</div>
-            </div>
-            <button class="modal-info-btn" onclick="cerrarModalInfo('modalRegalo')">Cerrar</button>
-        `;
+                    <div class="regalo-ticket" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border-color:rgba(255,255,255,0.15);">
+                        <div class="regalo-ticket-titulo" style="color:#fff;">${escapeHtml(t.titulo || 'Gracias por ser parte')}</div>
+                        <div class="regalo-ticket-desc">${escapeHtml(t.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}</div>
+                    </div>
+                    <button class="modal-info-btn" onclick="cerrarModalInfo('modalRegalo')">Cerrar</button>
+                `;
                 return;
             }
 
             emoji.textContent = '🎁';
             titulo.textContent = idiomaActual === 'en' ? 'My gift' : idiomaActual === 'zh' ? '我的礼物' : 'Mi regalo';
 
-            const textoBoton = idiomaActual === 'en'
-                ? '📲 Claim via WhatsApp'
-                : idiomaActual === 'zh'
-                    ? '📲 通过 WhatsApp 领取'
-                    : '📲 Reclamar por WhatsApp';
+            // Ocultamos el ícono grande porque ahora mostramos la imagen completa
+            emoji.style.display = 'none';
 
-            const textoCompartir = idiomaActual === 'en'
-                ? '🤝 Share with someone'
-                : idiomaActual === 'zh'
-                    ? '🤝 分享给他人'
-                    : '🤝 Compartir con alguien';
-
+            // Armamos el modal con instrucciones arriba, la imagen y el botón de descargar
             cont.innerHTML = `
-        <div class="regalo-ticket">
-            <div class="regalo-ticket-titulo">${escapeHtml(t.titulo)}</div>
-            <div class="regalo-ticket-desc">${escapeHtml(t.descripcion)}</div>
-            <div class="regalo-ticket-token">${escapeHtml(t.token)}</div>
-            <button class="regalo-ticket-btn" onclick="reclamarTicketWhatsApp()">
-                ${textoBoton}
-            </button>
-        </div>
+                <div style="background:rgba(232,196,122,0.1); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:12px; margin-bottom:16px; text-align:left;">
+                    <div style="font-size:0.85rem; color:#e8c47a; font-weight:700; margin-bottom:6px;">📌 Instrucciones:</div>
+                    <div style="font-size:0.75rem; color:#ccc; line-height:1.5;">
+                        Este es tu ticket digital de regalo.<br>
+                        Descargalo y guardalo en tu celular. Cuando quieras reclamarlo para tu próximo evento, solo escaneá el código QR que aparece en la imagen.
+                    </div>
+                </div>
 
-        <button class="regalo-ticket-btn" onclick="compartirTicketWhatsApp()" style="background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.1);">
-            ${textoCompartir}
-        </button>
+                <div style="background:#000; border-radius:12px; padding:10px; margin: 0 auto 16px; max-width: 320px; display: flex; justify-content: center;">
+                    <canvas id="canvasTicketRegalo" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                </div>
 
-        <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc; margin-top:8px;" onclick="cerrarModalInfo('modalRegalo')">
-            ${idiomaActual === 'en' ? 'Close' : idiomaActual === 'zh' ? '关闭' : 'Cerrar'}
-        </button>
-    `;
+                <button class="modal-info-btn" style="background:linear-gradient(135deg,#e8c47a,#d4a94a); color:#0a0a0a; margin-bottom:10px;" onclick="descargarTicketRegalo()">
+                    📥 Descargar Imagen
+                </button>
+
+                <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc;" onclick="cerrarModalInfo('modalRegalo')">
+                    Cerrar
+                </button>
+            `;
+
+            // Obtenemos el nombre del evento
+            let nombreEvento = 'Evento OVJ Studio';
+            const tituloEl = document.getElementById('eventoTitulo');
+            if (tituloEl && tituloEl.textContent) {
+                nombreEvento = tituloEl.textContent;
+            }
+
+            // Generamos la imagen en el Canvas (usando la misma función del cofre)
+            setTimeout(() => {
+                generarCanvasTicketRegalo(t.token, t.titulo, nombreEvento);
+            }, 100);
+        }
+
+        function generarCanvasTicketRegalo(token, premio, nombreEvento) {
+            const canvas = document.getElementById('canvasTicketRegalo');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const width = 650;
+            const height = 650;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            ctx.scale(dpr, dpr);
+
+            const grad = ctx.createLinearGradient(0, 0, 0, height);
+            grad.addColorStop(0, '#141414');
+            grad.addColorStop(1, '#050506');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = '#e8c47a';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(15, 15, width - 30, height - 30);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 42px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('OVJ STUDIO', width / 2, 80);
+
+            ctx.fillStyle = '#a1a1aa';
+            ctx.font = '600 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('EVENTO DONDE FUE EMITIDO:', width / 2, 115);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 20px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText(nombreEvento.toUpperCase(), width / 2, 140);
+
+            ctx.fillStyle = '#e8c47a';
+            ctx.font = '800 36px "Segoe UI", Tahoma, sans-serif';
+
+            if (premio.length > 22) {
+                const partes = premio.split(' (');
+                ctx.fillText(partes[0], width / 2, 210);
+                if (partes[1]) {
+                    ctx.font = '700 24px "Segoe UI", Tahoma, sans-serif';
+                    ctx.fillText('(' + partes[1], width / 2, 245);
+                }
+            } else {
+                ctx.fillText(premio, width / 2, 220);
+            }
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#a1a1aa';
+            ctx.font = '700 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('TU CÓDIGO ÚNICO', width / 4, 300);
+
+            ctx.fillStyle = '#93c5fd';
+            ctx.font = '900 42px monospace';
+            ctx.fillText(token, width / 4, 350);
+
+            if (window.qrcode) {
+                const textoWhatsApp = `Hola OVJ Studio! Gané el ticket ${token} en el evento ${nombreEvento}. Me interesa usarlo para mi próximo evento.`;
+                const urlWhatsApp = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoWhatsApp)}`;
+
+                const qr = window.qrcode(0, 'M');
+                qr.addData(urlWhatsApp);
+                qr.make();
+
+                const qrImg = new Image();
+                qrImg.src = qr.createDataURL(6, 12);
+
+                qrImg.onload = () => {
+                    const qrSize = 200;
+                    const qrX = (width * 0.75) - (qrSize / 2);
+                    const qrY = 255;
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+                    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+                    ctx.fillStyle = '#888888';
+                    ctx.font = '600 14px "Segoe UI", Tahoma, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Escaneá para reclamar', width * 0.75, qrY + qrSize + 30);
+                };
+            }
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 18px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('INSTRUCCIONES:', 50, 460);
+
+            ctx.fillStyle = '#cccccc';
+            ctx.font = '400 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('1. Guardá esta imagen en tu galería.', 50, 495);
+            ctx.fillText('2. Escaneá el QR cuando quieras usarlo.', 50, 520);
+            ctx.fillText('3. Válido por 6 meses.', 50, 545);
+
+            ctx.fillStyle = '#f87171';
+            ctx.font = '700 15px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('⚠️ Ticket de un solo uso. Cuidá a quién se lo envías.', 50, 585);
+        }
+
+        function descargarTicketRegalo() {
+            const canvas = document.getElementById('canvasTicketRegalo');
+            if (!canvas) return;
+
+            const dataUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            // Usamos el token del localStorage para nombrar el archivo
+            let tokenStr = 'OVJ';
+            try {
+                const t = JSON.parse(localStorage.getItem('ovj_ticket_' + EVENTO_ID));
+                if (t && t.token) tokenStr = t.token;
+            } catch(e) {}
+
+            a.href = dataUrl;
+            a.download = `Ticket_OVJ_${tokenStr}.png`;
+            document.body.appendChild(a);
+            a.click();
+
+            setTimeout(() => {
+                document.body.removeChild(a);
+            }, 100);
+
+            mostrarToast('✅ Ticket guardado en tu galería', 'success');
         }
 
         function reclamarTicketWhatsApp() {
@@ -7562,7 +7699,7 @@
                   // 🔥 Ajuste final: QR más grande (200x200) y bajado para no tapar el descuento
                   const qrSize = 200;
                   const qrX = (width * 0.75) - (qrSize / 2);
-                  const qrY = 255; // Bajado para dejar espacio al premio
+                  const qrY = 265; // Bajado para dejar espacio al premio
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
