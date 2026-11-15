@@ -220,7 +220,6 @@
             width: 50%;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--champagne-tenue), transparent);
-            animation: subrayadoHeader 5s ease-in-out infinite;
         }
 
         @keyframes subrayadoHeader {
@@ -611,7 +610,6 @@
             position: relative;
             display: inline-block;
             transition: all 0.4s ease;
-            animation: brilloTitulo 6s ease-in-out infinite;
         }
 
         @keyframes brilloTitulo {
@@ -886,7 +884,6 @@
         }
 
         .foto:hover {
-            transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
                 0 0 0 1px rgba(212, 212, 216, 0.08);
             border-color: rgba(212, 212, 216, 0.15);
@@ -1120,15 +1117,12 @@
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0.5px;
             box-shadow: 0 4px 20px rgba(232, 196, 122, 0.15);
-            animation: pulsoVerMas 2.5s ease-in-out infinite;
             font-family: inherit;
         }
 
         .btn-ver-mas:hover {
             background: linear-gradient(135deg, rgba(232, 196, 122, 0.25), rgba(232, 196, 122, 0.1));
             border-color: var(--champagne);
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 8px 35px rgba(232, 196, 122, 0.5);
         }
 
         .info-restantes {
@@ -1572,7 +1566,6 @@
         }
 
         .modal-info-btn:hover {
-            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 8px 25px rgba(232, 196, 122, 0.35);
         }
 
@@ -1789,7 +1782,6 @@
             text-align: center;
             margin-bottom: 18px;
             letter-spacing: 0.5px;
-            animation: pulsoInstruccion 2s ease-in-out infinite;
         }
 
         @keyframes pulsoInstruccion {
@@ -1871,7 +1863,6 @@
             background: radial-gradient(circle, rgba(232, 196, 122, 0.3) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 1;
-            animation: pulsoGlow 3s ease-in-out infinite;
             pointer-events: none;
         }
 
@@ -2461,16 +2452,6 @@
             background: #f9d976;
             box-shadow: 0 0 8px rgba(232, 196, 122, 0.9);
         }
-        /* Onda expansiva cada 4s */
-        .btn-menu-lateral::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 12px;
-            border: 2px solid rgba(232, 196, 122, 0.6);
-            animation: ondaMenu 4s ease-out infinite;
-            pointer-events: none;
-        }
 
         @keyframes ondaMenu {
             0% {
@@ -2529,7 +2510,6 @@
         .btn-menu-lateral.llamar-atencion {
             background: rgba(232, 196, 122, 0.12);
             border-color: rgba(232, 196, 122, 0.5);
-            animation: pulsoMenuLateral 2s ease-in-out infinite;
         }
 
         .btn-menu-lateral.llamar-atencion .linea-menu {
