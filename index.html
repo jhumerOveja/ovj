@@ -7480,10 +7480,10 @@
 
             const ctx = canvas.getContext('2d');
 
-            // Formato Vertical (Ticket de Historia) con Calidad HD
+            // 🔥 Formato Cuadrado (Más compacto para el modal)
             const dpr = window.devicePixelRatio || 1;
-            const width = 600;
-            const height = 900;
+            const width = 650;
+            const height = 650;
 
             canvas.width = width * dpr;
             canvas.height = height * dpr;
@@ -7506,43 +7506,44 @@
             // 3. Marca OVJ
             ctx.textAlign = 'center';
             ctx.fillStyle = '#ffffff';
-            ctx.font = '900 48px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('OVJ STUDIO', width / 2, 90);
+            ctx.font = '900 42px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('OVJ STUDIO', width / 2, 80);
 
-            // 4. Nombre del evento (Con el texto nuevo)
+            // 4. Nombre del evento
             ctx.fillStyle = '#a1a1aa';
-            ctx.font = '600 20px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('EVENTO DONDE FUE EMITIDO:', width / 2, 130);
+            ctx.font = '600 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('EVENTO DONDE FUE EMITIDO:', width / 2, 115);
 
             ctx.fillStyle = '#ffffff';
-            ctx.font = '700 22px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText(nombreEvento.toUpperCase(), width / 2, 160);
+            ctx.font = '700 20px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText(nombreEvento.toUpperCase(), width / 2, 140);
 
             // 5. Premio (Destacado)
             ctx.fillStyle = '#e8c47a';
-            ctx.font = '800 42px "Segoe UI", Tahoma, sans-serif';
+            ctx.font = '800 36px "Segoe UI", Tahoma, sans-serif';
 
             if (premio.length > 22) {
                 const partes = premio.split(' (');
-                ctx.fillText(partes[0], width / 2, 240);
+                ctx.fillText(partes[0], width / 2, 210);
                 if (partes[1]) {
-                    ctx.font = '700 28px "Segoe UI", Tahoma, sans-serif';
-                    ctx.fillText('(' + partes[1], width / 2, 285);
+                    ctx.font = '700 24px "Segoe UI", Tahoma, sans-serif';
+                    ctx.fillText('(' + partes[1], width / 2, 245);
                 }
             } else {
-                ctx.fillText(premio, width / 2, 250);
+                ctx.fillText(premio, width / 2, 220);
             }
 
-            // 6. Código Único (Subido, ya que quitamos la línea)
+            // 6. Código (Izquierda)
+            ctx.textAlign = 'center';
             ctx.fillStyle = '#a1a1aa';
-            ctx.font = '700 20px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('TU CÓDIGO ÚNICO', width / 2, 340);
+            ctx.font = '700 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('TU CÓDIGO ÚNICO', width / 4 + 10, 300);
 
             ctx.fillStyle = '#93c5fd';
-            ctx.font = '900 56px monospace';
-            ctx.fillText(token, width / 2, 405);
+            ctx.font = '900 42px monospace';
+            ctx.fillText(token, width / 4 + 10, 350);
 
-            // 7. QR (Subido un poco)
+            // 7. QR de WhatsApp (Derecha)
             if (window.qrcode) {
                 const textoWhatsApp = `Hola OVJ Studio! Gané el ticket ${token} en el evento ${nombreEvento}. Me interesa usarlo para mi próximo evento.`;
                 const urlWhatsApp = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoWhatsApp)}`;
@@ -7552,42 +7553,41 @@
                 qr.make();
 
                 const qrImg = new Image();
-                qrImg.src = qr.createDataURL(8, 20);
+                qrImg.src = qr.createDataURL(6, 12);
 
                 qrImg.onload = () => {
-                    const qrSize = 190;
-                    const qrX = (width - qrSize) / 2;
-                    const qrY = 460;
+                    const qrSize = 140;
+                    const qrX = width * 0.75 - (qrSize / 2);
+                    const qrY = 250;
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(qrX - 12, qrY - 12, qrSize + 24, qrSize + 24);
+                    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
 
                     ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-                    ctx.textAlign = 'center';
                     ctx.fillStyle = '#888888';
-                    ctx.font = '600 16px "Segoe UI", Tahoma, sans-serif';
-                    ctx.fillText('Escaneá el QR para reclamar', width / 2, qrY + qrSize + 35);
+                    ctx.font = '600 14px "Segoe UI", Tahoma, sans-serif';
+                    ctx.fillText('Escaneá para reclamar', qrX + qrSize / 2, qrY + qrSize + 25);
                 };
             }
 
-            // 8. Instrucciones (Más grandes y con el aviso de un solo uso)
+            // 8. Instrucciones (Abajo, en recuadro)
             ctx.textAlign = 'left';
             ctx.fillStyle = '#ffffff';
-            ctx.font = '700 20px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('INSTRUCCIONES:', 50, 745);
+            ctx.font = '700 18px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('INSTRUCCIONES:', 50, 460);
 
             ctx.fillStyle = '#cccccc';
-            ctx.font = '400 18px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('1. Guardá esta imagen en tu galería.', 50, 785);
-            ctx.fillText('2. Escaneá el QR cuando quieras usarlo.', 50, 815);
-            ctx.fillText('3. Válido por 6 meses.', 50, 845);
+            ctx.font = '400 16px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('1. Guardá esta imagen en tu galería.', 50, 495);
+            ctx.fillText('2. Escaneá el QR cuando quieras usarlo.', 50, 520);
+            ctx.fillText('3. Válido por 6 meses.', 50, 545);
 
-            // Aviso de un solo uso en rojo suave
+            // Aviso de un solo uso
             ctx.fillStyle = '#f87171';
-            ctx.font = '700 16px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('⚠️ Ticket de un solo uso. Cuidá a quién se lo envías.', 50, 875);
+            ctx.font = '700 15px "Segoe UI", Tahoma, sans-serif';
+            ctx.fillText('⚠️ Ticket de un solo uso. Cuidá a quién se lo envías.', 50, 585);
         }
 
         function reclamarCofreWhatsApp() {
