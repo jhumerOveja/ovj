@@ -3469,6 +3469,41 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
         /* (Modales de desbloqueo e invitación eliminados) */
+
+        /* Estilos para el Paquete Personal */
+        .paquete-slide.personal {
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.15) 0%, rgba(10, 10, 12, 0.98) 40%);
+        }
+
+        .paquete-slide.personal .paquete-nombre {
+            color: #06b6d4; /* Cian */
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+        }
+
+        .paquete-slide.personal .paquete-linea {
+            background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+        }
+
+        .paquete-slide.personal .paquete-lista li::before {
+            color: #06b6d4;
+        }
+
+        .paquete-slide.personal .paquete-btn-siguiente {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: #fff; /* Letra blanca por ser fondo oscuro */
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .paquete-slide.personal .paquete-punto.activo {
+            background: #06b6d4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+        }
+
+        /* El botón de WhatsApp también en cian */
+        .paquete-slide.personal .paquete-btn-whatsapp {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -3655,12 +3690,49 @@
 
         <div class="paquetes-slider" id="paquetesSlider">
 
+            <!-- SLIDE 0: PERSONAL FOTO -->
+            <div class="paquete-slide personal">
+                <div class="paquete-contenido">
+                    <div style="font-size: 2.5rem; text-align: center; margin-bottom: 10px; letter-spacing: 5px;">📸 🚗 ✈️</div>
+
+                    <div class="paquete-nombre">PERSONAL FOTO</div>
+                    <div class="paquete-linea"></div>
+                    <div class="paquete-hint">Deslizá para ver los paquetes de eventos →</div>
+
+                    <div class="paquete-subtitulo">Tu sombra profesional. Donde vayas, yo voy.</div>
+                    <div class="paquete-descripcion">Un servicio adaptativo, flexible y personalizado. Sin poses forzadas. Capturamos tu día a día, en tus términos.</div>
+
+                    <ul class="paquete-lista">
+                        <li><strong>Turistas:</strong> Conocé la ciudad con un fotógrafo nativo. Te llevamos a los mejores spots y capturamos tus recuerdos sin que te preocupes por la cámara.</li>
+                        <li><strong>Empresarios:</strong> Reuniones, viajes, eventos. Alguien que esté con vos asegurándose de que te veas impecable y proyectes el estatus que merecés.</li>
+                        <li><strong>Artistas y Creadores:</strong> Contenido fresco y constante para tus redes. Fotos y videos de alta calidad para tu Instagram o TikTok, sin depender de un trípode.</li>
+                        <li><strong>Trato personalizado:</strong> No es un evento masivo. Es tu día, a tu ritmo.</li>
+                    </ul>
+
+                    <div class="paquete-ideal">
+                        <strong>¿Por qué es diferente?</strong> No pagás por una galería en vivo, sino por mi presencia profesional y adaptabilidad total.
+                    </div>
+                </div>
+
+                <div class="paquete-footer">
+                    <div class="paquete-proximo-texto">Próximo: Paquetes de Eventos</div>
+                    <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Esencial →</button>
+                    <div class="paquetes-puntos">
+                        <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
+                    </div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('personal')" style="margin-top:10px;">Consultar Personal Foto</button>
+                </div>
+            </div>
+
             <!-- SLIDE 1: ESENCIAL -->
             <div class="paquete-slide esencial">
                 <div class="paquete-contenido">
                     <div class="paquete-nombre">ESENCIAL</div>
                     <div class="paquete-linea"></div>
-                    <div class="paquete-hint">Deslizá para ver los 3 paquetes →</div>
+                    <div class="paquete-hint">Deslizá para ver los 4 paquetes →</div>
 
                     <div class="paquete-subtitulo">Fotografía profesional con entrega digital</div>
                     <div class="paquete-descripcion">Ideal para eventos íntimos o que no necesitan galería en vivo.</div>
@@ -3680,6 +3752,7 @@
                     <div class="paquete-proximo-texto">Próximo: Premium</div>
                     <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Premium →</button>
                     <div class="paquetes-puntos">
+                        <div class="paquete-punto"></div>
                         <div class="paquete-punto activo"></div>
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
@@ -3718,6 +3791,7 @@
                     <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Signature →</button>
                     <div class="paquetes-puntos">
                         <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
                         <div class="paquete-punto activo"></div>
                         <div class="paquete-punto"></div>
                     </div>
@@ -3751,6 +3825,7 @@
                     <div class="paquete-proximo-texto">¿Te gusta este paquete?</div>
                     <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('signature')">Consultar Signature</button>
                     <div class="paquetes-puntos">
+                        <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto activo"></div>
@@ -6992,7 +7067,7 @@
         // PAQUETES
         // ==========================================
         let paqueteActual = 0;
-        const TOTAL_PAQUETES = 3;
+        const TOTAL_PAQUETES = 4;
 
         function abrirPaquetes() {
             paqueteActual = 0;
@@ -7040,12 +7115,12 @@
 
         function consultarPaqueteWhatsApp(tipo) {
             const mensajes = {
+                personal: '¡Hola! Me interesa el paquete PERSONAL FOTO. Quiero más información sobre el servicio de acompañamiento y creación de contenido.',
                 esencial: '¡Hola! Me interesa el paquete ESENCIAL para mi evento. ¿Me podés pasar más información?',
                 premium: '¡Hola! Me interesa el paquete PREMIUM para mi evento. ¿Me podés pasar más información?',
                 signature: '¡Hola! Me interesa el paquete SIGNATURE para mi evento. ¿Me podés pasar más información?'
             };
-
-            const mensaje = mensajes[tipo] || mensajes.premium;
+            const mensaje = mensajes[tipo] || mensajes.esencial;
             window.open(`https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
