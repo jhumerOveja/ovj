@@ -1759,7 +1759,28 @@
             let meta = '';
             meta += `<div class="fila">🗓️ <strong>${formatearFecha(e.fechaProgramada)}</strong></div>`;
             meta += `<div class="fila">⏰ <strong>${e.horaInicio}</strong> · ${e.duracionTotalProgramada || e.duracionProgramada}h</div>`;
+            // 🔥 CÁLCULO DE SALDO
+            const precioTotal = e.precioTotal || 0;
+            const pagado = (e.anticipo || 0) + (e.pagosExtra || 0);
+            const saldo = precioTotal - pagado;
 
+            let cobroHtml = '';
+            if (precioTotal > 0) {
+                cobroHtml = `
+                    <div style="margin-top:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#aaa; margin-bottom:4px;">
+                            <span>Precio: <strong>Bs ${precioTotal}</strong></span>
+                            <span>Pagado: <strong style="color:#4ade80;">Bs ${pagado}</strong></span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+                            <span style="font-size:0.8rem; color:${saldo <= 0 ? '#4ade80' : '#f39c12'}; font-weight:700;">
+                                ${saldo <= 0 ? '✅ Pagado completo' : `Saldo: Bs ${saldo}`}
+                            </span>
+                            ${saldo > 0 ? `<button class="btn btn-chico btn-secundario" onclick="abrirModalPago('${escapeHtml(e.fotografo)}', '${escapeHtml(e.id)}', ${saldo})">💵 Sumar Pago</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
             if (e.whatsappCliente) meta += `<div class="fila">📱 +${e.whatsappCliente}</div>`;
 
             // Razón de cierre
@@ -1823,6 +1844,7 @@
                 <span class="badge ${badgeClase}">${badgeTexto}</span>
             </div>
             <div class="meta">${meta}</div>
+            ${cobroHtml} <!-- 🔥 AQUÍ SE MUESTRA EL SALDO -->
             ${acciones ? `<div class="acciones">${acciones}</div>${textoCarpetaEstado}` : ''}
         </div>
     `;
@@ -1929,6 +1951,16 @@
                     <label>WhatsApp del cliente (opcional)</label>
                     <input type="tel" id="inputEventoWhatsapp" placeholder="ej: 59160004962" />
                     <div class="ayuda">Solo dígitos, con código de país.</div>
+                </div>
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label>Precio Total (Bs)</label>
+                        <input type="number" id="inputEventoPrecio" placeholder="Ej: 1500" min="0" step="10" />
+                    </div>
+                    <div class="campo">
+                        <label>Anticipo / Pago Inicial (Bs)</label>
+                        <input type="number" id="inputEventoAnticipo" placeholder="Ej: 500" min="0" step="10" />
+                    </div>
                 </div>
 
             <div class="seccion-titulo-form destacado">🎁 Cofres-regalo</div>
@@ -2077,18 +2109,20 @@
             $('btnCrearEvento').textContent = 'Agendando...';
 
             try {
-                const data = await apiFetch('/admin/eventos', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        fotografo,
-                        evento,
-                        fecha,
-                        hora,
-                        duracion,
-                        whatsappCliente: whatsapp || null,
-                        cofres
-                    })
-                });
+              const data = await apiFetch('/admin/eventos', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                      fotografo,
+                      evento,
+                      fecha,
+                      hora,
+                      duracion,
+                      whatsappCliente: whatsapp || null,
+                      precioTotal: $('inputEventoPrecio').value,
+                      anticipo: $('inputEventoAnticipo').value,
+                      cofres
+                  })
+              });
 
                 cerrarModal();
 
@@ -3183,6 +3217,47 @@
             }
         }
 
+        function abrirModalPago(fotografo, eventoId, saldoActual) {
+            abrirModal(`
+                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
+                <div class="titulo">💵 Registrar Pago</div>
+                <div class="subtitulo">Saldo pendiente: <strong>Bs ${saldoActual}</strong></div>
+
+                <div class="campo">
+                    <label>Monto a cobrar ahora (Bs)</label>
+                    <input type="number" id="inputMontoPago" placeholder="Ej: 500" min="1" max="${saldoActual}" />
+                </div>
+
+                <button class="btn-primario" onclick="registrarPago('${escapeHtml(fotografo)}', '${escapeHtml(eventoId)}')">Registrar Pago</button>
+                <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+            `);
+        }
+
+        async function registrarPago(fotografo, eventoId) {
+            const monto = $('inputMontoPago').value;
+
+            if (!monto || monto <= 0) {
+                toast('Monto inválido', 'error');
+                return;
+            }
+
+            loader(true);
+            try {
+                await apiFetch('/admin/eventos/' + encodeURIComponent(eventoId) + '/pago', {
+                    method: 'POST',
+                    body: JSON.stringify({ monto })
+                });
+
+                toast('✅ Pago registrado', 'ok');
+                cerrarModal();
+                renderEventos();
+            } catch (e) {
+                toast('Error: ' + e.message, 'error');
+            } finally {
+                loader(false);
+            }
+        }
+
         // ==========================================
         // 🪟 MODAL
         // ==========================================
@@ -3203,6 +3278,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') cerrarModal();
         });
+
 
         // ==========================================
         // 🚀 INICIALIZACIÓN
