@@ -3866,6 +3866,7 @@
     </div>
 
     <!-- Modal de métricas (más simple: sin aforo) -->
+    <!-- Modal de métricas (con estado de cuenta y aforo) -->
     <div class="modal-info" id="modalMetricas">
         <div class="modal-info-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalMetricas')">✕</button>
@@ -3897,6 +3898,9 @@
                     <div class="etiqueta">Tickets</div>
                 </div>
             </div>
+
+            <!-- 🔥 NUEVO: Estado de cuenta y Aforo -->
+            <div id="estadoCuentaContainer" style="display:none; margin-top:16px; margin-bottom:16px;"></div>
 
             <button class="modal-info-btn" onclick="cerrarModalInfo('modalMetricas')">
                 Cerrar
@@ -6550,12 +6554,15 @@
             const elFotos = document.getElementById('metricaFotos');
             const elDescargas = document.getElementById('metricaDescargas');
             const elTickets = document.getElementById('metricaTickets');
+            const contCuenta = document.getElementById('estadoCuentaContainer');
 
             subtitulo.textContent = 'Cargando...';
             elActivos.textContent = '—';
             elFotos.textContent = '—';
             elDescargas.textContent = '—';
             elTickets.textContent = '—';
+            contCuenta.style.display = 'none';
+            contCuenta.innerHTML = '';
 
             try {
                 const url = `${URL_CLOUDFLARE}/admin/metricas?f=${encodeURIComponent(FOTOGRAFO_ID)}` +
@@ -6576,6 +6583,66 @@
                 elTickets.textContent = data.metricas?.ticketsEmitidos || 0;
 
                 subtitulo.textContent = 'Métricas del evento en vivo';
+
+                // 🔥 Lógica de Aforo y Pagos
+                const total = data.precioTotal || 0;
+                const pagado = (data.anticipo || 0) + (data.pagosExtra || 0);
+                const saldo = total - pagado;
+                const personasActuales = data.totalActivos || 0;
+                const previstas = data.invitadosPrevistos || 0;
+
+                if (total > 0 || previstas > 0) {
+                    let alertaAforo = '';
+
+                    if (previstas > 0 && personasActuales > previstas) {
+                        alertaAforo = `
+                            <div style="background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:10px; padding:12px; margin-bottom:12px; text-align:left;">
+                                <div style="color:#f87171; font-weight:800; font-size:0.85rem; margin-bottom:4px;">⚠️ Aforo superado</div>
+                                <div style="color:#ccc; font-size:0.75rem; line-height:1.4;">
+                                    Han ingresado <strong>${personasActuales} personas</strong> y tu límite previsto era <strong>${previstas}</strong>. El ingreso no se limitará, pero te recomendamos ajustar tu paquete para futuros eventos.
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    let infoPago = '';
+                    if (total > 0) {
+                        infoPago = `
+                            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px; margin-bottom:12px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
+                                    <span style="color:#aaa;">Costo Total:</span>
+                                    <span style="color:#fff; font-weight:700;">Bs ${total}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
+                                    <span style="color:#aaa;">Pagado:</span>
+                                    <span style="color:#4ade80; font-weight:700;">Bs ${pagado}</span>
+                                </div>
+                                <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; display:flex; justify-content:space-between; font-size:0.9rem;">
+                                    <span style="color:#aaa;">Saldo Pendiente:</span>
+                                    <span style="color:${saldo <= 0 ? '#4ade80' : '#f39c12'}; font-weight:800;">Bs ${saldo <= 0 ? '0 (Pagado)' : saldo}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    contCuenta.innerHTML = alertaAforo + infoPago;
+
+                    // Si hay saldo pendiente, agregamos el botón de WhatsApp
+                    if (saldo > 0) {
+                        contCuenta.innerHTML += `
+                            <p style="color:#888; font-size:0.75rem; text-align:center; margin-bottom:10px;">
+                                Para abonar el saldo, escribinos por WhatsApp.
+                            </p>
+                            <a href="https://wa.me/${WHATSAPP_PUBLICIDAD}?text=Hola,%20quiero%20consultar%20el%20saldo%20pendiente%20de%20mi%20evento." target="_blank" style="text-decoration:none;">
+                                <button class="modal-info-btn" style="background:linear-gradient(135deg,#4ade80,#22c55e); color:#0a0a0a;">
+                                    💬 Pagar por WhatsApp
+                                </button>
+                            </a>
+                        `;
+                    }
+
+                    contCuenta.style.display = 'block';
+                }
 
             } catch (e) {
                 console.error('Error:', e);
