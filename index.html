@@ -3448,6 +3448,26 @@
                 display: none;
             }
         }
+
+        /* Excepción para modales que no deben parecer "tarjetas" */
+        #modalBeneficios .modal-info-contenido,
+        #modalSobre .modal-info-contenido,
+        #modalRegalo .modal-info-contenido {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 40px 20px;
+            max-width: 600px; /* Un poco más ancho para aprovechar la pantalla */
+            max-height: 95vh;
+        }
+
+        /* El botón de cerrar de estos modales necesita verse bien en el fondo transparente */
+        #modalBeneficios .btn-cerrar-instr,
+        #modalSobre .btn-cerrar-instr,
+        #modalRegalo .btn-cerrar-instr {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
         /* (Modales de desbloqueo e invitación eliminados) */
     </style>
 </head>
@@ -4300,37 +4320,37 @@
                 juegosTitulo: "Juegos",
                 juegosSubtitulo: "Elegí un juego para entretenerte mientras esperás las fotos.",
                 sobreTexto: `
-    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
+    <div style="font-size:0.9rem; line-height:1.6; color:#aaa; text-align:center; margin-bottom:30px;">
         OVJ Studio no es una empresa de fotografía. Es una <strong style="color:#e8c47a;">máquina de crear experiencias en vivo</strong>. Lo que en el modelo tradicional tarda semanas, acá sucede antes de que termine la fiesta.
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
-        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.35; letter-spacing:0.3px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.2rem; font-weight:800; color:#e8c47a; line-height:1.4; letter-spacing:0.3px;">
             "LAS PUBLICACIONES EN REDES SE HACEN EL DÍA DEL EVENTO.<br>
             NADIE QUIERE PUBLICAR LO DE AYER,<br>
             MENOS LO DE HACE MESES."
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#f87171; line-height:1.4; margin-bottom:8px;">
             ¿SEGUÍS DEJANDO QUE TUS INVITADOS SAQUEN FOTOS BORROSAS?
         </div>
-        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.3; letter-spacing:0.3px;">
+        <div style="font-size:1rem; font-weight:700; color:#fff; line-height:1.4;">
             Dejá que los profesionales se encarguen.
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(74,222,128,0.05), rgba(74,222,128,0.01)); border:1.5px solid rgba(74,222,128,0.3); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#4ade80; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#4ade80; line-height:1.4; margin-bottom:8px;">
             ENTREGAMOS FOTOS Y VIDEOS MÁS RÁPIDO QUE NADIE
         </div>
-        <div style="font-size:0.85rem; color:#ddd; line-height:1.4;">
+        <div style="font-size:0.9rem; color:#aaa; line-height:1.5;">
             Galería en vivo en tiempo real + VIDEO RECAP en menos de 24 horas. Y juegos para que tus invitados nunca dejen de sonreír.
         </div>
     </div>
 
-    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+    <div style="font-size:0.8rem; line-height:1.5; color:#666; text-align:center;">
         Fotografía profesional, en tiempo real, para todos los que están en el evento.
     </div>
 `,
@@ -4450,37 +4470,37 @@
                 juegosTitulo: "Games",
                 juegosSubtitulo: "Pick a game to have fun while you wait for the photos.",
                 sobreTexto: `
-    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
+    <div style="font-size:0.9rem; line-height:1.6; color:#aaa; text-align:center; margin-bottom:30px;">
         OVJ Studio is not a photography company. It's a <strong style="color:#e8c47a;">live experience machine</strong>. What in the traditional model takes weeks, here happens before the party ends.
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
-        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.45; letter-spacing:0.3px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.2rem; font-weight:800; color:#e8c47a; line-height:1.4; letter-spacing:0.3px;">
             "SOCIAL POSTS HAPPEN ON THE DAY OF THE EVENT.<br>
             NOBODY WANTS TO POST YESTERDAY'S NEWS,<br>
             LET ALONE MONTHS-OLD."
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#f87171; line-height:1.4; margin-bottom:8px;">
             STILL LETTING YOUR GUESTS TAKE BLURRY PHOTOS?
         </div>
-        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.3; letter-spacing:0.3px;">
+        <div style="font-size:1rem; font-weight:700; color:#fff; line-height:1.4;">
             Let the professionals handle it.
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(74,222,128,0.05), rgba(74,222,128,0.01)); border:1.5px solid rgba(74,222,128,0.3); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#4ade80; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#4ade80; line-height:1.4; margin-bottom:8px;">
             WE DELIVER PHOTOS AND VIDEOS FASTER THAN ANYONE
         </div>
-        <div style="font-size:0.85rem; color:#ddd; line-height:1.4;">
+        <div style="font-size:0.9rem; color:#aaa; line-height:1.5;">
             Live gallery in real time + VIDEO RECAP in less than 24 hours. And games so your guests never stop smiling.
         </div>
     </div>
 
-    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+    <div style="font-size:0.8rem; line-height:1.5; color:#666; text-align:center;">
         Professional photography, in real time, for everyone at the event.
     </div>
 `,
@@ -4595,37 +4615,37 @@
                 juegosTitulo: "游戏",
                 juegosSubtitulo: "在等待照片时选择一个游戏消遣。",
                 sobreTexto: `
-    <div style="font-size:0.8rem; line-height:1.5; color:#aaa; text-align:center; margin-bottom:14px;">
-        OVJ Studio 是一个面向社交活动的 <strong style="color:#e8c47a;">现场照片画廊平台</strong>。传统模式要等好几天才送达，而这里 <strong style="color:#fff;">即时呈现</strong>。
+    <div style="font-size:0.9rem; line-height:1.6; color:#aaa; text-align:center; margin-bottom:30px;">
+        OVJ Studio 并不是一家摄影公司。它是一台 <strong style="color:#e8c47a;">制造现场体验的机器</strong>。传统模式需要数周才能完成的事情，在这里派对结束前就能实现。
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(232,196,122,0.14), rgba(232,196,122,0.03)); border:1.5px solid rgba(232,196,122,0.5); border-radius:12px; box-shadow:0 6px 24px rgba(232,196,122,0.15); margin-bottom:12px;">
-        <div style="font-size:1.02rem; font-weight:800; color:#e8c47a; line-height:1.45; letter-spacing:0.3px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.2rem; font-weight:800; color:#e8c47a; line-height:1.4; letter-spacing:0.3px;">
             "社交媒体发布，就在活动当天。<br>
             没有人愿意发昨天的内容，<br>
             更别说几个月前的了。"
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#f87171; line-height:1.35; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#f87171; line-height:1.4; margin-bottom:8px;">
             还在让嘉宾们拍模糊的照片吗？
         </div>
-        <div style="font-size:0.98rem; font-weight:700; color:#fff; line-height:1.35; letter-spacing:0.3px;">
+        <div style="font-size:1rem; font-weight:700; color:#fff; line-height:1.4;">
             交给专业人士吧。
         </div>
     </div>
 
-    <div style="text-align:center; padding:16px 14px; background:linear-gradient(135deg, rgba(74,222,128,0.05), rgba(74,222,128,0.01)); border:1.5px solid rgba(74,222,128,0.3); border-radius:12px; margin-bottom:12px;">
-        <div style="font-size:0.95rem; font-weight:800; color:#4ade80; line-height:1.3; letter-spacing:0.3px; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:30px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#4ade80; line-height:1.4; margin-bottom:8px;">
             我们比任何人都更快交付照片和视频
         </div>
-        <div style="font-size:0.85rem; color:#ddd; line-height:1.4;">
+        <div style="font-size:0.9rem; color:#aaa; line-height:1.5;">
             实时现场画廊 + 24 小时内的视频回顾。还有游戏，让您的嘉宾始终保持微笑。
         </div>
     </div>
 
-    <div style="font-size:0.72rem; line-height:1.5; color:#888; text-align:center;">
+    <div style="font-size:0.8rem; line-height:1.5; color:#666; text-align:center;">
         专业摄影，实时呈现，献给现场的每一位嘉宾。
     </div>
 `,
@@ -6869,96 +6889,94 @@
 
             if (idiomaActual === 'en') {
                 html = `
-            <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
-                <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
-                    ❌ Traditional photography service
-                </div>
-                <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
-                    • They deliver the photos <strong style="color:#fff;">days or weeks later</strong><br>
-                    • A USB drive that's <strong style="color:#fff;">forgettable and nobody opens</strong><br>
-                    • <strong style="color:#fff;">No metrics</strong> about the event<br>
-                    • You <strong style="color:#fff;">can't post your photos on social media</strong> because you don't have them yet
-                </div>
-            </div>
-
-            <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
-                <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
-                    ✓ OVJ STUDIO
-                </div>
-                <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
-                    • Live photos<br>
-                    • Private web gallery<br>
-                    • Real-time metrics<br>
-                    • One-tap downloads<br>
-                    • Ultra-fast photos<br>
-                    • Unlimited downloads<br>
-                    • Behind the scenes of the event
-                </div>
-            </div>
-        `;
+                    <div style="margin-bottom:24px;">
+                        <div style="font-size:0.85rem; font-weight:800; color:#f87171; margin-bottom:10px; letter-spacing:0.5px;">
+                            ❌ TRADITIONAL PHOTOGRAPHY (SLOW AND BORING)
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#aaa; padding-left:0; list-style:none;">
+                            <li>• They deliver photos <strong style="color:#fff;">weeks later</strong> (when no one remembers).</li>
+                            <li>• A USB drive that gets lost in a drawer.</li>
+                            <li>• <strong style="color:#fff;">Zero emotion:</strong> no surprises or interaction.</li>
+                            <li>• You wait months for a recap video.</li>
+                            <li>• You can't share anything in the moment.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="font-size:0.85rem; font-weight:800; color:#4ade80; margin-bottom:10px; letter-spacing:0.5px;">
+                            ✓ THE OVJ STUDIO EXPERIENCE (MAGICAL AND INSTANT)
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#ccc; padding-left:0; list-style:none;">
+                            <li>• <strong>Ultra-fast delivery:</strong> Live photos and VIDEO RECAP in under 24 hours. Nobody else gives you this!</li>
+                            <li>• <strong>Live web gallery:</strong> A private app for your event.</li>
+                            <li>• <strong>Games for your guests:</strong> They have fun while waiting for photos.</li>
+                            <li>• <strong>Unlimited downloads</strong> for everyone, no watermarks.</li>
+                            <li>• <strong>Discount tickets:</strong> Real gifts for your future events.</li>
+                            <li>• <strong>Real-time metrics:</strong> See how many people are vibing with your party.</li>
+                        </ul>
+                    </div>
+                `;
             } else if (idiomaActual === 'zh') {
                 html = `
-            <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
-                <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
-                    ❌ 传统摄影服务
-                </div>
-                <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
-                    • 照片要 <strong style="color:#fff;">数天甚至数周后</strong> 才送达<br>
-                    • 一个 <strong style="color:#fff;">容易被遗忘、无人打开的 U 盘</strong><br>
-                    • <strong style="color:#fff;">没有活动数据统计</strong><br>
-                    • <strong style="color:#fff;">无法把照片发到社交媒体</strong>，因为还没拿到
-                </div>
-            </div>
-
-            <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
-                <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
-                    ✓ OVJ STUDIO
-                </div>
-                <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
-                    • 现场实时照片<br>
-                    • 私人网页画廊<br>
-                    • 实时数据统计<br>
-                    • 一键下载<br>
-                    • 超快速照片<br>
-                    • 无限下载<br>
-                    • 活动幕后花絮
-                </div>
-            </div>
-        `;
+                    <div style="margin-bottom:24px;">
+                        <div style="font-size:0.85rem; font-weight:800; color:#f87171; margin-bottom:10px; letter-spacing:0.5px;">
+                            ❌ 传统摄影（缓慢且无聊）
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#aaa; padding-left:0; list-style:none;">
+                            <li>• 照片在 <strong style="color:#fff;">几周后</strong> 才交付（当没人记得时）。</li>
+                            <li>• 一个丢在抽屉里的 U 盘。</li>
+                            <li>• <strong style="color:#fff;">毫无情感：</strong> 没有惊喜或互动。</li>
+                            <li>• 为看一个回顾视频等上几个月。</li>
+                            <li>• 无法在当下分享任何内容。</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="font-size:0.85rem; font-weight:800; color:#4ade80; margin-bottom:10px; letter-spacing:0.5px;">
+                            ✓ OVJ STUDIO 体验（神奇且即时）
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#ccc; padding-left:0; list-style:none;">
+                            <li>• <strong>超快速交付：</strong> 现场照片和 24 小时内的视频回顾。别人给不了！</li>
+                            <li>• <strong>实时网页画廊：</strong> 您活动的私人应用。</li>
+                            <li>• <strong>嘉宾游戏：</strong> 他们在等待照片时也能娱乐。</li>
+                            <li>• <strong>无限下载</strong>，适合所有人，无水印。</li>
+                            <li>• <strong>折扣门票：</strong> 为您未来的活动准备的真实礼物。</li>
+                            <li>• <strong>实时数据：</strong> 看看有多少人在您的派对中尽情享受。</li>
+                        </ul>
+                    </div>
+                `;
             } else {
-              html = `
-                          <div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
-                              <div style="font-size:0.78rem; font-weight:800; color:#f87171; margin-bottom:8px; letter-spacing:0.3px;">
-                                  ❌ LA FOTOGRAFÍA TRADICIONAL (LENTA Y ABURRIDA)
-                              </div>
-                              <div style="font-size:0.74rem; line-height:1.55; color:#bbb;">
-                                  • Te entregan las fotos <strong style="color:#fff;">semanas después</strong> (cuando ya nadie se acuerda).<br>
-                                  • Un pendrive USB que se pierde en un cajón.<br>
-                                  • <strong style="color:#fff;">Cero emoción:</strong> no hay sorpresa ni interacción.<br>
-                                  • Esperas meses para ver un video resumen.<br>
-                                  • No podés compartir nada en el momento.
-                              </div>
-                          </div>
+                html = `
+                    <div style="margin-bottom:24px;">
+                        <div style="font-size:0.85rem; font-weight:800; color:#f87171; margin-bottom:10px; letter-spacing:0.5px;">
+                            ❌ LA FOTOGRAFÍA TRADICIONAL (LENTA Y ABURRIDA)
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#aaa; padding-left:0; list-style:none;">
+                            <li>• Te entregan las fotos <strong style="color:#fff;">semanas después</strong> (cuando ya nadie se acuerda).</li>
+                            <li>• Un pendrive USB que se pierde en un cajón.</li>
+                            <li>• <strong style="color:#fff;">Cero emoción:</strong> no hay sorpresa ni interacción.</li>
+                            <li>• Esperas meses para ver un video resumen.</li>
+                            <li>• No podés compartir nada en el momento.</li>
+                        </ul>
+                    </div>
 
-                          <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:12px 14px;">
-                              <div style="font-size:0.78rem; font-weight:800; color:#4ade80; margin-bottom:8px; letter-spacing:0.3px;">
-                                  ✓ LA EXPERIENCIA OVJ STUDIO (MÁGICA E INSTANTÁNEA)
-                              </div>
-                              <div style="font-size:0.74rem; line-height:1.55; color:#ddd;">
-                                  • <strong>Entrega ultra rápida:</strong> Fotos en vivo y VIDEO RECAP en menos de 24 horas. ¡Nadie más te da esto!<br>
-                                  • <strong>Galería web en vivo:</strong> Una app privada para tu evento.<br>
-                                  • <strong>Juegos para tus invitados:</strong> Se entretienen mientras esperan sus fotos.<br>
-                                  • <strong>Descargas ilimitadas</strong> para todos, sin marcas de agua.<br>
-                                  • <strong>Tickets de descuento:</strong> Regalos reales para tus futuros eventos y para tu gente.<br>
-                                  • <strong>Métricas en tiempo real:</strong> Mirá cuánta gente está vibrando con tu fiesta.
-                              </div>
-                          </div>
-                      `;
-                  }
+                    <div>
+                        <div style="font-size:0.85rem; font-weight:800; color:#4ade80; margin-bottom:10px; letter-spacing:0.5px;">
+                            ✓ LA EXPERIENCIA OVJ STUDIO (MÁGICA E INSTANTÁNEA)
+                        </div>
+                        <ul style="font-size:0.8rem; line-height:1.6; color:#ccc; padding-left:0; list-style:none;">
+                            <li>• <strong>Entrega ultra rápida:</strong> Fotos en vivo y VIDEO RECAP en menos de 24 horas. ¡Nadie más te da esto!</li>
+                            <li>• <strong>Galería web en vivo:</strong> Una app privada para tu evento.</li>
+                            <li>• <strong>Juegos para tus invitados:</strong> Se entretienen mientras esperan sus fotos.</li>
+                            <li>• <strong>Descargas ilimitadas</strong> para todos, sin marcas de agua.</li>
+                            <li>• <strong>Tickets de descuento:</strong> Regalos reales para tus futuros eventos.</li>
+                            <li>• <strong>Métricas en tiempo real:</strong> Mirá cuánta gente está vibrando con tu fiesta.</li>
+                        </ul>
+                    </div>
+                `;
+            }
 
-                  cont.innerHTML = html;
-                  document.getElementById('modalBeneficios').classList.add('activo');
-              }
+            cont.innerHTML = html;
+            document.getElementById('modalBeneficios').classList.add('activo');
+        }
 
         function abrirContactoWhatsApp() {
             const mensaje = idiomaActual === 'en'
@@ -7152,52 +7170,47 @@
                 emoji.textContent = '💛';
                 titulo.textContent = idiomaActual === 'en' ? 'A memory' : idiomaActual === 'zh' ? '一份回忆' : 'Un recuerdo';
                 cont.innerHTML = `
-                    <div class="regalo-ticket" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border-color:rgba(255,255,255,0.15);">
-                        <div class="regalo-ticket-titulo" style="color:#fff;">${escapeHtml(t.titulo || 'Gracias por ser parte')}</div>
-                        <div class="regalo-ticket-desc">${escapeHtml(t.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}</div>
+                    <div class="regalo-ticket" style="background:transparent; border:none; padding:0;">
+                        <div class="regalo-ticket-titulo" style="color:#fff; font-size:1.2rem; margin-bottom:12px;">${escapeHtml(t.titulo || 'Gracias por ser parte')}</div>
+                        <div class="regalo-ticket-desc" style="color:#aaa; font-size:0.9rem;">${escapeHtml(t.descripcion || 'Gracias por acompañarnos en esta noche tan especial.')}</div>
                     </div>
-                    <button class="modal-info-btn" onclick="cerrarModalInfo('modalRegalo')">Cerrar</button>
+                    <button class="modal-info-btn" style="margin-top:20px;" onclick="cerrarModalInfo('modalRegalo')">Cerrar</button>
                 `;
                 return;
             }
 
             emoji.textContent = '🎁';
             titulo.textContent = idiomaActual === 'en' ? 'My gift' : idiomaActual === 'zh' ? '我的礼物' : 'Mi regalo';
-
-            // Ocultamos el ícono grande porque ahora mostramos la imagen completa
             emoji.style.display = 'none';
 
-            // Armamos el modal con instrucciones arriba, la imagen y el botón de descargar
             cont.innerHTML = `
-                <div style="background:rgba(232,196,122,0.1); border:1px solid rgba(232,196,122,0.3); border-radius:10px; padding:12px; margin-bottom:16px; text-align:left;">
-                    <div style="font-size:0.85rem; color:#e8c47a; font-weight:700; margin-bottom:6px;">📌 Instrucciones:</div>
-                    <div style="font-size:0.75rem; color:#ccc; line-height:1.5;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:0.95rem; color:#e8c47a; font-weight:700; margin-bottom:8px;">📌 Instrucciones:</div>
+                    <div style="font-size:0.85rem; color:#ccc; line-height:1.5;">
                         Este es tu ticket digital de regalo.<br>
-                        Descargalo y guardalo en tu celular. Cuando quieras reclamarlo para tu próximo evento, solo escaneá el código QR que aparece en la imagen.
+                        Descargalo y guardalo. Cuando quieras reclamarlo para tu próximo evento, solo escaneá el código QR de la imagen.
                     </div>
                 </div>
 
-                <div style="background:#000; border-radius:12px; padding:10px; margin: 0 auto 16px; max-width: 320px; display: flex; justify-content: center;">
-                    <canvas id="canvasTicketRegalo" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                <div style="background:#000; border-radius:12px; padding:8px; margin: 0 auto 20px; max-width: 320px; display: flex; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <canvas id="canvasTicketRegalo" style="width: 100%; height: auto; border-radius: 8px;"></canvas>
                 </div>
 
-                <button class="modal-info-btn" style="background:linear-gradient(135deg,#e8c47a,#d4a94a); color:#0a0a0a; margin-bottom:10px;" onclick="descargarTicketRegalo()">
+                <button class="modal-info-btn" style="background:linear-gradient(135deg,#e8c47a,#d4a94a); color:#0a0a0a; margin-bottom:12px;" onclick="descargarTicketRegalo()">
                     📥 Descargar Imagen
                 </button>
 
-                <button class="modal-info-btn" style="background:rgba(255,255,255,0.06); color:#ccc;" onclick="cerrarModalInfo('modalRegalo')">
+                <button class="modal-info-btn" style="background:rgba(255,255,255,0.1); color:#fff;" onclick="cerrarModalInfo('modalRegalo')">
                     Cerrar
                 </button>
             `;
 
-            // Obtenemos el nombre del evento
             let nombreEvento = 'Evento OVJ Studio';
             const tituloEl = document.getElementById('eventoTitulo');
             if (tituloEl && tituloEl.textContent) {
                 nombreEvento = tituloEl.textContent;
             }
 
-            // Generamos la imagen en el Canvas (usando la misma función del cofre)
             setTimeout(() => {
                 generarCanvasTicketRegalo(t.token, t.titulo, nombreEvento);
             }, 100);
