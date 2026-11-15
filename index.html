@@ -7480,7 +7480,7 @@
 
             const ctx = canvas.getContext('2d');
 
-            // 🔥 Formato Cuadrado (Más compacto para el modal)
+            // Formato Cuadrado (Más compacto para el modal)
             const dpr = window.devicePixelRatio || 1;
             const width = 650;
             const height = 650;
@@ -7537,13 +7537,13 @@
             ctx.textAlign = 'center';
             ctx.fillStyle = '#a1a1aa';
             ctx.font = '700 16px "Segoe UI", Tahoma, sans-serif';
-            ctx.fillText('TU CÓDIGO ÚNICO', width / 4 + 10, 300);
+            ctx.fillText('TU CÓDIGO ÚNICO', width / 4, 300);
 
             ctx.fillStyle = '#93c5fd';
             ctx.font = '900 42px monospace';
-            ctx.fillText(token, width / 4 + 10, 350);
+            ctx.fillText(token, width / 4, 350);
 
-            // 7. QR de WhatsApp (Derecha)
+            // 7. QR de WhatsApp (Derecha) - Más grande y texto centrado
             if (window.qrcode) {
                 const textoWhatsApp = `Hola OVJ Studio! Gané el ticket ${token} en el evento ${nombreEvento}. Me interesa usarlo para mi próximo evento.`;
                 const urlWhatsApp = `https://wa.me/${WHATSAPP_PUBLICIDAD}?text=${encodeURIComponent(textoWhatsApp)}`;
@@ -7556,9 +7556,10 @@
                 qrImg.src = qr.createDataURL(6, 12);
 
                 qrImg.onload = () => {
-                    const qrSize = 140;
-                    const qrX = width * 0.75 - (qrSize / 2);
-                    const qrY = 250;
+                    // 🔥 Aumentamos el tamaño del QR a 170x170
+                    const qrSize = 170;
+                    const qrX = (width * 0.75) - (qrSize / 2);
+                    const qrY = 240; // Subimos un poquito para que quede centrado en su bloque
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
@@ -7566,9 +7567,11 @@
 
                     ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
+                    // Texto perfectamente centrado debajo del QR
                     ctx.fillStyle = '#888888';
                     ctx.font = '600 14px "Segoe UI", Tahoma, sans-serif';
-                    ctx.fillText('Escaneá para reclamar', qrX + qrSize / 2, qrY + qrSize + 25);
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Escaneá para reclamar', width * 0.75, qrY + qrSize + 30);
                 };
             }
 
