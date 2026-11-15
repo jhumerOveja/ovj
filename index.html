@@ -3690,49 +3690,12 @@
 
         <div class="paquetes-slider" id="paquetesSlider">
 
-            <!-- SLIDE 0: PERSONAL FOTO -->
-            <div class="paquete-slide personal">
-                <div class="paquete-contenido">
-                    <div style="font-size: 2.5rem; text-align: center; margin-bottom: 10px; letter-spacing: 5px;">📸 🚗 ✈️</div>
-
-                    <div class="paquete-nombre">PERSONAL FOTO</div>
-                    <div class="paquete-linea"></div>
-                    <div class="paquete-hint">Deslizá para ver los paquetes de eventos →</div>
-
-                    <div class="paquete-subtitulo">Tu sombra profesional. Donde vayas, yo voy.</div>
-                    <div class="paquete-descripcion">Un servicio adaptativo, flexible y personalizado. Sin poses forzadas. Capturamos tu día a día, en tus términos.</div>
-
-                    <ul class="paquete-lista">
-                        <li><strong>Turistas:</strong> Conocé la ciudad con un fotógrafo nativo. Te llevamos a los mejores spots y capturamos tus recuerdos sin que te preocupes por la cámara.</li>
-                        <li><strong>Empresarios:</strong> Reuniones, viajes, eventos. Alguien que esté con vos asegurándose de que te veas impecable y proyectes el estatus que merecés.</li>
-                        <li><strong>Artistas y Creadores:</strong> Contenido fresco y constante para tus redes. Fotos y videos de alta calidad para tu Instagram o TikTok, sin depender de un trípode.</li>
-                        <li><strong>Trato personalizado:</strong> No es un evento masivo. Es tu día, a tu ritmo.</li>
-                    </ul>
-
-                    <div class="paquete-ideal">
-                        <strong>¿Por qué es diferente?</strong> No pagás por una galería en vivo, sino por mi presencia profesional y adaptabilidad total.
-                    </div>
-                </div>
-
-                <div class="paquete-footer">
-                    <div class="paquete-proximo-texto">Próximo: Paquetes de Eventos</div>
-                    <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Esencial →</button>
-                    <div class="paquetes-puntos">
-                        <div class="paquete-punto activo"></div>
-                        <div class="paquete-punto"></div>
-                        <div class="paquete-punto"></div>
-                        <div class="paquete-punto"></div>
-                    </div>
-                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('personal')" style="margin-top:10px;">Consultar Personal Foto</button>
-                </div>
-            </div>
-
             <!-- SLIDE 1: ESENCIAL -->
             <div class="paquete-slide esencial">
                 <div class="paquete-contenido">
                     <div class="paquete-nombre">ESENCIAL</div>
                     <div class="paquete-linea"></div>
-                    <div class="paquete-hint">Deslizá para ver los 4 paquetes →</div>
+                    <div class="paquete-hint">Deslizá para ver los paquetes →</div>
 
                     <div class="paquete-subtitulo">Fotografía profesional con entrega digital</div>
                     <div class="paquete-descripcion">Ideal para eventos íntimos o que no necesitan galería en vivo.</div>
@@ -3752,8 +3715,8 @@
                     <div class="paquete-proximo-texto">Próximo: Premium</div>
                     <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Premium →</button>
                     <div class="paquetes-puntos">
-                        <div class="paquete-punto"></div>
                         <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                     </div>
@@ -3791,8 +3754,8 @@
                     <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Signature →</button>
                     <div class="paquetes-puntos">
                         <div class="paquete-punto"></div>
-                        <div class="paquete-punto"></div>
                         <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
                     </div>
                     <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('premium')" style="margin-top:10px;">Consultar Premium</button>
@@ -3822,8 +3785,44 @@
                 </div>
 
                 <div class="paquete-footer">
-                    <div class="paquete-proximo-texto">¿Te gusta este paquete?</div>
-                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('signature')">Consultar Signature</button>
+                    <div class="paquete-proximo-texto">Próximo: Personal Foto</div>
+                    <button class="paquete-btn-siguiente" onclick="siguientePaquete()">Ver Personal Foto →</button>
+                    <div class="paquetes-puntos">
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto"></div>
+                        <div class="paquete-punto activo"></div>
+                        <div class="paquete-punto"></div>
+                    </div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('signature')" style="margin-top:10px;">Consultar Signature</button>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: PERSONAL FOTO -->
+            <div class="paquete-slide personal">
+                <div class="paquete-contenido">
+                    <div style="font-size: 2.5rem; text-align: center; margin-bottom: 10px; letter-spacing: 5px;">📸 🚗 ✈️</div>
+
+                    <div class="paquete-nombre">PERSONAL FOTO</div>
+                    <div class="paquete-linea"></div>
+
+                    <div class="paquete-subtitulo">Tu sombra profesional. Donde vayas, yo voy.</div>
+                    <div class="paquete-descripcion">Un servicio adaptativo, flexible y personalizado. Sin poses forzadas. Capturamos tu día a día, en tus términos.</div>
+
+                    <ul class="paquete-lista">
+                        <li><strong>Turistas:</strong> Conocé la ciudad con un fotógrafo nativo. Te llevamos a los mejores spots y capturamos tus recuerdos sin que te preocupes por la cámara.</li>
+                        <li><strong>Empresarios:</strong> Reuniones, viajes, eventos. Alguien que esté con vos asegurándose de que te veas impecable y proyectes el estatus que merecés.</li>
+                        <li><strong>Artistas y Creadores:</strong> Contenido fresco y constante para tus redes. Fotos y videos de alta calidad para tu Instagram o TikTok, sin depender de un trípode.</li>
+                        <li><strong>Trato personalizado:</strong> No es un evento masivo. Es tu día, a tu ritmo.</li>
+                    </ul>
+
+                    <div class="paquete-ideal">
+                        <strong>¿Por qué es diferente?</strong> No pagás por una galería en vivo, sino por mi presencia profesional y adaptabilidad total.
+                    </div>
+                </div>
+
+                <div class="paquete-footer">
+                    <div class="paquete-proximo-texto">¿Te interesa este servicio?</div>
+                    <button class="paquete-btn-whatsapp" onclick="consultarPaqueteWhatsApp('personal')">Consultar Personal Foto</button>
                     <div class="paquetes-puntos">
                         <div class="paquete-punto"></div>
                         <div class="paquete-punto"></div>
