@@ -7399,6 +7399,7 @@
         }
 
         function mostrarRevelacion() {
+            // 1. Cambiamos las pantallas PRIMERO
             document.getElementById('cofreFaseCerrado').style.display = 'none';
             document.getElementById('cofreFaseRevelacion').style.display = 'flex';
 
@@ -7446,14 +7447,16 @@
                 </button>
             `;
 
-            // Obtenemos el nombre del evento de la pantalla
             let nombreEvento = 'Evento OVJ Studio';
             const tituloEl = document.getElementById('eventoTitulo');
             if (tituloEl && tituloEl.textContent) {
                 nombreEvento = tituloEl.textContent;
             }
 
-            generarCanvasTicketInvitado(ticket.token, ticket.titulo, nombreEvento);
+            // 🔥 EL FIX DEL BUG: Retrasamos la generación 100ms para que el navegador pinte el modal primero
+            setTimeout(() => {
+                generarCanvasTicketInvitado(ticket.token, ticket.titulo, nombreEvento);
+            }, 100);
         }
 
         function descargarTicketInvitado(token) {
@@ -7556,10 +7559,10 @@
                 qrImg.src = qr.createDataURL(6, 12);
 
                 qrImg.onload = () => {
-                  // 🔥 Último ajuste: QR a 185x185
-                  const qrSize = 185;
+                  // 🔥 Ajuste final: QR más grande (200x200) y bajado para no tapar el descuento
+                  const qrSize = 200;
                   const qrX = (width * 0.75) - (qrSize / 2);
-                  const qrY = 232; // Lo subimos un poquito más para que quepa perfecto
+                  const qrY = 255; // Bajado para dejar espacio al premio
 
                     // Fondo blanco para el QR
                     ctx.fillStyle = '#ffffff';
