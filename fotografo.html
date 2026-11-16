@@ -3759,10 +3759,15 @@
 
             cont.innerHTML = html;
 
+            // 🔥 FIX: Mostrar el botón de subir si hay fotos pendientes
             const hayPendientes = fotosEmergencia.some(f => f.estado === 'pendiente' || f.estado === 'error');
             const acciones = document.getElementById('accionesEmergencia');
             if (acciones) {
-                acciones.style.display = (hayPendientes && !subiendoEmergencia) ? 'flex' : 'none';
+                if (hayPendientes && !subiendoEmergencia) {
+                    acciones.style.display = 'flex'; // Muestra los botones
+                } else {
+                    acciones.style.display = 'none'; // Los oculta
+                }
             }
         }
 
