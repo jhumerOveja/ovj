@@ -3957,6 +3957,10 @@
             const seccion = document.getElementById('seccionEmergencia');
             if (!seccion) return;
 
+            // 🔥 FIX: Eliminar el contenedor viejo si ya existe para que no se duplique
+            const existente = document.getElementById('botonesQrOffline');
+            if (existente) existente.remove();
+
             const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
             if (!evento || !evento.tokenGeneral) return;
 
