@@ -1780,12 +1780,19 @@
                         Subí fotos desde acá. Se sincronizarán cuando el server vuelva.
                     </div>
 
-                    <div class="zona-drop" id="zonaDropEmergencia"
-                        onclick="document.getElementById('inputEmergencia').click()">
-                        <span class="icono">📸</span>
-                        <div class="texto">Seleccionar fotos</div>
-                        <div class="subtexto">Podés elegir varias de una vez</div>
+                    <!-- 🔥 NUEVO CONTENEDOR -->
+                    <div id="zonaSubidaEmergencia" style="display: none;">
+                        <div class="zona-drop" id="zonaDropEmergencia" onclick="document.getElementById('inputEmergencia').click()">
+                            <span class="icono">📸</span>
+                            <div class="texto">Seleccionar fotos</div>
+                            <div class="subtexto">Podés elegir varias de una vez</div>
+                        </div>
+                        <input type="file" id="inputEmergencia" accept="image/*" multiple style="display:none;" />
+                        <div class="progreso-emergencia" id="progresoEmergencia" style="display:none;">...</div>
+                        <div class="acciones-emergencia" id="accionesEmergencia" style="display:none;">...</div>
+                        <div class="lista-emergencia" id="listaEmergencia">...</div>
                     </div>
+                    <!-- FIN DEL CONTENEDOR -->
 
                     <input type="file" id="inputEmergencia" accept="image/*" multiple style="display:none;" />
 
@@ -3476,6 +3483,9 @@
                 input.addEventListener('change', manejarSeleccionEmergencia);
                 input._inicializado = true;
             }
+            const zonaSubida = document.getElementById('zonaSubidaEmergencia');
+            const hayEvento = (eventoOfflineSeleccionado !== null) || (eventoActivoEmergencia !== null);
+            if (zonaSubida) zonaSubida.style.display = hayEvento ? 'block' : 'none';
         }
 
         function ocultarSeccionEmergencia() {
@@ -3635,6 +3645,8 @@
                     : '<span style="color:#f39c12;">⚠️ Fuera de ventana horaria</span>';
             }
             renderQRGeneralOffline();
+            const zonaSubida = document.getElementById('zonaSubidaEmergencia');
+            if (zonaSubida) zonaSubida.style.display = 'block';
         }
         function renderQRGeneralOffline() {
             const seccion = document.getElementById('seccionEmergencia');
