@@ -1861,6 +1861,34 @@
         </div>
     </div>
 
+    <!-- Modal QR General (Emergencia) -->
+    <div class="modal" id="modalQrGeneralEmg">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarQrEmergencia('general')">✕</button>
+            <div class="titulo">🎫 QR General (Invitados)</div>
+            <div class="subtitulo">Compartí este QR con los invitados del evento.</div>
+
+            <div class="qr-wrapper" id="qrGeneralEmgWrapper" style="margin: 20px auto;"></div>
+
+            <button class="btn-primario" onclick="compartirQrEmergencia('general')">💬 Enviar por WhatsApp</button>
+            <button class="btn-secundario" onclick="cerrarQrEmergencia('general')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal QR Admin (Emergencia) -->
+    <div class="modal" id="modalQrAdminEmg">
+        <div class="modal-contenido">
+            <button class="btn-cerrar" onclick="cerrarQrEmergencia('admin')">✕</button>
+            <div class="titulo">👑 Link del Cliente</div>
+            <div class="subtitulo">Este es el link de administrador para el cliente del evento.</div>
+
+            <div class="qr-wrapper" id="qrAdminEmgWrapper" style="margin: 20px auto;"></div>
+
+            <button class="btn-primario" onclick="compartirQrEmergencia('admin')">💬 Enviar por WhatsApp</button>
+            <button class="btn-secundario" onclick="cerrarQrEmergencia('admin')">Cerrar</button>
+        </div>
+    </div>
+
     <!-- ===== MODAL CONFIRMAR ===== -->
     <div class="modal" id="modalConfirmar">
         <div class="modal-contenido">
@@ -3472,11 +3500,11 @@
             if (selectorExistente) selectorExistente.remove();
             const qrExistente = document.getElementById('qrGeneralOffline');
             if (qrExistente) qrExistente.remove();
+            const botonesQrExistente = document.getElementById('botonesQrOffline');
+            if (botonesQrExistente) botonesQrExistente.remove();
 
             renderSelectorEventoOffline();
-
-            // 🔥 NUEVO: mostrar QR general (si hay evento con token)
-            renderQRGeneralOffline();
+            renderBotonesQrOffline(); // 🔥 NUEVO: Botones en vez del QR gigante
 
             const input = document.getElementById('inputEmergencia');
             if (input && !input._inicializado) {
@@ -3644,68 +3672,9 @@
                     ? '<span style="color:#4ade80;">✅ Listo para subir</span>'
                     : '<span style="color:#f39c12;">⚠️ Fuera de ventana horaria</span>';
             }
-            renderQRGeneralOffline();
+            renderBotonesQrOffline();
             const zonaSubida = document.getElementById('zonaSubidaEmergencia');
             if (zonaSubida) zonaSubida.style.display = 'block';
-        }
-        function renderQRGeneralOffline() {
-            const seccion = document.getElementById('seccionEmergencia');
-            if (!seccion) return;
-
-            const anterior = document.getElementById('qrGeneralOffline');
-            if (anterior) anterior.remove();
-
-            const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
-            if (!evento) return;
-
-            const tokenGeneral = evento.tokenGeneral;
-            if (!tokenGeneral) return;
-
-            const urlGeneral = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(evento.id)}&t=${encodeURIComponent(tokenGeneral)}`;
-            window._urlGeneralOffline = urlGeneral;
-            window._nombreEventoOffline = evento.evento || 'el evento';
-
-            const div = document.createElement('div');
-            div.id = 'qrGeneralOffline';
-            div.style.cssText = 'background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:14px;margin-bottom:14px;';
-
-            div.innerHTML = `
-                <div style="font-size:0.8rem;font-weight:700;color:#93c5fd;margin-bottom:8px;">🎫 QR General del evento</div>
-                <div style="font-size:0.72rem;color:#888;margin-bottom:10px;line-height:1.4;">Compartilo con tus invitados para que entren a la galería.</div>
-                <div id="qrGeneralOfflineWrapper" style="background:#fff;border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;width:220px;height:220px;margin:0 auto 10px;"></div>
-                <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 10px;font-size:0.62rem;color:#888;word-break:break-all;font-family:monospace;line-height:1.4;margin-bottom:10px;text-align:left;" id="urlGeneralOffline"></div>
-                <button onclick="copiarUrlGeneralOffline()" style="width:100%;padding:10px 14px;border-radius:10px;border:none;background:rgba(255,255,255,0.06);color:#ccc;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:6px;">📋 Copiar link</button>
-                <button onclick="compartirUrlGeneralOffline()" style="width:100%;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,#4ade80,#22c55e);color:#0a0a0a;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">💬 Compartir por WhatsApp</button>
-            `;
-
-            const selector = document.getElementById('selectorEventoOffline');
-            if (selector && selector.nextSibling) {
-                seccion.insertBefore(div, selector.nextSibling);
-            } else {
-                seccion.insertBefore(div, seccion.firstChild);
-            }
-
-            try {
-                const qr = window.qrcode(0, 'M');
-                qr.addData(urlGeneral);
-                qr.make();
-
-                const wrapper = document.getElementById('qrGeneralOfflineWrapper');
-                wrapper.innerHTML = qr.createImgTag(6, 12);
-                const img = wrapper.querySelector('img');
-                if (img) {
-                    img.style.width = '200px';
-                    img.style.height = '200px';
-                    img.style.borderRadius = '4px';
-                }
-            } catch (e) {
-                console.error('Error generando QR offline:', e);
-                const wrapper = document.getElementById('qrGeneralOfflineWrapper');
-                if (wrapper) wrapper.innerHTML = '<div style="color:#333;font-size:0.75rem;text-align:center;padding:20px;">QR no disponible.</div>';
-            }
-
-            const urlBox = document.getElementById('urlGeneralOffline');
-            if (urlBox) urlBox.textContent = urlGeneral;
         }
 
         function copiarUrlGeneralOffline() {
@@ -3982,6 +3951,91 @@
             }
 
             return data;
+        }
+
+        function renderBotonesQrOffline() {
+            const seccion = document.getElementById('seccionEmergencia');
+            if (!seccion) return;
+
+            const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
+            if (!evento || !evento.tokenGeneral) return;
+
+            const div = document.createElement('div');
+            div.id = 'botonesQrOffline';
+            div.style.cssText = 'display:flex; gap:10px; margin-bottom:14px;';
+
+            div.innerHTML = `
+                <button onclick="abrirQrEmergencia('general')" style="flex:1; padding:12px; border-radius:12px; border:none; background:rgba(52,152,219,0.15); color:#5dade2; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
+                    🎫 QR General
+                </button>
+                <button onclick="abrirQrEmergencia('admin')" style="flex:1; padding:12px; border-radius:12px; border:none; background:rgba(232,196,122,0.15); color:#e8c47a; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
+                    👑 Link Cliente
+                </button>
+            `;
+
+            // Lo insertamos justo después del selector
+            const selector = document.getElementById('selectorEventoOffline');
+            if (selector && selector.nextSibling) {
+                seccion.insertBefore(div, selector.nextSibling);
+            } else {
+                seccion.insertBefore(div, seccion.firstChild);
+            }
+        }
+
+        function abrirQrEmergencia(tipo) {
+            const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
+            if (!evento) return;
+
+            let url;
+            let wrapperId;
+            let modalId;
+            let tokenStr = evento.tokenGeneral;
+
+            if (tipo === 'general') {
+                url = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(evento.id)}&t=${encodeURIComponent(tokenStr)}`;
+                wrapperId = 'qrGeneralEmgWrapper';
+                modalId = 'modalQrGeneralEmg';
+            } else {
+                // Para el admin, usamos el token del primer admin que venga en el evento
+                // Como el Worker no expone el token del admin en /api/eventos (por seguridad),
+                // usamos el mismo token general para el administrador en modo offline.
+                // El cliente entrará como Admin si el server lo valida después, o como VIP si es offline.
+                url = `https://jhumeroveja.github.io/ovj/?f=${encodeURIComponent(nombreFotografoActual)}&e=${encodeURIComponent(evento.id)}&t=${encodeURIComponent(tokenStr)}`;
+                wrapperId = 'qrAdminEmgWrapper';
+                modalId = 'modalQrAdminEmg';
+            }
+
+            window._urlQrEmgActual = url;
+
+            const wrapper = document.getElementById(wrapperId);
+            if (wrapper) {
+                wrapper.innerHTML = '';
+                try {
+                    const qr = window.qrcode(0, 'M');
+                    qr.addData(url);
+                    qr.make();
+                    wrapper.innerHTML = qr.createImgTag(6, 12);
+                    const img = wrapper.querySelector('img');
+                    if (img) { img.style.width = '220px'; img.style.height = '220px'; img.style.borderRadius = '4px'; }
+                } catch (e) {
+                    wrapper.innerHTML = '<div style="color:#333;font-size:0.75rem;">QR no disponible.</div>';
+                }
+            }
+
+            document.getElementById(modalId).classList.add('activo');
+        }
+
+        function cerrarQrEmergencia(tipo) {
+            const modalId = tipo === 'general' ? 'modalQrGeneralEmg' : 'modalQrAdminEmg';
+            document.getElementById(modalId).classList.remove('activo');
+        }
+
+        function compartirQrEmergencia(tipo) {
+            if (!window._urlQrEmgActual) return;
+            const evento = eventoOfflineSeleccionado || eventoActivoEmergencia;
+            const nombreEvento = evento?.evento || 'el evento';
+            const mensaje = `¡Hola! Te comparto el link de ${tipo === 'general' ? 'invitados' : 'administrador'} para la galería de ${nombreEvento}.\n\n📸 Entrá acá:\n${window._urlQrEmgActual}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         // ==========================================
