@@ -3971,6 +3971,15 @@
                 <span class="menu-lateral-emoji">📋</span>
                 <span class="menu-lateral-texto" data-i18n="menuTerminos">Términos y condiciones</span>
             </button>
+
+            <button class="menu-lateral-item" id="btnMensajeAdmin" onclick="abrirMensajeAdmin()" style="display: none;">
+                <span class="menu-lateral-emoji">📢</span>
+                <span class="menu-lateral-texto">Enviar Aviso</span>
+            </button>
+            <button class="menu-lateral-item" onclick="abrirCofreRelampago()">
+                <span class="menu-lateral-emoji">⚡</span>
+                <span class="menu-lateral-texto">Cofre Relámpago</span>
+            </button>
         </nav>
 
         <div class="menu-lateral-footer">
@@ -4026,6 +4035,32 @@
             <div class="modal-info-titulo" id="bienvenidaTitulo">Bienvenido a OVJ Studio</div>
             <div id="bienvenidaContenido" class="modal-info-texto"></div>
             <button class="modal-info-btn" onclick="cerrarBienvenida()">Empezar</button>
+        </div>
+    </div>
+    <div class="modal-info" id="modalCofreRelampago">
+        <div class="modal-info-contenido">
+            <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalCofreRelampago')">✕</button>
+            <span class="modal-info-emoji">⚡</span>
+            <div class="modal-info-titulo">Cofre Relámpago</div>
+            <div style="text-align:center; font-size:0.9rem; color:#aaa; margin-bottom:16px;">
+                ¡Toca el cofre para llenar la barra de energía!<br>Si todos colaboran, el cofre se abrirá.
+            </div>
+
+            <div style="font-size:2rem; text-align:center; cursor:pointer; user-select:none; margin-bottom:10px;" id="btnTapCofre" onmousedown="tocarCofreRelampago()">
+                🎁
+            </div>
+
+            <div class="progreso-emergencia" style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#aaa; margin-bottom:4px;">
+                    <span>Energía Colectiva</span>
+                    <span id="textoEnergiaRelampago">0 / 50000</span>
+                </div>
+                <div class="progreso-barra" style="height:12px; background:rgba(255,255,255,0.1); border-radius:6px; overflow:hidden;">
+                    <div class="progreso-barra-fill" id="fillEnergiaRelampago" style="width:0%; height:100%; background:linear-gradient(90deg,#f39c12,#f1c40f); transition:width 0.3s;"></div>
+                </div>
+            </div>
+
+            <button class="modal-info-btn" onclick="cerrarModalInfo('modalCofreRelampago')">Cerrar</button>
         </div>
     </div>
 
@@ -8048,6 +8083,142 @@
 
             actualizarMenuLateral();
         }
+
+        // Mostrar el botón solo si es Admin
+        function activarBotonMensajeAdmin() {
+            if (sesion && sesion.tipo === 'admin') {
+                const btn = document.getElementById('btnMensajeAdmin');
+                if (btn) btn.style.display = 'flex';
+            }
+        }
+        // Llamar a esta función dentro de activarApp()
+        // (Búscala y agrega activarBotonMensajeAdmin(); al final)
+
+        function abrirMensajeAdmin() {
+            const texto = prompt("Escribe el mensaje para todos los invitados (máx 200 caracteres):");
+            if (!texto) return;
+            if (texto.length > 200) {
+                alert("El mensaje es muy largo.");
+                return;
+            }
+
+            fetch(`${URL_CLOUDFLARE}/admin/mensaje?f=${encodeURIComponent(FOTOGRAFO_ID)}&e=${encodeURIComponent(EVENTO_ID)}&t=${encodeURIComponent(TOKEN)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ texto })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) mostrarToast('✅ Aviso enviado a todos', 'success');
+                else alert(data.error || 'Error al enviar');
+            })
+            .catch(e => alert('Error de conexión'));
+        }
+
+        let _toquesLocales = 0;
+        let _energiaActual = 0;
+        let _metaActual = 50000;
+
+        async function abrirCofreRelampago() {
+            abrirModalInfo('modalCofreRelampago');
+            await actualizarEnergia();
+            // Empezar a enviar los toques cada 2 segundos (Anti-saturación)
+            if (!window._timerEnvioToques) {
+                window._timerEnvioToques = setInterval(procesarEnvioToques, 2000);
+            }
+        }
+
+        async function actualizarEnergia() {
+            try {
+                const resp = await fetch(`${URL_CLOUDFLARE}/cofre-relampago/estado?e=${encodeURIComponent(EVENTO_ID)}`);
+                const data = await resp.json();
+
+                _energiaActual = data.toques;
+                _metaActual = data.meta;
+
+                document.getElementById('textoEnergiaRelampago').textContent = `${_energiaActual} / ${_metaActual}`;
+                const pct = Math.min(100, (_energiaActual / _metaActual) * 100);
+                document.getElementById('fillEnergiaRelampago').style.width = pct + '%';
+
+                // Si se llenó, disparamos el sorteo
+                if (pct >= 100 && data.activo === false) {
+                    lanzarSorteoRelampago();
+                }
+            } catch (e) { }
+        }
+
+        function tocarCofreRelampago() {
+            _toquesLocales += 1;
+            // Efecto visual rápido (opcional)
+            const btn = document.getElementById('btnTapCofre');
+            btn.style.transform = 'scale(1.2)';
+            setTimeout(() => btn.style.transform = 'scale(1)', 100);
+        }
+
+        async function procesarEnvioToques() {
+            if (_toquesLocales === 0) return;
+            const enviar = _toquesLocales;
+            _toquesLocales = 0; // Resetear local
+
+            try {
+                const resp = await fetch(`${URL_CLOUDFLARE}/cofre-relampago/tap?e=${encodeURIComponent(EVENTO_ID)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cantidad: enviar })
+                });
+                const data = await resp.json();
+
+                _energiaActual = data.toques;
+                document.getElementById('textoEnergiaRelampago').textContent = `${_energiaActual} / ${_metaActual}`;
+                const pct = Math.min(100, (_energiaActual / _metaActual) * 100);
+                document.getElementById('fillEnergiaRelampago').style.width = pct + '%';
+
+                if (data.toques >= data.meta && data.activo === false) {
+                    lanzarSorteoRelampago();
+                }
+            } catch (e) { }
+        }
+
+        async function lanzarSorteoRelampago() {
+            if (window._sorteoRelampagoLanzado) return;
+            window._sorteoRelampagoLanzado = true;
+
+            mostrarToast('⚡ ¡El cofre se ha llenado! Repartiendo regalos...', 'success');
+
+            try {
+                // Le decimos al servidor que emita los cofres reales para este evento
+                const resp = await fetch(`${URL_CLOUDFLARE}/cofre-relampago/disparar-sorteo?e=${encodeURIComponent(EVENTO_ID)}&f=${encodeURIComponent(FOTOGRAFO_ID)}`, {
+                    method: 'POST'
+                });
+                const data = await resp.json();
+
+                if (data.ok) {
+                    mostrarToast('🎁 ¡Tickets emitidos! Revisa "Mi regalo" para ver si ganaste.', 'success');
+                    // El cofre de regalo normal (4 toques) se activará en el próximo poll
+                    setTimeout(() => consultarCofre(), 2000);
+                } else {
+                    console.log('Error emitiendo cofres:', data.error);
+                }
+            } catch (e) {
+                console.error('Error disparando sorteo:', e);
+            }
+
+            // Reiniciar la barra para el próximo sorteo
+            setTimeout(async () => {
+                await fetch(`${URL_CLOUDFLARE}/cofre-relampago/reiniciar?e=${encodeURIComponent(EVENTO_ID)}`, { method: 'POST' });
+                _energiaActual = 0;
+                window._sorteoRelampagoLanzado = false;
+                actualizarEnergia();
+            }, 5000);
+        }
+
+        // Limpiar el intervalo si cierra el modal
+        document.getElementById('modalCofreRelampago').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget || e.target.classList.contains('btn-cerrar-instr')) {
+                clearInterval(window._timerEnvioToques);
+                window._timerEnvioToques = null;
+            }
+        });
 
         inicializar();
     </script>
