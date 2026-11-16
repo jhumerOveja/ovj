@@ -1782,15 +1782,39 @@
 
                     <!-- 🔥 NUEVO CONTENEDOR -->
                     <div id="zonaSubidaEmergencia" style="display: none;">
+
                         <div class="zona-drop" id="zonaDropEmergencia" onclick="document.getElementById('inputEmergencia').click()">
                             <span class="icono">📸</span>
                             <div class="texto">Seleccionar fotos</div>
                             <div class="subtexto">Podés elegir varias de una vez</div>
                         </div>
+
                         <input type="file" id="inputEmergencia" accept="image/*" multiple style="display:none;" />
-                        <div class="progreso-emergencia" id="progresoEmergencia" style="display:none;">...</div>
-                        <div class="acciones-emergencia" id="accionesEmergencia" style="display:none;">...</div>
-                        <div class="lista-emergencia" id="listaEmergencia">...</div>
+
+                        <div class="progreso-emergencia" id="progresoEmergencia" style="display:none;">
+                            <div id="progresoTextoEmergencia">Subiendo...</div>
+                            <div class="progreso-barra">
+                                <div class="progreso-barra-fill" id="progresoFillEmergencia" style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="lista-emergencia" id="listaEmergencia" style="margin-bottom: 12px;">
+                            <div class="vacio">
+                                <span class="emoji">📥</span>
+                                Todavía no seleccionaste fotos
+                            </div>
+                        </div>
+
+                        <!-- 🔥 BOTONES ARRIBA DE LA LISTA, NO ABAJO -->
+                        <div class="acciones-emergencia" id="accionesEmergencia" style="display:none; margin-bottom: 14px;">
+                            <button class="btn-accion btn-subir" id="btnSubirEmergencia" onclick="subirTodasEmergencia()" style="width: 100%;">
+                                🚀 Subir todas
+                            </button>
+                            <button class="btn-accion btn-secundario" onclick="limpiarListaEmergencia()" style="width: 100%; margin-top: 8px;">
+                                🗑️ Limpiar
+                            </button>
+                        </div>
+
                     </div>
                     <!-- FIN DEL CONTENEDOR -->
 
@@ -3713,13 +3737,15 @@
             });
 
             e.target.value = '';
-            renderizarListaEmergencia();
+            renderizarListaEmergencia(); // 🔥 ESTO ES CLAVE
         }
 
         function renderizarListaEmergencia() {
             const cont = document.getElementById('listaEmergencia');
+            const acciones = document.getElementById('accionesEmergencia');
             if (!cont) return;
 
+            // Si no hay fotos, mostramos el mensaje vacío y ocultamos botones
             if (fotosEmergencia.length === 0) {
                 cont.innerHTML = `
                     <div class="vacio">
@@ -3727,11 +3753,11 @@
                         Todavía no seleccionaste fotos
                     </div>
                 `;
-                const acciones = document.getElementById('accionesEmergencia');
                 if (acciones) acciones.style.display = 'none';
                 return;
             }
 
+            // Si hay fotos, dibujamos la lista
             let html = '';
             fotosEmergencia.forEach(foto => {
                 const badgeTexto = {
@@ -3759,15 +3785,10 @@
 
             cont.innerHTML = html;
 
-            // 🔥 FIX: Mostrar el botón de subir si hay fotos pendientes
+            // Lógica para mostrar u ocultar los botones de acción
             const hayPendientes = fotosEmergencia.some(f => f.estado === 'pendiente' || f.estado === 'error');
-            const acciones = document.getElementById('accionesEmergencia');
             if (acciones) {
-                if (hayPendientes && !subiendoEmergencia) {
-                    acciones.style.display = 'flex'; // Muestra los botones
-                } else {
-                    acciones.style.display = 'none'; // Los oculta
-                }
+                acciones.style.display = (hayPendientes && !subiendoEmergencia) ? 'flex' : 'none';
             }
         }
 
