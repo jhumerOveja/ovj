@@ -3561,6 +3561,9 @@
                     style="display: none;">
                     📊 <span class="btn-admin-texto">Métricas</span><span class="btn-admin-texto-corto">Métricas</span>
                 </button>
+                <button class="btn-admin-mini relampago" id="btnCofreRelampago" onclick="abrirCofreRelampago()" style="display: none; background: rgba(231,76,60,0.15); border-color: rgba(231,76,60,0.35); color: #f87171;">
+                    🎁 <span class="btn-admin-texto">Cofre Relámpago</span><span class="btn-admin-texto-corto">Cofre</span>
+                </button>
             </div>
             <div class="header-bottom">
                 <h2 class="evento-titulo" id="eventoTitulo">Galería en Vivo</h2>
@@ -3976,10 +3979,6 @@
                 <span class="menu-lateral-emoji">📢</span>
                 <span class="menu-lateral-texto">Enviar Aviso</span>
             </button>
-            <button class="menu-lateral-item" onclick="abrirCofreRelampago()">
-                <span class="menu-lateral-emoji">⚡</span>
-                <span class="menu-lateral-texto">Cofre Relámpago</span>
-            </button>
         </nav>
 
         <div class="menu-lateral-footer">
@@ -4040,23 +4039,31 @@
     <div class="modal-info" id="modalCofreRelampago">
         <div class="modal-info-contenido">
             <button class="btn-cerrar-instr" onclick="cerrarModalInfo('modalCofreRelampago')">✕</button>
-            <span class="modal-info-emoji">⚡</span>
-            <div class="modal-info-titulo">Cofre Relámpago</div>
-            <div style="text-align:center; font-size:0.9rem; color:#aaa; margin-bottom:16px;">
-                ¡Toca el cofre para llenar la barra de energía!<br>Si todos colaboran, el cofre se abrirá.
+
+            <div class="modal-info-titulo" style="margin-bottom:10px;">Cofre Sorpresa</div>
+
+            <div style="text-align:center; font-size:0.85rem; color:#aaa; margin-bottom:20px; line-height:1.5;">
+                ¡Toca el cofre para llenar la barra de energía!<br>
+                Si todos colaboran, el cofre se romperá y <strong>repartirá tickets de descuento reales</strong> para tu próximo evento.<br>
+                <span style="color:#f39c12; font-size:0.75rem; margin-top:6px; display:block;">(Solo los más rápidos se llevan el premio)</span>
             </div>
 
-            <div style="font-size:2rem; text-align:center; cursor:pointer; user-select:none; margin-bottom:10px;" id="btnTapCofre" onmousedown="tocarCofreRelampago()">
+            <!-- Regalo Gigante -->
+            <div style="font-size:5rem; text-align:center; cursor:pointer; user-select:none; margin-bottom:20px; transition: transform 0.1s;"
+                 id="btnTapCofre"
+                 onmousedown="tocarCofreRelampago()"
+                 ontouchstart="tocarCofreRelampago()">
                 🎁
             </div>
 
-            <div class="progreso-emergencia" style="margin-bottom:10px;">
-                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#aaa; margin-bottom:4px;">
-                    <span>Energía Colectiva</span>
-                    <span id="textoEnergiaRelampago">0 / 50000</span>
+            <!-- Barra de Energía -->
+            <div class="progreso-emergencia" style="margin-bottom:20px; background:rgba(0,0,0,0.4); border-radius:12px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#fff; margin-bottom:8px; font-weight:700;">
+                    <span>ENERGÍA GLOBAL</span>
+                    <span id="textoEnergiaRelampago">0 / 0</span>
                 </div>
-                <div class="progreso-barra" style="height:12px; background:rgba(255,255,255,0.1); border-radius:6px; overflow:hidden;">
-                    <div class="progreso-barra-fill" id="fillEnergiaRelampago" style="width:0%; height:100%; background:linear-gradient(90deg,#f39c12,#f1c40f); transition:width 0.3s;"></div>
+                <div class="progreso-barra" style="height:16px; background:rgba(255,255,255,0.1); border-radius:8px; overflow:hidden;">
+                    <div class="progreso-barra-fill" id="fillEnergiaRelampago" style="width:0%; height:100%; background:linear-gradient(90deg,#f39c12,#f1c40f); transition:width 0.1s;"></div>
                 </div>
             </div>
 
@@ -5769,6 +5776,7 @@
                 actualizarChipEnVivo();
 
                 consultarCofre();
+                consultarEstadoRelampago();
 
             } catch (error) {
                 console.error("Error:", error);
@@ -8219,6 +8227,41 @@
                 window._timerEnvioToques = null;
             }
         });
+
+        async function consultarEstadoRelampago() {
+            try {
+                const resp = await fetch(`${URL_CLOUDFLARE}/cofre-relampago/estado?e=${encodeURIComponent(EVENTO_ID)}`);
+                const data = await resp.json();
+
+                const btn = document.getElementById('btnCofreRelampago');
+                if (btn) {
+                    // Si el fotógrafo lo activó, mostramos el botón en el header
+                    if (data.activo === true) {
+                        btn.style.display = 'inline-flex';
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                }
+
+                // Si el modal está abierto, actualizamos la barra en vivo
+                const modal = document.getElementById('modalCofreRelampago');
+                if (data.activo && modal && modal.classList.contains('activo')) {
+                    _energiaActual = data.toques;
+                    _metaActual = data.meta;
+                    actualizarBarraVisual();
+                }
+            } catch (e) { }
+        }
+
+        function actualizarBarraVisual() {
+            const texto = document.getElementById('textoEnergiaRelampago');
+            const fill = document.getElementById('fillEnergiaRelampago');
+            if (texto && fill) {
+                texto.textContent = `${_energiaActual} / ${_metaActual}`;
+                const pct = Math.min(100, (_energiaActual / _metaActual) * 100);
+                fill.style.width = pct + '%';
+            }
+        }
 
         inicializar();
     </script>
